@@ -16,9 +16,19 @@ const Footer = () => {
 
     useEffect(() => {
         if (WOW) {
-            new WOW({
-                live: false
-            }).init();
+            const wow = new WOW({
+                live: true,
+                boxClass: 'wow',
+                animateClass: 'animated',
+                offset: 0,
+                mobile: true
+            });
+            wow.init();
+
+            // Sync after a short delay to ensure elements are ready
+            setTimeout(() => {
+                wow.sync();
+            }, 500);
         }
     }, []);
 

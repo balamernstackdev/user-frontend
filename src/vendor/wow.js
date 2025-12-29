@@ -487,7 +487,6 @@ const root = typeof window !== 'undefined' ? window : globalThis;
       while (element = element.offsetParent) {
         top += element.offsetTop;
       }
-      top += (element.pageYOffset != null ? element.pageYOffset : (element.scrollTop != null ? element.scrollTop : 0));
       return top;
     };
 
