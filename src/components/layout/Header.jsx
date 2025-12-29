@@ -59,7 +59,7 @@ const Header = ({ notificationCount = 0 }) => {
             {/* Header */}
             <header className="header-area header-3 h10-header header-absolute section-gap-x">
                 <div className="header-bottom">
-                    <div className="container">
+                    <div className="container-fluid">
                         <div className="row">
                             <div className="col-12">
                                 <div className="header-wrapper">
@@ -80,7 +80,9 @@ const Header = ({ notificationCount = 0 }) => {
                                                     onMouseEnter={() => setShowSettings(true)}
                                                     onMouseLeave={() => setShowSettings(false)}
                                                 >
-                                                    <Link to="#" onClick={(e) => e.preventDefault()}>Settings</Link>
+                                                    <Link to="#" onClick={(e) => e.preventDefault()}>
+                                                        Settings <i className="fa-light fa-angle-down" style={{ fontSize: '12px', marginLeft: '5px' }}></i>
+                                                    </Link>
                                                     {showSettings && (
                                                         <ul className="sub-menu">
                                                             <li><Link to="/profile">My Profile</Link></li>

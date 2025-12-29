@@ -10,7 +10,7 @@ const DashboardLayout = ({ children }) => {
         <div className="dashboard-layout">
             <Header notificationCount={3} />
 
-            <main className="main-content" style={{ minHeight: 'calc(100vh - 400px)', paddingTop: '120px' }}>
+            <main className="main-content" style={{ minHeight: 'calc(100vh - 400px)' }}>
                 {children}
             </main>
 

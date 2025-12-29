@@ -29,7 +29,7 @@ const Dashboard = () => {
     return (
         <DashboardLayout>
             <section className="welcome-section">
-                <div className="container">
+                <div className="container-fluid">
                     <div className="welcome-content">
                         {/* Welcome Card */}
                         <div className="welcome-card animate-fade-up">

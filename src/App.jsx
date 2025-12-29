@@ -25,12 +25,14 @@ import Commissions from './pages/Commissions';
 import NotFound from './pages/NotFound';
 import ProtectedRoute from './components/ProtectedRoute';
 import { authService } from './services/auth.service';
+import ScrollToTop from './components/ScrollToTop';
 
 function App() {
     const isAuthenticated = authService.isAuthenticated();
 
     return (
         <div className="App">
+            <ScrollToTop />
             <Routes>
                 {/* Public Routes */}
                 <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login />} />

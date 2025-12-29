@@ -1,9 +1,15 @@
 /* Dashboard/Welcome Section Styling */
 .welcome-section {
-    padding: 120px 0 80px;
+    padding: 120px 40px 80px;
     background: transparent !important;
     position: relative;
     overflow: hidden;
+}
+
+.welcome-section .container-fluid {
+    padding: 0;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
 /* Welcome content needs to be relative to show above any potential section elements */
