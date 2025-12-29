@@ -1,0 +1,189 @@
+/* Dashboard/Welcome Section Styling */
+.welcome-section {
+    padding: 120px 0 80px;
+    background: transparent !important;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Welcome content needs to be relative to show above any potential section elements */
+.welcome-content {
+    position: relative;
+    z-index: 1;
+}
+
+.welcome-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 60px 50px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.welcome-icon {
+    width: 100px;
+    height: 100px;
+    background: rgba(30, 138, 138, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 30px;
+}
+
+.welcome-icon i,
+.welcome-icon span {
+    font-size: 48px;
+    color: #1e8a8a;
+}
+
+.welcome-title h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
+    color: #0c1e21;
+    font-weight: 700;
+}
+
+.welcome-title p {
+    font-size: 18px;
+    color: #6c757d;
+    margin-bottom: 40px;
+    line-height: 1.6;
+}
+
+.welcome-actions {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 40px;
+}
+
+.welcome-actions .tj-primary-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 30px;
+    background-color: #1e8a8a;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.welcome-actions .tj-primary-btn:hover {
+    background-color: #156b6b;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(30, 138, 138, 0.3);
+}
+
+.welcome-actions .transparent-btn {
+    background-color: transparent;
+    color: #1e8a8a;
+    border: 1px solid #1e8a8a;
+}
+
+.welcome-actions .transparent-btn:hover {
+    background-color: #1e8a8a;
+    color: #ffffff;
+}
+
+/* Quick Links Grid */
+.quick-links {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+}
+
+.quick-links h3 {
+    font-size: 28px;
+    margin-bottom: 30px;
+    color: #0c1e21;
+    font-weight: 600;
+}
+
+.quick-links-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.quick-link-item {
+    background: rgba(30, 138, 138, 0.05);
+    border-radius: 8px;
+    padding: 25px 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    text-decoration: none;
+    display: block;
+}
+
+.quick-link-item:hover {
+    background: #1e8a8a;
+    transform: translateY(-5px);
+}
+
+.quick-link-icon {
+    margin-bottom: 15px;
+}
+
+.quick-link-icon i,
+.quick-link-icon span {
+    font-size: 32px;
+    color: #1e8a8a;
+    transition: all 0.3s ease;
+}
+
+.quick-link-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #0c1e21;
+    transition: all 0.3s ease;
+}
+
+.quick-link-item:hover .quick-link-icon i,
+.quick-link-item:hover .quick-link-icon span,
+.quick-link-item:hover .quick-link-title {
+    color: #ffffff;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .welcome-section {
+        padding: 50px 0;
+    }
+
+    .welcome-card {
+        padding: 40px 30px;
+    }
+
+    .welcome-title h1 {
+        font-size: 36px;
+    }
+
+    .quick-links {
+        padding: 30px 20px;
+    }
+
+    .quick-links-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 575px) {
+    .welcome-title h1 {
+        font-size: 28px;
+    }
+
+    .quick-links-grid {
+        grid-template-columns: 1fr;
+    }
+}

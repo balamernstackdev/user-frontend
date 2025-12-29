@@ -1,0 +1,219 @@
+.commissions-page {
+    padding: 2rem 0 4rem;
+    min-height: 100vh;
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.summary-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.summary-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+}
+
+.summary-card.pending::before {
+    background: var(--warning);
+}
+
+.summary-card.approved::before {
+    background: var(--success);
+}
+
+.summary-card.paid::before {
+    background: #3b82f6;
+}
+
+.summary-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+}
+
+.card-icon {
+    font-size: 3rem;
+    width: 70px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(79, 70, 229, 0.1);
+    border-radius: 15px;
+}
+
+.card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    flex: 1;
+}
+
+.card-info .label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.card-info .value {
+    font-size: 2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.commissions-container {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 2rem;
+}
+
+.commissions-container h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.commissions-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.commissions-table thead {
+    background: rgba(79, 70, 229, 0.1);
+}
+
+.commissions-table th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-primary);
+    border-bottom: 2px solid var(--border-color);
+}
+
+.commissions-table td {
+    padding: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.commissions-table tbody tr:hover {
+    background: rgba(79, 70, 229, 0.05);
+}
+
+.commissions-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.user-info .name {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.user-info .email {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.amount {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--success);
+}
+
+.badge {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.badge-warning {
+    background: var(--warning);
+    color: #000;
+}
+
+.badge-success {
+    background: var(--success);
+    color: white;
+}
+
+.badge-info {
+    background: #3b82f6;
+    color: white;
+}
+
+.badge-error {
+    background: var(--danger);
+    color: white;
+}
+
+.no-data {
+    text-align: center;
+    padding: 4rem 2rem;
+}
+
+.no-data .icon {
+    font-size: 5rem;
+    margin-bottom: 1rem;
+}
+
+.no-data h3 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.no-data p {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+    .summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .summary-card {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .table-responsive {
+        font-size: 0.9rem;
+        overflow-x: auto;
+    }
+
+    .commissions-table th,
+    .commissions-table td {
+        padding: 0.75rem 0.5rem;
+    }
+}

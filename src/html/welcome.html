@@ -1,0 +1,540 @@
+﻿<!DOCTYPE html>
+<html class="no-js" lang="en" style="overscroll-behavior: none; scroll-behavior: smooth;">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Welcome to your dashboard">
+
+  <!-- Site Title -->
+  <title>Welcome - Stoxzo</title>
+
+  <!-- Place favicon.ico in the root directory -->
+  <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.ico">
+
+  <!-- CSS here -->
+  <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/css/font-awesome-pro.min.css">
+  <link rel="stylesheet" href="assets/css/animate.min.css">
+  <link rel="stylesheet" href="assets/css/Stoxzo-icons.css">
+  <link rel="stylesheet" href="assets/css/nice-select.css">
+  <link rel="stylesheet" href="assets/css/swiper.min.css">
+  <link rel="stylesheet" href="assets/css/venobox.min.css">
+  <link rel="stylesheet" href="assets/css/odometer-theme-default.css">
+  <link rel="stylesheet" href="assets/css/meanmenu.css">
+  <link rel="stylesheet" href="assets/css/main.css">
+  
+  <style>
+    .welcome-section {
+      padding: 120px 0 80px;
+      background-color: var(--tj-color-grey-1);
+      position: relative;
+      overflow: hidden;
+    }
+    /*.welcome-section::before {
+      content: "";
+      position: absolute;
+      top: 10%;
+      right: 10%;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: var(--tj-color-theme-primary);
+      filter: blur(80px);
+      opacity: 0.15;
+      z-index: 0;
+    }*/
+    .welcome-content {
+      position: relative;
+      z-index: 1;
+    }
+    .welcome-card {
+      background-color: var(--tj-color-common-white);
+      border-radius: 12px;
+      padding: 60px 50px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .welcome-icon {
+      width: 100px;
+      height: 100px;
+      background: var(--tj-color-theme-bg);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 30px;
+    }
+    .welcome-icon i {
+      font-size: 48px;
+      color: var(--tj-color-theme-primary);
+    }
+    .welcome-title h1 {
+      font-size: 48px;
+      margin-bottom: 20px;
+      color: var(--tj-color-heading-primary);
+    }
+    .welcome-title p {
+      font-size: 18px;
+      color: var(--tj-color-text-body-3);
+      margin-bottom: 40px;
+      line-height: 1.6;
+    }
+    .welcome-actions {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 40px;
+    }
+    .quick-links {
+      background-color: var(--tj-color-common-white);
+      border-radius: 12px;
+      padding: 40px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    }
+    .quick-links h3 {
+      font-size: 28px;
+      margin-bottom: 30px;
+      color: var(--tj-color-heading-primary);
+    }
+    .quick-links-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+    .quick-link-item {
+      background: var(--tj-color-theme-bg);
+      border-radius: 8px;
+      padding: 25px 20px;
+      text-align: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .quick-link-item:hover {
+      background: var(--tj-color-theme-primary);
+      transform: translateY(-5px);
+    }
+    .quick-link-item:hover .quick-link-icon i,
+    .quick-link-item:hover .quick-link-title {
+      color: var(--tj-color-common-white);
+    }
+    .quick-link-icon {
+      margin-bottom: 15px;
+    }
+    .quick-link-icon i {
+      font-size: 32px;
+      color: var(--tj-color-theme-primary);
+      transition: all 0.3s ease;
+    }
+    .quick-link-title {
+      font-size: 16px;
+      font-weight: var(--tj-fw-sbold);
+      color: var(--tj-color-heading-primary);
+      transition: all 0.3s ease;
+    }
+    @media (max-width: 768px) {
+      .welcome-card {
+        padding: 40px 30px;
+      }
+      .welcome-title h1 {
+        font-size: 36px;
+      }
+      .quick-links {
+        padding: 30px 20px;
+      }
+      .quick-links-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body style="overscroll-behavior: none; scroll-behavior: auto;">
+  <div class="body-overlay"></div>
+
+  <!-- Preloader Start -->
+  <div class="tj-preloader is-loaded" style="display: none;">
+    <div class="tj-preloader-inner">
+      <div class="tj-preloader-ball-wrap">
+        <div class="tj-preloader-ball-inner-wrap">
+          <div class="tj-preloader-ball-inner">
+            <div class="tj-preloader-ball"></div>
+          </div>
+          <div class="tj-preloader-ball-shadow"></div>
+        </div>
+        <div id="tj-weave-anim" class="tj-preloader-text"><span>L</span><span>o</span><span>a</span><span>d</span><span>i</span><span>n</span><span>g</span><span>.</span><span>.</span><span>.</span></div>
+      </div>
+    </div>
+    <div class="tj-preloader-overlay"></div>
+  </div>
+  <!-- Preloader end -->
+
+  <!-- back to top start -->
+  <div id="tj-back-to-top" style="background: conic-gradient( var(--tj-color-theme-primary) 0%, var(--tj-color-common-white) 0%);" class=""><span id="tj-back-to-top-percentage">0%</span></div>
+  <!-- back to top end -->
+
+  <!-- start: magic cursor -->
+  <div id="magic-cursor">
+    <div id="ball"></div>
+  </div>
+  <!-- end: magic cursor -->
+
+  <!-- start: Search Popup -->
+  <div class="search-popup-overlay"></div>
+  <!-- end: Search Popup -->
+
+  <!-- start: Hamburger Menu -->
+  <div class="hamburger-area d-lg-none">
+    <div class="hamburger_bg"></div>
+    <div class="hamburger_wrapper">
+      <div class="hamburger_inner">
+        <div class="hamburger_top d-flex align-items-center justify-content-between">
+          <div class="hamburger_logo">
+            <a href="index.htm" class="mobile_logo">
+              <img src="assets/images/Stoxzo_Logo.svg" alt="Logo">
+            </a>
+          </div>
+          <div class="hamburger_close">
+            <button class="hamburger_close_btn"><i class="fa-thin fa-times"></i></button>
+          </div>
+        </div>
+        <div class="hamburger-search-area">
+          <h5 class="hamburger-title">Search Now!</h5>
+          <div class="hamburger_search">
+            <form method="get" action="index.htm">
+              <button type="submit"><i class="tji-search"></i></button>
+              <input type="search" autocomplete="off" name="s" placeholder="Search here...">
+            </form>
+          </div>
+        </div>
+        <div class="hamburger_menu">
+          <div class="mobile_menu"></div>
+        </div>
+        <div class="hamburger-infos">
+          <h5 class="hamburger-title">Contact Info</h5>
+          <div class="contact-info">
+            <div class="contact-item">
+              <span class="subtitle">Phone</span>
+              <a class="contact-link" href="tel:8089091313">808-909-1313</a>
+            </div>
+            <div class="contact-item">
+              <span class="subtitle">Email</span>
+              <a class="contact-link" href="mailto:info@Stoxzo.com">info@Stoxzo.com</a>
+            </div>
+            <div class="contact-item">
+              <span class="subtitle">Location</span>
+              <span class="contact-link">993 Renner Burg, West Rond, MT 94251-030</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="hamburger-socials">
+        <h5 class="hamburger-title">Follow Us</h5>
+        <div class="social-links style-3">
+          <ul>
+            <li><a href="https://www.facebook.com/" target="_blank"><i class="fa-brands fa-facebook-f"></i></a></li>
+            <li><a href="https://www.instagram.com/" target="_blank"><i class="fa-brands fa-instagram"></i></a></li>
+            <li><a href="https://x.com/" target="_blank"><i class="fa-brands fa-x-twitter"></i></a></li>
+            <li><a href="https://www.linkedin.com/" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- end: Hamburger Menu -->
+
+  <!-- start: Header Area -->
+  <header class="header-area header-3 h10-header header-absolute section-gap-x">
+    <div class="header-bottom">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="header-wrapper">
+              <!-- site logo -->
+              <div class="site_logo">
+                <a class="logo" href="index.htm"><img src="assets/images/Stoxzo_Logo.svg" alt=""></a>
+              </div>
+
+              <!-- navigation -->
+              <div class="menu-area d-none d-lg-inline-flex align-items-center">
+                <nav id="mobile-menu" class="mainmenu" style="display: block;">
+                  <ul>
+                    <li><a href="welcome.html">Dashboard</a></li>
+                    <li class="has-dropdown"><a href="#">Settings</a>
+                      <ul class="sub-menu">
+                        <li><a href="my-profile.html">My Profile</a></li>
+                        <li><a href="my-subscription.html">My Subscription</a></li>
+                        <li><a href="my-payments.html">My Payments</a></li>
+                        <li><a href="my-tickets.html">My Tickets</a></li>
+                        <li><a href="my-downloads.html">My Downloads</a></li>
+                      </ul>
+                    </li>
+                    <li><a href="faq.html">FAQ</a></li>
+                    <li><a href="how-to-use.html">How to Use</a></li>
+                    <li><a href="login.html">Logout</a></li>
+                  </ul>
+                </nav>
+              </div>
+
+              <!-- header right info -->
+              <div class="header-right-item d-none d-lg-inline-flex">
+                <div class="header-notification" style="position: relative; margin-right: 20px;">
+                  <a href="notifications.html" style="position: relative; display: inline-block; color: var(--tj-color-heading-primary); font-size: 20px;">
+                    <i class="fa-light fa-bell"></i>
+                    <span class="notification-badge" style="position: absolute; top: -8px; right: -8px; background-color: #ff0000; color: #ffffff; border-radius: 50%; width: 18px; height: 18px; font-size: 11px; display: flex; align-items: center; justify-content: center; font-weight: 600;">3</span>
+                  </a>
+                </div>
+                <div class="header-button">
+                  <a class="tj-primary-btn" href="login.html">
+                    <span class="btn-text"><span>Logout</span></span>
+                    <span class="btn-icon"><i class="tji-arrow-right-long"></i></span>
+                  </a>
+                </div>
+              </div>
+
+              <!-- menu bar -->
+              <div class="menu_bar mobile_menu_bar d-lg-none">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </header>
+  <!-- end: Header Area -->
+
+  <!-- Welcome Section -->
+  <section class="welcome-section">
+    <div class="container">
+      <div class="welcome-content">
+        <div class="welcome-card wow fadeInUp" data-wow-delay=".2s">
+          <div class="welcome-icon">
+            <i class="fa-light fa-circle-check"></i>
+          </div>
+          <div class="welcome-title">
+            <h1>Welcome Back!</h1>
+            <p>You have successfully logged in to your account. We're excited to have you here!</p>
+          </div>
+          <div class="welcome-actions">
+            <a href="index.htm" class="tj-primary-btn">
+              <span class="btn-text"><span>Explore Home</span></span>
+              <span class="btn-icon"><i class="tji-arrow-right-long"></i></span>
+            </a>
+            <a href="#" class="tj-primary-btn transparent-btn">
+              <span class="btn-text"><span>View Dashboard</span></span>
+              <span class="btn-icon"><i class="tji-arrow-right-long"></i></span>
+            </a>
+          </div>
+        </div>
+
+        <div class="quick-links wow fadeInUp" data-wow-delay=".4s">
+          <h3>Quick Links</h3>
+          <div class="quick-links-grid">
+            <div class="quick-link-item">
+              <div class="quick-link-icon">
+                <i class="tji-user"></i>
+              </div>
+              <div class="quick-link-title">My Profile</div>
+            </div>
+            <div class="quick-link-item">
+              <div class="quick-link-icon">
+                <i class="tji-service-1"></i>
+              </div>
+              <div class="quick-link-title">Services</div>
+            </div>
+            <div class="quick-link-item">
+              <div class="quick-link-icon">
+                <i class="tji-chart"></i>
+              </div>
+              <div class="quick-link-title">Analytics</div>
+            </div>
+            <div class="quick-link-item">
+              <div class="quick-link-icon">
+                <i class="tji-envelop"></i>
+              </div>
+              <div class="quick-link-title">Messages</div>
+            </div>
+            <div class="quick-link-item">
+              <div class="quick-link-icon">
+                <i class="tji-calendar"></i>
+              </div>
+              <div class="quick-link-title">Calendar</div>
+            </div>
+            <div class="quick-link-item">
+              <div class="quick-link-icon">
+                <i class="tji-window"></i>
+              </div>
+              <div class="quick-link-title">Settings</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- end: Welcome Section -->
+
+  <!-- start: Footer Section -->
+  <footer class="tj-footer-section footer-2 h5-footer h10-footer section-gap-x">
+    <div class="footer-main-area">
+      <div class="container">
+        <div class="row justify-content-between">
+          <div class="col-xl-5 col-lg-4 col-md-6">
+            <div class="footer-widget footer-col-1">
+              <h2 class="h10-footer-title text-anim">Building Better Business from Together?</h2>
+              <a class="text-btn wow fadeInUp" data-wow-delay=".3s" href="mailto:hello@Stoxzo.com">
+                <span class="btn-text"><span>hello@Stoxzo.com</span></span>
+              </a>
+              <div class="bg-shape-widget wow fadeInUpBig" data-wow-delay=".7s"></div>
+            </div>
+          </div>
+          <div class="col-xl-2 col-lg-3 col-md-6">
+            <div class="footer-widget footer-col-2 widget-nav-menu wow fadeInUp" data-wow-delay=".3s">
+              <h5 class="title">Services</h5>
+              <ul>
+                <li><a href="#">Customer Experience</a></li>
+                <li><a href="#">Training Programs</a></li>
+                <li><a href="#">Business Strategy</a></li>
+                <li><a href="#">Training Program</a></li>
+                <li><a href="#">ESG Consulting</a></li>
+                <li><a href="#">Development Hub</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-xl-2 col-lg-2 col-md-6">
+            <div class="footer-widget footer-col-3 widget-nav-menu wow fadeInUp" data-wow-delay=".5s">
+              <h5 class="title">Resources</h5>
+              <ul>
+                <li><a href="#">Contact us</a></li>
+                <li><a href="#">Team Member</a></li>
+                <li><a href="#">Recognitions</a></li>
+                <li><a href="#">Careers <span class="badge">New</span></a></li>
+                <li><a href="#">News</a></li>
+                <li><a href="#">Feedback</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-xl-3 col-lg-3 col-md-6">
+            <div class="footer-widget widget-contact wow fadeInUp" data-wow-delay=".7s">
+              <h5 class="title">Our Office</h5>
+              <div class="footer-contact-info">
+                <div class="contact-item">
+                  <span>993 Renner Burg, West Rond, MT 94251-030, USA.</span>
+                </div>
+                <div class="contact-item">
+                  <a href="tel:10095447818">P: +1 (009) 544-7818</a>
+                  <a href="mailto:support@Stoxzo.com">M: support@Stoxzo.com</a>
+                </div>
+                <div class="contact-item">
+                  <span><i class="tji-clock"></i> Mon-Fri 10am-10pm</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="h10-footer-subscribe-wrapper wow fadeInUp" data-wow-delay=".5s">
+      <div class="container">
+        <div class="row align-items-end">
+          <div class="col-12 col-lg-4 col-xl-5">
+            <div class="award-logo-area">
+              <div class="award-logo">
+                <img src="assets/images/award-logo-white-1.webp" alt="">
+              </div>
+              <div class="award-logo">
+                <img src="assets/images/award-logo-white-2.webp" alt="">
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-lg-8 col-xl-7">
+            <div class="footer-subscribe h5-footer-subscribe">
+              <h3 class="title text-anim">Subscribe to Our Newsletter.</h3>
+              <div class="subscribe-form">
+                <form action="#">
+                  <input type="email" name="email" placeholder="Enter email">
+                  <button class="tj-primary-btn d-none d-sm-flex" type="submit">
+                    <span class="btn-text"><span>Subscribe</span></span>
+                    <span class="btn-icon"><i class="tji-arrow-right-long"></i></span>
+                  </button>
+                  <label for="agree-footer-welcome"><input id="agree-footer-welcome" type="checkbox">Agree to our <a href="#">Terms & Condition?</a></label>
+                  <button class="tj-primary-btn d-flex d-sm-none" type="submit">
+                    <span class="btn-text"><span>Subscribe</span></span>
+                    <span class="btn-icon"><i class="tji-arrow-right-long"></i></span>
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="tj-copyright-area-2 h5-footer-copyright">
+      <div class="container">
+        <div class="row">
+          <div class="col-12">
+            <div class="copyright-content-area">
+              <div class="copyright-text">
+                <p>Â© 2025 <a href="#" target="_blank">Stoxzo</a> All right reserved</p>
+              </div>
+              <div class="social-links style-3">
+                <ul>
+                  <li><a href="https://www.facebook.com/" target="_blank"><i class="fa-brands fa-facebook-f"></i></a></li>
+                  <li><a href="https://www.instagram.com/" target="_blank"><i class="fa-brands fa-instagram"></i></a></li>
+                  <li><a href="https://x.com/" target="_blank"><i class="fa-brands fa-x-twitter"></i></a></li>
+                  <li><a href="https://www.linkedin.com/" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a></li>
+                </ul>
+              </div>
+              <div class="copyright-menu">
+                <ul>
+                  <li><a href="#">Privacy Policy</a></li>
+                  <li><a href="#">Terms & Condition</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bg-shape-1">
+      <img src="assets/images/pattern-2.svg" alt="">
+    </div>
+    <div class="bg-shape-2">
+      <img src="assets/images/pattern-3.svg" alt="">
+    </div>
+    <div class="bg-shape-4 wow fadeInUpBig" data-wow-delay=".8s">
+      <img src="assets/images/h10-footer-shape-blur-2.svg" alt="">
+    </div>
+  </footer>
+  <!-- end: Footer Section -->
+
+  <!-- JS here -->
+  <script src="assets/js/jquery.min.js"></script>
+  <script src="assets/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/gsap.min.js"></script>
+  <script src="assets/js/ScrollSmoother.js"></script>
+  <script src="assets/js/gsap-scroll-to-plugin.min.js"></script>
+  <script src="assets/js/gsap-scroll-trigger.min.js"></script>
+  <script src="assets/js/gsap-split-text.min.js"></script>
+  <script src="assets/js/jquery.nice-select.min.js"></script>
+  <script src="assets/js/swiper.min.js"></script>
+  <script src="assets/js/odometer.min.js"></script>
+  <script src="assets/js/venobox.min.js"></script>
+  <script src="assets/js/appear.min.js"></script>
+  <script src="assets/js/wow.min.js"></script>
+  <script src="assets/js/meanmenu.js"></script>
+  <script src="assets/js/imagesloaded-pkgd.js"></script>
+  <script src="assets/js/isotope.pkgd.min.js"></script>
+  <script src="assets/js/magiccursor.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
+
+
+

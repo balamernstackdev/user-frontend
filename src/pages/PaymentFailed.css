@@ -1,0 +1,169 @@
+/* Payment Failed Page Styles */
+.failure-section {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f5f5f5;
+    padding: 60px 20px;
+}
+
+.failure-wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 600px;
+    width: 100%;
+}
+
+.failure-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 60px 50px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    text-align: center;
+}
+
+.failure-icon {
+    width: 120px;
+    height: 120px;
+    background: #ffe0e0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 30px;
+    animation: scaleIn 0.5s ease-out;
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.failure-icon i {
+    font-size: 60px;
+    color: #dc3545;
+}
+
+.failure-title {
+    margin-bottom: 20px;
+}
+
+.failure-title h2 {
+    font-size: 36px;
+    margin-bottom: 15px;
+    color: #0c1e21;
+    font-weight: 700;
+}
+
+.failure-title p {
+    color: #6c757d;
+    font-size: 16px;
+    margin: 0;
+    line-height: 1.6;
+}
+
+.failure-info {
+    background-color: #fff3cd;
+    border-left: 4px solid #ffc107;
+    padding: 25px;
+    border-radius: 6px;
+    margin: 30px 0;
+    text-align: left;
+}
+
+.failure-info p {
+    margin: 0;
+    font-size: 14px;
+    color: #4a5568;
+    line-height: 1.6;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.failure-info ul {
+    margin: 0 0 0 20px;
+    padding: 0;
+    color: #4a5568;
+}
+
+.failure-info li {
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.failure-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 40px;
+}
+
+.failure-actions .tj-primary-btn {
+    min-width: 150px;
+}
+
+.btn-transparent {
+    background-color: transparent;
+    border: 1px solid #1e8a8a;
+    color: #1e8a8a;
+}
+
+.btn-transparent:hover {
+    background-color: #1e8a8a;
+    color: white;
+}
+
+.support-link {
+    margin-top: 30px;
+    padding-top: 30px;
+    border-top: 1px solid #e5e5e5;
+}
+
+.support-link p {
+    color: #6c757d;
+    font-size: 14px;
+    margin: 0;
+}
+
+.support-link a {
+    color: #1e8a8a;
+    text-decoration: none;
+}
+
+@media (max-width: 575px) {
+    .failure-card {
+        padding: 40px 30px;
+    }
+
+    .failure-title h2 {
+        font-size: 28px;
+    }
+
+    .failure-icon {
+        width: 100px;
+        height: 100px;
+    }
+
+    .failure-icon i {
+        font-size: 50px;
+    }
+
+    .failure-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .failure-actions .tj-primary-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}

@@ -1,0 +1,252 @@
+﻿<!DOCTYPE html>
+<html class="no-js" lang="en" style="overscroll-behavior: none; scroll-behavior: smooth;">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Payment Failed">
+
+  <title>Payment Failed - Stoxzo</title>
+  <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.ico">
+
+  <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/css/font-awesome-pro.min.css">
+  <link rel="stylesheet" href="assets/css/animate.min.css">
+  <link rel="stylesheet" href="assets/css/Stoxzo-icons.css">
+  <link rel="stylesheet" href="assets/css/nice-select.css">
+  <link rel="stylesheet" href="assets/css/swiper.min.css">
+  <link rel="stylesheet" href="assets/css/venobox.min.css">
+  <link rel="stylesheet" href="assets/css/odometer-theme-default.css">
+  <link rel="stylesheet" href="assets/css/meanmenu.css">
+  <link rel="stylesheet" href="assets/css/main.css">
+  
+  <style>
+    .failure-section {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--tj-color-grey-1);
+      padding: 40px 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    /* .failure-section::before {
+      content: "";
+      position: absolute;
+      top: 10%;
+      right: 10%;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: #ff6b6b;
+      filter: blur(80px);
+      opacity: 0.1;
+      z-index: 0;
+    }
+    .failure-section::after {
+      content: "";
+      position: absolute;
+      bottom: 10%;
+      left: 10%;
+      width: 250px;
+      height: 250px;
+      border-radius: 50%;
+      background: #ff6b6b;
+      filter: blur(80px);
+      opacity: 0.08;
+      z-index: 0;
+    } */
+    .failure-wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 600px;
+      width: 100%;
+    }
+    .failure-card {
+      background-color: var(--tj-color-common-white);
+      border-radius: 12px;
+      padding: 60px 50px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+      text-align: center;
+    }
+    .failure-icon {
+      width: 120px;
+      height: 120px;
+      background: #ffe0e0;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 30px;
+      animation: scaleIn 0.5s ease-out;
+    }
+    @keyframes scaleIn {
+      from {
+        transform: scale(0);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+    .failure-icon i {
+      font-size: 60px;
+      color: #dc3545;
+    }
+    .failure-title {
+      margin-bottom: 20px;
+    }
+    .failure-title h2 {
+      font-size: 36px;
+      margin-bottom: 15px;
+      color: var(--tj-color-heading-primary);
+    }
+    .failure-title p {
+      color: var(--tj-color-text-body-3);
+      font-size: 16px;
+      margin: 0;
+      line-height: 1.6;
+    }
+    .failure-info {
+      background-color: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 25px;
+      border-radius: 6px;
+      margin: 30px 0;
+      text-align: left;
+    }
+    .failure-info p {
+      margin: 0;
+      font-size: 14px;
+      color: var(--tj-color-text-body);
+      line-height: 1.6;
+    }
+    .failure-info ul {
+      margin: 15px 0 0 20px;
+      padding: 0;
+      color: var(--tj-color-text-body);
+    }
+    .failure-info li {
+      margin-bottom: 8px;
+    }
+    .failure-actions {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 40px;
+    }
+    .failure-actions .tj-primary-btn {
+      min-width: 150px;
+    }
+    @media (max-width: 575px) {
+      .failure-card {
+        padding: 40px 30px;
+      }
+      .failure-title h2 {
+        font-size: 28px;
+      }
+      .failure-icon {
+        width: 100px;
+        height: 100px;
+      }
+      .failure-icon i {
+        font-size: 50px;
+      }
+      .failure-actions {
+        flex-direction: column;
+      }
+      .failure-actions .tj-primary-btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body style="overscroll-behavior: none; scroll-behavior: auto;">
+  <div class="body-overlay"></div>
+  <div class="tj-preloader is-loaded" style="display: none;">
+    <div class="tj-preloader-inner">
+      <div class="tj-preloader-ball-wrap">
+        <div class="tj-preloader-ball-inner-wrap">
+          <div class="tj-preloader-ball-inner">
+            <div class="tj-preloader-ball"></div>
+          </div>
+          <div class="tj-preloader-ball-shadow"></div>
+        </div>
+        <div id="tj-weave-anim" class="tj-preloader-text"><span>L</span><span>o</span><span>a</span><span>d</span><span>i</span><span>n</span><span>g</span><span>.</span><span>.</span><span>.</span></div>
+      </div>
+    </div>
+    <div class="tj-preloader-overlay"></div>
+  </div>
+
+  <section class="failure-section">
+    <div class="failure-wrapper">
+      <div class="failure-card">
+        <div class="success-logo" style="margin-bottom: 30px;">
+          <a href="welcome.html">
+            <img src="assets/images/Stoxzo_Logo.svg" alt="Logo" style="max-width: 150px; height: auto;">
+          </a>
+        </div>
+        <div class="failure-icon">
+          <i class="fa-light fa-circle-xmark"></i>
+        </div>
+        <div class="failure-title">
+          <h2>Payment Failed</h2>
+          <p>We couldn't process your payment. Please try again or use a different payment method.</p>
+        </div>
+        <div class="failure-info">
+          <p><strong>Possible reasons for payment failure:</strong></p>
+          <ul>
+            <li>Insufficient funds in your account</li>
+            <li>Incorrect card details entered</li>
+            <li>Card expired or blocked</li>
+            <li>Bank declined the transaction</li>
+            <li>Network connectivity issues</li>
+          </ul>
+        </div>
+        <div class="failure-actions">
+          <a href="razorpay-integration.html" class="tj-primary-btn">
+            <span class="btn-text"><span>Try Again</span></span>
+            <span class="btn-icon"><i class="tji-arrow-right-long"></i></span>
+          </a>
+          <a href="checkout-summary.html" class="tj-primary-btn transparent-btn">
+            <span class="btn-text"><span>Change Payment Method</span></span>
+            <span class="btn-icon"><i class="tji-arrow-right-long"></i></span>
+          </a>
+        </div>
+        <div style="margin-top: 30px; padding-top: 30px; border-top: 1px solid var(--tj-color-border-1);">
+          <p style="color: var(--tj-color-text-body-3); font-size: 14px; margin: 0;">
+            Need help? Contact our support team at <a href="mailto:support@stoxzo.com" style="color: var(--tj-color-theme-primary);">support@stoxzo.com</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="assets/js/jquery.min.js"></script>
+  <script src="assets/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/gsap.min.js"></script>
+  <script src="assets/js/ScrollSmoother.js"></script>
+  <script src="assets/js/gsap-scroll-to-plugin.min.js"></script>
+  <script src="assets/js/gsap-scroll-trigger.min.js"></script>
+  <script src="assets/js/gsap-split-text.min.js"></script>
+  <script src="assets/js/jquery.nice-select.min.js"></script>
+  <script src="assets/js/swiper.min.js"></script>
+  <script src="assets/js/odometer.min.js"></script>
+  <script src="assets/js/venobox.min.js"></script>
+  <script src="assets/js/appear.min.js"></script>
+  <script src="assets/js/wow.min.js"></script>
+  <script src="assets/js/meanmenu.js"></script>
+  <script src="assets/js/imagesloaded-pkgd.js"></script>
+  <script src="assets/js/isotope.pkgd.min.js"></script>
+  <script src="assets/js/magiccursor.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
+
+
+

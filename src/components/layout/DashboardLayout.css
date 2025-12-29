@@ -1,0 +1,55 @@
+.dashboard-layout {
+    min-height: 100vh;
+    /* Pink Animated Gradient (Restored) */
+    background: linear-gradient(-45deg, #e0f7fa, #b2ebf2, #e0f2f1, #ffffff);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+    position: relative;
+    /* Ensure it covers everything */
+    width: 100%;
+}
+
+/* Background Watermark */
+.dashboard-layout::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('/src/assets/images/bg.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    opacity: 0.08;
+    z-index: 0;
+    pointer-events: none;
+}
+
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Ensure content sits above background */
+.dashboard-layout>* {
+    position: relative;
+    z-index: 1;
+}
+
+/* Force all content sections to be transparent to show the dashboard gradient */
+.dashboard-layout section,
+.dashboard-layout .welcome-section,
+.dashboard-layout .page-section {
+    background: transparent !important;
+}

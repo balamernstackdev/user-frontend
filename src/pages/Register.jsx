@@ -1,0 +1,318 @@
+import { useState, useEffect } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { authService } from '../services/auth.service';
+import StoxzoLogo from '../assets/images/Stoxzo_Logo.svg';
+import './Register.css';
+
+const Register = () => {
+    const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const [formData, setFormData] = useState({
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+        referralCode: '',
+        agreeToTerms: false,
+    });
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [errors, setErrors] = useState({});
+    const [loading, setLoading] = useState(false);
+
+    // Extract referral code from URL
+    useEffect(() => {
+        const refCode = searchParams.get('ref');
+        if (refCode) {
+            setFormData(prev => ({ ...prev, referralCode: refCode }));
+        }
+    }, [searchParams]);
+
+    const handleChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        setFormData({
+            ...formData,
+            [name]: type === 'checkbox' ? checked : value,
+        });
+        // Clear field error on change
+        if (errors[name]) {
+            setErrors({ ...errors, [name]: '' });
+        }
+    };
+
+    const validateForm = () => {
+        const newErrors = {};
+
+        if (!formData.firstName.trim()) {
+            newErrors.firstName = 'First name is required';
+        }
+
+        if (!formData.lastName.trim()) {
+            newErrors.lastName = 'Last name is required';
+        }
+
+        if (!formData.email.trim()) {
+            newErrors.email = 'Email is required';
+        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+            newErrors.email = 'Email is invalid';
+        }
+
+        if (!formData.password) {
+            newErrors.password = 'Password is required';
+        } else if (formData.password.length < 8) {
+            newErrors.password = 'Password must be at least 8 characters';
+        }
+
+        if (formData.password !== formData.confirmPassword) {
+            newErrors.confirmPassword = 'Passwords do not match';
+        }
+
+        if (!formData.agreeToTerms) {
+            newErrors.agreeToTerms = 'You must agree to the Terms & Conditions';
+        }
+
+        return newErrors;
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const validationErrors = validateForm();
+        if (Object.keys(validationErrors).length > 0) {
+            setErrors(validationErrors);
+            return;
+        }
+
+        setLoading(true);
+        setErrors({});
+
+        try {
+            // Combine first and last name for API
+            const { firstName, lastName, confirmPassword, agreeToTerms, ...rest } = formData;
+            const registrationData = {
+                ...rest,
+                name: `${firstName} ${lastName}`.trim(),
+                role: 'user' // Default role
+            };
+
+            const response = await authService.register(registrationData);
+
+            if (response.success) {
+                navigate('/login', {
+                    state: { message: 'Registration successful! Please login.' }
+                });
+            }
+        } catch (err) {
+            if (err.response?.data?.errors) {
+                const apiErrors = {};
+                err.response.data.errors.forEach((error) => {
+                    apiErrors[error.field] = error.message;
+                });
+                setErrors(apiErrors);
+            } else {
+                setErrors({
+                    general: err.response?.data?.message || 'Registration failed. Please try again.'
+                });
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <section className="register-section">
+            <div className="register-wrapper">
+                <div className="register-card">
+                    <div className="register-logo">
+                        <Link to="/">
+                            <img src={StoxzoLogo} alt="Stoxzo Logo" />
+                        </Link>
+                    </div>
+
+                    <div className="register-title">
+                        <h2>Create Account</h2>
+                        <p>Sign up to get started with your account</p>
+                    </div>
+
+                    {errors.general && (
+                        <div className="register-alert alert-error" role="alert">
+                            {errors.general}
+                        </div>
+                    )}
+
+                    <form className="register-form" onSubmit={handleSubmit}>
+                        {/* First Name & Last Name - 2 Column */}
+                        <div className="form-row">
+                            <div className="form-input">
+                                <label htmlFor="firstName">First Name</label>
+                                <input
+                                    type="text"
+                                    id="firstName"
+                                    name="firstName"
+                                    placeholder="Enter your first name"
+                                    value={formData.firstName}
+                                    onChange={handleChange}
+                                    required
+                                />
+                                {errors.firstName && (
+                                    <span style={{ color: '#cf1322', fontSize: '12px', marginTop: '4px', display: 'block' }}>
+                                        {errors.firstName}
+                                    </span>
+                                )}
+                            </div>
+                            <div className="form-input">
+                                <label htmlFor="lastName">Last Name</label>
+                                <input
+                                    type="text"
+                                    id="lastName"
+                                    name="lastName"
+                                    placeholder="Enter your last name"
+                                    value={formData.lastName}
+                                    onChange={handleChange}
+                                    required
+                                />
+                                {errors.lastName && (
+                                    <span style={{ color: '#cf1322', fontSize: '12px', marginTop: '4px', display: 'block' }}>
+                                        {errors.lastName}
+                                    </span>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Email */}
+                        <div className="form-input">
+                            <label htmlFor="email">Email Address</label>
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                placeholder="Enter your email"
+                                value={formData.email}
+                                onChange={handleChange}
+                                required
+                            />
+                            {errors.email && (
+                                <span style={{ color: '#cf1322', fontSize: '12px', marginTop: '4px', display: 'block' }}>
+                                    {errors.email}
+                                </span>
+                            )}
+                        </div>
+
+                        {/* Password with Toggle */}
+                        <div className="form-input password-input">
+                            <label htmlFor="password">Password</label>
+                            <input
+                                type={showPassword ? 'text' : 'password'}
+                                id="password"
+                                name="password"
+                                placeholder="Create a password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                required
+                            />
+                            <button
+                                type="button"
+                                className="password-toggle"
+                                onClick={() => setShowPassword(!showPassword)}
+                            >
+                                {showPassword ? '👁️' : '👁️‍🗨️'}
+                            </button>
+                            {errors.password && (
+                                <span style={{ color: '#cf1322', fontSize: '12px', marginTop: '4px', display: 'block' }}>
+                                    {errors.password}
+                                </span>
+                            )}
+                        </div>
+
+                        {/* Confirm Password with Toggle */}
+                        <div className="form-input password-input">
+                            <label htmlFor="confirmPassword">Confirm Password</label>
+                            <input
+                                type={showConfirmPassword ? 'text' : 'password'}
+                                id="confirmPassword"
+                                name="confirmPassword"
+                                placeholder="Confirm your password"
+                                value={formData.confirmPassword}
+                                onChange={handleChange}
+                                required
+                            />
+                            <button
+                                type="button"
+                                className="password-toggle"
+                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                            >
+                                {showConfirmPassword ? '👁️' : '👁️‍🗨️'}
+                            </button>
+                            {errors.confirmPassword && (
+                                <span style={{ color: '#cf1322', fontSize: '12px', marginTop: '4px', display: 'block' }}>
+                                    {errors.confirmPassword}
+                                </span>
+                            )}
+                        </div>
+
+                        {/* Referral Code (Optional) */}
+                        <div className="form-input">
+                            <label htmlFor="referralCode">Referral Code (Optional)</label>
+                            <input
+                                type="text"
+                                id="referralCode"
+                                name="referralCode"
+                                placeholder="Enter referral code if you have one"
+                                value={formData.referralCode}
+                                onChange={handleChange}
+                            />
+                        </div>
+
+                        {/* Terms & Conditions Checkbox */}
+                        <div className="terms-checkbox">
+                            <input
+                                type="checkbox"
+                                id="agreeToTerms"
+                                name="agreeToTerms"
+                                checked={formData.agreeToTerms}
+                                onChange={handleChange}
+                            />
+                            <label htmlFor="agreeToTerms">
+                                I agree to the <Link to="/terms">Terms & Conditions</Link> and <Link to="/privacy">Privacy Policy</Link>
+                            </label>
+                        </div>
+                        {errors.agreeToTerms && (
+                            <span style={{ color: '#cf1322', fontSize: '12px', marginTop: '-20px', marginBottom: '20px', display: 'block' }}>
+                                {errors.agreeToTerms}
+                            </span>
+                        )}
+
+                        {/* Submit Button */}
+                        <div className="register-btn-wrapper">
+                            <button type="submit" className="tj-primary-btn" disabled={loading}>
+                                <span className="btn-text">
+                                    <span>{loading ? 'Creating Account...' : 'Create Account'}</span>
+                                </span>
+                                {loading ? (
+                                    <span className="btn-icon">
+                                        <span className="spinner-icon"></span>
+                                    </span>
+                                ) : (
+                                    <span className="btn-icon">
+                                        <span>→</span>
+                                    </span>
+                                )}
+                            </button>
+                        </div>
+                    </form>
+
+                    {/* Login Link */}
+                    <div className="login-link">
+                        <p>
+                            Already have an account?
+                            <Link to="/login">Sign In</Link>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    );
+};
+
+export default Register;

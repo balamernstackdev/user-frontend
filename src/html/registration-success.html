@@ -1,0 +1,254 @@
+﻿<!DOCTYPE html>
+<html class="no-js" lang="en" style="overscroll-behavior: none; scroll-behavior: smooth;">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Registration Successful">
+
+  <!-- Site Title -->
+  <title>Registration Successful - Stoxzo</title>
+
+  <!-- Place favicon.ico in the root directory -->
+  <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.ico">
+
+  <!-- CSS here -->
+  <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/css/font-awesome-pro.min.css">
+  <link rel="stylesheet" href="assets/css/animate.min.css">
+  <link rel="stylesheet" href="assets/css/Stoxzo-icons.css">
+  <link rel="stylesheet" href="assets/css/nice-select.css">
+  <link rel="stylesheet" href="assets/css/swiper.min.css">
+  <link rel="stylesheet" href="assets/css/venobox.min.css">
+  <link rel="stylesheet" href="assets/css/odometer-theme-default.css">
+  <link rel="stylesheet" href="assets/css/meanmenu.css">
+  <link rel="stylesheet" href="assets/css/main.css">
+  
+  <style>
+    .success-section {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--tj-color-grey-1);
+      padding: 40px 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    /* .success-section::before {
+      content: "";
+      position: absolute;
+      top: 10%;
+      right: 10%;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: var(--tj-color-theme-primary);
+      filter: blur(80px);
+      opacity: 0.15;
+      z-index: 0;
+    }
+    .success-section::after {
+      content: "";
+      position: absolute;
+      bottom: 10%;
+      left: 10%;
+      width: 250px;
+      height: 250px;
+      border-radius: 50%;
+      background: var(--tj-color-theme-primary);
+      filter: blur(80px);
+      opacity: 0.1;
+      z-index: 0;
+    } */
+    .success-wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 600px;
+      width: 100%;
+    }
+    .success-card {
+      background-color: var(--tj-color-common-white);
+      border-radius: 12px;
+      padding: 60px 50px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+      text-align: center;
+    }
+    .success-icon {
+      width: 120px;
+      height: 120px;
+      background: var(--tj-color-theme-bg);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 30px;
+      animation: scaleIn 0.5s ease-out;
+    }
+    @keyframes scaleIn {
+      from {
+        transform: scale(0);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+    .success-icon i {
+      font-size: 60px;
+      color: #28a745;
+    }
+    .success-title {
+      margin-bottom: 20px;
+    }
+    .success-title h2 {
+      font-size: 36px;
+      margin-bottom: 15px;
+      color: var(--tj-color-heading-primary);
+    }
+    .success-title p {
+      color: var(--tj-color-text-body-3);
+      font-size: 16px;
+      margin: 0;
+      line-height: 1.6;
+    }
+    .success-info {
+      background-color: var(--tj-color-theme-bg);
+      border-left: 4px solid var(--tj-color-theme-primary);
+      padding: 20px;
+      border-radius: 6px;
+      margin: 30px 0;
+      text-align: left;
+    }
+    .success-info p {
+      margin: 0;
+      font-size: 14px;
+      color: var(--tj-color-text-body);
+      line-height: 1.6;
+    }
+    .success-info p i {
+      color: var(--tj-color-theme-primary);
+      margin-right: 8px;
+    }
+    .success-actions {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 40px;
+    }
+    .success-actions .tj-primary-btn {
+      min-width: 150px;
+    }
+    @media (max-width: 575px) {
+      .success-card {
+        padding: 40px 30px;
+      }
+      .success-title h2 {
+        font-size: 28px;
+      }
+      .success-icon {
+        width: 100px;
+        height: 100px;
+      }
+      .success-icon i {
+        font-size: 50px;
+      }
+      .success-actions {
+        flex-direction: column;
+      }
+      .success-actions .tj-primary-btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body style="overscroll-behavior: none; scroll-behavior: auto;">
+  <div class="body-overlay"></div>
+
+  <!-- Preloader Start -->
+  <div class="tj-preloader is-loaded" style="display: none;">
+    <div class="tj-preloader-inner">
+      <div class="tj-preloader-ball-wrap">
+        <div class="tj-preloader-ball-inner-wrap">
+          <div class="tj-preloader-ball-inner">
+            <div class="tj-preloader-ball"></div>
+          </div>
+          <div class="tj-preloader-ball-shadow"></div>
+        </div>
+        <div id="tj-weave-anim" class="tj-preloader-text"><span>L</span><span>o</span><span>a</span><span>d</span><span>i</span><span>n</span><span>g</span><span>.</span><span>.</span><span>.</span></div>
+      </div>
+    </div>
+    <div class="tj-preloader-overlay"></div>
+  </div>
+  <!-- Preloader end -->
+
+  <!-- start: magic cursor -->
+  <div id="magic-cursor">
+    <div id="ball"></div>
+  </div>
+  <!-- end: magic cursor -->
+
+  <!-- Success Section -->
+  <section class="success-section">
+    <div class="success-wrapper">
+      <div class="success-card">
+        <div class="success-logo" style="margin-bottom: 30px;">
+          <a href="index.htm">
+            <img src="assets/images/Stoxzo_Logo.svg" alt="Logo" style="max-width: 150px; height: auto;">
+          </a>
+        </div>
+        <div class="success-icon">
+          <i class="fa-light fa-circle-check"></i>
+        </div>
+        <div class="success-title">
+          <h2>Registration Successful!</h2>
+          <p>Your account has been created successfully. Please check your email to verify your account.</p>
+        </div>
+        <div class="success-info">
+          <p>
+            <i class="fa-light fa-envelope"></i>
+            We've sent a verification link to your email address. Please check your inbox and click on the verification link to activate your account.
+          </p>
+        </div>
+        <div class="success-actions">
+          <a href="verify-email.html" class="tj-primary-btn">
+            <span class="btn-text"><span>Verify Email</span></span>
+            <span class="btn-icon"><i class="tji-arrow-right-long"></i></span>
+          </a>
+          <a href="login.html" class="tj-primary-btn transparent-btn">
+            <span class="btn-text"><span>Go to Login</span></span>
+            <span class="btn-icon"><i class="tji-arrow-right-long"></i></span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- end: Success Section -->
+
+  <!-- JS here -->
+  <script src="assets/js/jquery.min.js"></script>
+  <script src="assets/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/gsap.min.js"></script>
+  <script src="assets/js/ScrollSmoother.js"></script>
+  <script src="assets/js/gsap-scroll-to-plugin.min.js"></script>
+  <script src="assets/js/gsap-scroll-trigger.min.js"></script>
+  <script src="assets/js/gsap-split-text.min.js"></script>
+  <script src="assets/js/jquery.nice-select.min.js"></script>
+  <script src="assets/js/swiper.min.js"></script>
+  <script src="assets/js/odometer.min.js"></script>
+  <script src="assets/js/venobox.min.js"></script>
+  <script src="assets/js/appear.min.js"></script>
+  <script src="assets/js/wow.min.js"></script>
+  <script src="assets/js/meanmenu.js"></script>
+  <script src="assets/js/imagesloaded-pkgd.js"></script>
+  <script src="assets/js/isotope.pkgd.min.js"></script>
+  <script src="assets/js/magiccursor.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
+
+

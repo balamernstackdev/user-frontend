@@ -1,0 +1,755 @@
+﻿<!DOCTYPE html>
+<html class="no-js" lang="en" style="overscroll-behavior: none; scroll-behavior: smooth;">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Ticket Details">
+
+  <title>Ticket Details - Stoxzo</title>
+  <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.ico">
+
+  <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/css/font-awesome-pro.min.css">
+  <link rel="stylesheet" href="assets/css/animate.min.css">
+  <link rel="stylesheet" href="assets/css/Stoxzo-icons.css">
+  <link rel="stylesheet" href="assets/css/nice-select.css">
+  <link rel="stylesheet" href="assets/css/swiper.min.css">
+  <link rel="stylesheet" href="assets/css/venobox.min.css">
+  <link rel="stylesheet" href="assets/css/odometer-theme-default.css">
+  <link rel="stylesheet" href="assets/css/meanmenu.css">
+  <link rel="stylesheet" href="assets/css/main.css">
+  
+  <style>
+    .page-section {
+      padding: 120px 0 80px;
+      background-color: var(--tj-color-grey-1);
+      min-height: 80vh;
+    }
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--tj-color-text-body-3);
+      text-decoration: none;
+      margin-bottom: 30px;
+      transition: color 0.3s ease;
+    }
+    .back-button:hover {
+      color: var(--tj-color-theme-primary);
+    }
+    .back-button i {
+      font-size: 14px;
+    }
+    .ticket-detail-card {
+      background-color: var(--tj-color-common-white);
+      border-radius: 12px;
+      padding: 40px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      margin-bottom: 30px;
+    }
+    .ticket-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 30px;
+      padding-bottom: 30px;
+      border-bottom: 2px solid var(--tj-color-border-1);
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .ticket-header-left h1 {
+      font-size: 32px;
+      color: var(--tj-color-heading-primary);
+      margin-bottom: 15px;
+    }
+    .ticket-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 25px;
+      align-items: center;
+    }
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--tj-color-text-body-3);
+      font-size: 14px;
+    }
+    .meta-item i {
+      color: var(--tj-color-theme-primary);
+    }
+    .ticket-status {
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: var(--tj-fw-sbold);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .ticket-status.open {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    .ticket-status.pending {
+      background-color: #fff3cd;
+      color: #856404;
+    }
+    .ticket-status.closed {
+      background-color: #e2e3e5;
+      color: #383d41;
+    }
+    .ticket-content {
+      margin-bottom: 40px;
+    }
+    .ticket-content-body {
+      font-size: 16px;
+      color: var(--tj-color-text-body);
+      line-height: 1.8;
+      margin-bottom: 30px;
+    }
+    .ticket-attachments {
+      margin-top: 30px;
+    }
+    .attachments-title {
+      font-size: 16px;
+      font-weight: var(--tj-fw-sbold);
+      color: var(--tj-color-heading-primary);
+      margin-bottom: 15px;
+    }
+    .attachment-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    .attachment-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 18px;
+      background-color: var(--tj-color-grey-1);
+      border-radius: 8px;
+      border: 1px solid var(--tj-color-border-1);
+      transition: all 0.3s ease;
+      text-decoration: none;
+      color: var(--tj-color-text-body);
+    }
+    .attachment-item:hover {
+      border-color: var(--tj-color-theme-primary);
+      background-color: var(--tj-color-theme-bg);
+      color: var(--tj-color-theme-primary);
+    }
+    .attachment-icon {
+      font-size: 20px;
+      color: var(--tj-color-theme-primary);
+    }
+    .attachment-name {
+      font-weight: var(--tj-fw-medium);
+    }
+    .conversation-section {
+      margin-top: 40px;
+      padding-top: 40px;
+      border-top: 2px solid var(--tj-color-border-1);
+    }
+    .conversation-title {
+      font-size: 24px;
+      font-weight: var(--tj-fw-sbold);
+      color: var(--tj-color-heading-primary);
+      margin-bottom: 30px;
+    }
+    .reply-item {
+      background-color: var(--tj-color-grey-1);
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 25px;
+      border-left: 4px solid var(--tj-color-theme-primary);
+    }
+    .reply-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    .reply-author {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .reply-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: var(--tj-color-theme-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: var(--tj-fw-sbold);
+    }
+    .reply-author-info h4 {
+      font-size: 16px;
+      font-weight: var(--tj-fw-sbold);
+      color: var(--tj-color-heading-primary);
+      margin: 0 0 4px 0;
+    }
+    .reply-author-info span {
+      font-size: 13px;
+      color: var(--tj-color-text-body-3);
+    }
+    .reply-time {
+      font-size: 13px;
+      color: var(--tj-color-text-body-3);
+    }
+    .reply-content {
+      color: var(--tj-color-text-body);
+      line-height: 1.7;
+      margin-bottom: 15px;
+    }
+    .reply-attachments {
+      margin-top: 15px;
+    }
+    .reply-form {
+      background-color: var(--tj-color-common-white);
+      border: 2px solid var(--tj-color-border-1);
+      border-radius: 12px;
+      padding: 30px;
+      margin-top: 30px;
+    }
+    .reply-form-title {
+      font-size: 20px;
+      font-weight: var(--tj-fw-sbold);
+      color: var(--tj-color-heading-primary);
+      margin-bottom: 25px;
+    }
+    .form-input {
+      margin-bottom: 20px;
+    }
+    .form-input label {
+      display: block;
+      font-size: 14px;
+      font-weight: var(--tj-fw-sbold);
+      color: var(--tj-color-heading-primary);
+      margin-bottom: 8px;
+    }
+    .form-input textarea {
+      width: 100%;
+      padding: 12px 20px;
+      font-size: 16px;
+      border: 1px solid var(--tj-color-border-1);
+      border-radius: 6px;
+      background-color: var(--tj-color-common-white);
+      color: var(--tj-color-text-body);
+      transition: all 0.3s ease;
+      font-family: inherit;
+      min-height: 120px;
+      resize: vertical;
+    }
+    .form-input textarea:focus {
+      outline: none;
+      border-color: var(--tj-color-theme-primary);
+      box-shadow: 0 0 0 3px rgba(30, 138, 138, 0.1);
+    }
+    .file-upload-area {
+      border: 2px dashed var(--tj-color-border-1);
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      background-color: var(--tj-color-grey-1);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .file-upload-area:hover {
+      border-color: var(--tj-color-theme-primary);
+      background-color: rgba(30, 138, 138, 0.05);
+    }
+    .file-upload-text {
+      font-size: 14px;
+      color: var(--tj-color-text-body-3);
+    }
+    .file-input {
+      display: none;
+    }
+    .file-list {
+      margin-top: 15px;
+      display: none;
+    }
+    .file-list.show {
+      display: block;
+    }
+    .file-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 15px;
+      background-color: var(--tj-color-grey-1);
+      border-radius: 6px;
+      margin-bottom: 8px;
+    }
+    .file-item-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+    }
+    .file-item-icon {
+      font-size: 20px;
+      color: var(--tj-color-theme-primary);
+    }
+    .file-item-name {
+      font-size: 14px;
+      font-weight: var(--tj-fw-medium);
+      color: var(--tj-color-heading-primary);
+    }
+    .file-item-remove {
+      background: none;
+      border: none;
+      color: #dc3545;
+      cursor: pointer;
+      padding: 5px;
+      font-size: 16px;
+    }
+    .form-actions {
+      display: flex;
+      gap: 15px;
+      margin-top: 25px;
+    }
+    @media (max-width: 767px) {
+      .ticket-detail-card {
+        padding: 25px 20px;
+      }
+      .ticket-header-left h1 {
+        font-size: 24px;
+      }
+      .reply-form {
+        padding: 20px;
+      }
+      .form-actions {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body style="overscroll-behavior: none; scroll-behavior: auto;">
+  <div class="body-overlay"></div>
+  <div class="tj-preloader is-loaded" style="display: none;">
+    <div class="tj-preloader-inner">
+      <div class="tj-preloader-ball-wrap">
+        <div class="tj-preloader-ball-inner-wrap">
+          <div class="tj-preloader-ball-inner">
+            <div class="tj-preloader-ball"></div>
+          </div>
+          <div class="tj-preloader-ball-shadow"></div>
+        </div>
+        <div id="tj-weave-anim" class="tj-preloader-text"><span>L</span><span>o</span><span>a</span><span>d</span><span>i</span><span>n</span><span>g</span><span>.</span><span>.</span><span>.</span></div>
+      </div>
+    </div>
+    <div class="tj-preloader-overlay"></div>
+  </div>
+
+  <div id="tj-back-to-top" style="background: conic-gradient( var(--tj-color-theme-primary) 0%, var(--tj-color-common-white) 0%);" class=""><span id="tj-back-to-top-percentage">0%</span></div>
+  <div id="magic-cursor"><div id="ball"></div></div>
+  <div class="search-popup-overlay"></div>
+
+  <div class="hamburger-area d-lg-none">
+    <div class="hamburger_bg"></div>
+    <div class="hamburger_wrapper">
+      <div class="hamburger_inner">
+        <div class="hamburger_top d-flex align-items-center justify-content-between">
+          <div class="hamburger_logo">
+            <a href="welcome.html" class="mobile_logo"><img src="assets/images/Stoxzo_Logo.svg" alt="Logo"></a>
+          </div>
+          <div class="hamburger_close">
+            <button class="hamburger_close_btn"><i class="fa-thin fa-times"></i></button>
+          </div>
+        </div>
+        <div class="hamburger_menu">
+          <div class="mobile_menu"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <header class="header-area header-3 h10-header header-absolute section-gap-x">
+    <div class="header-bottom">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="header-wrapper">
+              <div class="site_logo">
+                <a class="logo" href="welcome.html"><img src="assets/images/Stoxzo_Logo.svg" alt="Stoxzo Logo"></a>
+              </div>
+              <div class="menu-area d-none d-lg-inline-flex align-items-center">
+                <nav id="mobile-menu" class="mainmenu" style="display: block;">
+                  <ul>
+                    <li><a href="welcome.html">Dashboard</a></li>
+                    <li class="has-dropdown"><a href="#">Settings</a>
+                      <ul class="sub-menu">
+                        <li><a href="my-profile.html">My Profile</a></li>
+                        <li><a href="my-subscription.html">My Subscription</a></li>
+                        <li><a href="my-payments.html">My Payments</a></li>
+                        <li><a href="my-tickets.html">My Tickets</a></li>
+                        <li><a href="my-downloads.html">My Downloads</a></li>
+                      </ul>
+                    </li>
+                    <li><a href="faq.html">FAQ</a></li>
+                    <li><a href="how-to-use.html">How to Use</a></li>
+                    <li><a href="login.html">Logout</a></li>
+                  </ul>
+                </nav>
+              </div>
+              <div class="header-right-item d-none d-lg-inline-flex">
+                <div class="header-notification" style="position: relative; margin-right: 20px;">
+                  <a href="notifications.html" style="position: relative; display: inline-block; color: var(--tj-color-heading-primary); font-size: 20px;">
+                    <i class="fa-light fa-bell"></i>
+                    <span class="notification-badge" style="position: absolute; top: -8px; right: -8px; background-color: #ff0000; color: #ffffff; border-radius: 50%; width: 18px; height: 18px; font-size: 11px; display: flex; align-items: center; justify-content: center; font-weight: 600;">3</span>
+                  </a>
+                </div>
+                <div class="header-button">
+                  <a class="tj-primary-btn" href="login.html">
+                    <span class="btn-text"><span>Logout</span></span>
+                    <span class="btn-icon"><i class="tji-arrow-right-long"></i></span>
+                  </a>
+                </div>
+              </div>
+              <div class="menu_bar mobile_menu_bar d-lg-none">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="page-section">
+    <div class="container">
+     
+
+      <div class="ticket-detail-card">
+         <a href="my-tickets.html" class="back-button">
+        <i class="fa-light fa-arrow-left"></i>
+        <span>Back to Tickets</span>
+      </a>
+        <div class="ticket-header">
+          <div class="ticket-header-left">
+            <h1>Payment issue with subscription renewal</h1>
+            <div class="ticket-meta">
+              <span class="meta-item">
+                <i class="fa-light fa-hashtag"></i>
+                <span>#TKT-2025-001</span>
+              </span>
+              <span class="meta-item">
+                <i class="fa-light fa-calendar"></i>
+                <span>Created: Jan 8, 2025</span>
+              </span>
+              <span class="meta-item">
+                <i class="fa-light fa-tag"></i>
+                <span>Billing & Payments</span>
+              </span>
+              <span class="meta-item">
+                <i class="fa-light fa-user"></i>
+                <span>Assigned to: Support Team</span>
+              </span>
+            </div>
+          </div>
+          <span class="ticket-status open">Open</span>
+        </div>
+
+        <div class="ticket-content">
+          <div class="ticket-content-body">
+            <p>I'm experiencing an issue with my subscription renewal payment. The payment was processed on January 8, 2025, but my subscription status hasn't updated in the system. I received a confirmation email for the payment, but when I check my account, it still shows as expired.</p>
+            <p>I've attached the payment confirmation email and a screenshot of my account status for your reference. Could you please investigate this issue and update my subscription status accordingly?</p>
+            <p>Thank you for your assistance!</p>
+          </div>
+
+          <div class="ticket-attachments">
+            <div class="attachments-title">Attachments</div>
+            <div class="attachment-list">
+              <a href="#" class="attachment-item">
+                <i class="fa-light fa-file-pdf attachment-icon"></i>
+                <span class="attachment-name">payment_confirmation.pdf</span>
+              </a>
+              <a href="#" class="attachment-item">
+                <i class="fa-light fa-image attachment-icon"></i>
+                <span class="attachment-name">account_screenshot.png</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="conversation-section">
+          <h3 class="conversation-title">Conversation</h3>
+
+          <div class="reply-item">
+            <div class="reply-header">
+              <div class="reply-author">
+                <div class="reply-avatar">JD</div>
+                <div class="reply-author-info">
+                  <h4>John Doe</h4>
+                  <span>Customer</span>
+                </div>
+              </div>
+              <span class="reply-time">Jan 8, 2025 at 2:30 PM</span>
+            </div>
+            <div class="reply-content">
+              <p>I'm experiencing an issue with my subscription renewal payment. The payment was processed on January 8, 2025, but my subscription status hasn't updated in the system. I received a confirmation email for the payment, but when I check my account, it still shows as expired.</p>
+            </div>
+            <div class="reply-attachments">
+              <div class="attachment-list">
+                <a href="#" class="attachment-item">
+                  <i class="fa-light fa-file-pdf attachment-icon"></i>
+                  <span class="attachment-name">payment_confirmation.pdf</span>
+                </a>
+                <a href="#" class="attachment-item">
+                  <i class="fa-light fa-image attachment-icon"></i>
+                  <span class="attachment-name">account_screenshot.png</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="reply-item">
+            <div class="reply-header">
+              <div class="reply-author">
+                <div class="reply-avatar" style="background-color: #28a745;">ST</div>
+                <div class="reply-author-info">
+                  <h4>Support Team</h4>
+                  <span>Stoxzo Support</span>
+                </div>
+              </div>
+              <span class="reply-time">Jan 9, 2025 at 10:15 AM</span>
+            </div>
+            <div class="reply-content">
+              <p>Thank you for contacting us, John. We've received your payment and I've reviewed your account. I can see the payment was successfully processed, but there was a delay in updating the subscription status in our system.</p>
+              <p>I've manually updated your subscription status, and it should now be active. Please refresh your account page to see the updated status. Your subscription is now active until February 8, 2025.</p>
+              <p>If you continue to experience any issues, please don't hesitate to let us know.</p>
+            </div>
+          </div>
+
+          <div class="reply-item">
+            <div class="reply-header">
+              <div class="reply-author">
+                <div class="reply-avatar">JD</div>
+                <div class="reply-author-info">
+                  <h4>John Doe</h4>
+                  <span>Customer</span>
+                </div>
+              </div>
+              <span class="reply-time">Jan 9, 2025 at 3:45 PM</span>
+            </div>
+            <div class="reply-content">
+              <p>Perfect! I can now see that my subscription is active. Thank you for the quick resolution. Everything looks good now.</p>
+            </div>
+          </div>
+
+          <div class="reply-form">
+            <h4 class="reply-form-title">Add Reply</h4>
+            <form id="replyForm" onsubmit="submitReply(event)">
+              <div class="form-input">
+                <label for="replyMessage">Your Message</label>
+                <textarea id="replyMessage" name="replyMessage" placeholder="Type your reply here..." required></textarea>
+              </div>
+
+              <div class="form-input">
+                <label>Attachments (Optional)</label>
+                <div class="file-upload-area" id="fileUploadArea" onclick="document.getElementById('fileInput').click()">
+                  <i class="fa-light fa-cloud-arrow-up" style="font-size: 24px; color: var(--tj-color-theme-primary); margin-bottom: 10px;"></i>
+                  <div class="file-upload-text">Click to upload files</div>
+                  <input type="file" id="fileInput" class="file-input" multiple accept=".png,.jpg,.jpeg,.pdf,.doc,.docx">
+                </div>
+                <div class="file-list" id="fileList"></div>
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" class="tj-primary-btn">
+                  <span class="btn-text"><span>Send Reply</span></span>
+                  <span class="btn-icon"><i class="tji-arrow-right-long"></i></span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="tj-footer-section footer-2 h5-footer h10-footer section-gap-x">
+    <div class="footer-main-area">
+      <div class="container">
+        <div class="row justify-content-between">
+          <div class="col-xl-5 col-lg-4 col-md-6">
+            <div class="footer-widget footer-col-1">
+              <h2 class="h10-footer-title text-anim">Building Better Business from Together?</h2>
+              <a class="text-btn wow fadeInUp" data-wow-delay=".3s" href="mailto:hello@stoxzo.com">
+                <span class="btn-text"><span>hello@stoxzo.com</span></span>
+              </a>
+              <div class="bg-shape-widget wow fadeInUpBig" data-wow-delay=".7s"></div>
+            </div>
+          </div>
+          <div class="col-xl-2 col-lg-3 col-md-6">
+            <div class="footer-widget footer-col-2 widget-nav-menu wow fadeInUp" data-wow-delay=".3s">
+              <h5 class="title">Services</h5>
+              <ul>
+                <li><a href="#">Customer Experience</a></li>
+                <li><a href="#">Training Programs</a></li>
+                <li><a href="#">Business Strategy</a></li>
+                <li><a href="#">ESG Consulting</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-xl-2 col-lg-2 col-md-6">
+            <div class="footer-widget footer-col-3 widget-nav-menu wow fadeInUp" data-wow-delay=".5s">
+              <h5 class="title">Resources</h5>
+              <ul>
+                <li><a href="#">Contact us</a></li>
+                <li><a href="#">Team Member</a></li>
+                <li><a href="#">Careers</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-xl-3 col-lg-3 col-md-6">
+            <div class="footer-widget widget-contact wow fadeInUp" data-wow-delay=".7s">
+              <h5 class="title">Our Office</h5>
+              <div class="footer-contact-info">
+                <div class="contact-item"><span>993 Renner Burg, West Rond, MT 94251-030, USA.</span></div>
+                <div class="contact-item">
+                  <a href="tel:10095447818">P: +1 (009) 544-7818</a>
+                  <a href="mailto:support@stoxzo.com">M: support@stoxzo.com</a>
+                </div>
+                <div class="contact-item">
+                  <span><i class="tji-clock"></i> Mon-Fri 10am-10pm</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="tj-copyright-area-2 h5-footer-copyright">
+      <div class="container">
+        <div class="row">
+          <div class="col-12">
+            <div class="copyright-content-area">
+              <div class="copyright-text">
+                <p>Â© 2025 <a href="https://stoxzo.com" target="_blank">Stoxzo</a> All right reserved</p>
+              </div>
+              <div class="social-links style-3">
+                <ul>
+                  <li><a href="https://www.facebook.com/" target="_blank"><i class="fa-brands fa-facebook-f"></i></a></li>
+                  <li><a href="https://www.instagram.com/" target="_blank"><i class="fa-brands fa-instagram"></i></a></li>
+                  <li><a href="https://x.com/" target="_blank"><i class="fa-brands fa-x-twitter"></i></a></li>
+                  <li><a href="https://www.linkedin.com/" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a></li>
+                </ul>
+              </div>
+              <div class="copyright-menu">
+                <ul>
+                  <li><a href="#">Privacy Policy</a></li>
+                  <li><a href="#">Terms & Condition</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bg-shape-1"><img src="assets/images/pattern-2.svg" alt=""></div>
+    <div class="bg-shape-2"><img src="assets/images/pattern-3.svg" alt=""></div>
+    <div class="bg-shape-4 wow fadeInUpBig" data-wow-delay=".8s"><img src="assets/images/h10-footer-shape-blur-2.svg" alt=""></div>
+  </footer>
+
+  <script src="assets/js/jquery.min.js"></script>
+  <script src="assets/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/gsap.min.js"></script>
+  <script src="assets/js/ScrollSmoother.js"></script>
+  <script src="assets/js/gsap-scroll-to-plugin.min.js"></script>
+  <script src="assets/js/gsap-scroll-trigger.min.js"></script>
+  <script src="assets/js/gsap-split-text.min.js"></script>
+  <script src="assets/js/jquery.nice-select.min.js"></script>
+  <script src="assets/js/swiper.min.js"></script>
+  <script src="assets/js/odometer.min.js"></script>
+  <script src="assets/js/venobox.min.js"></script>
+  <script src="assets/js/appear.min.js"></script>
+  <script src="assets/js/wow.min.js"></script>
+  <script src="assets/js/meanmenu.js"></script>
+  <script src="assets/js/imagesloaded-pkgd.js"></script>
+  <script src="assets/js/isotope.pkgd.min.js"></script>
+  <script src="assets/js/magiccursor.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script>
+    let selectedFiles = [];
+
+    document.getElementById('fileInput').addEventListener('change', handleFileSelect);
+
+    function handleFileSelect(e) {
+      const files = e.target.files;
+      Array.from(files).forEach(file => {
+        if (file.size > 10 * 1024 * 1024) {
+          alert('File ' + file.name + ' is too large. Maximum size is 10MB.');
+          return;
+        }
+        selectedFiles.push(file);
+        displayFile(file);
+      });
+    }
+
+    function displayFile(file) {
+      const fileList = document.getElementById('fileList');
+      fileList.classList.add('show');
+      
+      const fileItem = document.createElement('div');
+      fileItem.className = 'file-item';
+      fileItem.dataset.fileName = file.name;
+      
+      const fileExtension = file.name.split('.').pop().toLowerCase();
+      let fileIcon = 'fa-file';
+      if (['png', 'jpg', 'jpeg', 'gif'].includes(fileExtension)) {
+        fileIcon = 'fa-image';
+      } else if (fileExtension === 'pdf') {
+        fileIcon = 'fa-file-pdf';
+      } else if (['doc', 'docx'].includes(fileExtension)) {
+        fileIcon = 'fa-file-word';
+      }
+      
+      fileItem.innerHTML = `
+        <div class="file-item-info">
+          <div class="file-item-icon"><i class="fa-light ${fileIcon}"></i></div>
+          <div class="file-item-name">${file.name}</div>
+        </div>
+        <button type="button" class="file-item-remove" onclick="removeFile('${file.name}')">
+          <i class="fa-light fa-times"></i>
+        </button>
+      `;
+      
+      fileList.appendChild(fileItem);
+    }
+
+    function removeFile(fileName) {
+      selectedFiles = selectedFiles.filter(file => file.name !== fileName);
+      const fileItem = document.querySelector(`.file-item[data-file-name="${fileName}"]`);
+      if (fileItem) {
+        fileItem.remove();
+      }
+      if (selectedFiles.length === 0) {
+        document.getElementById('fileList').classList.remove('show');
+      }
+    }
+
+    function submitReply(e) {
+      e.preventDefault();
+      alert('Reply sent successfully!');
+      document.getElementById('replyMessage').value = '';
+      selectedFiles = [];
+      document.getElementById('fileList').innerHTML = '';
+      document.getElementById('fileList').classList.remove('show');
+    }
+  </script>
+</body>
+</html>
+
+

@@ -1,0 +1,164 @@
+/* Payment Success Page Styles */
+.success-section {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f5f5f5;
+    padding: 60px 20px;
+}
+
+.success-wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 600px;
+    width: 100%;
+}
+
+.success-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 60px 50px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    text-align: center;
+}
+
+.success-logo {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.success-logo img {
+    max-width: 150px;
+    height: auto;
+}
+
+.success-icon {
+    width: 120px;
+    height: 120px;
+    background: rgba(30, 138, 138, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 30px;
+    animation: scaleIn 0.5s ease-out;
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.success-icon i {
+    font-size: 60px;
+    color: #28a745;
+}
+
+.success-title {
+    margin-bottom: 20px;
+}
+
+.success-title h2 {
+    font-size: 36px;
+    margin-bottom: 15px;
+    color: #0c1e21;
+    font-weight: 700;
+}
+
+.success-title p {
+    color: #6c757d;
+    font-size: 16px;
+    margin: 0;
+    line-height: 1.6;
+}
+
+.success-info {
+    background-color: rgba(30, 138, 138, 0.05);
+    border-left: 4px solid #1e8a8a;
+    padding: 25px;
+    border-radius: 6px;
+    margin: 30px 0;
+    text-align: left;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(30, 138, 138, 0.1);
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    color: #6c757d;
+    font-size: 14px;
+}
+
+.info-value {
+    color: #0c1e21;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.success-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 40px;
+}
+
+.success-actions .tj-primary-btn {
+    min-width: 150px;
+}
+
+.btn-transparent {
+    background-color: transparent;
+    border: 1px solid #1e8a8a;
+    color: #1e8a8a;
+}
+
+.btn-transparent:hover {
+    background-color: #1e8a8a;
+    color: white;
+}
+
+@media (max-width: 575px) {
+    .success-card {
+        padding: 40px 30px;
+    }
+
+    .success-title h2 {
+        font-size: 28px;
+    }
+
+    .success-icon {
+        width: 100px;
+        height: 100px;
+    }
+
+    .success-icon i {
+        font-size: 50px;
+    }
+
+    .success-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .success-actions .tj-primary-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
