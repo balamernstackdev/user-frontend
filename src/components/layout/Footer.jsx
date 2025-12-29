@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react'; // Added useEffect
-import { WOW } from 'wowjs'; // Import WOW
+import 'wowjs/dist/wow.js'; // Import WOW for side effects
 import './Footer.css';
 
 // Import Images
@@ -15,9 +15,11 @@ const Footer = () => {
     const [agreeToTerms, setAgreeToTerms] = useState(false);
 
     useEffect(() => {
-        new WOW({
-            live: false
-        }).init();
+        if (typeof window !== 'undefined' && window.WOW) {
+            new window.WOW({
+                live: false
+            }).init();
+        }
     }, []);
 
     const handleSubscribe = (e) => {
