@@ -72,6 +72,10 @@ const Register = () => {
             newErrors.agreeToTerms = 'You must agree to the Terms & Conditions';
         }
 
+        if (!formData.referralCode.trim()) {
+            newErrors.referralCode = 'Referral code is required';
+        }
+
         return newErrors;
     };
 
@@ -99,8 +103,8 @@ const Register = () => {
             const response = await authService.register(registrationData);
 
             if (response.success) {
-                navigate('/login', {
-                    state: { message: 'Registration successful! Please login.' }
+                navigate('/registration-success', {
+                    state: { email: formData.email }
                 });
             }
         } catch (err) {
@@ -251,17 +255,23 @@ const Register = () => {
                             )}
                         </div>
 
-                        {/* Referral Code (Optional) */}
+                        {/* Referral Code (Mandatory) */}
                         <div className="form-input">
-                            <label htmlFor="referralCode">Referral Code (Optional)</label>
+                            <label htmlFor="referralCode">Referral Code</label>
                             <input
                                 type="text"
                                 id="referralCode"
                                 name="referralCode"
-                                placeholder="Enter referral code if you have one"
+                                placeholder="Enter referral code"
                                 value={formData.referralCode}
                                 onChange={handleChange}
+                                required
                             />
+                            {errors.referralCode && (
+                                <span style={{ color: '#cf1322', fontSize: '12px', marginTop: '4px', display: 'block' }}>
+                                    {errors.referralCode}
+                                </span>
+                            )}
                         </div>
 
                         {/* Terms & Conditions Checkbox */}

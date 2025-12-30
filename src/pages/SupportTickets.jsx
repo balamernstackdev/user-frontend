@@ -41,7 +41,9 @@ const SupportTickets = () => {
 
     const formatDate = (dateString) => {
         if (!dateString) return 'N/A';
-        return new Date(dateString).toLocaleDateString('en-US', {
+        // Ensure date is treated as UTC if it lacks timezone info
+        const dateStr = dateString.endsWith('Z') ? dateString : `${dateString}Z`;
+        return new Date(dateStr).toLocaleDateString('en-US', {
             year: 'numeric',
             month: 'short',
             day: 'numeric'

@@ -11,8 +11,8 @@
 }
 
 .summary-card {
-    background: var(--glass-bg);
-    backdrop-filter: blur(10px);
+    background: #ffffff;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     border: 1px solid var(--border-color);
     border-radius: 20px;
     padding: 1.5rem;
@@ -71,75 +71,37 @@
 
 .card-info .label {
     font-size: 0.9rem;
-    color: var(--text-secondary);
-}
-
-.card-info .value {
-    font-size: 2rem;
-    font-weight: 700;
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-.commissions-container {
-    background: var(--glass-bg);
-    backdrop-filter: blur(10px);
-    border: 1px solid var(--border-color);
-    border-radius: 20px;
-    padding: 2rem;
-}
-
-.commissions-container h2 {
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
-}
-
-.commissions-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.commissions-table thead {
-    background: rgba(79, 70, 229, 0.1);
+    color: #6c757d;
+    /* Fixed dark grey for visibility */
+    font-weight: 500;
 }
 
 .commissions-table th {
     padding: 1rem;
     text-align: left;
     font-weight: 600;
-    color: var(--text-primary);
-    border-bottom: 2px solid var(--border-color);
+    color: #1a1a1a;
+    /* Fixed dark color */
+    border-bottom: 2px solid #e9ecef;
 }
 
 .commissions-table td {
     padding: 1rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.commissions-table tbody tr:hover {
-    background: rgba(79, 70, 229, 0.05);
-}
-
-.commissions-table tbody tr:last-child td {
-    border-bottom: none;
-}
-
-.user-info {
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
+    border-bottom: 1px solid #f0f0f0;
+    color: #333;
+    /* Ensure content is visible */
 }
 
 .user-info .name {
     font-weight: 600;
-    color: var(--text-primary);
+    color: #1a1a1a;
+    /* Fixed dark color */
 }
 
 .user-info .email {
     font-size: 0.85rem;
-    color: var(--text-muted);
+    color: #6c757d;
+    /* Fixed dark grey */
 }
 
 .amount {
@@ -216,4 +178,53 @@
     .commissions-table td {
         padding: 0.75rem 0.5rem;
     }
+}
+
+/* Force High Contrast / Black Text Overrides */
+/* Force High Contrast / Black Text Overrides */
+.card-info .value {
+    color: #000000 !important;
+    font-weight: 800 !important;
+    background: none !important;
+    -webkit-text-fill-color: initial !important;
+    margin-top: 5px;
+}
+
+.commissions-table th {
+    color: #000000 !important;
+    font-weight: 700 !important;
+}
+
+/* STRICT USER INFO LAYOUT FIX */
+.user-info {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 2px !important;
+}
+
+.user-info .name {
+    color: #000000 !important;
+    font-weight: 700 !important;
+    display: block !important;
+}
+
+.user-info .email {
+    color: #4a4a4a !important;
+    /* Dark grey */
+    font-weight: 500;
+    font-size: 0.8rem;
+    display: block !important;
+}
+
+/* Badge Updates for better visibility */
+.badge-success {
+    background-color: #d1e7dd !important;
+    color: #0f5132 !important;
+    border: 1px solid #badbcc !important;
+}
+
+.badge-warning {
+    background-color: #fff3cd !important;
+    color: #856404 !important;
+    border: 1px solid #ffeeba !important;
 }

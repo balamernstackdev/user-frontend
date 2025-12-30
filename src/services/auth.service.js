@@ -1,108 +1,64 @@
 import api from './api';
+import TokenService from './token.service';
 
-const TOKEN_KEY = 'access_token';
-
-/**
- * Authentication Service
- * Handles all authentication-related operations
- */
 export const authService = {
-    /**
-     * Register a new user
-     */
-    register: async (userData) => {
+    async register(userData) {
         const response = await api.post('/auth/register', userData);
         return response.data;
     },
 
-    /**
-     * Login user
-     */
-    login: async (credentials) => {
+    async login(credentials) {
         const response = await api.post('/auth/login', credentials);
-        if (response.data.success && response.data.data.accessToken) {
-            // Store access token in memory (localStorage for persistence)
-            localStorage.setItem(TOKEN_KEY, response.data.data.accessToken);
+        if (response.data.success) {
+            // Store user AND accessToken
+            const { user, accessToken } = response.data.data;
+            TokenService.setUser({ ...user, accessToken });
         }
         return response.data;
     },
 
-    /**
-     * Logout user
-     */
-    logout: async () => {
+    async logout() {
         try {
             await api.post('/auth/logout');
-        } catch (error) {
-            console.error('Logout error:', error);
         } finally {
-            // Clear token from storage
-            localStorage.removeItem(TOKEN_KEY);
+            TokenService.removeUser();
         }
     },
 
-    /**
-     * Request password reset email
-     */
-    forgotPassword: async (email) => {
+    async forgotPassword(email) {
         const response = await api.post('/auth/forgot-password', { email });
         return response.data;
     },
 
-    /**
-     * Reset password with token
-     */
-    resetPassword: async (token, password) => {
+    async resetPassword(token, password) {
         const response = await api.post('/auth/reset-password', { token, password });
         return response.data;
     },
 
-    /**
-     * Get stored JWT token
-     */
-    getToken: () => {
-        return localStorage.getItem(TOKEN_KEY);
+    async verifyEmail(token) {
+        const response = await api.get(`/auth/verify-email?token=${token}`);
+        return response.data;
     },
 
-    /**
-     * Set JWT token
-     */
-    setToken: (token) => {
-        localStorage.setItem(TOKEN_KEY, token);
+    async resendVerification(email) {
+        const response = await api.post('/auth/resend-verification', { email });
+        return response.data;
     },
 
-    /**
-     * Check if user is authenticated
-     */
-    isAuthenticated: () => {
-        const token = localStorage.getItem(TOKEN_KEY);
-        if (!token) return false;
-
-        // Check if token is expired
-        try {
-            const payload = JSON.parse(atob(token.split('.')[1]));
-            const expiry = payload.exp * 1000; // Convert to milliseconds
-            return Date.now() < expiry;
-        } catch (error) {
-            return false;
-        }
+    getCurrentUser() {
+        return TokenService.getUser();
     },
 
-    /**
-     * Get decoded user from token
-     */
-    getUser: () => {
-        const token = localStorage.getItem(TOKEN_KEY);
-        if (!token) return null;
-
-        try {
-            const payload = JSON.parse(atob(token.split('.')[1]));
-            return {
-                userId: payload.userId,
-                role: payload.role,
-            };
-        } catch (error) {
-            return null;
-        }
+    isAuthenticated() {
+        return !!TokenService.getToken();
     },
+
+    getUser() {
+        return TokenService.getUser();
+    },
+
+    // Kept for backward compatibility if needed, but delegated to TokenService
+    getToken() {
+        return TokenService.getToken();
+    }
 };

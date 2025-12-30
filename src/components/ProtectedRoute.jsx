@@ -17,6 +17,9 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
 
     // Check role authorization if allowedRoles is specified
     if (allowedRoles && user && !allowedRoles.includes(user.role)) {
+        if (user.role === 'admin') {
+            return <Navigate to="/admin/dashboard" replace />;
+        }
         return <Navigate to="/dashboard" replace />;
     }
 

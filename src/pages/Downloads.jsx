@@ -38,11 +38,19 @@ const Downloads = () => {
             setDownloading(file.id);
             const response = await FileService.downloadFile(file.id);
 
-            // Create blob and download
-            const url = window.URL.createObjectURL(new Blob([response.data]));
+            // Determine filename
+            let filename = file.title || 'download';
+            if (file.file_type && !filename.toLowerCase().endsWith(`.${file.file_type.toLowerCase()}`)) {
+                filename += `.${file.file_type.toLowerCase()}`;
+            }
+
+            // Create blob URL directly from response.data (which is already a Blob)
+            // This preserves the Content-Type from the backend
+            const url = window.URL.createObjectURL(response.data);
+
             const link = document.createElement('a');
             link.href = url;
-            link.setAttribute('download', file.file_name);
+            link.setAttribute('download', filename);
             document.body.appendChild(link);
             link.click();
             link.remove();

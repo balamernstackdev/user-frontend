@@ -17,7 +17,7 @@ const ReferredUsers = () => {
         try {
             setLoading(true);
             const [statsRes, usersRes] = await Promise.all([
-                ReferralService.getMarketerStats(),
+                ReferralService.getStats(),
                 ReferralService.getReferredUsers()
             ]);
             setStats(statsRes.data);
@@ -31,7 +31,9 @@ const ReferredUsers = () => {
     };
 
     const formatDate = (dateString) => {
+        if (!dateString) return 'N/A';
         const date = new Date(dateString);
+        if (isNaN(date.getTime())) return 'N/A';
         return date.toLocaleDateString('en-IN', {
             year: 'numeric',
             month: 'short',
@@ -62,7 +64,7 @@ const ReferredUsers = () => {
                                         <div className="stat-icon"><i className="fa-light fa-users"></i></div>
                                         <div className="stat-info">
                                             <span className="stat-label">Total Referrals</span>
-                                            <span className="stat-value">{stats.total_referrals}</span>
+                                            <span className="stat-value">{stats.total_referrals || 0}</span>
                                         </div>
                                     </div>
                                     <div className="stat-card">
@@ -73,19 +75,19 @@ const ReferredUsers = () => {
                                         </div>
                                     </div>
                                     <div className="stat-card">
-                                        <div className="stat-icon"><i className="fa-light fa-wallet"></i></div>
+                                        <div className="stat-icon"><i className="fa-light fa-sack-dollar"></i></div>
                                         <div className="stat-info">
                                             <span className="stat-label">Total Commissions</span>
-                                            <span className="stat-value">₹{stats.total_commissions ? stats.total_commissions.toLocaleString() : '0'}</span>
+                                            <span className="stat-value">₹{Number(stats.total_commissions || 0).toLocaleString()}</span>
                                         </div>
                                     </div>
                                     <div className="stat-card">
-                                        <div className="stat-icon"><i className="fa-light fa-chart-line"></i></div>
+                                        <div className="stat-icon"><i className="fa-light fa-percent"></i></div>
                                         <div className="stat-info">
                                             <span className="stat-label">Conversion Rate</span>
                                             <span className="stat-value">
                                                 {stats.total_referrals > 0
-                                                    ? Math.round((stats.active_subscribers / stats.total_referrals) * 100)
+                                                    ? Math.round((Number(stats.active_subscribers || 0) / Number(stats.total_referrals)) * 100)
                                                     : 0}%
                                             </span>
                                         </div>
@@ -114,7 +116,7 @@ const ReferredUsers = () => {
                                                     <tr key={user.user_id}>
                                                         <td>{user.name}</td>
                                                         <td>{user.email}</td>
-                                                        <td>{formatDate(user.joined_at)}</td>
+                                                        <td>{formatDate(user.referred_at)}</td>
                                                         <td>
                                                             {user.subscription_status === 'active' && user.plan_name ? (
                                                                 <span className="plan-badge">{user.plan_name}</span>

@@ -23,6 +23,7 @@ const Profile = () => {
 
     const [marketerData, setMarketerData] = useState({
         companyName: '',
+        referralCode: ''
     });
 
     const [passwordData, setPasswordData] = useState({
@@ -30,6 +31,19 @@ const Profile = () => {
         newPassword: '',
         confirmPassword: '',
     });
+
+    const [showPasswords, setShowPasswords] = useState({
+        old: false,
+        new: false,
+        confirm: false
+    });
+
+    const togglePasswordVisibility = (field) => {
+        setShowPasswords(prev => ({
+            ...prev,
+            [field]: !prev[field]
+        }));
+    };
 
     useEffect(() => {
         const currentUser = authService.getUser();
@@ -52,6 +66,7 @@ const Profile = () => {
                 if (response.data.marketer) {
                     setMarketerData({
                         companyName: response.data.marketer.company_name,
+                        referralCode: response.data.marketer.referral_code
                     });
                 }
             }
@@ -246,44 +261,7 @@ const Profile = () => {
                                                 />
                                             </div>
 
-                                            <div className="form-group">
-                                                <label htmlFor="address">Address</label>
-                                                <textarea
-                                                    id="address"
-                                                    className="form-control"
-                                                    rows="3"
-                                                    value={profileData.address}
-                                                    onChange={(e) => setProfileData({ ...profileData, address: e.target.value })}
-                                                ></textarea>
-                                            </div>
 
-                                            <div className="form-row">
-                                                <div className="form-group">
-                                                    <label htmlFor="city">City</label>
-                                                    <input
-                                                        type="text"
-                                                        id="city"
-                                                        className="form-control"
-                                                        value={profileData.city}
-                                                        onChange={(e) => setProfileData({ ...profileData, city: e.target.value })}
-                                                    />
-                                                </div>
-                                                <div className="form-group">
-                                                    <label htmlFor="country">Country</label>
-                                                    <select
-                                                        id="country"
-                                                        className="form-control"
-                                                        value={profileData.country}
-                                                        onChange={(e) => setProfileData({ ...profileData, country: e.target.value })}
-                                                    >
-                                                        <option value="US">United States</option>
-                                                        <option value="UK">United Kingdom</option>
-                                                        <option value="CA">Canada</option>
-                                                        <option value="AU">Australia</option>
-                                                        <option value="IN">India</option>
-                                                    </select>
-                                                </div>
-                                            </div>
 
                                             <div style={{ marginTop: '30px' }}>
                                                 <button type="submit" className="tj-primary-btn" disabled={saving}>
@@ -299,6 +277,58 @@ const Profile = () => {
                                     <div className="animate-fade-up">
                                         <h3 style={{ marginBottom: '30px', color: '#0c1e21', fontWeight: 600 }}>Marketer Information</h3>
                                         <form onSubmit={handleMarketerUpdate}>
+                                            <div className="form-group">
+                                                <label htmlFor="referralCode">Referral Code</label>
+                                                <div style={{ position: 'relative' }}>
+                                                    <input
+                                                        type="text"
+                                                        id="referralCode"
+                                                        className="form-control"
+                                                        value={marketerData.referralCode || ''}
+                                                        readOnly
+                                                        style={{ backgroundColor: '#f8f9fa', letterSpacing: '1px', fontWeight: 'bold' }}
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        className="btn btn-sm btn-link"
+                                                        style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', textDecoration: 'none' }}
+                                                        onClick={() => {
+                                                            navigator.clipboard.writeText(marketerData.referralCode);
+                                                            alert('Referral code copied!');
+                                                        }}
+                                                    >
+                                                        <i className="fa-light fa-copy"></i> Copy
+                                                    </button>
+                                                </div>
+                                                <span className="form-text">Share this code with users to earn commissions.</span>
+                                            </div>
+
+                                            <div className="form-group">
+                                                <label htmlFor="shareLink">Shareable Link</label>
+                                                <div style={{ position: 'relative' }}>
+                                                    <input
+                                                        type="text"
+                                                        id="shareLink"
+                                                        className="form-control"
+                                                        value={`${window.location.origin}/register?ref=${marketerData.referralCode}`}
+                                                        readOnly
+                                                        style={{ backgroundColor: '#f8f9fa', color: '#666' }}
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        className="btn btn-sm btn-link"
+                                                        style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', textDecoration: 'none' }}
+                                                        onClick={() => {
+                                                            navigator.clipboard.writeText(`${window.location.origin}/register?ref=${marketerData.referralCode}`);
+                                                            alert('Link copied!');
+                                                        }}
+                                                    >
+                                                        <i className="fa-light fa-copy"></i> Copy
+                                                    </button>
+                                                </div>
+                                                <span className="form-text">Send this link to users for direct registration.</span>
+                                            </div>
+
                                             <div className="form-group">
                                                 <label htmlFor="companyName">Company Name</label>
                                                 <input
@@ -322,43 +352,108 @@ const Profile = () => {
                                 )}
 
                                 {activeTab === 'password' && (
+
+
                                     <div className="animate-fade-up">
                                         <h3 style={{ marginBottom: '30px', color: '#0c1e21', fontWeight: 600 }}>Change Password</h3>
                                         <form onSubmit={handlePasswordChange}>
                                             <div className="form-group">
                                                 <label htmlFor="oldPassword">Current Password</label>
-                                                <input
-                                                    type="password"
-                                                    id="oldPassword"
-                                                    className="form-control"
-                                                    value={passwordData.oldPassword}
-                                                    onChange={(e) => setPasswordData({ ...passwordData, oldPassword: e.target.value })}
-                                                    required
-                                                />
+                                                <div style={{ position: 'relative' }}>
+                                                    <input
+                                                        type={showPasswords.old ? "text" : "password"}
+                                                        id="oldPassword"
+                                                        className="form-control"
+                                                        value={passwordData.oldPassword}
+                                                        onChange={(e) => setPasswordData({ ...passwordData, oldPassword: e.target.value })}
+                                                        required
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => togglePasswordVisibility('old')}
+                                                        style={{
+                                                            position: 'absolute',
+                                                            right: '15px',
+                                                            top: '50%',
+                                                            transform: 'translateY(-50%)',
+                                                            background: 'none',
+                                                            border: 'none',
+                                                            cursor: 'pointer',
+                                                            color: '#64748b',
+                                                            padding: 0,
+                                                            display: 'flex',
+                                                            alignItems: 'center'
+                                                        }}
+                                                    >
+                                                        <i className={`fa-light ${showPasswords.old ? 'fa-eye' : 'fa-eye-slash'}`}></i>
+                                                    </button>
+                                                </div>
                                             </div>
 
                                             <div className="form-group">
                                                 <label htmlFor="newPassword">New Password</label>
-                                                <input
-                                                    type="password"
-                                                    id="newPassword"
-                                                    className="form-control"
-                                                    value={passwordData.newPassword}
-                                                    onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
-                                                    required
-                                                />
+                                                <div style={{ position: 'relative' }}>
+                                                    <input
+                                                        type={showPasswords.new ? "text" : "password"}
+                                                        id="newPassword"
+                                                        className="form-control"
+                                                        value={passwordData.newPassword}
+                                                        onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
+                                                        required
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => togglePasswordVisibility('new')}
+                                                        style={{
+                                                            position: 'absolute',
+                                                            right: '15px',
+                                                            top: '50%',
+                                                            transform: 'translateY(-50%)',
+                                                            background: 'none',
+                                                            border: 'none',
+                                                            cursor: 'pointer',
+                                                            color: '#64748b',
+                                                            padding: 0,
+                                                            display: 'flex',
+                                                            alignItems: 'center'
+                                                        }}
+                                                    >
+                                                        <i className={`fa-light ${showPasswords.new ? 'fa-eye' : 'fa-eye-slash'}`}></i>
+                                                    </button>
+                                                </div>
                                             </div>
 
                                             <div className="form-group">
                                                 <label htmlFor="confirmPassword">Confirm New Password</label>
-                                                <input
-                                                    type="password"
-                                                    id="confirmPassword"
-                                                    className="form-control"
-                                                    value={passwordData.confirmPassword}
-                                                    onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
-                                                    required
-                                                />
+                                                <div style={{ position: 'relative' }}>
+                                                    <input
+                                                        type={showPasswords.confirm ? "text" : "password"}
+                                                        id="confirmPassword"
+                                                        className="form-control"
+                                                        value={passwordData.confirmPassword}
+                                                        onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
+                                                        required
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => togglePasswordVisibility('confirm')}
+                                                        style={{
+                                                            position: 'absolute',
+                                                            right: '15px',
+                                                            top: '50%',
+                                                            transform: 'translateY(-50%)',
+                                                            background: 'none',
+                                                            border: 'none',
+                                                            cursor: 'pointer',
+                                                            color: '#64748b',
+                                                            padding: 0,
+                                                            display: 'flex',
+                                                            alignItems: 'center'
+                                                        }}
+                                                    >
+                                                        <i className={`fa-light ${showPasswords.confirm ? 'fa-eye' : 'fa-eye-slash'}`}></i>
+                                                    </button>
+                                                </div>
                                             </div>
 
                                             <div style={{ marginTop: '30px' }}>

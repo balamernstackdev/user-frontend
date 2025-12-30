@@ -1,0 +1,153 @@
+.secure-payment-card {
+    background-color: var(--tj-color-common-white);
+    border-radius: 12px;
+    padding: 50px 40px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.secure-payment-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.secure-payment-header h2 {
+    font-size: 28px;
+    color: var(--tj-color-heading-primary);
+    margin-bottom: 10px;
+}
+
+.secure-payment-header p {
+    color: var(--tj-color-text-body-3);
+}
+
+.razorpay-logo-container {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: var(--tj-color-grey-1);
+    border-radius: 8px;
+}
+
+.razorpay-logo-container p {
+    color: var(--tj-color-text-body-3);
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.razorpay-logo-text {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--tj-color-theme-primary);
+}
+
+.payment-amount-display {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.payment-amount-display .label {
+    font-size: 14px;
+    color: var(--tj-color-text-body-3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.payment-amount-display .value {
+    font-size: 48px;
+    font-weight: var(--tj-fw-sbold);
+    color: var(--tj-color-theme-primary);
+}
+
+.security-info-box {
+    background-color: var(--tj-color-theme-bg);
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.security-info-box i {
+    font-size: 24px;
+    color: var(--tj-color-theme-primary);
+}
+
+.security-info-box p {
+    margin: 0;
+    color: var(--tj-color-text-body);
+    font-size: 14px;
+}
+
+.pay-button-container {
+    margin-top: 20px;
+}
+
+.cancel-link {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.cancel-link a {
+    font-size: 14px;
+    color: var(--tj-color-text-body);
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+@media (max-width: 767px) {
+    .secure-payment-card {
+        padding: 30px 20px;
+    }
+
+    .payment-amount-display .value {
+        font-size: 36px;
+    }
+}
+
+/* Form Styles */
+.card-form-container {
+    margin-bottom: 30px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--tj-color-heading-primary);
+    margin-bottom: 8px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--tj-color-border-1);
+    border-radius: 8px;
+    font-size: 16px;
+    color: var(--tj-color-text-body);
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: var(--tj-color-theme-primary);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(30, 138, 138, 0.1);
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.col-half {
+    flex: 1;
+}

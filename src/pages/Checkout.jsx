@@ -4,6 +4,7 @@ import DashboardLayout from '../components/layout/DashboardLayout';
 import planService from '../services/plan.service';
 import paymentService from '../services/payment.service';
 import { authService } from '../services/auth.service';
+import SecurePaymentCard from '../components/checkout/SecurePaymentCard';
 import './Checkout.css';
 
 const Checkout = () => {
@@ -53,58 +54,48 @@ const Checkout = () => {
             setError('');
 
             // Create order
-            const order = await paymentService.createOrder(planId);
+            const response = await paymentService.createOrder(planId);
+            const order = response.data; // Access nested data object
 
             if (selectedMethod === 'razorpay') {
+                // Simulate embedded payment processing
+                setTimeout(async () => {
+                    try {
+                        const verifyResponse = await paymentService.verifyPayment({
+                            orderId: order.orderId,
+                            paymentId: 'pay_test_1234567890', // Test Payment ID
+                            signature: 'test_signature',      // Test Signature
+                            transactionId: order.transactionId
+                        });
+
+                        if (verifyResponse.success) {
+                            navigate('/payment-success', { state: { transaction: verifyResponse.transaction } });
+                        } else {
+                            navigate('/payment-failed', { state: { error: 'Payment verification failed' } });
+                        }
+                    } catch (err) {
+                        console.error(err);
+                        navigate('/payment-failed', { state: { error: err.message || 'Payment verification failed' } });
+                    }
+                }, 2000); // 2 second delay to simulate processing
+
+                /* 
+                // Original Razorpay Modal Logic - Disabled for Embedded Test Flow
                 const options = {
                     key: order.key, // Enter the Key ID generated from the Dashboard
                     amount: order.amount,
                     currency: order.currency,
                     name: "Stoxzo",
                     description: `Subscription for ${plan.name}`,
-                    image: "/assets/images/Stoxzo_Logo.svg", // Ensure this path is correct
-                    order_id: order.id,
-                    handler: async function (response) {
-                        try {
-                            const verifyResponse = await paymentService.verifyPayment({
-                                razorpay_order_id: response.razorpay_order_id,
-                                razorpay_payment_id: response.razorpay_payment_id,
-                                razorpay_signature: response.razorpay_signature
-                            });
-
-                            if (verifyResponse.success) {
-                                navigate('/payment-success', { state: { transaction: verifyResponse.transaction } });
-                            } else {
-                                navigate('/payment-failed', { state: { error: 'Payment verification failed' } });
-                            }
-                        } catch (err) {
-                            console.error(err);
-                            navigate('/payment-failed', { state: { error: err.message || 'Payment verification failed' } });
-                        }
-                    },
-                    prefill: {
-                        name: `${user.firstname} ${user.lastname}`,
-                        email: user.email,
-                        contact: user.mobile || ''
-                    },
-                    theme: {
-                        color: "#1e8a8a"
-                    }
+                    image: "/assets/images/Stoxzo_Logo.svg",
+                    order_id: order.orderId, 
+                    handler: async function (response) { ... },
+                    ...
                 };
-
                 const rzp = new window.Razorpay(options);
-                rzp.on('payment.failed', function (response) {
-                    navigate('/payment-failed', {
-                        state: {
-                            error: response.error.description || 'Payment failed',
-                            code: response.error.code
-                        }
-                    });
-                });
                 rzp.open();
+                */
             } else {
-                // Handle other methods if implemented (e.g. offline, etc)
-                // For now only Razorpay is fully integrated in this flow
                 alert('Only Credit/Debit Card/NetBanking (via Razorpay) is currently supported.');
                 setProcessing(false);
             }
@@ -156,75 +147,14 @@ const Checkout = () => {
                 <div className="container">
                     {error && <div className="alert alert-error mb-4">{error}</div>}
 
-                    <div className="checkout-container animate-fade-up">
-                        <div className="checkout-card">
-                            <div className="checkout-header">
-                                <h2>Order Summary</h2>
-                                <p>Review your order before proceeding to payment</p>
-                            </div>
-                            <div className="order-summary">
-                                <div className="order-item">
-                                    <div className="order-item-info">
-                                        <h4>{plan.name}</h4>
-                                        <p>{plan.plan_type} Subscription</p>
-                                    </div>
-                                    <div className="order-item-price">₹{price}</div>
-                                </div>
-                            </div>
-                            <div className="summary-total-section">
-                                <div className="summary-row">
-                                    <span>Subtotal</span>
-                                    <span>₹{price}</span>
-                                </div>
-                                <div className="summary-row">
-                                    <span>Tax</span>
-                                    <span>₹0.00</span>
-                                </div>
-                                <div className="summary-row total">
-                                    <span>Total</span>
-                                    <span>₹{price}</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="checkout-card animate-fade-up" style={{ animationDelay: '0.1s' }}>
-                            <div className="payment-method">
-                                <h4>Select Payment Method</h4>
-                                <div className="payment-options">
-                                    <div
-                                        className={`payment-option ${selectedMethod === 'razorpay' ? 'selected' : ''}`}
-                                        onClick={() => setSelectedMethod('razorpay')}
-                                    >
-                                        <i className="fa-light fa-credit-card"></i>
-                                        <span>Online Payment</span>
-                                        <div style={{ fontSize: '12px', color: '#6c757d', marginTop: '5px' }}>(Credit/Debit Card, UPI, NetBanking)</div>
-                                    </div>
-                                    {/* Additional methods can be added here */}
-                                </div>
-                            </div>
-
-                            <div className="checkout-actions">
-                                <button
-                                    className="tj-primary-btn"
-                                    onClick={handlePayment}
-                                    disabled={processing}
-                                    style={{ minWidth: '200px' }}
-                                >
-                                    <span className="btn-text">
-                                        <span>{processing ? 'Processing...' : 'Proceed to Payment'}</span>
-                                    </span>
-                                    {!processing && <span className="btn-icon"><i className="tji-arrow-right-long"></i></span>}
-                                </button>
-                                <button
-                                    className="tj-primary-btn transparent-btn"
-                                    onClick={() => navigate('/plans')}
-                                    disabled={processing}
-                                >
-                                    <span className="btn-text"><span>Back to Plans</span></span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                    {/* Use SecurePaymentCard if Razorpay is displayed, otherwise could show generic summary */}
+                    <SecurePaymentCard
+                        plan={plan}
+                        amount={price}
+                        onPay={handlePayment}
+                        processing={processing}
+                        onCancel={() => navigate('/plans')}
+                    />
                 </div>
             </section>
         </DashboardLayout>

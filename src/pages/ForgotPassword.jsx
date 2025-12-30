@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { authService } from '../services/auth.service';
+import StoxzoLogo from '../assets/images/Stoxzo_Logo.svg';
+import './ForgotPassword.css';
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState('');
@@ -28,60 +30,66 @@ const ForgotPassword = () => {
     };
 
     return (
-        <div className="auth-container fade-in">
-            <div className="auth-card">
-                <div className="auth-header">
-                    <h1 className="auth-logo">🔒</h1>
-                    <h2>Forgot Password</h2>
-                    <p className="auth-subtitle">
-                        Enter your email and we'll send you a reset link
-                    </p>
-                </div>
-
-                {message && (
-                    <div className="alert alert-success" role="alert">
-                        {message}
+        <section className="forgot-password-section">
+            <div className="forgot-password-wrapper">
+                <div className="forgot-password-card">
+                    <div className="forgot-password-logo">
+                        <Link to="/">
+                            <img src={StoxzoLogo} alt="Stoxzo Logo" />
+                        </Link>
                     </div>
-                )}
-
-                {error && (
-                    <div className="alert alert-error" role="alert">
-                        {error}
-                    </div>
-                )}
-
-                <form onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <label htmlFor="email" className="form-label">
-                            Email Address
-                        </label>
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            className="form-input"
-                            placeholder="Enter your email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
+                    <div className="forgot-password-title">
+                        <h2>Forgot Password?</h2>
+                        <p>No worries! Enter your email address and we'll send you a link to reset your password.</p>
                     </div>
 
-                    <button
-                        type="submit"
-                        className="btn btn-primary btn-block"
-                        disabled={loading}
-                    >
-                        {loading ? 'Sending...' : 'Send Reset Link'}
-                    </button>
-                </form>
+                    <div className="info-box">
+                        <p>
+                            <i className="fa-light fa-info-circle"></i>
+                            You will receive a password reset link via email if the account exists.
+                        </p>
+                    </div>
 
-                <div className="auth-footer">
-                    Remember your password?{' '}
-                    <Link to="/login">Sign in here</Link>
+                    {message && (
+                        <div className="alert alert-success" style={{ marginBottom: '20px' }} role="alert">
+                            {message}
+                        </div>
+                    )}
+
+                    {error && (
+                        <div className="alert alert-danger" style={{ marginBottom: '20px' }} role="alert">
+                            {error}
+                        </div>
+                    )}
+
+                    <form className="forgot-password-form" onSubmit={handleSubmit}>
+                        <div className="form-input">
+                            <label htmlFor="email">Email Address</label>
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                placeholder="Enter your email address"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <div className="reset-btn-wrapper">
+                            <button type="submit" className="tj-primary-btn" disabled={loading}>
+                                <span className="btn-text">
+                                    <span>{loading ? 'Sending...' : 'Send Reset Link'}</span>
+                                </span>
+                                <span className="btn-icon"><i className="tji-arrow-right-long"></i></span>
+                            </button>
+                        </div>
+                    </form>
+                    <div className="back-to-login">
+                        <p>Remember your password? <Link to="/login">Back to Login</Link></p>
+                    </div>
                 </div>
             </div>
-        </div>
+        </section>
     );
 };
 

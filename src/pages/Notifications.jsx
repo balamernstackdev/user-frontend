@@ -1,62 +1,50 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import DashboardLayout from '../components/layout/DashboardLayout';
+import { notificationService } from '../services/notification.service';
 import './Notifications.css';
 
 const Notifications = () => {
-    const [notifications, setNotifications] = useState([
-        {
-            id: 1,
-            title: "Payment Successful",
-            time: "2 hours ago",
-            content: "Your payment of $99.00 for Premium Plan has been processed successfully. Your subscription is now active.",
-            isUnread: true,
-            actions: [
-                { label: "View Details", link: "#" },
-                { label: "View Payment", link: "/payment-success" }
-            ]
-        },
-        {
-            id: 2,
-            title: "New Download Available",
-            time: "5 hours ago",
-            content: "A new resource has been added to your downloads. Check it out in your downloads section.",
-            isUnread: true,
-            actions: [
-                { label: "View Details", link: "#" },
-                { label: "View Downloads", link: "/downloads" }
-            ]
-        },
-        {
-            id: 3,
-            title: "Subscription Renewal Reminder",
-            time: "1 day ago",
-            content: "Your subscription will renew on January 15, 2025. Make sure your payment method is up to date.",
-            isUnread: false,
-            actions: [
-                { label: "View Details", link: "#" },
-                { label: "Renew Now", link: "/plans" }
-            ]
-        },
-        {
-            id: 4,
-            title: "Welcome to Stoxzo!",
-            time: "3 days ago",
-            content: "Thank you for joining us! Explore our features and get started with your account.",
-            isUnread: false,
-            actions: [
-                { label: "View Details", link: "#" }
-            ]
-        }
-    ]);
+    const [notifications, setNotifications] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    const markAllRead = () => {
-        const updatedNotifications = notifications.map(notif => ({
-            ...notif,
-            isUnread: false
-        }));
-        setNotifications(updatedNotifications);
-        // Ideally call API here
+    useEffect(() => {
+        fetchNotifications();
+    }, []);
+
+    const fetchNotifications = async () => {
+        try {
+            setLoading(true);
+            const response = await notificationService.getNotifications();
+            if (response.success) {
+                setNotifications(response.data);
+            }
+        } catch (error) {
+            console.error('Failed to fetch notifications:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const markAllRead = async () => {
+        try {
+            await notificationService.markAllAsRead();
+            const updated = notifications.map(n => ({ ...n, is_read: true }));
+            setNotifications(updated);
+        } catch (error) {
+            console.error('Failed to mark all as read:', error);
+        }
+    };
+
+    const getTimeAgo = (dateString) => {
+        const date = new Date(dateString);
+        const now = new Date();
+        const diffInSeconds = Math.floor((now - date) / 1000);
+
+        if (diffInSeconds < 60) return 'Just now';
+        if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} mins ago`;
+        if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
+        return `${Math.floor(diffInSeconds / 86400)} days ago`;
     };
 
     return (
@@ -65,39 +53,52 @@ const Notifications = () => {
                 <div className="container">
                     <div className="page-header animate-fade-up">
                         <h2>Notifications</h2>
-                        <p style={{ color: '#6c757d' }}>Stay updated with all your account activities</p>
+                        <p style={{ color: 'var(--tj-color-text-body-3)' }}>Stay updated with all your account activities</p>
                     </div>
 
-                    {notifications.length > 0 ? (
+                    {loading ? (
+                        <div className="text-center py-5">
+                            <div className="spinner-border text-primary" role="status">
+                                <span className="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                    ) : notifications.length > 0 ? (
                         <>
-                            <div className="mark-all-read animate-fade-up" style={{ animationDelay: '0.1s' }}>
-                                <button className="tj-primary-btn" onClick={markAllRead} style={{ background: 'transparent', border: '1px solid #1e8a8a', color: '#1e8a8a' }}>
+                            <div className="mark-all-read animate-fade-up">
+                                <a href="#" className="tj-primary-btn transparent-btn" onClick={(e) => { e.preventDefault(); markAllRead(); }}>
                                     <span className="btn-text"><span>Mark All as Read</span></span>
-                                </button>
+                                </a>
                             </div>
 
                             <div className="notification-list">
                                 {notifications.map((notification, index) => (
                                     <div
                                         key={notification.id}
-                                        className={`notification-card animate-fade-up ${notification.isUnread ? 'unread' : ''}`}
-                                        style={{ animationDelay: `${0.2 + (index * 0.1)}s` }}
+                                        className={`notification-card animate-fade-up ${!notification.is_read ? 'unread' : ''}`}
+                                        style={{ animationDelay: `${0.1 + (index * 0.05)}s` }}
                                     >
                                         <div className="notification-header">
                                             <h4 className="notification-title">
-                                                <Link to="#" style={{ color: 'inherit', textDecoration: 'none' }}>{notification.title}</Link>
+                                                <Link to={`/notifications/${notification.id}`} style={{ color: 'inherit', textDecoration: 'none' }}>
+                                                    {notification.title}
+                                                </Link>
                                             </h4>
-                                            <span className="notification-time">{notification.time}</span>
+                                            <span className="notification-time">{getTimeAgo(notification.created_at)}</span>
                                         </div>
                                         <div className="notification-content">
-                                            {notification.content}
+                                            {notification.message}
                                         </div>
                                         <div className="notification-actions">
-                                            {notification.actions.map((action, idx) => (
-                                                <Link key={idx} to={action.link} className="text-btn">
-                                                    {action.label}
+                                            <Link to={`/notifications/${notification.id}`} className="text-btn" style={{ fontSize: '14px' }}>
+                                                View Details
+                                            </Link>
+                                            {notification.link && (
+                                                <Link to={notification.link} className="text-btn" style={{ fontSize: '14px', marginLeft: '15px' }}>
+                                                    {notification.type === 'payment' ? 'View Payment' :
+                                                        notification.type === 'download' ? 'View Downloads' :
+                                                            'View Link'}
                                                 </Link>
-                                            ))}
+                                            )}
                                         </div>
                                     </div>
                                 ))}

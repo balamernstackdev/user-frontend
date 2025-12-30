@@ -1,28 +1,37 @@
 import api from './api';
 
-/**
- * Commission Service (for marketers)
- */
+export const commissionService = {
+    // Get commissions for the current marketer
+    getMyCommissions: async (params) => {
+        const response = await api.get('/commissions/my-commissions', { params });
+        return response.data;
+    },
 
-export const getMyCommissions = async (params = {}) => {
-    const response = await api.get('/commissions/my-commissions', { params });
-    return response.data;
+    // Get stats
+    getMyStats: async () => {
+        const response = await api.get('/commissions/my-stats');
+        return response.data;
+    },
+
+    // --- Admin Methods ---
+
+    // Get all commissions
+    getAllCommissions: async (params) => {
+        const response = await api.get('/commissions', { params });
+        return response.data;
+    },
+
+    // Approve commission
+    approveCommission: async (id) => {
+        const response = await api.put(`/commissions/${id}/approve`);
+        return response.data;
+    },
+
+    // Mark as paid
+    markAsPaid: async (id) => {
+        const response = await api.put(`/commissions/${id}/pay`);
+        return response.data;
+    }
 };
 
-export const getMyStats = async () => {
-    const response = await api.get('/commissions/my-stats');
-    return response.data;
-};
-
-export const getMonthlyEarnings = async (months = 12) => {
-    const response = await api.get('/commissions/monthly-earnings', {
-        params: { months }
-    });
-    return response.data;
-};
-
-export default {
-    getMyCommissions,
-    getMyStats,
-    getMonthlyEarnings
-};
+export default commissionService;

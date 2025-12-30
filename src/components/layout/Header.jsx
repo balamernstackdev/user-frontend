@@ -6,7 +6,11 @@ import './Header.css';
 
 const Header = ({ notificationCount = 0 }) => {
     const [showSettings, setShowSettings] = useState(false);
+    const [showAdmin, setShowAdmin] = useState(false);
     const [showMobileMenu, setShowMobileMenu] = useState(false);
+    const user = authService.getUser();
+    const isAdmin = user?.role === 'admin';
+    const isMarketer = user?.role === 'marketer';
 
     const handleLogout = async () => {
         // Call logout API to clear cookies
@@ -39,14 +43,47 @@ const Header = ({ notificationCount = 0 }) => {
                             <div className="hamburger_menu">
                                 <nav>
                                     <ul>
-                                        <li><Link to="/dashboard" onClick={() => setShowMobileMenu(false)}>Dashboard</Link></li>
-                                        <li><Link to="/profile" onClick={() => setShowMobileMenu(false)}>My Profile</Link></li>
-                                        <li><Link to="/subscription" onClick={() => setShowMobileMenu(false)}>My Subscription</Link></li>
-                                        <li><Link to="/payments" onClick={() => setShowMobileMenu(false)}>My Payments</Link></li>
-                                        <li><Link to="/tickets" onClick={() => setShowMobileMenu(false)}>My Tickets</Link></li>
-                                        <li><Link to="/downloads" onClick={() => setShowMobileMenu(false)}>My Downloads</Link></li>
-                                        <li><Link to="/faq" onClick={() => setShowMobileMenu(false)}>FAQ</Link></li>
-                                        <li><Link to="/how-to-use" onClick={() => setShowMobileMenu(false)}>How to Use</Link></li>
+                                        {isAdmin ? (
+                                            // Admin Mobile Menu
+                                            <>
+                                                <li><Link to="/admin/dashboard" onClick={() => setShowMobileMenu(false)}>Admin Dashboard</Link></li>
+                                                <li><Link to="/admin/plans" onClick={() => setShowMobileMenu(false)}>Manage Plans</Link></li>
+                                                <li><Link to="/admin/files" onClick={() => setShowMobileMenu(false)}>Downloads</Link></li>
+                                                <li><Link to="/admin/transactions" onClick={() => setShowMobileMenu(false)}>Transactions</Link></li>
+                                                <li><Link to="/admin/users" onClick={() => setShowMobileMenu(false)}>User Management</Link></li>
+                                                <li><Link to="/admin/tickets" onClick={() => setShowMobileMenu(false)}>Support Tickets</Link></li>
+                                                <li><Link to="/admin/logs" onClick={() => setShowMobileMenu(false)}>System Logs</Link></li>
+                                                <li><Link to="/profile" onClick={() => setShowMobileMenu(false)}>My Profile</Link></li>
+                                            </>
+                                        ) : (
+                                            // User/Marketer Mobile Menu
+                                            <>
+                                                <li><Link to="/dashboard" onClick={() => setShowMobileMenu(false)}>Dashboard</Link></li>
+                                                <li><Link to="/profile" onClick={() => setShowMobileMenu(false)}>My Profile</Link></li>
+
+                                                {isMarketer && (
+                                                    <>
+                                                        <li><Link to="/marketer/referrals" onClick={() => setShowMobileMenu(false)}>Referrals</Link></li>
+                                                        <li><Link to="/marketer/commissions" onClick={() => setShowMobileMenu(false)}>Commissions</Link></li>
+                                                    </>
+                                                )}
+
+                                                {!isMarketer && <li><Link to="/subscription" onClick={() => setShowMobileMenu(false)}>My Subscription</Link></li>}
+
+                                                {isMarketer ? (
+                                                    <li><Link to="/transactions" onClick={() => setShowMobileMenu(false)}>Transactions</Link></li>
+                                                ) : (
+                                                    <li><Link to="/payments" onClick={() => setShowMobileMenu(false)}>My Payments</Link></li>
+                                                )}
+
+                                                <li><Link to="/tickets" onClick={() => setShowMobileMenu(false)}>My Tickets</Link></li>
+
+                                                {!isMarketer && <li><Link to="/downloads" onClick={() => setShowMobileMenu(false)}>My Downloads</Link></li>}
+
+                                                <li><Link to="/faq" onClick={() => setShowMobileMenu(false)}>FAQ</Link></li>
+                                                <li><Link to="/how-to-use" onClick={() => setShowMobileMenu(false)}>How to Use</Link></li>
+                                            </>
+                                        )}
                                         <li><button onClick={handleLogout} className="mobile-logout-btn">Logout</button></li>
                                     </ul>
                                 </nav>
@@ -74,27 +111,60 @@ const Header = ({ notificationCount = 0 }) => {
                                     <div className="menu-area d-none d-lg-inline-flex align-items-center">
                                         <nav className="mainmenu">
                                             <ul>
-                                                <li><Link to="/dashboard">Dashboard</Link></li>
-                                                <li
-                                                    className="has-dropdown"
-                                                    onMouseEnter={() => setShowSettings(true)}
-                                                    onMouseLeave={() => setShowSettings(false)}
-                                                >
-                                                    <Link to="#" onClick={(e) => e.preventDefault()}>
-                                                        Settings <i className="fa-light fa-angle-down" style={{ fontSize: '12px', marginLeft: '5px' }}></i>
-                                                    </Link>
-                                                    {showSettings && (
-                                                        <ul className="sub-menu">
-                                                            <li><Link to="/profile">My Profile</Link></li>
-                                                            <li><Link to="/subscription">My Subscription</Link></li>
-                                                            <li><Link to="/payments">My Payments</Link></li>
-                                                            <li><Link to="/tickets">My Tickets</Link></li>
-                                                            <li><Link to="/downloads">My Downloads</Link></li>
-                                                        </ul>
-                                                    )}
-                                                </li>
-                                                <li><Link to="/faq">FAQ</Link></li>
-                                                <li><Link to="/how-to-use">How to Use</Link></li>
+                                                {!isAdmin ? (
+                                                    /* User & Marketer Navigation */
+                                                    <>
+                                                        <li><Link to="/dashboard">Dashboard</Link></li>
+
+                                                        {isMarketer ? (
+                                                            /* Marketer Navigation - Flattened */
+                                                            <>
+                                                                <li><Link to="/marketer/referrals">Referrals</Link></li>
+                                                                <li><Link to="/marketer/commissions">Commissions</Link></li>
+                                                                <li><Link to="/transactions">Transactions</Link></li>
+                                                                <li><Link to="/tickets">Tickets</Link></li>
+                                                                <li><Link to="/profile">Profile</Link></li>
+                                                            </>
+                                                        ) : (
+                                                            /* Regular User Navigation */
+                                                            <li
+                                                                className="has-dropdown"
+                                                                onMouseEnter={() => setShowSettings(true)}
+                                                                onMouseLeave={() => setShowSettings(false)}
+                                                            >
+                                                                <Link to="#" onClick={(e) => e.preventDefault()}>
+                                                                    My Account <i className="fa-light fa-angle-down" style={{ fontSize: '12px', marginLeft: '5px' }}></i>
+                                                                </Link>
+                                                                {showSettings && (
+                                                                    <ul className="sub-menu">
+                                                                        <li><Link to="/profile">My Profile</Link></li>
+                                                                        <li><Link to="/subscription">My Subscription</Link></li>
+                                                                        <li><Link to="/payments">My Payments</Link></li>
+                                                                        <li><Link to="/tickets">My Tickets</Link></li>
+                                                                        <li><Link to="/downloads">My Downloads</Link></li>
+                                                                    </ul>
+                                                                )}
+                                                            </li>
+                                                        )}
+
+                                                        <li><Link to="/faq">FAQ</Link></li>
+                                                        <li><Link to="/how-to-use">How to Use</Link></li>
+                                                    </>
+                                                ) : (
+                                                    /* Admin Navigation - All Links Exposed */
+                                                    <>
+                                                        <li><Link to="/admin/dashboard">Dashboard</Link></li>
+                                                        <li><Link to="/admin/users">Users</Link></li>
+                                                        <li><Link to="/admin/plans">Plans</Link></li>
+                                                        <li><Link to="/admin/files">Downloads</Link></li>
+                                                        <li><Link to="/admin/transactions">Transactions</Link></li>
+                                                        <li><Link to="/admin/commissions">Commissions</Link></li>
+                                                        <li><Link to="/admin/tickets">Tickets</Link></li>
+                                                        <li><Link to="/admin/logs">Logs</Link></li>
+                                                        <li><Link to="/admin/faqs">FAQs</Link></li>
+                                                        <li><Link to="/admin/how-to-use">How To Use</Link></li>
+                                                    </>
+                                                )}
                                             </ul>
                                         </nav>
                                     </div>
@@ -130,7 +200,7 @@ const Header = ({ notificationCount = 0 }) => {
                         </div>
                     </div>
                 </div>
-            </header>
+            </header >
         </>
     );
 };

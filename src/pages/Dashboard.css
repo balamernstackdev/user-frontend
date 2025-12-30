@@ -161,6 +161,79 @@
     color: #ffffff;
 }
 
+
+/* Marketer Dashboard Styles */
+.marketer-stats-grid {
+    margin-top: 30px;
+    margin-bottom: 25px;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.referral-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 40px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-left: 5px solid #1e8a8a;
+}
+
+.referral-info h3 {
+    font-size: 20px;
+    margin-bottom: 5px;
+    color: #0c1e21;
+    font-weight: 600;
+}
+
+.referral-info p {
+    color: #6c757d;
+    margin: 0;
+    font-size: 15px;
+}
+
+.referral-code-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: #f8f9fa;
+    padding: 12px 24px;
+    border-radius: 8px;
+    border: 2px dashed #1e8a8a;
+}
+
+.referral-code {
+    font-family: 'Inter', monospace;
+    font-weight: 700;
+    color: #1e8a8a;
+    font-size: 20px;
+    letter-spacing: 1.5px;
+}
+
+.copy-btn {
+    background: none;
+    border: none;
+    color: #6c757d;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+.copy-btn:hover {
+    color: #1e8a8a;
+    background: rgba(30, 138, 138, 0.1);
+}
+
+.copy-btn i {
+    font-size: 18px;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .welcome-section {
@@ -192,4 +265,20 @@
     .quick-links-grid {
         grid-template-columns: 1fr;
     }
+}
+
+/* Explicit Section Titles for Admin Dashboard */
+.section-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: #0c1e21;
+    margin-bottom: 10px;
+}
+
+.section-subtitle {
+    font-size: 16px;
+    color: #495057 !important;
+    /* Darker grey for visibility on light backgrounds */
+    margin-bottom: 30px;
+    font-weight: 500;
 }

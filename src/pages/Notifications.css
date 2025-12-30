@@ -1,7 +1,7 @@
 /* Notifications Page Styles */
 .page-section {
     padding: 120px 0 80px;
-    background-color: #f5f5f5;
+    background-color: var(--tj-color-grey-1, #f5f5f5);
     min-height: 80vh;
 }
 
@@ -11,20 +11,26 @@
 
 .page-header h2 {
     font-size: 36px;
-    color: #0c1e21;
+    color: var(--tj-color-heading-primary, #1a1a1a);
     margin-bottom: 10px;
     font-weight: 700;
 }
 
+.page-header p {
+    color: var(--tj-color-text-body-3, #6c757d);
+}
+
 .mark-all-read {
     text-align: right;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
+    /* Matched reference 20px */
 }
 
 .notification-card {
-    background-color: #ffffff;
+    background-color: var(--tj-color-common-white, #ffffff);
     border-radius: 12px;
-    padding: 25px 30px;
+    padding: 25px;
+    /* Matched reference 25px */
     margin-bottom: 20px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
     transition: all 0.3s ease;
@@ -32,8 +38,9 @@
 }
 
 .notification-card.unread {
-    border-left-color: #1e8a8a;
+    border-left-color: var(--tj-color-theme-primary, #1e8a8a);
     background-color: #f8f9fa;
+    /* Changed to match reference #f8f9fa */
 }
 
 .notification-card:hover {
@@ -49,76 +56,96 @@
 }
 
 .notification-title {
-    font-size: 18px;
-    font-weight: 600;
-    color: #0c1e21;
+    font-size: 16px;
+    /* Matched reference 16px */
+    font-weight: var(--tj-fw-sbold, 600);
+    color: var(--tj-color-heading-primary, #1a1a1a);
     margin: 0;
 }
 
-.notification-title a:hover {
-    color: #1e8a8a;
+.notification-title:hover {
+    color: var(--tj-color-theme-primary, #1e8a8a);
 }
 
 .notification-time {
     font-size: 13px;
-    color: #6c757d;
-    white-space: nowrap;
-    margin-left: 15px;
+    color: var(--tj-color-text-body-3, #6c757d);
 }
 
 .notification-content {
-    font-size: 15px;
-    color: #4a5568;
+    font-size: 14px;
+    /* Matched reference 14px */
+    color: var(--tj-color-text-body, #333333);
     line-height: 1.6;
-    margin: 10px 0 20px;
+    margin: 10px 0;
+    /* Matched reference 10px 0 */
 }
 
 .notification-actions {
     display: flex;
-    gap: 15px;
+    gap: 10px;
+    /* Matched reference 10px */
     margin-top: 15px;
 }
 
 .text-btn {
     font-size: 14px;
     font-weight: 600;
-    color: #1e8a8a;
+    /* Assuming fw for consistency */
+    color: var(--tj-color-theme-primary, #1e8a8a);
     text-decoration: none;
     transition: color 0.3s ease;
 }
 
 .text-btn:hover {
-    color: #0c1e21;
+    color: var(--tj-color-heading-primary, #0c1e21);
     text-decoration: underline;
+    /* Assuming standard behavior */
+}
+
+/* Button style for "Mark all Read" when using transparent-btn class */
+.tj-primary-btn.transparent-btn {
+    background: transparent;
+    border: 1px solid var(--tj-color-theme-primary, #1e8a8a);
+    color: var(--tj-color-theme-primary, #1e8a8a);
+    padding: 10px 20px;
+    border-radius: 30px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.tj-primary-btn.transparent-btn:hover {
+    background: var(--tj-color-theme-primary, #1e8a8a);
+    color: var(--tj-color-common-white, #ffffff);
 }
 
 .empty-state {
     text-align: center;
     padding: 60px 20px;
-    background-color: #ffffff;
+    background-color: var(--tj-color-common-white, #ffffff);
     border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 .empty-state i {
-    font-size: 60px;
-    color: #1e8a8a;
+    font-size: 64px;
+    /* Matched reference 64px */
+    color: var(--tj-color-text-body-3, #6c757d);
+    /* Matched reference */
     margin-bottom: 20px;
-    display: inline-block;
-    padding: 20px;
-    background: rgba(30, 138, 138, 0.1);
-    border-radius: 50%;
 }
 
 .empty-state h3 {
     font-size: 24px;
-    color: #0c1e21;
+    color: var(--tj-color-heading-primary, #1a1a1a);
     margin-bottom: 10px;
-    font-weight: 600;
 }
 
 .empty-state p {
-    color: #6c757d;
+    color: var(--tj-color-text-body-3, #6c757d);
 }
 
 @media (max-width: 767px) {
@@ -128,10 +155,7 @@
 
     .notification-header {
         flex-direction: column;
+        /* Matched behavior though not explicit in ref CSS */
         gap: 5px;
-    }
-
-    .notification-time {
-        margin-left: 0;
     }
 }

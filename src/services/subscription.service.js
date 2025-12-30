@@ -24,9 +24,23 @@ export const cancelSubscription = async (id) => {
     return response.data;
 };
 
+// --- Admin ---
+
+export const getAllSubscriptions = async (params) => {
+    const response = await api.get('/subscriptions', { params });
+    return response.data;
+};
+
+export const extendSubscription = async (id, days) => {
+    const response = await api.put(`/subscriptions/${id}/extend`, { days });
+    return response.data;
+};
+
 export default {
     getMySubscriptions,
     getActiveSubscription,
     getDownloadableFiles,
-    cancelSubscription
+    cancelSubscription,
+    getAllSubscriptions,
+    extendSubscription
 };

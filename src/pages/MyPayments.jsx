@@ -83,7 +83,7 @@ const MyPayments = () => {
                                                             </span>
                                                         </td>
                                                         <td>
-                                                            <button className="text-btn">View Invoice</button>
+                                                            <Link to={`/invoice/${txn.id}`} className="text-btn">View Invoice</Link>
                                                         </td>
                                                     </tr>
                                                 ))}

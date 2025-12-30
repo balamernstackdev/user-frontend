@@ -46,7 +46,13 @@ const Login = () => {
                     localStorage.setItem('rememberMe', 'true');
                 }
 
-                navigate('/dashboard');
+                // Redirect based on role
+                const userRole = response.data.user.role;
+                if (userRole === 'admin') {
+                    navigate('/admin/dashboard');
+                } else {
+                    navigate('/dashboard');
+                }
             }
         } catch (err) {
             setError(err.response?.data?.message || 'Login failed. Please try again.');

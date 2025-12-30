@@ -88,7 +88,10 @@ const TicketDetail = () => {
     };
 
     const formatDate = (dateString) => {
-        const date = new Date(dateString);
+        if (!dateString) return 'N/A';
+        // Ensure date is treated as UTC if it lacks timezone info
+        const dateStr = dateString.endsWith('Z') ? dateString : `${dateString}Z`;
+        const date = new Date(dateStr);
         return date.toLocaleString('en-IN', {
             year: 'numeric',
             month: 'short',
@@ -175,13 +178,48 @@ const TicketDetail = () => {
                                     </span>
                                 </div>
                             </div>
-                            <span className={`ticket-status ${ticket.status}`}>{ticket.status.replace('_', ' ')}</span>
+                            <div className="ticket-header-actions" style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                                {user?.role === 'admin' ? (
+                                    <div className="status-dropdown-container">
+                                        <select
+                                            className={`ticket-status-select ${ticket.status}`}
+                                            value={ticket.status}
+                                            onChange={async (e) => {
+                                                const newStatus = e.target.value;
+                                                try {
+                                                    await ticketService.updateStatus(id, newStatus);
+                                                    setTicket(prev => ({ ...prev, status: newStatus }));
+                                                } catch (err) {
+                                                    alert('Failed to update status');
+                                                }
+                                            }}
+                                            style={{
+                                                padding: '5px 15px',
+                                                borderRadius: '20px',
+                                                border: 'none',
+                                                fontWeight: '600',
+                                                fontSize: '14px',
+                                                cursor: 'pointer',
+                                                textTransform: 'capitalize',
+                                                height: 'auto'
+                                            }}
+                                        >
+                                            <option value="open">Open</option>
+                                            <option value="in_progress">In Progress</option>
+                                            <option value="resolved">Resolved</option>
+                                            <option value="closed">Closed</option>
+                                        </select>
+                                    </div>
+                                ) : (
+                                    <span className={`ticket-status ${ticket.status}`}>{ticket.status.replace('_', ' ')}</span>
+                                )}
 
-                            {ticket.status !== 'closed' && ticket.status !== 'resolved' && (
-                                <button className="btn btn-danger-outline" onClick={handleCloseTicket}>
-                                    Close Ticket
-                                </button>
-                            )}
+                                {ticket.status !== 'closed' && (
+                                    <button className="btn btn-danger-outline" onClick={handleCloseTicket}>
+                                        Close Ticket
+                                    </button>
+                                )}
+                            </div>
                         </div>
 
                         {error && <div className="alert alert-error" style={{ color: 'red', marginBottom: '20px' }}>{error}</div>}
@@ -218,7 +256,11 @@ const TicketDetail = () => {
                                                 {message.is_admin_reply ? 'ST' : (user?.firstname?.charAt(0) || 'U')}
                                             </div>
                                             <div className="reply-author-info">
-                                                <h4>{message.is_admin_reply ? 'Support Team' : 'You'}</h4>
+                                                <h4>
+                                                    {message.is_admin_reply
+                                                        ? 'Support Team'
+                                                        : (user?.role === 'admin' ? (ticket.user_name || 'Customer') : 'You')}
+                                                </h4>
                                                 <span>{message.is_admin_reply ? 'Stoxzo Support' : 'Customer'}</span>
                                             </div>
                                         </div>

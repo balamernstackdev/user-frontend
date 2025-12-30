@@ -75,11 +75,11 @@ const Plans = () => {
 
     return (
         <DashboardLayout>
-            <section className="plans-page">
+            <section className="page-section">
                 <div className="container">
-                    <div className="plans-header animate-fade-up">
-                        <h1>Choose Your Plan</h1>
-                        <p>Select the perfect plan for your needs</p>
+                    <div className="page-header animate-fade-up">
+                        <h2>Choose Your Plan</h2>
+                        <p style={{ color: 'var(--tj-color-text-body-3)' }}>Select the perfect plan for your needs</p>
                     </div>
 
                     <div className="plan-type-filter animate-fade-up" style={{ animationDelay: '0.1s' }}>
@@ -97,59 +97,54 @@ const Plans = () => {
 
                     {error && <div className="alert alert-error text-center">{error}</div>}
 
-                    <div className="plans-grid">
+                    <div className="product-grid">
                         {plans.map((plan, index) => {
                             const { amount, period } = formatPrice(plan);
                             const icon = getPlanIcon(plan.name);
+                            const isPopular = plan.is_popular || plan.name.toLowerCase().includes('premium'); // Fallback logic if DB flag missing
                             const animationDelay = 0.2 + (index * 0.1) + 's';
 
                             return (
                                 <div
                                     key={plan.id}
-                                    className={`plan-card animate-fade-up ${plan.is_popular ? 'popular' : ''} ${plan.is_featured ? 'featured' : ''}`}
-                                    style={{ animationDelay }}
+                                    className="product-card animate-fade-up"
+                                    style={{
+                                        animationDelay,
+                                        border: isPopular ? '2px solid var(--tj-color-theme-primary)' : 'none',
+                                        position: 'relative'
+                                    }}
                                 >
-                                    {(plan.is_popular || plan.is_featured) && (
-                                        <div className={`plan-badge ${plan.is_popular ? 'popular' : ''}`}>
-                                            {plan.badge_text || (plan.is_popular ? 'Most Popular' : 'Featured')}
-                                        </div>
+                                    {isPopular && (
+                                        <span className="product-badge popular">Most Popular</span>
                                     )}
 
-                                    <div className="plan-icon">
+                                    <div className="product-icon">
                                         <i className={`fa-light ${icon}`}></i>
                                     </div>
 
-                                    <h2>{plan.name}</h2>
-                                    {/* <p className="plan-type">{plan.plan_type}</p> */}
+                                    <h3 className="product-title">{plan.name}</h3>
+                                    <div className="product-price">{amount}<span>{period}</span></div>
+                                    <p className="product-description">{plan.description}</p>
 
-                                    <div className="plan-price">
-                                        <span className="price-amount">{amount}</span>
-                                        <span className="price-period">{period}</span>
-                                    </div>
-
-                                    <p className="plan-description">{plan.description}</p>
-
-                                    <ul className="plan-features">
+                                    <ul className="product-features">
                                         {plan.features && plan.features.map((feature, i) => (
                                             <li key={i}>
-                                                <i className="fa-light fa-check"></i>
-                                                <span>{feature}</span>
+                                                <i className="fa-light fa-check"></i> {feature}
                                             </li>
                                         ))}
-                                        {/* Add specific limits if not in features list but in object */}
                                         {plan.max_downloads !== undefined && (
                                             <li>
-                                                <i className="fa-light fa-check"></i>
-                                                <span>{plan.max_downloads ? `${plan.max_downloads} Downloads/mo` : 'Unlimited Downloads'}</span>
+                                                <i className="fa-light fa-check"></i> {plan.max_downloads ? `${plan.max_downloads} Downloads/mo` : 'Unlimited Downloads'}
                                             </li>
                                         )}
                                     </ul>
 
                                     <button
-                                        className="tj-primary-btn btn-block"
+                                        className="tj-primary-btn"
+                                        style={{ width: '100%', justifyContent: 'center' }}
                                         onClick={() => handlePurchase(plan.id)}
                                     >
-                                        <span className="btn-text"><span>{user ? 'Purchase Now' : 'Get Started'}</span></span>
+                                        <span className="btn-text"><span>{user ? `Choose ${plan.name.split(' ')[0]}` : 'Get Started'}</span></span>
                                         <span className="btn-icon"><i className="tji-arrow-right-long"></i></span>
                                     </button>
                                 </div>

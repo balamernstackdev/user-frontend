@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { authService } from './auth.service';
+import TokenService from './token.service';
 
 // Create axios instance
 const api = axios.create({
@@ -14,7 +14,7 @@ const api = axios.create({
 // Request interceptor - Add JWT token to requests
 api.interceptors.request.use(
     (config) => {
-        const token = authService.getToken();
+        const token = TokenService.getToken();
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
@@ -30,6 +30,11 @@ api.interceptors.response.use(
     (response) => response,
     async (error) => {
         const originalRequest = error.config;
+
+        // Skip 401 interception for login requests to avoid redirect loops or suppressing specific errors
+        if (originalRequest.url.includes('/auth/login')) {
+            return Promise.reject(error);
+        }
 
         // If error is 401 and we haven't retried yet
         if (error.response?.status === 401 && !originalRequest._retry) {
@@ -48,20 +53,20 @@ api.interceptors.response.use(
                     const { accessToken } = response.data.data;
 
                     // Save new token
-                    authService.setToken(accessToken);
+                    TokenService.updateToken(accessToken);
 
                     // Retry original request with new token
                     originalRequest.headers.Authorization = `Bearer ${accessToken}`;
                     return api(originalRequest);
                 } catch (refreshError) {
                     // Refresh token failed, logout user
-                    authService.logout();
+                    TokenService.removeUser();
                     window.location.href = '/login';
                     return Promise.reject(refreshError);
                 }
             } else {
                 // Other 401 errors (invalid credentials, etc.)
-                authService.logout();
+                TokenService.removeUser();
                 window.location.href = '/login';
             }
         }

@@ -1,0 +1,236 @@
+/* Page Wrapper */
+.admin-form-page {
+    padding: 120px 0 80px;
+    /* Background removed to inherit global style */
+    min-height: 100vh;
+}
+
+/* Header */
+.admin-form-header {
+    margin-bottom: 50px;
+    text-align: center;
+}
+
+.admin-form-header h2,
+.admin-form-header h1 {
+    font-size: 36px;
+    color: #1a1a1a;
+    /* var(--tj-color-heading-primary) */
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.admin-form-header p {
+    color: #6c757d;
+}
+
+/* Card Styling */
+/* Card Styling matching 'step-card' from reference */
+.admin-form-card {
+    background-color: #ffffff;
+    /* var(--tj-color-common-white) */
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    margin-bottom: 30px;
+    position: relative;
+    border: none;
+    /* Reference doesn't have a border, just shadow */
+}
+
+/* Form Styles */
+/* Form Styles */
+.admin-form-card .form-label {
+    color: #333333;
+    font-weight: 600;
+    margin-bottom: 10px;
+    display: block;
+    font-size: 0.95rem;
+}
+
+.admin-form-card .form-control,
+.admin-form-card .form-select {
+    background-color: #f8f9fa;
+    /* Slightly off-white for contrast */
+    border: 1px solid #e9ecef;
+    color: #333333;
+    padding: 12px 16px;
+    /* Larger padding */
+    border-radius: 10px;
+    /* Softer corners */
+    width: 100%;
+    transition: all 0.2s ease;
+    font-size: 0.95rem;
+}
+
+.admin-form-card .form-control:focus,
+.admin-form-card .form-select:focus {
+    border-color: #0088cc;
+    box-shadow: 0 0 0 4px rgba(0, 136, 204, 0.1);
+    /* Softer glow */
+    background-color: #fff;
+    outline: none;
+}
+
+.admin-form-card .form-control::placeholder {
+    color: #adb5bd;
+    opacity: 0.8;
+}
+
+/* Feature List Styles */
+.features-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.feature-item {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.feature-item .form-control {
+    flex-grow: 1;
+}
+
+.btn-remove-feature {
+    background: #ffebee;
+    border: 1px solid #ffcdd2;
+    color: #c62828;
+    padding: 0;
+    width: 46px;
+    /* Fixed square */
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    height: 46px;
+    /* Match input height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.btn-remove-feature:hover {
+    background: #ef5350;
+    color: white;
+    border-color: #ef5350;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(239, 83, 80, 0.2);
+}
+
+.btn-add-feature {
+    width: 100%;
+    padding: 12px;
+    background: #e3f2fd;
+    border: 1px dashed #64b5f6;
+    color: #1976d2;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-add-feature:hover {
+    background: #bbdefb;
+    border-color: #42a5f5;
+    color: #0d47a1;
+}
+
+/* Checkbox Groups */
+.checkbox-group {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border: 1px solid #e9ecef;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    color: #333;
+    font-weight: 600;
+    user-select: none;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--tj-color-theme-primary, #0088cc);
+    cursor: pointer;
+}
+
+/* Form Actions */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+/* Button override */
+.tj-secondary-btn {
+    color: #6c757d;
+    border: 1px solid #dee2e6;
+    background: transparent;
+    padding: 0 30px;
+    height: 50px;
+    /* Match primary btn height from template */
+    border-radius: 10px;
+    /* Pill/Rounded */
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tj-secondary-btn:hover {
+    background-color: #6c757d;
+    color: #fff;
+    border-color: #6c757d;
+}
+
+/* Primary Button Fallback */
+.tj-primary-btn {
+    background-color: var(--tj-color-theme-primary, #1e8a8a);
+    color: #ffffff;
+    border: none;
+    padding: 0 30px;
+    height: 50px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 140px;
+}
+
+.tj-primary-btn:hover {
+    background-color: var(--tj-color-theme-primary-hover, #176c6c);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(30, 138, 138, 0.2);
+}
+
+.tj-primary-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}

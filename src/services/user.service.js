@@ -1,47 +1,53 @@
 import api from './api';
 
-/**
- * User Service
- * Handles user profile and marketer-related operations
- */
 export const userService = {
-    /**
-     * Get user profile
-     */
+    // Get user profile
     getProfile: async () => {
         const response = await api.get('/users/profile');
         return response.data;
     },
 
-    /**
-     * Update user profile
-     */
-    updateProfile: async (profileData) => {
-        const response = await api.put('/users/profile', profileData);
+    // Update user profile
+    updateProfile: async (userData) => {
+        const response = await api.put('/users/profile', userData);
         return response.data;
     },
 
-    /**
-     * Change password
-     */
+    // Change password
     changePassword: async (passwordData) => {
         const response = await api.put('/users/password', passwordData);
         return response.data;
     },
 
-    /**
-     * Get marketer profile (marketers only)
-     */
+    // Get marketer profile
     getMarketerProfile: async () => {
         const response = await api.get('/users/marketer/profile');
         return response.data;
     },
 
-    /**
-     * Update marketer profile (marketers only)
-     */
-    updateMarketerProfile: async (marketerData) => {
-        const response = await api.put('/users/marketer/profile', marketerData);
+    // Update marketer profile
+    updateMarketerProfile: async (profileData) => {
+        const response = await api.put('/users/marketer/profile', profileData);
         return response.data;
     },
+
+    // --- Admin Methods ---
+
+    // Get all users
+    getAllUsers: async (params) => {
+        const response = await api.get('/users', { params });
+        return response.data;
+    },
+
+    // Update user (admin)
+    updateUser: async (id, userData) => {
+        const response = await api.put(`/users/${id}`, userData);
+        return response.data;
+    },
+
+    // Delete user
+    deleteUser: async (id) => {
+        const response = await api.delete(`/users/${id}`);
+        return response.data;
+    }
 };

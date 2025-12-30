@@ -44,9 +44,20 @@ export const getTransaction = async (id) => {
     return response.data;
 };
 
+/**
+ * Get all transactions (admin only)
+ * @param {object} params - Query parameters (status, limit, offset)
+ * @returns {Promise} Transaction list
+ */
+export const getAllTransactions = async (params = {}) => {
+    const response = await api.get('/payments', { params });
+    return response.data;
+};
+
 export default {
     createOrder,
     verifyPayment,
     getTransactions,
-    getTransaction
+    getTransaction,
+    getAllTransactions
 };

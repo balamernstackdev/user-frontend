@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { authService } from '../services/auth.service';
+import StoxzoLogo from '../assets/images/Stoxzo_Logo.svg';
+import './ResetPassword.css';
 
 const ResetPassword = () => {
     const navigate = useNavigate();
@@ -13,6 +15,8 @@ const ResetPassword = () => {
     });
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     useEffect(() => {
         if (!token) {
@@ -83,74 +87,103 @@ const ResetPassword = () => {
     };
 
     return (
-        <div className="auth-container fade-in">
-            <div className="auth-card">
-                <div className="auth-header">
-                    <h1 className="auth-logo">🔐</h1>
-                    <h2>Reset Password</h2>
-                    <p className="auth-subtitle">Enter your new password</p>
-                </div>
-
-                {errors.general && (
-                    <div className="alert alert-error" role="alert">
-                        {errors.general}
+        <section className="reset-password-section">
+            <div className="reset-password-wrapper">
+                <div className="reset-password-card">
+                    <div className="reset-password-logo">
+                        <Link to="/">
+                            <img src={StoxzoLogo} alt="Stoxzo Logo" />
+                        </Link>
                     </div>
-                )}
-
-                <form onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <label htmlFor="password" className="form-label">
-                            New Password *
-                        </label>
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            className={`form-input ${errors.password ? 'error' : ''}`}
-                            placeholder="Enter new password"
-                            value={formData.password}
-                            onChange={handleChange}
-                        />
-                        {errors.password && (
-                            <span className="form-error">{errors.password}</span>
-                        )}
-                        <small className="text-muted text-small">
-                            Min 8 characters with uppercase, lowercase, number & special character
-                        </small>
+                    <div className="reset-password-title">
+                        <h2>Reset Password</h2>
+                        <p>Please enter your new password below.</p>
                     </div>
 
-                    <div className="form-group">
-                        <label htmlFor="confirmPassword" className="form-label">
-                            Confirm Password *
-                        </label>
-                        <input
-                            type="password"
-                            id="confirmPassword"
-                            name="confirmPassword"
-                            className={`form-input ${errors.confirmPassword ? 'error' : ''}`}
-                            placeholder="Confirm new password"
-                            value={formData.confirmPassword}
-                            onChange={handleChange}
-                        />
-                        {errors.confirmPassword && (
-                            <span className="form-error">{errors.confirmPassword}</span>
-                        )}
+                    <div className="password-requirements">
+                        <p>Password Requirements:</p>
+                        <ul>
+                            <li>At least 8 characters long</li>
+                            <li>Contains at least one uppercase letter</li>
+                            <li>Contains at least one lowercase letter</li>
+                            <li>Contains at least one number</li>
+                            <li>Contains at least one special character</li>
+                        </ul>
                     </div>
 
-                    <button
-                        type="submit"
-                        className="btn btn-primary btn-block mt-md"
-                        disabled={loading}
-                    >
-                        {loading ? 'Resetting Password...' : 'Reset Password'}
-                    </button>
-                </form>
+                    {errors.general && (
+                        <div className="alert alert-danger" style={{ marginBottom: '20px' }} role="alert">
+                            {errors.general}
+                        </div>
+                    )}
 
-                <div className="auth-footer">
-                    <Link to="/login">Back to login</Link>
+                    <form className="reset-password-form" onSubmit={handleSubmit}>
+                        <div className="form-input password-input">
+                            <label htmlFor="password">New Password</label>
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                id="password"
+                                name="password"
+                                placeholder="Enter new password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                required
+                            />
+                            <button
+                                type="button"
+                                className="password-toggle"
+                                onClick={() => setShowPassword(!showPassword)}
+                            >
+                                <i className={`fa-light ${showPassword ? 'fa-eye' : 'fa-eye-slash'}`}></i>
+                            </button>
+                            {errors.password && (
+                                <span style={{ color: '#cf1322', fontSize: '12px', marginTop: '4px', display: 'block' }}>
+                                    {errors.password}
+                                </span>
+                            )}
+                        </div>
+
+                        <div className="form-input password-input">
+                            <label htmlFor="confirmPassword">Confirm New Password</label>
+                            <input
+                                type={showConfirmPassword ? "text" : "password"}
+                                id="confirmPassword"
+                                name="confirmPassword"
+                                placeholder="Confirm new password"
+                                value={formData.confirmPassword}
+                                onChange={handleChange}
+                                required
+                            />
+                            <button
+                                type="button"
+                                className="password-toggle"
+                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                            >
+                                <i className={`fa-light ${showConfirmPassword ? 'fa-eye' : 'fa-eye-slash'}`}></i>
+                            </button>
+                            {errors.confirmPassword && (
+                                <span style={{ color: '#cf1322', fontSize: '12px', marginTop: '4px', display: 'block' }}>
+                                    {errors.confirmPassword}
+                                </span>
+                            )}
+                        </div>
+
+                        <div className="reset-btn-wrapper">
+                            <button type="submit" className="tj-primary-btn" disabled={loading}>
+                                <span className="btn-text">
+                                    <span>{loading ? 'Resetting Password...' : 'Reset Password'}</span>
+                                </span>
+                                <span className="btn-icon"><i className="tji-arrow-right-long"></i></span>
+                            </button>
+                        </div>
+                    </form>
+
+                    <div className="back-to-login">
+                        <p>Remember your password? <Link to="/login">Back to Login</Link></p>
+                    </div>
                 </div>
             </div>
-        </div>
+        </section>
     );
 };
 
