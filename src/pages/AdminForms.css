@@ -1,7 +1,52 @@
+/* Quill Editor Styles */
+.editor-wrapper {
+    background: #fff;
+    border-radius: 8px;
+    margin-top: 5px;
+}
+
+.ql-toolbar.ql-snow {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-color: #eee;
+    background: #f8f9fa;
+}
+
+.ql-container.ql-snow {
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    border-color: #eee;
+    min-height: 400px;
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+}
+
+.ql-editor {
+    min-height: 400px;
+    line-height: 1.6;
+    color: #333;
+}
+
+.ql-editor.ql-blank::before {
+    color: #999;
+    font-style: normal;
+}
+
+.ql-snow .ql-stroke {
+    stroke: #666;
+}
+
+.ql-snow .ql-fill {
+    fill: #666;
+}
+
+.ql-snow .ql-picker {
+    color: #666;
+}
+
 /* Page Wrapper */
 .admin-form-page {
-    padding: 120px 0 80px;
-    /* Background removed to inherit global style */
+    /* Padding handled by DashboardLayout */
     min-height: 100vh;
 }
 
@@ -40,12 +85,16 @@
 
 /* Form Styles */
 /* Form Styles */
+.form-label,
 .admin-form-card .form-label {
-    color: #333333;
-    font-weight: 600;
-    margin-bottom: 10px;
+    color: #1a1a1a;
+    /* Darker for better visibility */
+    font-weight: 700;
+    margin-bottom: 12px;
     display: block;
     font-size: 0.95rem;
+    text-transform: none;
+    letter-spacing: normal;
 }
 
 .admin-form-card .form-control,
@@ -75,6 +124,13 @@
 .admin-form-card .form-control::placeholder {
     color: #adb5bd;
     opacity: 0.8;
+}
+
+/* Sidebar Card Polish */
+.admin-card .form-label {
+    color: #1a1a1a !important;
+    font-weight: 700 !important;
+    opacity: 1 !important;
 }
 
 /* Feature List Styles */
@@ -160,8 +216,8 @@
     align-items: center;
     gap: 10px;
     cursor: pointer;
-    color: #333;
-    font-weight: 600;
+    color: #1a1a1a;
+    font-weight: 700;
     user-select: none;
 }
 
@@ -233,4 +289,131 @@
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
+}
+
+/* File Upload Component */
+.upload-group {
+    margin-bottom: 25px;
+}
+
+.upload-container {
+    border: 2px dashed #dee2e6;
+    border-radius: 12px;
+    background: #f8f9fa;
+    padding: 30px;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+.upload-container:hover {
+    border-color: #1e8a8a;
+    background: #f0f7f7;
+}
+
+.upload-container.has-file {
+    border-style: solid;
+    border-color: #1e8a8a;
+    background: #fff;
+    padding: 15px;
+}
+
+.upload-placeholder i {
+    font-size: 40px;
+    color: #adb5bd;
+    margin-bottom: 15px;
+}
+
+.upload-placeholder p {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+}
+
+.file-preview-area {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.image-preview {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 1px solid #eee;
+}
+
+.file-icon-preview {
+    width: 60px;
+    height: 60px;
+    background: #e9ecef;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: #495057;
+}
+
+.file-info {
+    flex-grow: 1;
+    text-align: left;
+}
+
+.file-name {
+    display: block;
+    font-weight: 600;
+    color: #333;
+    font-size: 0.9rem;
+    word-break: break-all;
+}
+
+.btn-remove-file {
+    background: none;
+    border: none;
+    color: #dc3545;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 5px;
+    transition: transform 0.2s;
+}
+
+.btn-remove-file:hover {
+    transform: scale(1.2);
+}
+
+.upload-progress-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background: #1e8a8a;
+    transition: width 0.3s ease;
+}
+
+.back-link {
+    color: #1e8a8a;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.back-link:hover {
+    color: #156b6b;
+    transform: translateX(-5px);
+}
+
+.admin-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 35px;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(0, 0, 0, 0.05);
 }

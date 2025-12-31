@@ -4,6 +4,7 @@ import DashboardLayout from '../components/layout/DashboardLayout';
 import planService from '../services/plan.service';
 import fileService from '../services/file.service';
 import './AdminForms.css';
+import { toast } from 'react-toastify';
 
 const AdminPlanForm = () => {
     const { id } = useParams();
@@ -30,7 +31,6 @@ const AdminPlanForm = () => {
 
     const [loading, setLoading] = useState(false);
     const [fetching, setFetching] = useState(isEditMode);
-    const [error, setError] = useState(null);
 
     useEffect(() => {
         if (isEditMode) {
@@ -79,7 +79,7 @@ const AdminPlanForm = () => {
             }
         } catch (err) {
             console.error('Failed to fetch plan:', err);
-            setError('Failed to load plan data');
+            toast.error('Failed to load plan data');
         } finally {
             setFetching(false);
         }
@@ -136,7 +136,6 @@ const AdminPlanForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        setError(null);
 
         try {
             // Clean up data
@@ -152,11 +151,11 @@ const AdminPlanForm = () => {
             let planId = id;
             if (isEditMode) {
                 await planService.updatePlan(id, payload);
-                alert('Plan updated successfully');
+                toast.success('Plan updated successfully');
             } else {
                 const newPlan = await planService.createPlan(payload);
                 planId = newPlan.data.id;
-                alert('Plan created successfully');
+                toast.success('Plan created successfully');
             }
 
             // Handle Files Assignment
@@ -209,7 +208,8 @@ const AdminPlanForm = () => {
             navigate('/admin/plans');
         } catch (err) {
             console.error('Operation failed:', err);
-            setError(err.response?.data?.message || 'Operation failed');
+            const msg = err.response?.data?.message || 'Operation failed';
+            toast.error(msg);
         } finally {
             setLoading(false);
         }
@@ -240,7 +240,6 @@ const AdminPlanForm = () => {
                         <div className="col-lg-8">
                             <div className="admin-form-card">
                                 <div className="card-body p-4">
-                                    {error && <div className="alert alert-danger">{error}</div>}
 
                                     <form onSubmit={handleSubmit}>
                                         <div className="row">
@@ -404,7 +403,7 @@ const AdminPlanForm = () => {
                                                                 className="btn-remove-feature"
                                                                 onClick={() => removeFeature(index)}
                                                             >
-                                                                <i className="fa-light fa-trash"></i>
+                                                                <i className="fas fa-trash"></i>
                                                             </button>
                                                         )}
                                                     </div>

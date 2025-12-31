@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import DashboardLayout from '../components/layout/DashboardLayout';
+import SEO from '../components/common/SEO';
 import ticketService from '../services/ticket.service';
 import './SupportTickets.css';
+import { toast } from 'react-toastify';
 
 const SupportTickets = () => {
     const [tickets, setTickets] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
     const [filter, setFilter] = useState('all');
     const navigate = useNavigate();
 
@@ -22,7 +23,7 @@ const SupportTickets = () => {
             const response = await ticketService.getMyTickets(params);
             setTickets(response.data);
         } catch (err) {
-            setError('Failed to load tickets');
+            toast.error('Failed to load tickets');
             console.error(err);
         } finally {
             setLoading(false);
@@ -52,6 +53,7 @@ const SupportTickets = () => {
 
     return (
         <DashboardLayout>
+            <SEO title="Support Tickets" description="View and manage your support tickets." />
             <section className="page-section">
                 <div className="container">
                     <div className="page-header">
@@ -61,7 +63,7 @@ const SupportTickets = () => {
                         </div>
                         <Link to="/tickets/create" className="tj-primary-btn">
                             <span className="btn-text"><span>Create Ticket</span></span>
-                            <span className="btn-icon"><i className="tji-arrow-right-long"></i></span>
+                            <span className="btn-icon"><i className="fas fa-arrow-right"></i></span>
                         </Link>
                     </div>
 
@@ -85,8 +87,6 @@ const SupportTickets = () => {
                                         <span className="visually-hidden">Loading...</span>
                                     </div>
                                 </div>
-                            ) : error ? (
-                                <div className="alert alert-error">{error}</div>
                             ) : tickets.length > 0 ? (
                                 tickets.map((ticket) => (
                                     <div
@@ -107,9 +107,9 @@ const SupportTickets = () => {
                                             {ticket.message_preview || ticket.description || 'No description available.'}
                                         </div>
                                         <div className="ticket-meta">
-                                            <span><i className="fa-light fa-calendar"></i> Created: {formatDate(ticket.created_at)}</span>
-                                            <span><i className="fa-light fa-clock"></i> Last Updated: {formatDate(ticket.updated_at)}</span>
-                                            <span><i className="fa-light fa-user"></i> {ticket.category || 'General'}</span>
+                                            <span><i className="far fa-calendar"></i> Created: {formatDate(ticket.created_at)}</span>
+                                            <span><i className="far fa-clock"></i> Last Updated: {formatDate(ticket.updated_at)}</span>
+                                            <span><i className="fas fa-user-circle"></i> {ticket.category || 'General'}</span>
                                         </div>
                                     </div>
                                 ))

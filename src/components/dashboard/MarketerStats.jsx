@@ -7,27 +7,27 @@ const MarketerStats = ({ stats }) => {
         {
             label: 'Total Referrals',
             value: stats.total_referrals,
-            icon: 'fa-light fa-users',
+            icon: 'fas fa-users',
             color: '#1e8a8a'
         },
         {
             label: 'Active Subscribers',
             value: stats.active_subscribers || 0,
-            icon: 'fa-light fa-user-check',
+            icon: 'fas fa-user-check',
             color: '#28a745'
         },
         {
             label: 'Total Commissions',
             value: `₹${(stats.total_commissions || 0).toLocaleString()}`,
-            icon: 'fa-light fa-wallet',
+            icon: 'fas fa-wallet',
             color: '#ffc107'
         },
         {
             label: 'Conversion Rate',
-            value: `${stats.total_referrals > 0
-                ? Math.round((stats.active_subscribers / stats.total_referrals) * 100)
+            value: `${(stats.total_referrals || 0) > 0
+                ? Math.round(((stats.active_subscribers || 0) / (stats.total_referrals || 0)) * 100)
                 : 0}%`,
-            icon: 'fa-light fa-chart-line',
+            icon: 'fas fa-chart-line',
             color: '#17a2b8'
         }
     ];

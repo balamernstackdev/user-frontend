@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import tutorialService from '../services/tutorial.service';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import './AdminListings.css'; // Reusing existing styles
+import { toast } from 'react-toastify';
 
 const AdminFAQs = () => {
     const navigate = useNavigate();
@@ -34,7 +35,7 @@ const AdminFAQs = () => {
                 fetchFAQs();
             } catch (error) {
                 console.error('Error deleting FAQ:', error);
-                alert('Failed to delete FAQ');
+                toast.error('Failed to delete FAQ');
             }
         }
     };
@@ -45,7 +46,7 @@ const AdminFAQs = () => {
             fetchFAQs();
         } catch (error) {
             console.error('Error toggling status:', error);
-            alert('Failed to update status');
+            toast.error('Failed to update status');
         }
     };
 
@@ -112,10 +113,10 @@ const AdminFAQs = () => {
                                             <td>
                                                 <div className="actions-cell">
                                                     <button className="action-btn" onClick={() => navigate(`/admin/faqs/edit/${faq.id}`)} title="Edit">
-                                                        <i className="fa-light fa-edit"></i>
+                                                        <i className="far fa-edit"></i>
                                                     </button>
                                                     <button className="action-btn delete" onClick={() => handleDelete(faq.id)} title="Delete">
-                                                        <i className="fa-light fa-trash"></i>
+                                                        <i className="fas fa-trash"></i>
                                                     </button>
                                                 </div>
                                             </td>

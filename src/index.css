@@ -147,9 +147,7 @@ a:hover {
    Container & Layout
    =================================== */
 .container {
-  max-width: 1200px;
   margin: 0 auto;
-  padding: var(--spacing-md);
 }
 
 .page-wrapper {
@@ -624,4 +622,36 @@ a:hover {
 .menu_bar {
   cursor: pointer;
   z-index: 1000;
+}
+
+/* Force FontAwesome Font Family */
+.fas,
+.fa-solid {
+  font-family: "Font Awesome 6 Free" !important;
+  font-weight: 900 !important;
+}
+
+.far,
+.fa-regular {
+  font-family: "Font Awesome 6 Free" !important;
+  font-weight: 400 !important;
+}
+
+.fab,
+.fa-brands {
+  font-family: "Font Awesome 6 Brands" !important;
+  font-weight: 400 !important;
+}
+
+/* Ensure icons have correct display */
+.btn-icon i,
+.fa,
+.fas,
+.far,
+.fab {
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
 }

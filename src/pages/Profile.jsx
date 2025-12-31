@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import DashboardLayout from '../components/layout/DashboardLayout';
+import SEO from '../components/common/SEO';
 import { authService } from '../services/auth.service';
 import { userService } from '../services/user.service';
 import './Profile.css';
+import { toast } from 'react-toastify';
 
 const Profile = () => {
     const [activeTab, setActiveTab] = useState('profile');
@@ -11,7 +13,6 @@ const Profile = () => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
-    const [message, setMessage] = useState({ type: '', text: '' });
 
     const [profileData, setProfileData] = useState({
         name: '',
@@ -23,7 +24,12 @@ const Profile = () => {
 
     const [marketerData, setMarketerData] = useState({
         companyName: '',
-        referralCode: ''
+        referralCode: '',
+        bankName: '',
+        accountNumber: '',
+        ifscCode: '',
+        accountHolderName: '',
+        upiId: ''
     });
 
     const [passwordData, setPasswordData] = useState({
@@ -45,9 +51,21 @@ const Profile = () => {
         }));
     };
 
+
+
     useEffect(() => {
         const currentUser = authService.getUser();
-        setUser(currentUser);
+        if (currentUser) {
+            setUser(currentUser);
+            // Initialize profile data from local user storage immediately
+            setProfileData(prev => ({
+                ...prev,
+                name: currentUser.name || '',
+                email: currentUser.email || '',
+                phone: currentUser.phone || '',
+                // Preserve other fields if they exist in currentUser, otherwise keep defaults
+            }));
+        }
         fetchProfile();
     }, []);
 
@@ -56,17 +74,24 @@ const Profile = () => {
             const response = await userService.getProfile();
             if (response.success) {
                 setProfile(response.data);
-                setProfileData({
-                    name: response.data.user.name,
-                    phone: response.data.user.phone || '',
-                    address: response.data.user.address || '',
-                    city: response.data.user.city || '',
-                    country: response.data.user.country || 'US'
-                });
+                // Merge API data with existing state
+                setProfileData(prev => ({
+                    ...prev,
+                    name: response.data.user.name || prev.name || '',
+                    phone: response.data.user.phone || prev.phone || '',
+                    address: response.data.user.address || prev.address || '',
+                    city: response.data.user.city || prev.city || '',
+                    country: response.data.user.country || prev.country || 'US'
+                }));
                 if (response.data.marketer) {
                     setMarketerData({
                         companyName: response.data.marketer.company_name,
-                        referralCode: response.data.marketer.referral_code
+                        referralCode: response.data.marketer.referral_code,
+                        bankName: response.data.marketer.bank_name || '',
+                        accountNumber: response.data.marketer.account_number || '',
+                        ifscCode: response.data.marketer.ifsc_code || '',
+                        accountHolderName: response.data.marketer.account_holder_name || '',
+                        upiId: response.data.marketer.upi_id || ''
                     });
                 }
             }
@@ -80,19 +105,15 @@ const Profile = () => {
     const handleProfileUpdate = async (e) => {
         e.preventDefault();
         setSaving(true);
-        setMessage({ type: '', text: '' });
 
         try {
             const response = await userService.updateProfile(profileData);
             if (response.success) {
-                setMessage({ type: 'success', text: 'Profile updated successfully!' });
+                toast.success('Profile updated successfully!');
                 fetchProfile();
             }
         } catch (error) {
-            setMessage({
-                type: 'error',
-                text: error.response?.data?.message || 'Failed to update profile',
-            });
+            toast.error(error.response?.data?.message || 'Failed to update profile');
         } finally {
             setSaving(false);
         }
@@ -101,19 +122,22 @@ const Profile = () => {
     const handleMarketerUpdate = async (e) => {
         e.preventDefault();
         setSaving(true);
-        setMessage({ type: '', text: '' });
 
         try {
             const response = await userService.updateMarketerProfile(marketerData);
             if (response.success) {
-                setMessage({ type: 'success', text: 'Marketer profile updated successfully!' });
+                toast.success('Marketer profile updated successfully!');
                 fetchProfile();
             }
         } catch (error) {
-            setMessage({
-                type: 'error',
-                text: error.response?.data?.message || 'Failed to update marketer profile',
-            });
+            let errorMessage = 'Failed to update marketer profile';
+            if (error.response?.data?.errors && Array.isArray(error.response.data.errors)) {
+                errorMessage = error.response.data.errors.map(err => err.message).join('. ');
+            } else if (error.response?.data?.message) {
+                errorMessage = error.response.data.message;
+            }
+
+            toast.error(errorMessage);
         } finally {
             setSaving(false);
         }
@@ -121,10 +145,9 @@ const Profile = () => {
 
     const handlePasswordChange = async (e) => {
         e.preventDefault();
-        setMessage({ type: '', text: '' });
 
         if (passwordData.newPassword !== passwordData.confirmPassword) {
-            setMessage({ type: 'error', text: 'New passwords do not match' });
+            toast.error('New passwords do not match');
             return;
         }
 
@@ -136,7 +159,7 @@ const Profile = () => {
                 newPassword: passwordData.newPassword,
             });
             if (response.success) {
-                setMessage({ type: 'success', text: 'Password changed successfully!' });
+                toast.success('Password changed successfully!');
                 setPasswordData({
                     oldPassword: '',
                     newPassword: '',
@@ -144,10 +167,7 @@ const Profile = () => {
                 });
             }
         } catch (error) {
-            setMessage({
-                type: 'error',
-                text: error.response?.data?.message || 'Failed to change password',
-            });
+            toast.error(error.response?.data?.message || 'Failed to change password');
         } finally {
             setSaving(false);
         }
@@ -167,6 +187,7 @@ const Profile = () => {
 
     return (
         <DashboardLayout>
+            <SEO title="My Profile" description="Manage your personal and account information." />
             <section className="page-section">
                 <div className="container">
                     <div className="page-header">
@@ -179,10 +200,10 @@ const Profile = () => {
                             <div className="profile-card">
                                 <div className="profile-header">
                                     <div className="profile-avatar">
-                                        <i className="fa-light fa-user"></i>
+                                        <i className="fas fa-user-circle"></i>
                                     </div>
-                                    <h3 className="profile-name">{profile?.user?.name || 'User'}</h3>
-                                    <p className="profile-email">{profile?.user?.email || 'email@example.com'}</p>
+                                    <h3 className="profile-name">{profile?.user?.name || user?.name || 'User'}</h3>
+                                    <p className="profile-email">{profile?.user?.email || user?.email || 'email@example.com'}</p>
                                 </div>
                                 <div className="profile-nav">
                                     <button
@@ -190,17 +211,27 @@ const Profile = () => {
                                         onClick={() => setActiveTab('profile')}
                                     >
                                         <span>Personal Information</span>
-                                        <i className="tji-arrow-right-long"></i>
+                                        <i className="fas fa-arrow-right"></i>
                                     </button>
 
                                     {user?.role === 'marketer' && (
-                                        <button
-                                            className={`profile-nav-btn ${activeTab === 'marketer' ? 'active' : ''}`}
-                                            onClick={() => setActiveTab('marketer')}
-                                        >
-                                            <span>Marketer Details</span>
-                                            <i className="tji-arrow-right-long"></i>
-                                        </button>
+                                        <>
+                                            <button
+                                                className={`profile-nav-btn ${activeTab === 'marketer' ? 'active' : ''}`}
+                                                onClick={() => setActiveTab('marketer')}
+                                            >
+                                                <span>Marketer Details</span>
+                                                <i className="fas fa-arrow-right"></i>
+                                            </button>
+
+                                            <button
+                                                className={`profile-nav-btn ${activeTab === 'payout' ? 'active' : ''}`}
+                                                onClick={() => setActiveTab('payout')}
+                                            >
+                                                <span>Payout Settings</span>
+                                                <i className="fas fa-arrow-right"></i>
+                                            </button>
+                                        </>
                                     )}
 
                                     <button
@@ -208,7 +239,7 @@ const Profile = () => {
                                         onClick={() => setActiveTab('password')}
                                     >
                                         <span>Change Password</span>
-                                        <i className="tji-arrow-right-long"></i>
+                                        <i className="fas fa-arrow-right"></i>
                                     </button>
                                 </div>
                             </div>
@@ -216,17 +247,13 @@ const Profile = () => {
 
                         <div className="col-lg-8">
                             <div className="profile-card">
-                                {message.text && (
-                                    <div className={`alert alert-${message.type}`}>
-                                        {message.text}
-                                    </div>
-                                )}
+
 
                                 {activeTab === 'profile' && (
                                     <div className="animate-fade-up">
                                         <h3 style={{ marginBottom: '30px', color: '#0c1e21', fontWeight: 600 }}>Personal Information</h3>
                                         <form onSubmit={handleProfileUpdate}>
-                                            <div class="form-group">
+                                            <div className="form-group">
                                                 <label htmlFor="name">Full Name</label>
                                                 <input
                                                     type="text"
@@ -244,7 +271,7 @@ const Profile = () => {
                                                     type="email"
                                                     id="email"
                                                     className="form-control"
-                                                    value={profile?.user?.email}
+                                                    value={profile?.user?.email || user?.email || ''}
                                                     disabled
                                                 />
                                                 <span className="form-text">Email cannot be changed</span>
@@ -261,12 +288,10 @@ const Profile = () => {
                                                 />
                                             </div>
 
-
-
                                             <div style={{ marginTop: '30px' }}>
                                                 <button type="submit" className="tj-primary-btn" disabled={saving}>
                                                     <span className="btn-text"><span>{saving ? 'Saving Changes...' : 'Save Changes'}</span></span>
-                                                    <span className="btn-icon"><i className="tji-arrow-right-long"></i></span>
+                                                    <span className="btn-icon"><i className="fas fa-arrow-right"></i></span>
                                                 </button>
                                             </div>
                                         </form>
@@ -294,10 +319,10 @@ const Profile = () => {
                                                         style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', textDecoration: 'none' }}
                                                         onClick={() => {
                                                             navigator.clipboard.writeText(marketerData.referralCode);
-                                                            alert('Referral code copied!');
+                                                            toast.success('Referral code copied!');
                                                         }}
                                                     >
-                                                        <i className="fa-light fa-copy"></i> Copy
+                                                        <i className="far fa-copy"></i> Copy
                                                     </button>
                                                 </div>
                                                 <span className="form-text">Share this code with users to earn commissions.</span>
@@ -320,10 +345,10 @@ const Profile = () => {
                                                         style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', textDecoration: 'none' }}
                                                         onClick={() => {
                                                             navigator.clipboard.writeText(`${window.location.origin}/register?ref=${marketerData.referralCode}`);
-                                                            alert('Link copied!');
+                                                            toast.success('Link copied!');
                                                         }}
                                                     >
-                                                        <i className="fa-light fa-copy"></i> Copy
+                                                        <i className="far fa-copy"></i> Copy
                                                     </button>
                                                 </div>
                                                 <span className="form-text">Send this link to users for direct registration.</span>
@@ -344,7 +369,93 @@ const Profile = () => {
                                             <div style={{ marginTop: '30px' }}>
                                                 <button type="submit" className="tj-primary-btn" disabled={saving}>
                                                     <span className="btn-text"><span>{saving ? 'Saving Changes...' : 'Save Changes'}</span></span>
-                                                    <span className="btn-icon"><i className="tji-arrow-right-long"></i></span>
+                                                    <span className="btn-icon"><i className="fas fa-arrow-right"></i></span>
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                )}
+
+                                {activeTab === 'payout' && (
+                                    <div className="animate-fade-up">
+                                        <h3 style={{ marginBottom: '30px', color: '#0c1e21', fontWeight: 600 }}>Payout Settings</h3>
+                                        <form onSubmit={handleMarketerUpdate}>
+                                            <div className="row">
+                                                <div className="col-md-6">
+                                                    <div className="form-group">
+                                                        <label htmlFor="bankName">Bank Name</label>
+                                                        <input
+                                                            type="text"
+                                                            id="bankName"
+                                                            className="form-control"
+                                                            value={marketerData.bankName}
+                                                            onChange={(e) => setMarketerData({ ...marketerData, bankName: e.target.value })}
+                                                            placeholder="State Bank of India"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className="col-md-6">
+                                                    <div className="form-group">
+                                                        <label htmlFor="accountHolderName">Account Holder Name</label>
+                                                        <input
+                                                            type="text"
+                                                            id="accountHolderName"
+                                                            className="form-control"
+                                                            value={marketerData.accountHolderName}
+                                                            onChange={(e) => setMarketerData({ ...marketerData, accountHolderName: e.target.value })}
+                                                            placeholder="John Doe"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="row">
+                                                <div className="col-md-6">
+                                                    <div className="form-group">
+                                                        <label htmlFor="accountNumber">Account Number</label>
+                                                        <input
+                                                            type="text"
+                                                            id="accountNumber"
+                                                            className="form-control"
+                                                            value={marketerData.accountNumber}
+                                                            onChange={(e) => setMarketerData({ ...marketerData, accountNumber: e.target.value })}
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className="col-md-6">
+                                                    <div className="form-group">
+                                                        <label htmlFor="ifscCode">IFSC Code</label>
+                                                        <input
+                                                            type="text"
+                                                            id="ifscCode"
+                                                            className="form-control"
+                                                            value={marketerData.ifscCode}
+                                                            onChange={(e) => setMarketerData({ ...marketerData, ifscCode: e.target.value })}
+                                                            placeholder="SBIN0001234"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <hr style={{ margin: '20px 0', borderColor: '#eee' }} />
+                                            <h5 style={{ marginBottom: '15px', color: '#0c1e21', fontSize: '16px' }}>UPI Details</h5>
+
+                                            <div className="form-group">
+                                                <label htmlFor="upiId">UPI ID (Optional)</label>
+                                                <input
+                                                    type="text"
+                                                    id="upiId"
+                                                    className="form-control"
+                                                    value={marketerData.upiId}
+                                                    onChange={(e) => setMarketerData({ ...marketerData, upiId: e.target.value })}
+                                                    placeholder="username@upi"
+                                                />
+                                            </div>
+
+                                            <div style={{ marginTop: '30px' }}>
+                                                <button type="submit" className="tj-primary-btn" disabled={saving}>
+                                                    <span className="btn-text"><span>{saving ? 'Saving Changes...' : 'Save Changes'}</span></span>
+                                                    <span className="btn-icon"><i className="fas fa-arrow-right"></i></span>
                                                 </button>
                                             </div>
                                         </form>
@@ -352,8 +463,6 @@ const Profile = () => {
                                 )}
 
                                 {activeTab === 'password' && (
-
-
                                     <div className="animate-fade-up">
                                         <h3 style={{ marginBottom: '30px', color: '#0c1e21', fontWeight: 600 }}>Change Password</h3>
                                         <form onSubmit={handlePasswordChange}>
@@ -385,7 +494,7 @@ const Profile = () => {
                                                             alignItems: 'center'
                                                         }}
                                                     >
-                                                        <i className={`fa-light ${showPasswords.old ? 'fa-eye' : 'fa-eye-slash'}`}></i>
+                                                        <i className={`far ${showPasswords.old ? 'fa-eye' : 'fa-eye-slash'}`}></i>
                                                     </button>
                                                 </div>
                                             </div>
@@ -418,7 +527,7 @@ const Profile = () => {
                                                             alignItems: 'center'
                                                         }}
                                                     >
-                                                        <i className={`fa-light ${showPasswords.new ? 'fa-eye' : 'fa-eye-slash'}`}></i>
+                                                        <i className={`far ${showPasswords.new ? 'fa-eye' : 'fa-eye-slash'}`}></i>
                                                     </button>
                                                 </div>
                                             </div>
@@ -451,15 +560,15 @@ const Profile = () => {
                                                             alignItems: 'center'
                                                         }}
                                                     >
-                                                        <i className={`fa-light ${showPasswords.confirm ? 'fa-eye' : 'fa-eye-slash'}`}></i>
+                                                        <i className={`far ${showPasswords.confirm ? 'fa-eye' : 'fa-eye-slash'}`}></i>
                                                     </button>
                                                 </div>
                                             </div>
 
-                                            <div style={{ marginTop: '30px' }}>
+                                            <div className="d-flex justify-content-end mt-4">
                                                 <button type="submit" className="tj-primary-btn" disabled={saving}>
                                                     <span className="btn-text"><span>{saving ? 'Changing Password...' : 'Change Password'}</span></span>
-                                                    <span className="btn-icon"><i className="tji-arrow-right-long"></i></span>
+                                                    <span className="btn-icon"><i className="fas fa-arrow-right"></i></span>
                                                 </button>
                                             </div>
                                         </form>

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import tutorialService from '../services/tutorial.service';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import './AdminListings.css';
+import { toast } from 'react-toastify';
 
 const AdminHowToUse = () => {
     const navigate = useNavigate();
@@ -35,7 +36,7 @@ const AdminHowToUse = () => {
                 fetchTutorials();
             } catch (error) {
                 console.error('Error deleting tutorial:', error);
-                alert('Failed to delete guide');
+                toast.error('Failed to delete guide');
             }
         }
     };
@@ -46,7 +47,7 @@ const AdminHowToUse = () => {
             fetchTutorials();
         } catch (error) {
             console.error('Error toggling status:', error);
-            alert('Failed to update status');
+            toast.error('Failed to update status');
         }
     };
 
@@ -125,10 +126,10 @@ const AdminHowToUse = () => {
                                             <td>
                                                 <div className="actions-cell">
                                                     <button className="action-btn" onClick={() => navigate(`/admin/how-to-use/edit/${tutorial.id}`)} title="Edit">
-                                                        <i className="fa-light fa-edit"></i>
+                                                        <i className="far fa-edit"></i>
                                                     </button>
                                                     <button className="action-btn delete" onClick={() => handleDelete(tutorial.id)} title="Delete">
-                                                        <i className="fa-light fa-trash"></i>
+                                                        <i className="fas fa-trash"></i>
                                                     </button>
                                                 </div>
                                             </td>

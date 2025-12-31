@@ -1,5 +1,5 @@
 .page-section {
-    padding: 120px 0 80px;
+    /* Padding handled by DashboardLayout */
     background-color: #fdf2f2;
     /* Light pink matching product.html template */
     min-height: 80vh;

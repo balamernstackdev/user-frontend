@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import { userService } from '../services/user.service';
+import './AdminForms.css'; // Shared styles
+
+import { toast } from 'react-toastify';
 
 const AdminUserForm = () => {
     const { id } = useParams();
@@ -14,11 +17,11 @@ const AdminUserForm = () => {
         phone: '',
         role: 'user',
         status: 'active',
-        password: '' // Only for creation
+        password: '', // Only for creation
+        referralCode: '' // Mandatory for 'user' role creation
     });
     const [loading, setLoading] = useState(false);
     const [fetching, setFetching] = useState(isEditMode);
-    const [error, setError] = useState(null);
 
     useEffect(() => {
         if (isEditMode) {
@@ -36,12 +39,13 @@ const AdminUserForm = () => {
                     email: user.email,
                     phone: user.phone || '',
                     role: user.role,
-                    status: user.status
+                    status: user.status,
+                    referralCode: user.referralCode || ''
                 });
             }
         } catch (err) {
             console.error('Failed to fetch user:', err);
-            setError('Failed to load user data');
+            toast.error('Failed to load user data');
         } finally {
             setFetching(false);
         }
@@ -55,22 +59,22 @@ const AdminUserForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        setError(null);
 
         try {
             if (isEditMode) {
                 // Remove email/password from update payload if usually immutable or handled separately
-                const { password, email, ...updateData } = formData;
+                const { password, email, referralCode, ...updateData } = formData;
                 await userService.updateUser(id, updateData);
-                alert('User updated successfully');
+                toast.success('User updated successfully');
             } else {
-                await userService.createUser(formData); // Assuming createUser exists or will be added
-                alert('User created successfully');
+                await userService.createUser(formData);
+                toast.success('User created successfully');
             }
             navigate('/admin/users');
         } catch (err) {
             console.error('Operation failed:', err);
-            setError(err.response?.data?.message || 'Operation failed');
+            const msg = err.response?.data?.message || 'Operation failed';
+            toast.error(msg);
         } finally {
             setLoading(false);
         }
@@ -90,18 +94,17 @@ const AdminUserForm = () => {
 
     return (
         <DashboardLayout>
-            <section className="page-section">
+            <div className="admin-form-page animate-fade-up">
                 <div className="container">
-                    <div className="page-header animate-fade-up">
+                    <div className="admin-form-header mb-4">
                         <h2>{isEditMode ? 'Edit User' : 'Add New User'}</h2>
-                        <p style={{ color: '#6c757d' }}>{isEditMode ? 'Update user details' : 'Create a new user account'}</p>
+                        <p>{isEditMode ? 'Update user details' : 'Create a new user account'}</p>
                     </div>
 
                     <div className="row justify-content-center">
                         <div className="col-lg-8">
-                            <div className="card shadow-sm border-0 rounded-3">
+                            <div className="admin-form-card">
                                 <div className="card-body p-4">
-                                    {error && <div className="alert alert-danger">{error}</div>}
 
                                     <form onSubmit={handleSubmit}>
                                         <div className="mb-3">
@@ -171,6 +174,21 @@ const AdminUserForm = () => {
                                             </div>
                                         </div>
 
+                                        {!isEditMode && formData.role === 'user' && (
+                                            <div className="mb-3">
+                                                <label className="form-label">Referral Code <span className="text-danger">*</span></label>
+                                                <input
+                                                    type="text"
+                                                    className="form-control"
+                                                    name="referralCode"
+                                                    value={formData.referralCode}
+                                                    onChange={handleChange}
+                                                    required
+                                                    placeholder="Enter referral code"
+                                                />
+                                            </div>
+                                        )}
+
                                         {!isEditMode && (
                                             <div className="mb-3">
                                                 <label className="form-label">Password</label>
@@ -210,7 +228,7 @@ const AdminUserForm = () => {
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
         </DashboardLayout>
     );
 };

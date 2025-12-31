@@ -31,7 +31,7 @@ const DashboardLayout = ({ children }) => {
         <div className="dashboard-layout">
             <Header notificationCount={notificationCount} />
 
-            <main className="main-content" style={{ minHeight: 'calc(100vh - 400px)' }}>
+            <main className="main-content">
                 {children}
             </main>
 

@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import { notificationService } from '../services/notification.service';
 import './NotificationDetails.css';
+import { toast } from 'react-toastify';
 
 const NotificationDetails = () => {
     const { id } = useParams();
@@ -41,7 +42,7 @@ const NotificationDetails = () => {
         try {
             await notificationService.markAsRead(id);
             setNotification(prev => ({ ...prev, is_read: true }));
-            alert('Notification marked as read');
+            toast.success('Notification marked as read');
         } catch (error) {
             console.error('Error marking as read:', error);
         }
@@ -110,7 +111,7 @@ const NotificationDetails = () => {
                 <div className="container">
                     <div className="notification-detail-card animate-fade-up">
                         <Link to="/notifications" className="back-button">
-                            <i className="fa-light fa-arrow-left"></i>
+                            <i className="fas fa-arrow-left"></i>
                             <span>Back to Notifications</span>
                         </Link>
 
@@ -119,15 +120,15 @@ const NotificationDetails = () => {
                                 <h1 className="notification-title-detail">{notification.title}</h1>
                                 <div className="notification-meta">
                                     <span className="meta-item">
-                                        <i className="fa-light fa-clock"></i>
+                                        <i className="far fa-clock"></i>
                                         <span>{getTimeAgo(notification.created_at)}</span>
                                     </span>
                                     <span className="meta-item">
-                                        <i className="fa-light fa-calendar"></i>
+                                        <i className="far fa-calendar"></i>
                                         <span>{formatDate(notification.created_at)}</span>
                                     </span>
                                     <span className="meta-item">
-                                        <i className="fa-light fa-tag"></i>
+                                        <i className="fas fa-tag"></i>
                                         <span style={{ textTransform: 'capitalize' }}>{notification.type}</span>
                                     </span>
                                 </div>
@@ -182,11 +183,11 @@ const NotificationDetails = () => {
                                         };
 
                                         return (
-                                            <div className="detail-row" key={key}>
-                                                <span className="detail-label">
+                                            <div className="notification-detail-row" key={key}>
+                                                <span className="notification-detail-label">
                                                     {formatKey(key)}
                                                 </span>
-                                                <span className="detail-value">
+                                                <span className="notification-detail-value">
                                                     {formatValue(key, value)}
                                                 </span>
                                             </div>
@@ -200,7 +201,7 @@ const NotificationDetails = () => {
                             <div className="action-links">
                                 {notification.link && (
                                     <Link to={notification.link} className="action-link">
-                                        <i className="fa-light fa-link"></i>
+                                        <i className="fas fa-link"></i>
                                         <span>View Related Resource</span>
                                     </Link>
                                 )}
@@ -214,7 +215,7 @@ const NotificationDetails = () => {
                                 )}
                                 <Link to="/notifications" className="tj-primary-btn">
                                     <span className="btn-text"><span>Back to Notifications</span></span>
-                                    <span className="btn-icon"><i class="tji-arrow-right-long"></i></span>
+                                    <span className="btn-icon"><i className="fas fa-arrow-right"></i></span>
                                 </Link>
                             </div>
                         </div>

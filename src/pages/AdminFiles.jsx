@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import fileService from '../services/file.service';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import './AdminFiles.css';
+import { toast } from 'react-toastify';
 
 const AdminFiles = () => {
     const [files, setFiles] = useState([]);
@@ -36,7 +37,7 @@ const AdminFiles = () => {
                 fetchFiles();
             } catch (error) {
                 console.error('Delete failed:', error);
-                alert('Failed to delete file');
+                toast.error('Failed to delete file');
             }
         }
     };
@@ -76,7 +77,7 @@ const AdminFiles = () => {
                                     <option value="video">Videos</option>
                                 </select>
                                 <Link to="/admin/files/create" className="tj-primary-btn">
-                                    <span className="btn-text"><span><i className="fa-light fa-upload"></i> Upload File</span></span>
+                                    <span className="btn-text"><span><i className="fas fa-upload"></i> Upload File</span></span>
                                 </Link>
                             </div>
                         </div>
@@ -86,7 +87,7 @@ const AdminFiles = () => {
                         <div className="loader-container"><div className="spinner-border text-primary"></div></div>
                     ) : files.length === 0 ? (
                         <div className="text-center py-5">
-                            <i className="fa-light fa-folder-open" style={{ fontSize: '48px', color: '#ccc', marginBottom: '20px' }}></i>
+                            <i className="far fa-folder-open" style={{ fontSize: '48px', color: '#ccc', marginBottom: '20px' }}></i>
                             <h3>No files found</h3>
                             <p>Upload your first file to get started.</p>
                         </div>
@@ -109,17 +110,17 @@ const AdminFiles = () => {
                                     </div>
                                     <div className="file-actions">
                                         <button className="btn-icon" onClick={() => window.open(file.file_path.replace('uploads', `${import.meta.env.VITE_API_URL}/uploads`), '_blank')} title="Download">
-                                            <i className="fa-light fa-download"></i>
+                                            <i className="fas fa-download"></i>
                                         </button>
 
                                         {/* 
                                         <Link to={`/admin/files/edit/${file.id}`} className="btn-icon">
-                                            <i className="fa-light fa-pen"></i>
+                                            <i className="fas fa-pen"></i>
                                         </Link>
                                         */}
 
                                         <button className="btn-icon delete" onClick={() => handleDelete(file.id)} title="Delete">
-                                            <i className="fa-light fa-trash"></i>
+                                            <i className="fas fa-trash"></i>
                                         </button>
                                     </div>
                                 </div>

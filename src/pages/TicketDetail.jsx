@@ -4,6 +4,7 @@ import DashboardLayout from '../components/layout/DashboardLayout';
 import ticketService from '../services/ticket.service';
 import { authService } from '../services/auth.service';
 import './TicketDetail.css';
+import { toast } from 'react-toastify';
 
 const TicketDetail = () => {
     const { id } = useParams();
@@ -14,7 +15,6 @@ const TicketDetail = () => {
     const [replyFiles, setReplyFiles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [sending, setSending] = useState(false);
-    const [error, setError] = useState('');
     const user = authService.getUser();
     const fileInputRef = useRef(null);
 
@@ -29,7 +29,7 @@ const TicketDetail = () => {
             setTicket(response.data);
             setMessages(response.data.messages || []);
         } catch (err) {
-            setError('Failed to load ticket details');
+            toast.error('Failed to load ticket details');
             console.error(err);
         } finally {
             setLoading(false);
@@ -41,7 +41,7 @@ const TicketDetail = () => {
             const files = Array.from(e.target.files);
             const validFiles = files.filter(file => {
                 if (file.size > 10 * 1024 * 1024) {
-                    alert(`File ${file.name} is too large. Maximum size is 10MB.`);
+                    toast.error(`File ${file.name} is too large. Maximum size is 10MB.`);
                     return false;
                 }
                 return true;
@@ -67,8 +67,9 @@ const TicketDetail = () => {
             setNewMessage('');
             setReplyFiles([]);
             await fetchTicketDetails(); // Refresh to show new message
+            toast.success('Message reply sent');
         } catch (err) {
-            setError('Failed to send message');
+            toast.error('Failed to send message');
             console.error(err);
         } finally {
             setSending(false);
@@ -80,9 +81,10 @@ const TicketDetail = () => {
 
         try {
             await ticketService.closeTicket(id);
+            toast.success('Ticket closed successfully');
             navigate('/tickets');
         } catch (err) {
-            setError('Failed to close ticket');
+            toast.error('Failed to close ticket');
             console.error(err);
         }
     };
@@ -150,7 +152,7 @@ const TicketDetail = () => {
                 <div className="container">
                     <div className="ticket-detail-card animate-fade-up">
                         <Link to="/tickets" className="back-button">
-                            <i className="fa-light fa-arrow-left"></i>
+                            <i className="fas fa-arrow-left"></i>
                             <span>Back to Tickets</span>
                         </Link>
 
@@ -159,21 +161,21 @@ const TicketDetail = () => {
                                 <h1>{ticket.subject}</h1>
                                 <div className="ticket-meta">
                                     <span className="meta-item">
-                                        <i className="fa-light fa-hashtag"></i>
+                                        <i className="fas fa-hashtag"></i>
                                         <span>#{ticket.ticket_number || ticket._id?.substring(0, 8).toUpperCase()}</span>
                                     </span>
                                     <span className="meta-item">
-                                        <i className="fa-light fa-calendar"></i>
+                                        <i className="far fa-calendar"></i>
                                         <span>Created: {formatDate(ticket.created_at)}</span>
                                     </span>
                                     {ticket.category && (
                                         <span className="meta-item">
-                                            <i className="fa-light fa-tag"></i>
+                                            <i className="fas fa-tag"></i>
                                             <span>{ticket.category}</span>
                                         </span>
                                     )}
                                     <span className="meta-item">
-                                        <i className="fa-light fa-exclamation-circle"></i>
+                                        <i className="fas fa-exclamation-circle"></i>
                                         <span style={{ textTransform: 'capitalize' }}>Priority: {ticket.priority}</span>
                                     </span>
                                 </div>
@@ -189,8 +191,9 @@ const TicketDetail = () => {
                                                 try {
                                                     await ticketService.updateStatus(id, newStatus);
                                                     setTicket(prev => ({ ...prev, status: newStatus }));
+                                                    toast.success('Status updated');
                                                 } catch (err) {
-                                                    alert('Failed to update status');
+                                                    toast.error('Failed to update status');
                                                 }
                                             }}
                                             style={{
@@ -222,8 +225,6 @@ const TicketDetail = () => {
                             </div>
                         </div>
 
-                        {error && <div className="alert alert-error" style={{ color: 'red', marginBottom: '20px' }}>{error}</div>}
-
                         <div className="ticket-content">
                             <div className="ticket-content-body">
                                 <p>{ticket.message || ticket.description}</p>
@@ -236,7 +237,7 @@ const TicketDetail = () => {
                                     <div className="attachment-list">
                                         {ticket.attachments.map((att, idx) => (
                                             <a key={idx} href={att.url} className="attachment-item" target="_blank" rel="noopener noreferrer">
-                                                <i className={`fa-light ${getFileIcon(att.name)} attachment-icon`}></i>
+                                                <i className={`far ${getFileIcon(att.name)} attachment-icon`}></i>
                                                 <span className="attachment-name">{att.name}</span>
                                             </a>
                                         ))}
@@ -275,7 +276,7 @@ const TicketDetail = () => {
                                             <div className="attachment-list">
                                                 {message.attachments.map((att, idx) => (
                                                     <a key={idx} href={att.url || '#'} className="attachment-item" target="_blank" rel="noopener noreferrer">
-                                                        <i className={`fa-light ${getFileIcon(att.name || 'file')} attachment-icon`}></i>
+                                                        <i className={`far ${getFileIcon(att.name || 'file')} attachment-icon`}></i>
                                                         <span className="attachment-name">{att.name || 'Attachment'}</span>
                                                     </a>
                                                 ))}
@@ -308,7 +309,7 @@ const TicketDetail = () => {
                                                 className="file-upload-area"
                                                 onClick={() => fileInputRef.current.click()}
                                             >
-                                                <i className="fa-light fa-cloud-arrow-up" style={{ fontSize: '24px', color: '#1e8a8a', marginBottom: '10px' }}></i>
+                                                <i className="fas fa-cloud-arrow-up" style={{ fontSize: '24px', color: '#1e8a8a', marginBottom: '10px' }}></i>
                                                 <div className="file-upload-text">Click to upload files</div>
                                                 <input
                                                     type="file"
@@ -326,11 +327,11 @@ const TicketDetail = () => {
                                                     {replyFiles.map((file, idx) => (
                                                         <div key={idx} className="file-item">
                                                             <div className="file-item-info">
-                                                                <div className="file-item-icon"><i className={`fa-light ${getFileIcon(file.name)}`}></i></div>
+                                                                <div className="file-item-icon"><i className={`far ${getFileIcon(file.name)}`}></i></div>
                                                                 <div className="file-item-name">{file.name}</div>
                                                             </div>
                                                             <button type="button" className="file-item-remove" onClick={() => handleRemoveFile(file.name)}>
-                                                                <i className="fa-light fa-times"></i>
+                                                                <i className="fas fa-times"></i>
                                                             </button>
                                                         </div>
                                                     ))}
@@ -341,7 +342,7 @@ const TicketDetail = () => {
                                         <div className="form-actions">
                                             <button type="submit" className="tj-primary-btn" disabled={sending}>
                                                 <span className="btn-text"><span>{sending ? 'Sending...' : 'Send Reply'}</span></span>
-                                                {!sending && <span className="btn-icon"><i className="tji-arrow-right-long"></i></span>}
+                                                {!sending && <span className="btn-icon"><i className="fas fa-arrow-right"></i></span>}
                                             </button>
                                         </div>
                                     </form>

@@ -7,6 +7,12 @@ export const commissionService = {
         return response.data;
     },
 
+    // Get single commission
+    getCommission: async (id) => {
+        const response = await api.get(`/commissions/${id}`);
+        return response.data;
+    },
+
     // Get stats
     getMyStats: async () => {
         const response = await api.get('/commissions/my-stats');
@@ -28,8 +34,8 @@ export const commissionService = {
     },
 
     // Mark as paid
-    markAsPaid: async (id) => {
-        const response = await api.put(`/commissions/${id}/pay`);
+    markAsPaid: async (id, data) => {
+        const response = await api.put(`/commissions/${id}/pay`, data);
         return response.data;
     }
 };

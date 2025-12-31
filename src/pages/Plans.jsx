@@ -1,23 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import DashboardLayout from '../components/layout/DashboardLayout'; // Optional: if Plans page shouldn't be in DashboardLayout, remove this. But typically dashboard pages are.
-// Actually product.html has header and footer, so it might be a public page. 
-// However, if the user is logged in, DashboardLayout is preferred.
-// I'll check if user is logged in. If so, use DashboardLayout? 
-// For now, consistent with other migrated pages, I'll use DashboardLayout if it fits the "Dashboard" theme.
-// But product.html has "Back to Home" style header.
-// I'll stick to DashboardLayout for consistency within the app flow, 
-// or simpler: just the page content wrapped.
-// Given "Choose Your Plan" is likely accessible from dashboard, I'll use DashboardLayout.
-
+import DashboardLayout from '../components/layout/DashboardLayout';
 import planService from '../services/plan.service';
 import { authService } from '../services/auth.service';
+import SEO from '../components/common/SEO';
 import './Plans.css';
+import { toast } from 'react-toastify';
 
 const Plans = () => {
     const [plans, setPlans] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
     const [selectedType, setSelectedType] = useState('all');
     const navigate = useNavigate();
     const user = authService.getUser();
@@ -33,7 +25,7 @@ const Plans = () => {
             const response = await planService.getPlans(params);
             setPlans(response.data);
         } catch (err) {
-            setError('Failed to load plans');
+            toast.error('Failed to load plans');
             console.error(err);
         } finally {
             setLoading(false);
@@ -75,6 +67,7 @@ const Plans = () => {
 
     return (
         <DashboardLayout>
+            <SEO title="Membership Plans" description="Choose a plan to get access to premium stock market analysis." />
             <section className="page-section">
                 <div className="container">
                     <div className="page-header animate-fade-up">
@@ -94,8 +87,6 @@ const Plans = () => {
                             </button>
                         ))}
                     </div>
-
-                    {error && <div className="alert alert-error text-center">{error}</div>}
 
                     <div className="product-grid">
                         {plans.map((plan, index) => {
@@ -119,7 +110,7 @@ const Plans = () => {
                                     )}
 
                                     <div className="product-icon">
-                                        <i className={`fa-light ${icon}`}></i>
+                                        <i className={`fas ${icon}`}></i>
                                     </div>
 
                                     <h3 className="product-title">{plan.name}</h3>
@@ -129,12 +120,12 @@ const Plans = () => {
                                     <ul className="product-features">
                                         {plan.features && plan.features.map((feature, i) => (
                                             <li key={i}>
-                                                <i className="fa-light fa-check"></i> {feature}
+                                                <i className="fas fa-check"></i> {feature}
                                             </li>
                                         ))}
                                         {plan.max_downloads !== undefined && (
                                             <li>
-                                                <i className="fa-light fa-check"></i> {plan.max_downloads ? `${plan.max_downloads} Downloads/mo` : 'Unlimited Downloads'}
+                                                <i className="fas fa-check"></i> {plan.max_downloads ? `${plan.max_downloads} Downloads/mo` : 'Unlimited Downloads'}
                                             </li>
                                         )}
                                     </ul>
@@ -144,8 +135,8 @@ const Plans = () => {
                                         style={{ width: '100%', justifyContent: 'center' }}
                                         onClick={() => handlePurchase(plan.id)}
                                     >
-                                        <span className="btn-text"><span>{user ? `Choose ${plan.name.split(' ')[0]}` : 'Get Started'}</span></span>
-                                        <span className="btn-icon"><i className="tji-arrow-right-long"></i></span>
+                                        <span className="btn-text"><span>{user ? 'Choose Plan' : 'Get Started'}</span></span>
+                                        <span className="btn-icon"><i className="fas fa-arrow-right"></i></span>
                                     </button>
                                 </div>
                             );

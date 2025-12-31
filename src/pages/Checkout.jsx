@@ -6,6 +6,7 @@ import paymentService from '../services/payment.service';
 import { authService } from '../services/auth.service';
 import SecurePaymentCard from '../components/checkout/SecurePaymentCard';
 import './Checkout.css';
+import { toast } from 'react-toastify';
 
 const Checkout = () => {
     const { planId } = useParams();
@@ -13,7 +14,6 @@ const Checkout = () => {
     const [plan, setPlan] = useState(null);
     const [loading, setLoading] = useState(true);
     const [processing, setProcessing] = useState(false);
-    const [error, setError] = useState('');
     const [selectedMethod, setSelectedMethod] = useState('razorpay'); // Default to Razorpay
     const user = authService.getUser();
 
@@ -32,7 +32,7 @@ const Checkout = () => {
             const response = await planService.getPlan(planId);
             setPlan(response.data);
         } catch (err) {
-            setError('Failed to load plan details');
+            toast.error('Failed to load plan details');
             console.error(err);
         } finally {
             setLoading(false);
@@ -51,7 +51,6 @@ const Checkout = () => {
 
         try {
             setProcessing(true);
-            setError('');
 
             // Create order
             const response = await paymentService.createOrder(planId);
@@ -69,7 +68,7 @@ const Checkout = () => {
                         });
 
                         if (verifyResponse.success) {
-                            navigate('/payment-success', { state: { transaction: verifyResponse.transaction } });
+                            navigate('/payment-success', { state: { transaction: verifyResponse.data.transaction } });
                         } else {
                             navigate('/payment-failed', { state: { error: 'Payment verification failed' } });
                         }
@@ -78,31 +77,14 @@ const Checkout = () => {
                         navigate('/payment-failed', { state: { error: err.message || 'Payment verification failed' } });
                     }
                 }, 2000); // 2 second delay to simulate processing
-
-                /* 
-                // Original Razorpay Modal Logic - Disabled for Embedded Test Flow
-                const options = {
-                    key: order.key, // Enter the Key ID generated from the Dashboard
-                    amount: order.amount,
-                    currency: order.currency,
-                    name: "Stoxzo",
-                    description: `Subscription for ${plan.name}`,
-                    image: "/assets/images/Stoxzo_Logo.svg",
-                    order_id: order.orderId, 
-                    handler: async function (response) { ... },
-                    ...
-                };
-                const rzp = new window.Razorpay(options);
-                rzp.open();
-                */
             } else {
-                alert('Only Credit/Debit Card/NetBanking (via Razorpay) is currently supported.');
+                toast.info('Only Credit/Debit Card/NetBanking (via Razorpay) is currently supported.');
                 setProcessing(false);
             }
 
         } catch (err) {
             console.error(err);
-            setError(err.response?.data?.message || 'Failed to initiate payment');
+            toast.error(err.response?.data?.message || 'Failed to initiate payment');
             setProcessing(false);
         }
     };
@@ -145,8 +127,6 @@ const Checkout = () => {
         <DashboardLayout>
             <section className="checkout-page">
                 <div className="container">
-                    {error && <div className="alert alert-error mb-4">{error}</div>}
-
                     {/* Use SecurePaymentCard if Razorpay is displayed, otherwise could show generic summary */}
                     <SecurePaymentCard
                         plan={plan}

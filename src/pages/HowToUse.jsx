@@ -58,7 +58,7 @@ const HowToUse = () => {
                                         {guide.video_url && (
                                             <div className="video-container">
                                                 <div className="video-placeholder">
-                                                    <i className="fa-light fa-video"></i>
+                                                    <i className="fas fa-video"></i>
                                                     <p>Video: {guide.title}</p>
                                                     <a href={guide.video_url} target="_blank" rel="noopener noreferrer" className="btn btn-sm btn-primary mt-2">Watch Video</a>
                                                 </div>

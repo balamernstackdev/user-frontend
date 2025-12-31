@@ -1,0 +1,34 @@
+/* Legal Pages Styling */
+.legal-card {
+    background-color: #1a2c30;
+    /* Darker background for the card */
+    color: #ffffff;
+    border-radius: 12px;
+}
+
+.legal-card h4 {
+    color: #ffffff;
+    /* White headings */
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.legal-card p,
+.legal-card li {
+    color: rgba(255, 255, 255, 0.8);
+    /* Slightly off-white for body text */
+    line-height: 1.7;
+}
+
+.legal-card a {
+    color: #1e8a8a;
+}
+
+.legal-card a:hover {
+    color: #26b3b3;
+}
+
+.page-header h2 {
+    color: #0c1e21;
+    /* Keep page title dark if it's on the light background, or adjust if needed */
+}

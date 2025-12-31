@@ -149,7 +149,7 @@ const Subscription = () => {
                                     <ul className="features-list">
                                         {features.length > 0 ? (
                                             features.map((feature, index) => (
-                                                <li key={index}><i className="fa-light fa-check"></i> {feature}</li>
+                                                <li key={index}><i className="fas fa-check"></i> {feature}</li>
                                             ))
                                         ) : (
                                             <li>No features listed</li>
@@ -159,11 +159,11 @@ const Subscription = () => {
                                 <div style={{ marginTop: '30px', display: 'flex', gap: '15px', flexWrap: 'wrap' }}>
                                     <Link to="/plans" className="tj-primary-btn">
                                         <span className="btn-text"><span>Renew / Upgrade Plan</span></span>
-                                        <span className="btn-icon"><i className="tji-arrow-right-long"></i></span>
+                                        <span className="btn-icon"><i className="fas fa-arrow-right"></i></span>
                                     </Link>
                                     <Link to="/payments" className="tj-primary-btn transparent-btn">
                                         <span className="btn-text"><span>View Payment History</span></span>
-                                        <span className="btn-icon"><i className="tji-arrow-right-long"></i></span>
+                                        <span className="btn-icon"><i className="fas fa-arrow-right"></i></span>
                                     </Link>
                                 </div>
                             </div>

@@ -1,6 +1,6 @@
 /* Notifications Page Styles */
 .page-section {
-    padding: 120px 0 80px;
+    /* Padding handled by DashboardLayout */
     background-color: var(--tj-color-grey-1, #f5f5f5);
     min-height: 80vh;
 }

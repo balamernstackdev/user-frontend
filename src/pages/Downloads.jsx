@@ -3,13 +3,14 @@ import { Link } from 'react-router-dom';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import FileService from '../services/file.service';
 import SubscriptionService from '../services/subscription.service';
+import SEO from '../components/common/SEO';
 import './Downloads.css';
+import { toast } from 'react-toastify';
 
 const Downloads = () => {
     const [files, setFiles] = useState([]);
     const [subscription, setSubscription] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
     const [downloading, setDownloading] = useState(null);
 
     useEffect(() => {
@@ -26,7 +27,7 @@ const Downloads = () => {
             setFiles(filesRes.data);
             setSubscription(subRes.data);
         } catch (err) {
-            setError('Failed to load files');
+            toast.error('Failed to load files');
             console.error(err);
         } finally {
             setLoading(false);
@@ -55,8 +56,9 @@ const Downloads = () => {
             link.click();
             link.remove();
             window.URL.revokeObjectURL(url);
+            toast.success('Download started');
         } catch (err) {
-            alert(err.response?.data?.message || 'Download failed');
+            toast.error(err.response?.data?.message || 'Download failed');
             console.error(err);
         } finally {
             setDownloading(null);
@@ -84,22 +86,23 @@ const Downloads = () => {
     const getFileIconClass = (fileType) => {
         const type = fileType ? fileType.toLowerCase() : 'default';
         const icons = {
-            pdf: 'fa-light fa-file-pdf',
-            doc: 'fa-regular fa-file-word',
-            docx: 'fa-regular fa-file-word',
-            zip: 'fa-light fa-file-zipper',
-            rar: 'fa-light fa-file-zipper',
-            jpg: 'fa-light fa-file-image',
-            png: 'fa-light fa-file-image',
-            mp4: 'fa-light fa-file-video',
-            avi: 'fa-light fa-file-video',
-            default: 'fa-light fa-file'
+            pdf: 'far fa-file-pdf',
+            doc: 'far fa-file-word',
+            docx: 'far fa-file-word',
+            zip: 'far fa-file-zipper',
+            rar: 'far fa-file-zipper',
+            jpg: 'far fa-file-image',
+            png: 'far fa-file-image',
+            mp4: 'far fa-file-video',
+            avi: 'far fa-file-video',
+            default: 'far fa-file'
         };
         return icons[type] || icons.default;
     };
 
     return (
         <DashboardLayout>
+            <SEO title="My Downloads" description="Access your purchased files and resources." />
             <section className="page-section">
                 <div className="container">
                     <div className="page-header">
@@ -109,12 +112,12 @@ const Downloads = () => {
 
                     {!subscription && !loading && (
                         <div className="no-content-state mb-4">
-                            <div className="no-content-icon"><i className="fa-light fa-lock"></i></div>
+                            <div className="no-content-icon"><i className="fas fa-lock"></i></div>
                             <h3>No Active Subscription</h3>
                             <p>You need an active subscription to access downloadable files.</p>
                             <Link to="/plans" className="tj-primary-btn" style={{ display: 'inline-flex' }}>
                                 <span className="btn-text"><span>View Plans</span></span>
-                                <span className="btn-icon"><i className="tji-arrow-right-long"></i></span>
+                                <span className="btn-icon"><i className="fas fa-arrow-right"></i></span>
                             </Link>
                         </div>
                     )}
@@ -140,8 +143,6 @@ const Downloads = () => {
                                         <span className="visually-hidden">Loading...</span>
                                     </div>
                                 </div>
-                            ) : error ? (
-                                <div className="alert alert-error">{error}</div>
                             ) : files.length > 0 ? (
                                 files.map((file) => (
                                     <div key={file.id} className="download-card">
@@ -155,9 +156,9 @@ const Downloads = () => {
                                                     <div className="download-file-description">{file.description}</div>
                                                 )}
                                                 <div className="download-meta">
-                                                    <span><i className="fa-light fa-calendar"></i> Purchased: {formatDate(file.created_at)}</span>
-                                                    <span><i className="fa-light fa-file"></i> {file.file_type ? file.file_type.toUpperCase() : 'FILE'}</span>
-                                                    <span><i className="fa-light fa-hard-drive"></i> {formatFileSize(file.file_size)}</span>
+                                                    <span><i className="far fa-calendar"></i> Purchased: {formatDate(file.created_at)}</span>
+                                                    <span><i className="far fa-file"></i> {file.file_type ? file.file_type.toUpperCase() : 'FILE'}</span>
+                                                    <span><i className="fas fa-hard-drive"></i> {formatFileSize(file.file_size)}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -168,7 +169,7 @@ const Downloads = () => {
                                                 disabled={downloading === file.id}
                                             >
                                                 <span className="btn-text"><span>{downloading === file.id ? 'Downloading...' : 'Download'}</span></span>
-                                                <span className="btn-icon"><i className="tji-arrow-right-long"></i></span>
+                                                <span className="btn-icon"><i className="fas fa-arrow-right"></i></span>
                                             </button>
                                         </div>
                                     </div>
@@ -176,7 +177,7 @@ const Downloads = () => {
                             ) : (
                                 subscription ? (
                                     <div className="no-content-state">
-                                        <div className="no-content-icon"><i className="fa-light fa-folder-open"></i></div>
+                                        <div className="no-content-icon"><i className="far fa-folder-open"></i></div>
                                         <h3>No Files Available</h3>
                                         <p>There are no files available for your current plan yet. Please come back later.</p>
                                     </div>

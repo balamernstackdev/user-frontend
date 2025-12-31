@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import tutorialService from '../services/tutorial.service';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import './AdminForms.css';
+import { toast } from 'react-toastify';
 
 const AdminHowToUseForm = () => {
     const navigate = useNavigate();
@@ -20,7 +21,6 @@ const AdminHowToUseForm = () => {
         category: 'HowToUse'
     });
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
 
     useEffect(() => {
         if (isEditMode) {
@@ -45,7 +45,7 @@ const AdminHowToUseForm = () => {
             });
         } catch (err) {
             console.error('Error fetching guide:', err);
-            setError('Failed to load guide details');
+            toast.error('Failed to load guide details');
         } finally {
             setLoading(false);
         }
@@ -61,7 +61,6 @@ const AdminHowToUseForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError('');
         setLoading(true);
 
         try {
@@ -73,13 +72,15 @@ const AdminHowToUseForm = () => {
 
             if (isEditMode) {
                 await tutorialService.updateTutorial(id, dataToSubmit);
+                toast.success('Guide updated successfully');
             } else {
                 await tutorialService.createTutorial(dataToSubmit);
+                toast.success('Guide created successfully');
             }
             navigate('/admin/how-to-use');
         } catch (err) {
             console.error('Error saving guide:', err);
-            setError(err.response?.data?.message || 'Failed to save guide');
+            toast.error(err.response?.data?.message || 'Failed to save guide');
         } finally {
             setLoading(false);
         }
@@ -96,8 +97,6 @@ const AdminHowToUseForm = () => {
                     <div className="row">
                         <div className="col-lg-10 mx-auto">
                             <div className="admin-form-card">
-                                {error && <div className="alert alert-error">{error}</div>}
-
                                 <form onSubmit={handleSubmit}>
                                     <div className="form-group">
                                         <label htmlFor="title">Title</label>

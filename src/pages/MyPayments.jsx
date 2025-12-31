@@ -3,11 +3,11 @@ import { Link } from 'react-router-dom';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import paymentService from '../services/payment.service';
 import './MyPayments.css';
+import { toast } from 'react-toastify';
 
 const MyPayments = () => {
     const [transactions, setTransactions] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
 
     useEffect(() => {
         fetchTransactions();
@@ -21,7 +21,7 @@ const MyPayments = () => {
             // Handle case where API returns object with data property or array directly
             setTransactions(Array.isArray(data) ? data : (data.data || []));
         } catch (err) {
-            setError('Failed to load transaction history');
+            toast.error('Failed to load transaction history');
             console.error(err);
         } finally {
             setLoading(false);
@@ -55,8 +55,6 @@ const MyPayments = () => {
                                             <span className="visually-hidden">Loading...</span>
                                         </div>
                                     </div>
-                                ) : error ? (
-                                    <div className="alert alert-error">{error}</div>
                                 ) : transactions.length > 0 ? (
                                     <div className="table-responsive" style={{ overflowX: 'auto' }}>
                                         <table>

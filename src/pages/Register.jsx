@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { authService } from '../services/auth.service';
+import SEO from '../components/common/SEO';
 import StoxzoLogo from '../assets/images/Stoxzo_Logo.svg';
 import './Register.css';
+import { toast } from 'react-toastify';
 
 const Register = () => {
     const navigate = useNavigate();
@@ -85,6 +87,7 @@ const Register = () => {
         const validationErrors = validateForm();
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
+            toast.error('Please fix the errors in the form');
             return;
         }
 
@@ -108,16 +111,17 @@ const Register = () => {
                 });
             }
         } catch (err) {
+            const apiErrors = {};
             if (err.response?.data?.errors) {
-                const apiErrors = {};
                 err.response.data.errors.forEach((error) => {
                     apiErrors[error.field] = error.message;
                 });
                 setErrors(apiErrors);
+                toast.error('Please correct the highlighted errors.');
             } else {
-                setErrors({
-                    general: err.response?.data?.message || 'Registration failed. Please try again.'
-                });
+                const msg = err.response?.data?.message || 'Registration failed. Please try again.';
+                setErrors({ general: msg });
+                toast.error(msg);
             }
         } finally {
             setLoading(false);
@@ -126,6 +130,7 @@ const Register = () => {
 
     return (
         <section className="register-section">
+            <SEO title="Create Account" description="Join Stoxzo today." />
             <div className="register-wrapper">
                 <div className="register-card">
                     <div className="register-logo">
@@ -138,12 +143,6 @@ const Register = () => {
                         <h2>Create Account</h2>
                         <p>Sign up to get started with your account</p>
                     </div>
-
-                    {errors.general && (
-                        <div className="register-alert alert-error" role="alert">
-                            {errors.general}
-                        </div>
-                    )}
 
                     <form className="register-form" onSubmit={handleSubmit}>
                         {/* First Name & Last Name - 2 Column */}

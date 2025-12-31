@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import TutorialService from '../services/tutorial.service';
 import './Tutorials.css';
+import { toast } from 'react-toastify';
 
 const Tutorials = () => {
     const { id } = useParams();
@@ -11,7 +12,6 @@ const Tutorials = () => {
     const [selectedTutorial, setSelectedTutorial] = useState(null);
     const [selectedCategory, setSelectedCategory] = useState('all');
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
 
     useEffect(() => {
         fetchCategories();
@@ -25,7 +25,14 @@ const Tutorials = () => {
     const fetchCategories = async () => {
         try {
             const response = await TutorialService.getCategories();
-            setCategories(response.data);
+            // Filter out empty or invalid categories
+            const validCategories = response.data.filter(cat =>
+                cat.category &&
+                cat.category.trim() !== '' &&
+                cat.category !== '{}' &&
+                cat.category !== 'null'
+            );
+            setCategories(validCategories);
         } catch (err) {
             console.error('Failed to load categories', err);
         }
@@ -38,7 +45,7 @@ const Tutorials = () => {
             const response = await TutorialService.getTutorials(params);
             setTutorials(response.data);
         } catch (err) {
-            setError('Failed to load tutorials');
+            toast.error('Failed to load tutorials');
             console.error(err);
         } finally {
             setLoading(false);
@@ -51,7 +58,7 @@ const Tutorials = () => {
             const response = await TutorialService.getTutorial(tutorialId);
             setSelectedTutorial(response.data);
         } catch (err) {
-            setError('Failed to load tutorial');
+            toast.error('Failed to load tutorial');
             console.error(err);
         } finally {
             setLoading(false);
@@ -82,7 +89,7 @@ const Tutorials = () => {
                         // Single Tutorial View
                         <div className="tutorial-viewer animate-fade-up">
                             <button className="back-btn" onClick={handleBackToList}>
-                                <i className="tji-arrow-left"></i> Back to Tutorials
+                                <i className="fas fa-arrow-left"></i> Back to Tutorials
                             </button>
 
                             <div className="tutorial-content">
@@ -131,12 +138,10 @@ const Tutorials = () => {
                                         className={`filter-btn ${selectedCategory === cat.category ? 'active' : ''}`}
                                         onClick={() => setSelectedCategory(cat.category)}
                                     >
-                                        {cat.category} ({cat.count})
+                                        {cat.category.replace(/([A-Z])/g, ' $1').trim()} ({cat.count})
                                     </button>
                                 ))}
                             </div>
-
-                            {error && <div className="alert alert-error">{error}</div>}
 
                             <div className="tutorials-grid">
                                 {tutorials.length > 0 ? (
@@ -146,26 +151,24 @@ const Tutorials = () => {
                                             className="tutorial-card"
                                             onClick={() => handleTutorialClick(tutorial)}
                                         >
-                                            <div className="tutorial-thumbnail">
+                                            <div className={`tutorial-thumbnail ${!tutorial.thumbnail_url ? 'placeholder' : ''}`}>
                                                 {tutorial.thumbnail_url ? (
                                                     <img src={tutorial.thumbnail_url} alt={tutorial.title} />
                                                 ) : (
-                                                    <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ccc' }}>
-                                                        <i className="fa-light fa-image" style={{ fontSize: '48px' }}></i>
-                                                    </div>
+                                                    <i className={tutorial.category === 'FAQ' ? "fas fa-question-circle" : "fas fa-photo-video"}></i>
                                                 )}
                                             </div>
                                             <div className="tutorial-card-content">
                                                 <span className="category-tag">{tutorial.category}</span>
                                                 <h3>{tutorial.title}</h3>
                                                 <p>{tutorial.description}</p>
-                                                <button className="btn-link">Read More <i className="tji-arrow-right"></i></button>
+                                                <button className="btn-link">Read More <i className="fas fa-arrow-right"></i></button>
                                             </div>
                                         </div>
                                     ))
                                 ) : (
                                     <div className="no-tutorials">
-                                        <div className="icon"><i className="fa-light fa-book-open"></i></div>
+                                        <div className="icon"><i className="fas fa-book-open"></i></div>
                                         <h3>No tutorials found</h3>
                                         <p>Check back later for new content!</p>
                                     </div>

@@ -1,8 +1,5 @@
-/* Page Structure mirroring .page-section */
 .admin-listing-page {
-    padding: 120px 0 80px;
-    padding: 120px 0 80px;
-    /* Background removed to inherit global style */
+    /* Padding handled by DashboardLayout */
     min-height: 80vh;
 }
 
@@ -216,9 +213,8 @@
     display: block;
     margin-bottom: 4px;
     font-weight: 600;
-    font-size: 12px;
-    /* Smaller label */
-    color: #334155;
+    font-size: 13px;
+    color: #1e293b;
 }
 
 .form-group input,
@@ -317,10 +313,9 @@
     gap: 8px;
     cursor: pointer;
     font-size: 14px;
-    font-weight: 500;
-    color: #475569;
+    font-weight: 600;
+    color: #1e293b;
     margin: 0 !important;
-    /* Override default label margin */
 }
 
 .checkbox-label input[type="checkbox"] {
@@ -367,7 +362,7 @@
 /* Responsive Adjusments */
 @media (max-width: 768px) {
     .admin-listing-page {
-        padding-top: 100px;
+        padding-top: 140px;
     }
 
     .form-grid {
@@ -404,4 +399,33 @@
         min-width: 800px;
         /* Ensure table doesn't squish */
     }
+}
+
+/* Payout Process High-Visibility Overrides */
+.admin-listing-page .text-muted,
+.admin-listing-page label,
+.admin-listing-page .form-label,
+.admin-listing-page .form-text,
+.admin-listing-page .small {
+    color: #000000 !important;
+    /* Pure black for maximum contrast */
+    opacity: 1 !important;
+    font-weight: 600 !important;
+}
+
+.admin-listing-page .h5,
+.admin-listing-page .h4,
+.admin-listing-page h4,
+.admin-listing-page h5,
+.admin-listing-page h6,
+.admin-listing-page span.fw-bold {
+    color: #000000 !important;
+    font-weight: 800 !important;
+}
+
+.alert-warning {
+    color: #856404 !important;
+    background-color: #fff3cd !important;
+    border: 1px solid #ffeeba !important;
+    font-weight: 600 !important;
 }

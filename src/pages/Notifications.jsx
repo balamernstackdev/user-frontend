@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import { notificationService } from '../services/notification.service';
+import SEO from '../components/common/SEO';
 import './Notifications.css';
 
 const Notifications = () => {
@@ -49,6 +50,7 @@ const Notifications = () => {
 
     return (
         <DashboardLayout>
+            <SEO title="Notifications" description="Stay updated with your account activity." />
             <section className="page-section">
                 <div className="container">
                     <div className="page-header animate-fade-up">
@@ -106,7 +108,7 @@ const Notifications = () => {
                         </>
                     ) : (
                         <div className="empty-state animate-fade-up">
-                            <div className="no-content-icon"><i className="fa-light fa-bell-slash"></i></div>
+                            <div className="no-content-icon"><i className="fas fa-bell-slash"></i></div>
                             <h3>No notifications</h3>
                             <p>You're all caught up! Check back later for updates.</p>
                         </div>

@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import fileService from '../services/file.service';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import './AdminForms.css'; // Reusing common form styles
+import { toast } from 'react-toastify';
 
 const AdminFileForm = () => {
     const { id } = useParams();
@@ -18,7 +19,6 @@ const AdminFileForm = () => {
     const [selectedFile, setSelectedFile] = useState(null);
     const [loading, setLoading] = useState(false);
     const [uploading, setUploading] = useState(false);
-    const [error, setError] = useState(null);
 
     useEffect(() => {
         if (isEditMode) {
@@ -67,10 +67,9 @@ const AdminFileForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError(null);
 
         if (!selectedFile && !isEditMode) {
-            setError('Please select a file to upload.');
+            toast.error('Please select a file to upload.');
             return;
         }
 
@@ -84,15 +83,15 @@ const AdminFileForm = () => {
         try {
             if (isEditMode) {
                 // await fileService.updateFile(id, data); // To be implemented if needed
-                alert('Edit not fully implemented yet');
+                toast.info('Edit not fully implemented yet');
             } else {
                 await fileService.uploadFile(data);
-                alert('File uploaded successfully');
+                toast.success('File uploaded successfully');
             }
             navigate('/admin/files');
         } catch (error) {
             console.error('Upload failed:', error);
-            setError(error.response?.data?.message || 'Upload failed');
+            toast.error(error.response?.data?.message || 'Upload failed');
         } finally {
             setUploading(false);
         }
@@ -119,13 +118,6 @@ const AdminFileForm = () => {
                         <div className="col-lg-8">
                             <div className="admin-form-card">
                                 <div className="card-body p-4">
-                                    {error && (
-                                        <div className="alert alert-danger alert-dismissible fade show mb-4" role="alert">
-                                            <i className="fa-solid fa-circle-exclamation me-2"></i>
-                                            {error}
-                                            <button type="button" className="btn-close" onClick={() => setError(null)}></button>
-                                        </div>
-                                    )}
 
                                     <form onSubmit={handleSubmit}>
 
@@ -144,7 +136,7 @@ const AdminFileForm = () => {
                                             }}
                                         >
                                             <input type="file" ref={fileInputRef} onChange={handleFileSelect} style={{ display: 'none' }} />
-                                            <i className={`fa-light fa-cloud-arrow-up mb-3 ${selectedFile ? 'text-primary' : 'text-secondary'}`} style={{ fontSize: '48px' }}></i>
+                                            <i className={`fas fa-cloud-arrow-up mb-3 ${selectedFile ? 'text-primary' : 'text-secondary'}`} style={{ fontSize: '48px' }}></i>
                                             <p className="mb-0 fw-medium text-dark">
                                                 {selectedFile ? 'Click to replace file' : 'Click to browse or drag file here'}
                                             </p>

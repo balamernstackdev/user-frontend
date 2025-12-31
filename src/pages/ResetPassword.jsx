@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { authService } from '../services/auth.service';
 import StoxzoLogo from '../assets/images/Stoxzo_Logo.svg';
 import './ResetPassword.css';
+import { toast } from 'react-toastify';
 
 const ResetPassword = () => {
     const navigate = useNavigate();
@@ -73,14 +74,12 @@ const ResetPassword = () => {
         try {
             const response = await authService.resetPassword(token, formData.password);
             if (response.success) {
-                navigate('/login', {
-                    state: { message: 'Password reset successful! Please login with your new password.' }
-                });
+                toast.success('Password reset successful! Please login with your new password.');
+                navigate('/login');
             }
         } catch (err) {
-            setErrors({
-                general: err.response?.data?.message || 'Failed to reset password. The link may be expired.'
-            });
+            const msg = err.response?.data?.message || 'Failed to reset password. The link may be expired.';
+            toast.error(msg);
         } finally {
             setLoading(false);
         }
@@ -111,12 +110,6 @@ const ResetPassword = () => {
                         </ul>
                     </div>
 
-                    {errors.general && (
-                        <div className="alert alert-danger" style={{ marginBottom: '20px' }} role="alert">
-                            {errors.general}
-                        </div>
-                    )}
-
                     <form className="reset-password-form" onSubmit={handleSubmit}>
                         <div className="form-input password-input">
                             <label htmlFor="password">New Password</label>
@@ -134,7 +127,7 @@ const ResetPassword = () => {
                                 className="password-toggle"
                                 onClick={() => setShowPassword(!showPassword)}
                             >
-                                <i className={`fa-light ${showPassword ? 'fa-eye' : 'fa-eye-slash'}`}></i>
+                                <i className={`far ${showPassword ? 'fa-eye' : 'fa-eye-slash'}`}></i>
                             </button>
                             {errors.password && (
                                 <span style={{ color: '#cf1322', fontSize: '12px', marginTop: '4px', display: 'block' }}>
@@ -159,7 +152,7 @@ const ResetPassword = () => {
                                 className="password-toggle"
                                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                             >
-                                <i className={`fa-light ${showConfirmPassword ? 'fa-eye' : 'fa-eye-slash'}`}></i>
+                                <i className={`far ${showConfirmPassword ? 'fa-eye' : 'fa-eye-slash'}`}></i>
                             </button>
                             {errors.confirmPassword && (
                                 <span style={{ color: '#cf1322', fontSize: '12px', marginTop: '4px', display: 'block' }}>
@@ -173,7 +166,7 @@ const ResetPassword = () => {
                                 <span className="btn-text">
                                     <span>{loading ? 'Resetting Password...' : 'Reset Password'}</span>
                                 </span>
-                                <span className="btn-icon"><i className="tji-arrow-right-long"></i></span>
+                                <span className="btn-icon"><i className="fas fa-arrow-right"></i></span>
                             </button>
                         </div>
                     </form>

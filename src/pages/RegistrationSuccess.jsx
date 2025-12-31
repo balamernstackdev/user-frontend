@@ -43,7 +43,7 @@ const RegistrationSuccess = () => {
                     </div>
 
                     <div className="success-icon">
-                        <i className="fa-light fa-envelope"></i>
+                        <i className="fas fa-envelope"></i>
                     </div>
 
                     <div className="success-title">
@@ -53,7 +53,7 @@ const RegistrationSuccess = () => {
 
                     <div className="next-steps-box">
                         <div className="next-steps-title">
-                            <i className="fa-light fa-circle-info"></i>
+                            <i className="fas fa-info-circle"></i>
                             What to do next?
                         </div>
                         <ul className="next-steps-list">
@@ -98,12 +98,12 @@ const RegistrationSuccess = () => {
                                 <span className="btn-text">
                                     <span>{resendStatus === 'sending' ? 'Sending...' : 'Resend Email'}</span>
                                 </span>
-                                <span className="btn-icon"><i className="tji-arrow-right-long"></i></span>
+                                <span className="btn-icon"><i className="fas fa-arrow-right"></i></span>
                             </button>
 
                             <Link to="/login" className="tj-secondary-btn">
                                 Back to Login
-                                <span className="btn-icon"><i className="tji-arrow-right-long"></i></span>
+                                <span className="btn-icon"><i className="fas fa-arrow-right"></i></span>
                             </Link>
                         </div>
                     </div>

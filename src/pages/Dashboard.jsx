@@ -4,6 +4,7 @@ import DashboardLayout from '../components/layout/DashboardLayout';
 import MarketerStats from '../components/dashboard/MarketerStats';
 import { authService } from '../services/auth.service';
 import ReferralService from '../services/referral.service';
+import SEO from '../components/common/SEO';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -41,7 +42,7 @@ const Dashboard = () => {
 
     const fetchMarketerStats = async () => {
         try {
-            const response = await ReferralService.getMarketerStats();
+            const response = await ReferralService.getStats();
             setMarketerStats(response.data);
         } catch (error) {
             console.error('Failed to fetch marketer stats:', error);
@@ -59,41 +60,41 @@ const Dashboard = () => {
     };
 
     const quickLinks = [
-        { title: 'My Profile', icon: 'fa-regular fa-user', link: '/profile' }, // Reverted to fa-light
-        { title: 'Subscriptions', icon: 'fa-light fa-box-check', link: '/subscription' },
-        { title: 'Support', icon: 'fa-light fa-question-circle', link: '/tickets' }, // Corrected route
-        { title: 'Tutorials', icon: 'fa-light fa-video', link: '/tutorials' },
-        { title: 'Transactions', icon: 'fa-light fa-list-timeline', link: '/transactions' }, // Proven working (Admin)
+        { title: 'My Profile', icon: 'fas fa-user-circle', link: '/profile' },
+        { title: 'Subscriptions', icon: 'fas fa-box-open', link: '/subscription' },
+        { title: 'Support', icon: 'fas fa-life-ring', link: '/tickets' },
+        { title: 'Tutorials', icon: 'fas fa-video', link: '/tutorials' },
+        { title: 'Transactions', icon: 'fas fa-history', link: '/transactions' },
     ];
 
     const marketerLinks = [
-        { title: 'Referrals', icon: 'fa-light fa-users', link: '/referrals' }, // Corrected route
-        { title: 'Commissions', icon: 'fa-light fa-chart-line', link: '/marketer/commissions' }, // Corrected route
-        { title: 'My Payments', icon: 'fa-light fa-credit-card', link: '/payments' }, // Corrected route
+        { title: 'Referrals', icon: 'fas fa-users', link: '/referrals' }, // Corrected route
+        { title: 'Commissions', icon: 'fas fa-chart-line', link: '/marketer/commissions' }, // Corrected route
     ];
 
     return (
         <DashboardLayout>
+            <SEO title="Dashboard" description="Overview of your account, plans, and recent activity." />
             <section className="welcome-section">
                 <div className="container-fluid">
                     <div className="welcome-content">
                         {/* Welcome Card */}
                         <div className="welcome-card animate-fade-up">
                             <div className="welcome-icon">
-                                <i className="fa-light fa-circle-check"></i>
+                                <i className="far fa-check-circle"></i>
                             </div>
                             <div className="welcome-title">
                                 <h1>Welcome Back, {user?.name || 'User'}!</h1>
                                 <p>You have successfully logged in to your account. We're excited to have you here!</p>
                             </div>
                             <div className="welcome-actions">
-                                <Link to="/" className="tj-primary-btn">
-                                    <span className="btn-text"><span>Explore Home</span></span>
-                                    <span className="btn-icon"><i className="tji-arrow-right-long"></i></span>
+                                <Link to={user?.role === 'marketer' ? "/marketer/commissions" : "/plans"} className="tj-primary-btn">
+                                    <span className="btn-text"><span>{user?.role === 'marketer' ? "Explore Earnings" : "Explore Plans"}</span></span>
+                                    <span className="btn-icon"><i className="fas fa-arrow-right"></i></span>
                                 </Link>
                                 <Link to="/profile" className="tj-primary-btn transparent-btn">
                                     <span className="btn-text"><span>Manage Profile</span></span>
-                                    <span className="btn-icon"><i className="tji-arrow-right-long"></i></span>
+                                    <span className="btn-icon"><i className="fas fa-arrow-right"></i></span>
                                 </Link>
                             </div>
                         </div>
@@ -117,9 +118,9 @@ const Dashboard = () => {
                                                 title="Copy Code"
                                             >
                                                 {copySuccess ? (
-                                                    <i className="fa-light fa-check" style={{ color: '#28a745' }}></i>
+                                                    <i className="fas fa-check" style={{ color: '#28a745' }}></i>
                                                 ) : (
-                                                    <i className="fa-light fa-copy"></i>
+                                                    <i className="far fa-copy"></i>
                                                 )}
                                             </button>
                                         </div>
@@ -132,7 +133,10 @@ const Dashboard = () => {
                         <div className="quick-links animate-fade-up" style={{ animationDelay: '0.2s' }}>
                             <h3>Quick Links</h3>
                             <div className="quick-links-grid">
-                                {(user?.role === 'marketer' ? [...marketerLinks, ...quickLinks] : quickLinks).map((item, index) => (
+                                {(user?.role === 'marketer'
+                                    ? [...marketerLinks, ...quickLinks].filter(item => item.title !== 'Subscriptions')
+                                    : quickLinks
+                                ).map((item, index) => (
                                     <Link to={item.link} className="quick-link-item" key={index}>
                                         <div className="quick-link-icon">
                                             <i className={item.icon}></i>

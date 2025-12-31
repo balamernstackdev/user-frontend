@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { userService } from '../services/user.service';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import './AdminListings.css';
+import { toast } from 'react-toastify';
 
 const AdminUsers = () => {
     const navigate = useNavigate();
@@ -43,7 +44,7 @@ const AdminUsers = () => {
                 fetchUsers();
             } catch (error) {
                 console.error('Error deleting user:', error);
-                alert('Failed to delete user');
+                toast.error('Failed to delete user');
             }
         }
     };
@@ -54,7 +55,7 @@ const AdminUsers = () => {
             fetchUsers();
         } catch (error) {
             console.error('Error updating status:', error);
-            alert('Failed to update status');
+            toast.error('Failed to update status');
         }
     };
 
@@ -132,17 +133,17 @@ const AdminUsers = () => {
                                             <td>
                                                 <div className="actions-cell">
                                                     <button className="action-btn" onClick={() => navigate(`/admin/users/edit/${user.id}`)} title="Edit">
-                                                        <i className="fa-light fa-edit"></i>
+                                                        <i className="far fa-edit"></i>
                                                     </button>
 
                                                     {user.role === 'marketer' && user.status === 'pending' && (
                                                         <button className="action-btn" onClick={() => handleStatusToggle(user, 'approved')} title="Approve" style={{ color: '#28a745', borderColor: '#28a745' }}>
-                                                            <i className="fa-light fa-check"></i>
+                                                            <i className="fas fa-check"></i>
                                                         </button>
                                                     )}
 
                                                     <button className="action-btn delete" onClick={() => handleDeleteUser(user.id)} title="Delete">
-                                                        <i className="fa-light fa-trash"></i>
+                                                        <i className="fas fa-trash"></i>
                                                     </button>
                                                 </div>
                                             </td>

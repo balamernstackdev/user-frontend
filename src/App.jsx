@@ -9,6 +9,7 @@ import Subscription from './pages/Subscription';
 import MyPayments from './pages/MyPayments';
 import ReferredUsers from './pages/ReferredUsers';
 import Tutorials from './pages/Tutorials';
+import CuratedAnalysis from './pages/CuratedAnalysis';
 import HowToUse from './pages/HowToUse';
 import FAQ from './pages/FAQ';
 import NotificationDetails from './pages/NotificationDetails';
@@ -26,12 +27,14 @@ import Invoice from './pages/Invoice';
 import Downloads from './pages/Downloads';
 import SupportTickets from './pages/SupportTickets';
 import Commissions from './pages/Commissions';
+import CommissionDetail from './pages/CommissionDetail';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminPlans from './pages/AdminPlans';
 import AdminPlanForm from './pages/AdminPlanForm';
 import AdminUsers from './pages/AdminUsers';
 import AdminUserForm from './pages/AdminUserForm';
 import AdminCommissions from './pages/AdminCommissions';
+import AdminPayoutProcess from './pages/AdminPayoutProcess';
 import AdminTransactions from './pages/AdminTransactions';
 import AdminTickets from './pages/AdminTickets';
 import AdminLogs from './pages/AdminLogs';
@@ -41,16 +44,26 @@ import AdminHowToUse from './pages/AdminHowToUse';
 import AdminHowToUseForm from './pages/AdminHowToUseForm';
 import AdminFiles from './pages/AdminFiles';
 import AdminFileForm from './pages/AdminFileForm';
+import AdminAnalysis from './pages/AdminAnalysis';
+import AdminAnalysisForm from './pages/AdminAnalysisForm';
+import AdminSettings from './pages/AdminSettings';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsConditions from './pages/TermsConditions';
+import ContactUs from './pages/ContactUs';
 import NotFound from './pages/NotFound';
 import ProtectedRoute from './components/ProtectedRoute';
 import { authService } from './services/auth.service';
 import ScrollToTop from './components/ScrollToTop';
+
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
     const isAuthenticated = authService.isAuthenticated();
 
     return (
         <div className="App">
+            <ToastContainer position="top-right" autoClose={1000} />
             <ScrollToTop />
             <Routes>
                 {/* Public Routes */}
@@ -65,6 +78,8 @@ function App() {
                 <Route path="/tutorials/:id" element={<Tutorials />} />
                 <Route path="/how-to-use" element={<HowToUse />} />
                 <Route path="/faq" element={<FAQ />} />
+                <Route path="/curated-analysis" element={<ProtectedRoute><CuratedAnalysis /></ProtectedRoute>} />
+                <Route path="/curated-analysis/:id" element={<ProtectedRoute><CuratedAnalysis /></ProtectedRoute>} />
                 <Route path="/notifications" element={<ProtectedRoute allowedRoles={['user', 'marketer', 'admin']}><Notifications /></ProtectedRoute>} />
                 <Route path="/notifications/:id" element={<ProtectedRoute allowedRoles={['user', 'marketer', 'admin']}><NotificationDetails /></ProtectedRoute>} />
 
@@ -87,6 +102,7 @@ function App() {
                 {/* Marketer Routes */}
                 <Route path="/marketer/referrals" element={<ProtectedRoute allowedRoles={['marketer']}><ReferredUsers /></ProtectedRoute>} />
                 <Route path="/marketer/commissions" element={<ProtectedRoute allowedRoles={['marketer']}><Commissions /></ProtectedRoute>} />
+                <Route path="/marketer/commissions/:id" element={<ProtectedRoute allowedRoles={['marketer']}><CommissionDetail /></ProtectedRoute>} />
 
                 {/* Admin Routes */}
                 <Route path="/admin/dashboard" element={<ProtectedRoute allowedRoles={['admin']}><AdminDashboard /></ProtectedRoute>} />
@@ -97,6 +113,8 @@ function App() {
                 <Route path="/admin/users/create" element={<ProtectedRoute allowedRoles={['admin']}><AdminUserForm /></ProtectedRoute>} />
                 <Route path="/admin/users/edit/:id" element={<ProtectedRoute allowedRoles={['admin']}><AdminUserForm /></ProtectedRoute>} />
                 <Route path="/admin/commissions" element={<ProtectedRoute allowedRoles={['admin']}><AdminCommissions /></ProtectedRoute>} />
+                <Route path="/admin/commissions/:id" element={<ProtectedRoute allowedRoles={['admin']}><CommissionDetail /></ProtectedRoute>} />
+                <Route path="/admin/commissions/:id/pay" element={<ProtectedRoute allowedRoles={['admin']}><AdminPayoutProcess /></ProtectedRoute>} />
                 <Route path="/admin/transactions" element={<ProtectedRoute allowedRoles={['admin']}><AdminTransactions /></ProtectedRoute>} />
                 <Route path="/admin/tickets" element={<ProtectedRoute allowedRoles={['admin']}><AdminTickets /></ProtectedRoute>} />
                 <Route path="/admin/logs" element={<ProtectedRoute allowedRoles={['admin']}><AdminLogs /></ProtectedRoute>} />
@@ -111,6 +129,18 @@ function App() {
                 <Route path="/admin/how-to-use" element={<ProtectedRoute allowedRoles={['admin']}><AdminHowToUse /></ProtectedRoute>} />
                 <Route path="/admin/how-to-use/create" element={<ProtectedRoute allowedRoles={['admin']}><AdminHowToUseForm /></ProtectedRoute>} />
                 <Route path="/admin/how-to-use/edit/:id" element={<ProtectedRoute allowedRoles={['admin']}><AdminHowToUseForm /></ProtectedRoute>} />
+
+                {/* Admin Curated Analysis */}
+                <Route path="/admin/analysis" element={<ProtectedRoute allowedRoles={['admin']}><AdminAnalysis /></ProtectedRoute>} />
+                <Route path="/admin/analysis/create" element={<ProtectedRoute allowedRoles={['admin']}><AdminAnalysisForm /></ProtectedRoute>} />
+                <Route path="/admin/analysis/edit/:id" element={<ProtectedRoute allowedRoles={['admin']}><AdminAnalysisForm /></ProtectedRoute>} />
+
+                <Route path="/admin/settings" element={<ProtectedRoute allowedRoles={['admin']}><AdminSettings /></ProtectedRoute>} />
+
+                {/* Legal Pages */}
+                <Route path="/privacy" element={<PrivacyPolicy />} />
+                <Route path="/terms" element={<TermsConditions />} />
+                <Route path="/contact" element={<ContactUs />} />
 
                 {/* Redirects for legacy/broken links */}
                 <Route path="/commissions" element={<Navigate to="/marketer/commissions" replace />} />

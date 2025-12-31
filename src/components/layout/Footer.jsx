@@ -48,10 +48,11 @@ const Footer = () => {
                     <div className="row justify-content-between">
                         <div className="col-xl-5 col-lg-4 col-md-6">
                             <div className="footer-widget footer-col-1">
-                                <h2 className="h10-footer-title text-anim wow fadeInUp" data-wow-delay=".3s">Building Better Business Together?</h2>
-                                <a className="text-btn wow fadeInUp" data-wow-delay=".3s" href="mailto:hello@stoxzo.com">
-                                    <span className="btn-text"><span>hello@stoxzo.com</span></span>
-                                </a>
+                                <h2 className="h10-footer-title text-anim wow fadeInUp" data-wow-delay=".3s">Building Better Business from Together?
+                                    <a className="text-btn wow fadeInUp" data-wow-delay=".3s" href="mailto:hello@stoxzo.com">
+                                        <span className="btn-text"><span>hello@stoxzo.com</span></span>
+                                    </a>
+                                </h2>
                                 <div className="bg-shape-widget wow fadeInUpBig" data-wow-delay=".7s"></div>
                             </div>
                         </div>
@@ -59,11 +60,10 @@ const Footer = () => {
                             <div className="footer-widget footer-col-2 widget-nav-menu wow fadeInUp" data-wow-delay=".3s">
                                 <h5 className="title">Services</h5>
                                 <ul>
-                                    <li><Link to="#">Customer Experience</Link></li>
-                                    <li><Link to="#">Training Programs</Link></li>
-                                    <li><Link to="#">Business Strategy</Link></li>
-                                    <li><Link to="#">ESG Consulting</Link></li>
-                                    <li><Link to="#">Development Hub</Link></li>
+                                    <li><Link to="/curated-analysis">Analysis</Link></li>
+                                    <li><Link to="/subscription">Plans</Link></li>
+                                    <li><Link to="/downloads">Downloads</Link></li>
+                                    <li><Link to="/payments">Transactions</Link></li>
                                 </ul>
                             </div>
                         </div>
@@ -71,11 +71,10 @@ const Footer = () => {
                             <div className="footer-widget footer-col-3 widget-nav-menu wow fadeInUp" data-wow-delay=".5s">
                                 <h5 className="title">Resources</h5>
                                 <ul>
-                                    <li><Link to="/contact">Contact us</Link></li>
-                                    <li><Link to="/team">Team Member</Link></li>
-                                    <li><Link to="/careers">Careers</Link></li>
-                                    <li><Link to="/news">News</Link></li>
-                                    <li><Link to="/feedback">Feedback</Link></li>
+                                    <li><Link to="/tickets">Support Tickets</Link></li>
+                                    <li><Link to="/faq">FAQs</Link></li>
+                                    <li><Link to="/how-to-use">How to Use</Link></li>
+                                    <li><Link to="/contact">Contact Us</Link></li>
                                 </ul>
                             </div>
                         </div>
@@ -91,7 +90,7 @@ const Footer = () => {
                                         <a href="mailto:support@stoxzo.com">M: support@stoxzo.com</a>
                                     </div>
                                     <div className="contact-item">
-                                        <span><i className="fa-light fa-clock"></i> Mon-Fri 10am-10pm</span>
+                                        <span><i className="far fa-clock"></i> Mon-Fri 10am-10pm</span>
                                     </div>
                                 </div>
                             </div>
@@ -100,57 +99,12 @@ const Footer = () => {
                 </div>
             </div>
 
+            {/* Subscription Section Removed to match reference */}
+            {/* 
             <div className="h10-footer-subscribe-wrapper wow fadeInUp" data-wow-delay=".5s">
-                <div className="container">
-                    <div className="row align-items-end">
-                        <div className="col-12 col-lg-4 col-xl-5">
-                            <div className="award-logo-area">
-                                <div className="award-text">Trusted by thousands</div>
-                                <div className="award-logo">
-                                    <img src={award1} alt="" />
-                                </div>
-                                <div className="award-logo">
-                                    <img src={award2} alt="" />
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-12 col-lg-8 col-xl-7">
-                            <div className="footer-subscribe h5-footer-subscribe">
-                                <h3 className="title">Subscribe to Our Newsletter.</h3>
-                                <div className="subscribe-form">
-                                    <form onSubmit={handleSubscribe}>
-                                        <input
-                                            type="email"
-                                            name="email"
-                                            placeholder="Enter email"
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
-                                            required
-                                        />
-                                        <button className="tj-primary-btn d-none d-sm-flex" type="submit">
-                                            <span className="btn-text"><span>Subscribe</span></span>
-                                            <span className="btn-icon"><i className="fa-light fa-arrow-right-long"></i></span>
-                                        </button>
-                                        <label htmlFor="agree-footer">
-                                            <input
-                                                id="agree-footer"
-                                                type="checkbox"
-                                                checked={agreeToTerms}
-                                                onChange={(e) => setAgreeToTerms(e.target.checked)}
-                                            />
-                                            Agree to our <Link to="/terms">Terms & Condition</Link>
-                                        </label>
-                                        <button className="tj-primary-btn d-flex d-sm-none" type="submit">
-                                            <span className="btn-text"><span>Subscribe</span></span>
-                                            <span className="btn-icon"><i className="fa-light fa-arrow-right-long"></i></span>
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+               ...
+            </div> 
+            */}
 
             <div className="tj-copyright-area-2 h5-footer-copyright">
                 <div className="container">

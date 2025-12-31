@@ -5,6 +5,8 @@ import { userService } from '../services/user.service';
 import paymentService from '../services/payment.service';
 import { activityService } from '../services/activity.service';
 import { authService } from '../services/auth.service';
+import adminService from '../services/admin.service';
+import SEO from '../components/common/SEO';
 import './Dashboard.css';
 import './AdminListings.css'; // For table styles
 
@@ -14,6 +16,7 @@ const AdminDashboard = () => {
         totalUsers: 0,
         activeMarketers: 0,
         pendingApprovals: 0,
+        pendingCommissionsCount: 0,
         totalRevenue: 0
     });
     const [recentLogs, setRecentLogs] = useState([]);
@@ -23,20 +26,16 @@ const AdminDashboard = () => {
         const fetchStats = async () => {
             try {
                 // Fetch Stats
-                const usersRes = await userService.getAllUsers({ limit: 1 });
-                const totalUsers = usersRes.data?.pagination?.total || 0;
+                const statsResponse = await adminService.getStats();
+                const { totalUsers, activeMarketers, pendingMarketers, pendingPayouts, totalRevenue } = statsResponse.data;
 
-                const marketersRes = await userService.getAllUsers({ role: 'marketer', status: 'active', limit: 1 });
-                const activeMarketers = marketersRes.data?.pagination?.total || 0;
-
-                const pendingMarketersRes = await userService.getAllUsers({ role: 'marketer', status: 'pending', limit: 1 });
-                const pendingApprovals = pendingMarketersRes.data?.pagination?.total || 0;
-
-                const revenueRes = await paymentService.getAllTransactions({ status: 'success', limit: 1000 });
-                const transactions = revenueRes.data || [];
-                const totalRevenue = transactions.reduce((sum, tx) => sum + (parseFloat(tx.amount) || 0), 0);
-
-                setStats({ totalUsers, activeMarketers, pendingApprovals, totalRevenue });
+                setStats({
+                    totalUsers,
+                    activeMarketers,
+                    pendingApprovals: pendingMarketers, // Mapping pendingMarketers to pendingApprovals state
+                    pendingCommissionsCount: pendingPayouts, // Mapping pendingPayouts to pendingCommissionsCount state
+                    totalRevenue
+                });
 
                 // Fetch Recent Activity
                 const logsRes = await activityService.getAllLogs({ limit: 5 });
@@ -54,6 +53,7 @@ const AdminDashboard = () => {
 
     return (
         <DashboardLayout>
+            <SEO title="Admin Dashboard" description="System overview and management." />
             <section className="welcome-section">
                 <div className="container-fluid">
                     <div className="welcome-content">
@@ -67,7 +67,7 @@ const AdminDashboard = () => {
                         <div className="admin-stats-grid stats-grid animate-fade-up">
                             <div className="stat-card">
                                 <div className="stat-icon" style={{ backgroundColor: 'rgba(30, 138, 138, 0.1)', color: '#1e8a8a' }}>
-                                    <i className="fa-light fa-users"></i>
+                                    <i className="fas fa-users"></i>
                                 </div>
                                 <div className="stat-info">
                                     <span className="stat-label">Total Users</span>
@@ -77,7 +77,7 @@ const AdminDashboard = () => {
                             <div className="stat-card">
                                 <Link to="/admin/users" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', width: '100%' }}>
                                     <div className="stat-icon" style={{ backgroundColor: 'rgba(40, 167, 69, 0.1)', color: '#28a745' }}>
-                                        <i className="fa-light fa-user-tie"></i>
+                                        <i className="fas fa-user-tie"></i>
                                     </div>
                                     <div className="stat-info">
                                         <span className="stat-label">Active Marketers</span>
@@ -88,17 +88,28 @@ const AdminDashboard = () => {
                             <div className="stat-card">
                                 <Link to="/admin/users" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', width: '100%' }}>
                                     <div className="stat-icon" style={{ backgroundColor: 'rgba(255, 193, 7, 0.1)', color: '#ffc107' }}>
-                                        <i className="fa-light fa-clock-rotate-left"></i>
+                                        <i className="fas fa-clock-rotate-left"></i>
                                     </div>
                                     <div className="stat-info">
-                                        <span className="stat-label">Pending Marketers</span>
+                                        <span className="stat-label">Pending Approvals</span>
                                         <span className="stat-value">{loading ? '...' : stats.pendingApprovals}</span>
                                     </div>
                                 </Link>
                             </div>
                             <div className="stat-card">
-                                <div className="stat-icon" style={{ backgroundColor: 'rgba(23, 162, 184, 0.1)', color: '#17a2b8' }}>
-                                    <i className="fa-light fa-chart-line-up"></i>
+                                <Link to="/admin/commissions" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', width: '100%' }}>
+                                    <div className="stat-icon" style={{ backgroundColor: 'rgba(23, 162, 184, 0.1)', color: '#17a2b8' }}>
+                                        <i className="fas fa-hand-holding-usd"></i>
+                                    </div>
+                                    <div className="stat-info">
+                                        <span className="stat-label">Pending Payouts</span>
+                                        <span className="stat-value">{loading ? '...' : stats.pendingCommissionsCount}</span>
+                                    </div>
+                                </Link>
+                            </div>
+                            <div className="stat-card">
+                                <div className="stat-icon" style={{ backgroundColor: 'rgba(111, 66, 193, 0.1)', color: '#6f42c1' }}>
+                                    <i className="fas fa-chart-line"></i>
                                 </div>
                                 <div className="stat-info">
                                     <span className="stat-label">Total Revenue</span>

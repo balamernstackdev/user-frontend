@@ -1,6 +1,6 @@
 /* Dashboard/Welcome Section Styling */
 .welcome-section {
-    padding: 120px 40px 80px;
+    /* Padding handled by DashboardLayout */
     background: transparent !important;
     position: relative;
     overflow: hidden;

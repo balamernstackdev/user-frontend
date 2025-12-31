@@ -58,7 +58,7 @@ const FAQ = () => {
                     </div>
 
                     <div className="search-box animate-fade-up" style={{ animationDelay: '0.1s' }}>
-                        <i className="fa-light fa-search"></i>
+                        <i className="fas fa-search"></i>
                         <input
                             type="text"
                             placeholder="Search for questions..."
@@ -87,7 +87,7 @@ const FAQ = () => {
                                             onClick={() => toggleAccordion(index)}
                                         >
                                             <span>{item.question}</span>
-                                            <i className="fa-light fa-chevron-down"></i>
+                                            <i className="fas fa-chevron-down"></i>
                                         </div>
                                         <div className="faq-answer">
                                             {item.answer}
@@ -96,7 +96,7 @@ const FAQ = () => {
                                 ))
                             ) : (
                                 <div className="no-results animate-fade-up">
-                                    <i className="fa-light fa-question-circle"></i>
+                                    <i className="fas fa-question-circle"></i>
                                     <h3>No questions found</h3>
                                     <p>Try searching for something else or contact support.</p>
                                 </div>

@@ -206,12 +206,12 @@ const PlanModal = ({ plan, onSave, onClose }) => {
                                             placeholder="Feature description"
                                         />
                                         <button type="button" className="action-btn delete" onClick={() => removeFeature(index)}>
-                                            <i className="fa-light fa-trash"></i>
+                                            <i className="fas fa-trash"></i>
                                         </button>
                                     </div>
                                 ))}
                                 <button type="button" className="add-feature-btn" onClick={addFeature}>
-                                    <i className="fa-light fa-plus"></i> Add Another Feature
+                                    <i className="fas fa-plus"></i> Add Another Feature
                                 </button>
                             </div>
                         </div>

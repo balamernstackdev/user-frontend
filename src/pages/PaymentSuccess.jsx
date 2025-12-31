@@ -25,7 +25,7 @@ const PaymentSuccess = () => {
                     </div>
 
                     <div className="success-icon animate-fade-up">
-                        <i className="fa-light fa-circle-check"></i>
+                        <i className="fas fa-check-circle"></i>
                     </div>
 
                     <div className="success-title animate-fade-up" style={{ animationDelay: '0.1s' }}>
@@ -61,7 +61,7 @@ const PaymentSuccess = () => {
                     <div className="success-actions animate-fade-up" style={{ animationDelay: '0.3s' }}>
                         <Link to="/dashboard" className="tj-primary-btn">
                             <span className="btn-text"><span>Go to Dashboard</span></span>
-                            <span className="btn-icon"><i className="tji-arrow-right-long"></i></span>
+                            <span className="btn-icon"><i className="fas fa-arrow-right"></i></span>
                         </Link>
                         {/* 
                         <Link to="/invoices" className="tj-primary-btn transparent-btn">

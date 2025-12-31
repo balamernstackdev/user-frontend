@@ -3,12 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import planService from '../services/plan.service';
 import './AdminListings.css';
+import { toast } from 'react-toastify';
 
 const AdminPlans = () => {
     const navigate = useNavigate();
     const [plans, setPlans] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
 
     useEffect(() => {
         fetchPlans();
@@ -20,7 +20,7 @@ const AdminPlans = () => {
             const response = await planService.getPlans();
             setPlans(response.data);
         } catch (err) {
-            setError('Failed to load plans');
+            toast.error('Failed to load plans');
         } finally {
             setLoading(false);
         }
@@ -30,8 +30,9 @@ const AdminPlans = () => {
         try {
             await planService.togglePlanStatus(id);
             fetchPlans();
+            toast.success('Plan status updated');
         } catch (err) {
-            alert('Failed to update status');
+            toast.error('Failed to update status');
         }
     };
 
@@ -40,8 +41,9 @@ const AdminPlans = () => {
             try {
                 await planService.deletePlan(id);
                 fetchPlans();
+                toast.success('Plan deleted successfully');
             } catch (err) {
-                alert('Failed to delete plan');
+                toast.error('Failed to delete plan');
             }
         }
     };
@@ -66,8 +68,6 @@ const AdminPlans = () => {
                             <span className="btn-text"><span>+ Create Plan</span></span>
                         </button>
                     </div>
-
-                    {error && <div className="alert alert-error">{error}</div>}
 
                     <div className="listing-table-container">
                         <table className="listing-table">
@@ -102,7 +102,7 @@ const AdminPlans = () => {
                                                 onClick={() => handleToggleStatus(plan.id)}
                                                 title="Click to toggle"
                                             >
-                                                <i className={`fa-light ${plan.is_active ? 'fa-toggle-on' : 'fa-toggle-off'}`}></i>
+                                                <i className={`fas ${plan.is_active ? 'fa-toggle-on' : 'fa-toggle-off'}`}></i>
                                                 {plan.is_active ? 'Active' : 'Inactive'}
                                             </div>
                                         </td>
@@ -114,10 +114,10 @@ const AdminPlans = () => {
                                         <td>
                                             <div className="actions-cell">
                                                 <button className="action-btn" onClick={() => navigate(`/admin/plans/edit/${plan.id}`)} title="Edit Plan">
-                                                    <i className="fa-light fa-edit"></i>
+                                                    <i className="far fa-edit"></i>
                                                 </button>
                                                 <button className="action-btn delete" onClick={() => handleDelete(plan.id)} title="Delete Plan">
-                                                    <i className="fa-light fa-trash"></i>
+                                                    <i className="fas fa-trash"></i>
                                                 </button>
                                             </div>
                                         </td>
@@ -126,7 +126,7 @@ const AdminPlans = () => {
                                 {plans.length === 0 && !loading && (
                                     <tr>
                                         <td colSpan="6" className="text-center" style={{ padding: '80px' }}>
-                                            <i className="fa-light fa-box-open" style={{ fontSize: '40px', display: 'block', marginBottom: '15px' }}></i>
+                                            <i className="fas fa-box-open" style={{ fontSize: '40px', display: 'block', marginBottom: '15px' }}></i>
                                             No plans found. Create your first plan to get started.
                                         </td>
                                     </tr>

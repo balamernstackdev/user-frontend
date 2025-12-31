@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import CommissionService from '../services/commission.service';
+import SEO from '../components/common/SEO';
 import './Commissions.css';
+import { toast } from 'react-toastify';
 
 import DashboardLayout from '../components/layout/DashboardLayout';
 
@@ -9,7 +12,6 @@ const Commissions = () => {
     const [commissions, setCommissions] = useState([]);
     const [summary, setSummary] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
     const [filter, setFilter] = useState('all');
 
     useEffect(() => {
@@ -24,7 +26,7 @@ const Commissions = () => {
             setCommissions(response.data.commissions || []);
             setSummary(response.data.summary);
         } catch (err) {
-            setError('Failed to load commission data');
+            toast.error('Failed to load commission data');
             console.error(err);
         } finally {
             setLoading(false);
@@ -64,6 +66,7 @@ const Commissions = () => {
 
     return (
         <DashboardLayout>
+            <SEO title="My Commissions" description="Track your affiliate earnings and payouts." />
             <section className="page-section">
                 <div className="container">
                     <div className="page-header">
@@ -131,8 +134,6 @@ const Commissions = () => {
                         </button>
                     </div>
 
-                    {error && <div className="alert alert-error">{error}</div>}
-
                     <div className="commissions-container">
                         <h2>Commission History</h2>
                         {commissions.length > 0 ? (
@@ -145,6 +146,7 @@ const Commissions = () => {
                                             <th>Date Earned</th>
                                             <th>Status</th>
                                             <th>Paid Date</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -169,6 +171,11 @@ const Commissions = () => {
                                                     </td>
                                                     <td>
                                                         {commission.paid_at ? formatDate(commission.paid_at) : '-'}
+                                                    </td>
+                                                    <td>
+                                                        <Link to={`/marketer/commissions/${commission.id}`} className="view-btn">
+                                                            View
+                                                        </Link>
                                                     </td>
                                                 </tr>
                                             );

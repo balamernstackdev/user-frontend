@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import tutorialService from '../services/tutorial.service';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import './AdminForms.css'; // Assuming this exists or using generic styles
+import { toast } from 'react-toastify';
 
 const AdminFAQForm = () => {
     const navigate = useNavigate();
@@ -16,7 +17,6 @@ const AdminFAQForm = () => {
         category: 'FAQ'
     });
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
 
     useEffect(() => {
         if (isEditMode) {
@@ -37,7 +37,7 @@ const AdminFAQForm = () => {
             });
         } catch (err) {
             console.error('Error fetching FAQ:', err);
-            setError('Failed to load FAQ details');
+            toast.error('Failed to load FAQ details');
         } finally {
             setLoading(false);
         }
@@ -53,7 +53,6 @@ const AdminFAQForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError('');
         setLoading(true);
 
         try {
@@ -65,13 +64,15 @@ const AdminFAQForm = () => {
 
             if (isEditMode) {
                 await tutorialService.updateTutorial(id, dataToSubmit);
+                toast.success('FAQ updated successfully');
             } else {
                 await tutorialService.createTutorial(dataToSubmit);
+                toast.success('FAQ created successfully');
             }
             navigate('/admin/faqs');
         } catch (err) {
             console.error('Error saving FAQ:', err);
-            setError(err.response?.data?.message || 'Failed to save FAQ');
+            toast.error(err.response?.data?.message || 'Failed to save FAQ');
         } finally {
             setLoading(false);
         }
@@ -88,8 +89,6 @@ const AdminFAQForm = () => {
                     <div className="row">
                         <div className="col-lg-10 mx-auto">
                             <div className="admin-form-card">
-                                {error && <div className="alert alert-error">{error}</div>}
-
                                 <form onSubmit={handleSubmit}>
                                     <div className="form-group">
                                         <label htmlFor="title">Question</label>

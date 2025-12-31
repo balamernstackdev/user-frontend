@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import ticketService from '../services/ticket.service';
 import './CreateTicket.css';
+import { toast } from 'react-toastify';
 
 const CreateTicket = () => {
     const navigate = useNavigate();
@@ -14,7 +15,6 @@ const CreateTicket = () => {
     });
     const [files, setFiles] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
     const fileInputRef = useRef(null);
 
     const handleChange = (e) => {
@@ -31,7 +31,7 @@ const CreateTicket = () => {
     const handleFiles = (newFiles) => {
         const validFiles = newFiles.filter(file => {
             if (file.size > 10 * 1024 * 1024) {
-                alert(`File ${file.name} is too large. Maximum size is 10MB.`);
+                toast.error(`File ${file.name} is too large. Maximum size is 10MB.`);
                 return false;
             }
             return true;
@@ -65,13 +65,12 @@ const CreateTicket = () => {
         e.preventDefault();
 
         if (!formData.subject.trim() || !formData.description.trim() || !formData.category) {
-            setError('Please fill in all required fields');
+            toast.error('Please fill in all required fields');
             return;
         }
 
         try {
             setLoading(true);
-            setError('');
 
             // If backend supports FormData for files:
             // const data = new FormData();
@@ -87,7 +86,7 @@ const CreateTicket = () => {
 
             navigate('/tickets', { state: { message: 'Ticket created successfully!' } });
         } catch (err) {
-            setError(err.response?.data?.message || 'Failed to create ticket');
+            toast.error(err.response?.data?.message || 'Failed to create ticket');
             console.error(err);
         } finally {
             setLoading(false);
@@ -116,7 +115,7 @@ const CreateTicket = () => {
                 <div className="container">
                     <div className="page-header animate-fade-up">
                         <Link to="/tickets" className="back-btn" style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', color: '#6c757d', textDecoration: 'none', marginBottom: '20px' }}>
-                            <i className="fa-light fa-arrow-left"></i> Back to Tickets
+                            <i className="fas fa-arrow-left"></i> Back to Tickets
                         </Link>
                         <h1>Create New Ticket</h1>
                         <p>Submit a support ticket and our team will get back to you soon</p>
@@ -124,8 +123,6 @@ const CreateTicket = () => {
 
                     <div className="ticket-form-container animate-fade-up" style={{ animationDelay: '0.1s' }}>
                         <form onSubmit={handleSubmit}>
-                            {error && <div className="alert alert-error">{error}</div>}
-
                             <div className="form-group">
                                 <label htmlFor="subject">Subject <span style={{ color: '#dc3545' }}>*</span></label>
                                 <input
@@ -211,7 +208,7 @@ const CreateTicket = () => {
                                     onDrop={handleDrop}
                                 >
                                     <div className="file-upload-icon">
-                                        <i className="fa-light fa-cloud-arrow-up"></i>
+                                        <i className="fas fa-cloud-arrow-up"></i>
                                     </div>
                                     <div className="file-upload-text">Click to upload or drag and drop</div>
                                     <div className="file-upload-hint">PNG, JPG, PDF up to 10MB</div>
@@ -231,7 +228,7 @@ const CreateTicket = () => {
                                             <div key={index} className="file-item">
                                                 <div className="file-item-info">
                                                     <div className="file-item-icon">
-                                                        <i className={`fa-light ${getFileIcon(file.name)}`}></i>
+                                                        <i className={`far ${getFileIcon(file.name)}`}></i>
                                                     </div>
                                                     <div className="file-item-details">
                                                         <div className="file-item-name">{file.name}</div>
@@ -243,7 +240,7 @@ const CreateTicket = () => {
                                                     className="file-item-remove"
                                                     onClick={() => handleRemoveFile(file.name)}
                                                 >
-                                                    <i className="fa-light fa-times"></i>
+                                                    <i className="fas fa-times"></i>
                                                 </button>
                                             </div>
                                         ))}
@@ -273,7 +270,7 @@ const CreateTicket = () => {
                                     ) : (
                                         <>
                                             <span style={{ marginRight: '8px' }}>Submit Ticket</span>
-                                            <i className="tji-arrow-right-long"></i>
+                                            <i className="fas fa-arrow-right"></i>
                                         </>
                                     )}
                                 </button>

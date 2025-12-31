@@ -1,4 +1,6 @@
 .dashboard-layout {
+    --header-height: 180px;
+    --mobile-header-height: 140px;
     min-height: 100vh;
     /* Pink Animated Gradient (Restored) */
     background: linear-gradient(-45deg, #e0f7fa, #b2ebf2, #e0f2f1, #ffffff);
@@ -47,9 +49,47 @@
     z-index: 1;
 }
 
-/* Force all content sections to be transparent to show the dashboard gradient */
+/* Global Padding for Main Content Sections */
+.dashboard-layout main.main-content {
+    padding-top: var(--header-height) !important;
+    min-height: calc(100vh - 400px);
+}
+
 .dashboard-layout section,
 .dashboard-layout .welcome-section,
-.dashboard-layout .page-section {
+.dashboard-layout .page-section,
+.dashboard-layout .admin-listing-page,
+.dashboard-layout .admin-files-page,
+.dashboard-layout .admin-form-page {
     background: transparent !important;
+    padding-top: 20px !important;
+    /* Reduced since main handles header height */
+    padding-bottom: 80px;
+}
+
+/* Fix for duplicate background images */
+.dashboard-layout section::before,
+.dashboard-layout .welcome-section::before,
+.dashboard-layout .page-section::before,
+.dashboard-layout .admin-listing-page::before,
+.dashboard-layout .admin-files-page::before,
+.dashboard-layout .admin-form-page::before {
+    display: none !important;
+    background: none !important;
+}
+
+@media (max-width: 991px) {
+
+    .dashboard-layout main.main-content {
+        padding-top: var(--mobile-header-height) !important;
+    }
+
+    .dashboard-layout section,
+    .dashboard-layout .welcome-section,
+    .dashboard-layout .page-section,
+    .dashboard-layout .admin-listing-page,
+    .dashboard-layout .admin-files-page,
+    .dashboard-layout .admin-form-page {
+        padding-top: 15px !important;
+    }
 }

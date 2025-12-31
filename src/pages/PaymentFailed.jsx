@@ -18,7 +18,7 @@ const PaymentFailed = () => {
                     </div>
 
                     <div className="failure-icon animate-fade-up">
-                        <i className="fa-light fa-circle-xmark"></i>
+                        <i className="fas fa-circle-xmark"></i>
                     </div>
 
                     <div className="failure-title animate-fade-up" style={{ animationDelay: '0.1s' }}>
@@ -41,7 +41,7 @@ const PaymentFailed = () => {
                     <div className="failure-actions animate-fade-up" style={{ animationDelay: '0.3s' }}>
                         <Link to="/plans" className="tj-primary-btn">
                             <span className="btn-text"><span>Try Again</span></span>
-                            <span className="btn-icon"><i className="tji-arrow-right-long"></i></span>
+                            <span className="btn-icon"><i className="fas fa-arrow-right"></i></span>
                         </Link>
                         {/* 
                         <Link to="/checkout" className="tj-primary-btn transparent-btn">

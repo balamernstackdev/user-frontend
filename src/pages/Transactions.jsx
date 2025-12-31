@@ -2,14 +2,15 @@ import { useState, useEffect } from 'react';
 import paymentService from '../services/payment.service';
 import CommissionService from '../services/commission.service';
 import { authService } from '../services/auth.service';
+import SEO from '../components/common/SEO';
 import './Transactions.css';
+import { toast } from 'react-toastify';
 
 import DashboardLayout from '../components/layout/DashboardLayout';
 
 const Transactions = () => {
     const [transactions, setTransactions] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
     const [filter, setFilter] = useState('all');
 
     const user = authService.getUser();
@@ -47,7 +48,7 @@ const Transactions = () => {
                 setTransactions(response.data);
             }
         } catch (err) {
-            setError(isMarketer ? 'Failed to load commission history' : 'Failed to load transactions');
+            toast.error(isMarketer ? 'Failed to load commission history' : 'Failed to load transactions');
             console.error(err);
         } finally {
             setLoading(false);
@@ -99,6 +100,7 @@ const Transactions = () => {
 
     return (
         <DashboardLayout>
+            <SEO title="Transaction History" description="View your payment history and commission earnings." />
             <section className="page-section">
                 <div className="container">
                     <div className="page-header">
@@ -134,8 +136,6 @@ const Transactions = () => {
                             Failed
                         </button>
                     </div>
-
-                    {error && <div className="alert alert-error">{error}</div>}
 
                     <div className="transactions-list">
                         {transactions.length > 0 ? (

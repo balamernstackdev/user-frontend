@@ -1,0 +1,193 @@
+.detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #4a4a4a;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    transition: color 0.3s ease;
+    width: 100%;
+}
+
+.back-link:hover {
+    color: var(--primary);
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.page-title {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #1a1a1a;
+}
+
+.status-badge {
+    padding: 0.4rem 1rem;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.detail-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+.card-header-custom {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #f0f0f0;
+    background: #fafafa;
+}
+
+.card-title {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.card-body-custom {
+    padding: 1.5rem;
+}
+
+
+
+/* Standard 3-column grid for all details */
+.detail-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    align-items: start;
+}
+
+/* Span 2 columns for wider items */
+.span-2 {
+    grid-column: span 2;
+}
+
+/* Ensure mobile responsiveness */
+@media (max-width: 768px) {
+    .detail-grid-3 {
+        grid-template-columns: 1fr;
+    }
+
+    .span-2 {
+        grid-column: span 1;
+    }
+}
+
+.detail-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    align-items: flex-start !important;
+    text-align: left !important;
+    width: 100%;
+}
+
+.detail-group label {
+    font-size: 0.85rem;
+    color: #000000;
+    font-weight: 700;
+    text-align: left;
+    width: 100%;
+    margin: 0;
+}
+
+.detail-value {
+    font-size: 1.1rem;
+    color: #000000;
+    font-weight: 700;
+    text-align: left;
+    width: 100%;
+}
+
+.detail-value.mono {
+    font-family: monospace;
+    background: #f0f2f5;
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    display: inline-block;
+    width: 100%;
+    word-break: break-all;
+    color: #000;
+    font-weight: 700;
+}
+
+.divider {
+    height: 1px;
+    background: #eee;
+    margin: 1.5rem 0;
+}
+
+.sidebar-text {
+    color: #000000 !important;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    font-weight: 600 !important;
+}
+
+/* High Contrast Detail Page Overrides */
+.detail-card label,
+.detail-card .text-muted {
+    color: #000000 !important;
+    opacity: 1 !important;
+    font-weight: 700 !important;
+}
+
+.detail-card .fw-bold,
+.detail-card div,
+.detail-card span {
+    color: #000000 !important;
+}
+
+.card-title {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #000000;
+}
+
+.card-header-custom {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 2px solid #e2e8f0;
+    background: #f8fafc;
+}
+
+.loading-container {
+    min-height: 60vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .detail-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import commissionService from '../services/commission.service';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import './AdminListings.css';
+import { toast } from 'react-toastify';
 
 const AdminCommissions = () => {
     const [commissions, setCommissions] = useState([]);
@@ -35,25 +37,43 @@ const AdminCommissions = () => {
             try {
                 await commissionService.approveCommission(id);
                 fetchCommissions();
-                alert('Commission approved');
+                toast.success('Commission approved');
             } catch (error) {
                 console.error('Error approving commission:', error);
-                alert('Failed to approve commission');
+                toast.error('Failed to approve commission');
             }
         }
     };
 
-    const handlePay = async (id) => {
-        if (window.confirm('Mark this commission as paid?')) {
-            try {
-                await commissionService.markAsPaid(id);
-                fetchCommissions();
-                alert('Commission marked as paid');
-            } catch (error) {
-                console.error('Error paying commission:', error);
-                alert('Failed to mark as paid');
-            }
+    const handleExport = () => {
+        const approvedCommissions = commissions.filter(c => c.status === 'approved');
+        if (approvedCommissions.length === 0) {
+            toast.warn('No approved commissions to export. Please filter by "Approved" or ensure there are approved records.');
+            return;
         }
+
+        const headers = [
+            'Marketer Name', 'Marketer Email', 'Amount', 'Bank Name', 'Account Number',
+            'IFSC Code', 'Holder Name', 'UPI ID', 'Earned Date'
+        ];
+
+        const csvRows = approvedCommissions.map(c => [
+            `"${c.marketer_name}"`, `"${c.marketer_email}"`, c.amount, `"${c.marketer_bank_name || ''}"`,
+            `"${c.marketer_account_number || ''}"`, `"${c.marketer_ifsc_code || ''}"`,
+            `"${c.marketer_account_holder || ''}"`, `"${c.marketer_upi_id || ''}"`,
+            `"${new Date(c.created_at).toLocaleDateString()}"`
+        ]);
+
+        const csvContent = [headers, ...csvRows].map(e => e.join(',')).join('\n');
+        const blob = new Blob([csvContent], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.setAttribute('hidden', '');
+        a.setAttribute('href', url);
+        a.setAttribute('download', `payouts_export_${new Date().toISOString().split('T')[0]}.csv`);
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
     };
 
     return (
@@ -65,7 +85,10 @@ const AdminCommissions = () => {
                             <h1>Commission Payouts</h1>
                             <p style={{ color: '#6c757d' }}>Manage and process marketer commissions</p>
                         </div>
-                        <div className="header-actions">
+                        <div className="header-actions" style={{ display: 'flex', gap: '10px' }}>
+                            <button className="tj-primary-btn btn-sm" onClick={handleExport} style={{ backgroundColor: '#1e8a8a', color: 'white' }}>
+                                <span className="btn-text"><span>Export for Payout</span></span>
+                            </button>
                             <select className="form-control" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} style={{ width: '200px' }}>
                                 <option value="">All Status</option>
                                 <option value="pending">Pending</option>
@@ -105,7 +128,12 @@ const AdminCommissions = () => {
                                             <td>
                                                 <span className="plan-price-text">₹{comm.amount}</span>
                                             </td>
-                                            <td>{comm.source_type}</td>
+                                            <td>
+                                                <div className="d-flex flex-column">
+                                                    <span style={{ fontWeight: 500 }}>{comm.user_name}</span>
+                                                    <span style={{ fontSize: '12px', color: '#6c757d' }}>{comm.plan_name}</span>
+                                                </div>
+                                            </td>
                                             <td>{new Date(comm.created_at).toLocaleDateString()}</td>
                                             <td>
                                                 <span className={`plan-type-badge`} style={{
@@ -119,14 +147,18 @@ const AdminCommissions = () => {
                                                 <div className="actions-cell">
                                                     {comm.status === 'pending' && (
                                                         <button className="action-btn" onClick={() => handleApprove(comm.id)} title="Approve" style={{ color: '#28a745', borderColor: '#28a745' }}>
-                                                            <i className="fa-light fa-check"></i>
+                                                            <i className="fas fa-check"></i>
                                                         </button>
                                                     )}
                                                     {comm.status === 'approved' && (
-                                                        <button className="action-btn" onClick={() => handlePay(comm.id)} title="Mark Paid" style={{ color: '#28a745', borderColor: '#28a745' }}>
-                                                            <i className="fa-light fa-money-bill-wave"></i>
-                                                        </button>
+                                                        <Link to={`/admin/commissions/${comm.id}/pay`} className="action-btn" title="Mark Paid" style={{ color: '#28a745', borderColor: '#28a745' }}>
+                                                            <i className="fas fa-money-bill-wave"></i>
+                                                        </Link>
                                                     )}
+                                                    {/* Always allow viewing details */}
+                                                    <Link to={`/admin/commissions/${comm.id}`} className="action-btn" title="View Details" style={{ color: '#007bff', borderColor: '#007bff' }}>
+                                                        <i className="fas fa-eye"></i>
+                                                    </Link>
                                                 </div>
                                             </td>
                                         </tr>
@@ -137,7 +169,8 @@ const AdminCommissions = () => {
                     </div>
                 </div>
             </div>
-        </DashboardLayout>
+
+        </DashboardLayout >
     );
 };
 

@@ -2,12 +2,12 @@ import { useState, useEffect } from 'react';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import ReferralService from '../services/referral.service';
 import './ReferredUsers.css';
+import { toast } from 'react-toastify';
 
 const ReferredUsers = () => {
     const [stats, setStats] = useState(null);
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
 
     useEffect(() => {
         fetchData();
@@ -23,7 +23,7 @@ const ReferredUsers = () => {
             setStats(statsRes.data);
             setUsers(usersRes.data);
         } catch (err) {
-            setError('Failed to load referral data');
+            toast.error('Failed to load referral data');
             console.error(err);
         } finally {
             setLoading(false);
@@ -61,28 +61,28 @@ const ReferredUsers = () => {
                             {stats && (
                                 <div className="stats-grid animate-fade-up">
                                     <div className="stat-card">
-                                        <div className="stat-icon"><i className="fa-light fa-users"></i></div>
+                                        <div className="stat-icon"><i className="fas fa-users"></i></div>
                                         <div className="stat-info">
                                             <span className="stat-label">Total Referrals</span>
                                             <span className="stat-value">{stats.total_referrals || 0}</span>
                                         </div>
                                     </div>
                                     <div className="stat-card">
-                                        <div className="stat-icon"><i className="fa-light fa-user-check"></i></div>
+                                        <div className="stat-icon"><i className="fas fa-user-check"></i></div>
                                         <div className="stat-info">
                                             <span className="stat-label">Active Subscribers</span>
                                             <span className="stat-value">{stats.active_subscribers || 0}</span>
                                         </div>
                                     </div>
                                     <div className="stat-card">
-                                        <div className="stat-icon"><i className="fa-light fa-sack-dollar"></i></div>
+                                        <div className="stat-icon"><i className="fas fa-sack-dollar"></i></div>
                                         <div className="stat-info">
                                             <span className="stat-label">Total Commissions</span>
                                             <span className="stat-value">₹{Number(stats.total_commissions || 0).toLocaleString()}</span>
                                         </div>
                                     </div>
                                     <div className="stat-card">
-                                        <div className="stat-icon"><i className="fa-light fa-percent"></i></div>
+                                        <div className="stat-icon"><i className="fas fa-percent"></i></div>
                                         <div className="stat-info">
                                             <span className="stat-label">Conversion Rate</span>
                                             <span className="stat-value">
@@ -94,8 +94,6 @@ const ReferredUsers = () => {
                                     </div>
                                 </div>
                             )}
-
-                            {error && <div className="alert alert-error">{error}</div>}
 
                             <div className="users-table-container animate-fade-up">
                                 <h2>Referred Users</h2>
@@ -136,7 +134,7 @@ const ReferredUsers = () => {
                                     </div>
                                 ) : (
                                     <div className="no-data">
-                                        <div className="icon"><i className="fa-light fa-users-slash"></i></div>
+                                        <div className="icon"><i className="fas fa-users-slash"></i></div>
                                         <h3>No referrals yet</h3>
                                         <p style={{ color: '#6c757d' }}>Share your referral code to start earning commissions!</p>
                                         {stats && stats.referral_code && (

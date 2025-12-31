@@ -112,7 +112,7 @@ const AdminTickets = () => {
                                             <td>
                                                 <div className="actions-cell">
                                                     <Link to={`/tickets/${ticket.id}`} className="action-btn" title="View Ticket">
-                                                        <i className="fa-light fa-eye"></i>
+                                                        <i className="far fa-eye"></i>
                                                     </Link>
                                                 </div>
                                             </td>

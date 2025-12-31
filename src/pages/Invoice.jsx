@@ -4,6 +4,7 @@ import DashboardLayout from '../components/layout/DashboardLayout';
 import paymentService from '../services/payment.service';
 import { authService } from '../services/auth.service';
 import './Invoice.css';
+import { toast } from 'react-toastify';
 
 // Import logo directly if needed, or use the path
 import logoUrl from '../assets/images/Stoxzo_Logo.svg';
@@ -12,7 +13,6 @@ const Invoice = () => {
     const { transactionId } = useParams();
     const [transaction, setTransaction] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
     const user = authService.getUser();
 
     useEffect(() => {
@@ -26,7 +26,7 @@ const Invoice = () => {
             setTransaction(response.data);
         } catch (err) {
             console.error('Error fetching invoice:', err);
-            setError('Failed to load invoice details. Please try again.');
+            toast.error('Failed to load invoice details. Please try again.');
         } finally {
             setLoading(false);
         }
@@ -71,16 +71,18 @@ const Invoice = () => {
         );
     }
 
-    if (error || !transaction) {
+    if (!transaction) {
         return (
             <DashboardLayout>
                 <div className="container" style={{ paddingTop: '100px', textAlign: 'center' }}>
-                    <div className="alert alert-error" style={{ maxWidth: '600px', margin: '0 auto' }}>
-                        {error || 'Invoice not found'}
+                    <div style={{ padding: '40px', background: '#f8f9fa', borderRadius: '8px', maxWidth: '600px', margin: '0 auto' }}>
+                        <i className="fas fa-file-invoice" style={{ fontSize: '48px', color: '#dc3545', marginBottom: '20px' }}></i>
+                        <h3>Invoice Not Found</h3>
+                        <p className="text-muted">The invoice you are looking for does not exist or you do not have permission to view it.</p>
+                        <Link to="/payments" className="tj-primary-btn" style={{ marginTop: '20px' }}>
+                            <span className="btn-text"><span>Back to Payments</span></span>
+                        </Link>
                     </div>
-                    <Link to="/payments" className="tj-primary-btn" style={{ marginTop: '20px' }}>
-                        <span className="btn-text"><span>Back to Payments</span></span>
-                    </Link>
                 </div>
             </DashboardLayout>
         );
@@ -178,11 +180,11 @@ const Invoice = () => {
                         <div className="invoice-actions">
                             <button onClick={handlePrint} className="tj-primary-btn">
                                 <span className="btn-text"><span>Print Invoice</span></span>
-                                <span className="btn-icon"><i className="fa-light fa-print"></i></span>
+                                <span className="btn-icon"><i className="fas fa-print"></i></span>
                             </button>
                             <Link to="/payments" className="tj-primary-btn transparent-btn">
                                 <span className="btn-text"><span>Back to Payments</span></span>
-                                <span className="btn-icon"><i className="fa-light fa-arrow-left"></i></span>
+                                <span className="btn-icon"><i className="fas fa-arrow-left"></i></span>
                             </Link>
                         </div>
                     </div>

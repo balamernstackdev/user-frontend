@@ -1,6 +1,6 @@
 /* Admin Files Page CSS */
 .admin-files-page {
-    padding: 120px 0 80px;
+    /* Padding handled by DashboardLayout */
     min-height: 80vh;
 }
 

@@ -82,7 +82,7 @@ const SecurePaymentCard = ({ plan, amount, onPay, processing, onCancel }) => {
             </div>
 
             <div className="security-info-box">
-                <i className="fa-light fa-lock"></i>
+                <i className="fas fa-lock"></i>
                 <p>Your payment information is encrypted and secure. We do not store your card details.</p>
             </div>
 
@@ -96,7 +96,7 @@ const SecurePaymentCard = ({ plan, amount, onPay, processing, onCancel }) => {
                     <span className="btn-text">
                         <span>{processing ? 'Processing Securely...' : `Pay ₹${amount}`}</span>
                     </span>
-                    {!processing && <span className="btn-icon"><i className="tji-arrow-right-long"></i></span>}
+                    {!processing && <span className="btn-icon"><i className="fas fa-arrow-right"></i></span>}
                 </button>
             </div>
 

@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { authService } from '../services/auth.service';
+import SEO from '../components/common/SEO';
 import StoxzoLogo from '../assets/images/Stoxzo_Logo.svg';
 import './Login.css';
+import { toast } from 'react-toastify';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -12,10 +14,16 @@ const Login = () => {
         password: '',
         remember: false,
     });
-    const [error, setError] = useState('');
-    const [successMessage, setSuccessMessage] = useState(location.state?.message || '');
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+
+    useEffect(() => {
+        if (location.state?.message) {
+            toast.success(location.state.message);
+            // Clear state to prevent toast on refresh
+            window.history.replaceState({}, document.title);
+        }
+    }, [location.state]);
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
@@ -27,13 +35,10 @@ const Login = () => {
             ...formData,
             [name]: type === 'checkbox' ? checked : value,
         });
-        setError(''); // Clear error on input change
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError('');
-        setSuccessMessage('');
         setLoading(true);
 
         try {
@@ -55,7 +60,7 @@ const Login = () => {
                 }
             }
         } catch (err) {
-            setError(err.response?.data?.message || 'Login failed. Please try again.');
+            toast.error(err.response?.data?.message || 'Login failed. Please try again.');
         } finally {
             setLoading(false);
         }
@@ -63,6 +68,7 @@ const Login = () => {
 
     return (
         <section className="login-section">
+            <SEO title="Login" description="Login to your Stoxzo account." />
             <div className="login-wrapper">
                 <div className="login-card">
                     <div className="login-logo">
@@ -75,18 +81,6 @@ const Login = () => {
                         <h2>Welcome Back</h2>
                         <p>Sign in to your account to continue</p>
                     </div>
-
-                    {error && (
-                        <div className="login-alert alert-error" role="alert">
-                            {error}
-                        </div>
-                    )}
-
-                    {successMessage && (
-                        <div className="login-alert alert-success" role="alert">
-                            {successMessage}
-                        </div>
-                    )}
 
                     <form className="login-form" onSubmit={handleSubmit}>
                         <div className="form-input">
@@ -156,7 +150,7 @@ const Login = () => {
                                     </span>
                                 ) : (
                                     <span className="btn-icon">
-                                        <i className="tji-arrow-right-long">→</i>
+                                        <i className="fas fa-arrow-right"></i>
                                     </span>
                                 )}
                             </button>
