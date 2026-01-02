@@ -140,7 +140,7 @@
 .form-control:focus {
     border-color: var(--tj-color-theme-primary);
     outline: none;
-    box-shadow: 0 0 0 3px rgba(30, 138, 138, 0.1);
+    box-shadow: 0 0 0 3px rgba(19, 104, 158, 0.1);
 }
 
 .form-row {

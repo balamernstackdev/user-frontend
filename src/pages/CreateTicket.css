@@ -11,7 +11,7 @@
 
 .page-header h1 {
     font-size: 36px;
-    color: #0c1e21;
+    color: #000000;
     margin-bottom: 15px;
     font-weight: 700;
 }
@@ -37,7 +37,7 @@
     display: block;
     margin-bottom: 8px;
     font-weight: 600;
-    color: #0c1e21;
+    color: #000000;
 }
 
 .form-group input,
@@ -56,8 +56,8 @@
 .form-group select:focus,
 .form-group textarea:focus {
     outline: none;
-    border-color: #1e8a8a;
-    box-shadow: 0 0 0 3px rgba(30, 138, 138, 0.1);
+    border-color: #13689e;
+    box-shadow: 0 0 0 3px rgba(19, 104, 158, 0.1);
 }
 
 .form-row {
@@ -111,17 +111,17 @@
 
 .btn-secondary:hover {
     background-color: #f8f9fa;
-    color: #0c1e21;
+    color: #000000;
     border-color: #ced4da;
 }
 
 .btn-primary {
-    background-color: #1e8a8a;
+    background-color: #13689e;
     color: white;
 }
 
 .btn-primary:hover {
-    background-color: #156b6b;
+    background-color: #0e4f7a;
 }
 
 .spinner-small {
@@ -155,18 +155,18 @@
 
 .file-upload-area:hover,
 .file-upload-area.dragover {
-    border-color: #1e8a8a;
-    background-color: rgba(30, 138, 138, 0.05);
+    border-color: #13689e;
+    background-color: rgba(19, 104, 158, 0.05);
 }
 
 .file-upload-icon {
     font-size: 48px;
-    color: #1e8a8a;
+    color: #13689e;
     margin-bottom: 15px;
 }
 
 .file-upload-text {
-    color: #0c1e21;
+    color: #000000;
     margin-bottom: 10px;
     font-weight: 500;
 }
@@ -200,7 +200,7 @@
 
 .file-item-icon {
     font-size: 24px;
-    color: #1e8a8a;
+    color: #13689e;
 }
 
 .file-item-details {
@@ -209,7 +209,7 @@
 
 .file-item-name {
     font-weight: 500;
-    color: #0c1e21;
+    color: #000000;
     font-size: 14px;
     margin-bottom: 2px;
 }

@@ -38,7 +38,7 @@
 }
 
 .notification-card.unread {
-    border-left-color: var(--tj-color-theme-primary, #1e8a8a);
+    border-left-color: var(--tj-color-theme-primary, #13689e);
     background-color: #f8f9fa;
     /* Changed to match reference #f8f9fa */
 }
@@ -64,7 +64,7 @@
 }
 
 .notification-title:hover {
-    color: var(--tj-color-theme-primary, #1e8a8a);
+    color: var(--tj-color-theme-primary, #13689e);
 }
 
 .notification-time {
@@ -92,13 +92,13 @@
     font-size: 14px;
     font-weight: 600;
     /* Assuming fw for consistency */
-    color: var(--tj-color-theme-primary, #1e8a8a);
+    color: var(--tj-color-theme-primary, #13689e);
     text-decoration: none;
     transition: color 0.3s ease;
 }
 
 .text-btn:hover {
-    color: var(--tj-color-heading-primary, #0c1e21);
+    color: var(--tj-color-heading-primary, #000000);
     text-decoration: underline;
     /* Assuming standard behavior */
 }
@@ -106,8 +106,8 @@
 /* Button style for "Mark all Read" when using transparent-btn class */
 .tj-primary-btn.transparent-btn {
     background: transparent;
-    border: 1px solid var(--tj-color-theme-primary, #1e8a8a);
-    color: var(--tj-color-theme-primary, #1e8a8a);
+    border: 1px solid var(--tj-color-theme-primary, #13689e);
+    color: var(--tj-color-theme-primary, #13689e);
     padding: 10px 20px;
     border-radius: 30px;
     display: inline-flex;
@@ -119,7 +119,7 @@
 }
 
 .tj-primary-btn.transparent-btn:hover {
-    background: var(--tj-color-theme-primary, #1e8a8a);
+    background: var(--tj-color-theme-primary, #13689e);
     color: var(--tj-color-common-white, #ffffff);
 }
 

@@ -86,7 +86,7 @@
 
 .plan-price-text {
     font-weight: var(--tj-fw-sbold);
-    color: #1e8a8a;
+    color: #13689e;
     /* Keeping this distinct color for now */
 }
 
@@ -324,7 +324,7 @@
     margin: 0;
     border-radius: 4px;
     cursor: pointer;
-    accent-color: #1e8a8a;
+    accent-color: #13689e;
 }
 
 /* Feature List Polish */

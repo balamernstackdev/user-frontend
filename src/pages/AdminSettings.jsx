@@ -122,8 +122,8 @@ const AdminSettings = () => {
                 <div className="container">
                     <div className="admin-listing-header mb-4">
                         <div className="header-title">
-                            <h1 style={{ color: '#7e3af2', fontSize: '32px', fontWeight: 700 }}>System Settings</h1>
-                            <p style={{ color: '#666', fontSize: '14px' }}>Global configuration & automation</p>
+                            <h1 style={{ color: '#000000', fontSize: '32px', fontWeight: 700 }}>System Settings</h1>
+                            <p style={{ color: '#000000', fontSize: '14px' }}>Global configuration & automation</p>
                         </div>
                     </div>
 
@@ -148,7 +148,7 @@ const AdminSettings = () => {
                         {/* Settings Content */}
                         <div className="col-12">
                             <div className="listing-table-container shadow-sm border-0 p-4 bg-white rounded-3">
-                                <h5 className="mb-4 d-flex align-items-center" style={{ fontWeight: 700, color: '#333' }}>
+                                <h5 className="mb-4 d-flex align-items-center" style={{ fontWeight: 700, color: '#000000' }}>
                                     {tabs.find(t => t.id === activeTab)?.label}
                                 </h5>
 
@@ -241,8 +241,8 @@ const AdminSettings = () => {
                     transition: all 0.2s ease-in-out;
                 }
                 .btn-primary {
-                    background-color: #7e3af2 !important;
-                    border-color: #7e3af2 !important;
+                    background-color: #13689e !important;
+                    border-color: #13689e !important;
                 }
                 .btn-light {
                     background-color: #f3f4f6;

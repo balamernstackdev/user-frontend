@@ -21,7 +21,7 @@
 }
 
 .back-button:hover {
-    color: #1e8a8a;
+    color: #13689e;
 }
 
 .ticket-detail-card {
@@ -68,7 +68,7 @@
 }
 
 .meta-item i {
-    color: #1e8a8a;
+    color: #13689e;
 }
 
 .ticket-status {
@@ -116,7 +116,7 @@
 .attachments-title {
     font-size: 16px;
     font-weight: 600;
-    color: #0c1e21;
+    color: #000000;
     margin-bottom: 15px;
 }
 
@@ -141,14 +141,14 @@
 }
 
 .attachment-item:hover {
-    border-color: #1e8a8a;
-    background-color: rgba(30, 138, 138, 0.05);
-    color: #1e8a8a;
+    border-color: #13689e;
+    background-color: rgba(19, 104, 158, 0.05);
+    color: #13689e;
 }
 
 .attachment-icon {
     font-size: 20px;
-    color: #1e8a8a;
+    color: #13689e;
 }
 
 .attachment-name {
@@ -165,7 +165,7 @@
 .conversation-title {
     font-size: 24px;
     font-weight: 700;
-    color: #0c1e21;
+    color: #000000;
     margin-bottom: 30px;
 }
 
@@ -174,12 +174,12 @@
     border-radius: 12px;
     padding: 25px;
     margin-bottom: 25px;
-    border-left: 4px solid #1e8a8a;
+    border-left: 4px solid #13689e;
 }
 
 .reply-item.admin-message {
-    background-color: rgba(30, 138, 138, 0.05);
-    border-left-color: #0c1e21;
+    background-color: rgba(19, 104, 158, 0.05);
+    border-left-color: #000000;
 }
 
 .reply-header {
@@ -201,7 +201,7 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background-color: #1e8a8a;
+    background-color: #13689e;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -211,13 +211,13 @@
 }
 
 .reply-item.admin-message .reply-avatar {
-    background-color: #0c1e21;
+    background-color: #000000;
 }
 
 .reply-author-info h4 {
     font-size: 16px;
     font-weight: 600;
-    color: #0c1e21;
+    color: #000000;
     margin: 0 0 4px 0;
 }
 
@@ -272,7 +272,7 @@
 .reply-form-title {
     font-size: 20px;
     font-weight: 700;
-    color: #0c1e21;
+    color: #000000;
     margin-bottom: 25px;
 }
 
@@ -284,7 +284,7 @@
     display: block;
     font-size: 14px;
     font-weight: 600;
-    color: #0c1e21;
+    color: #000000;
     margin-bottom: 8px;
 }
 
@@ -304,8 +304,8 @@
 
 .form-input textarea:focus {
     outline: none;
-    border-color: #1e8a8a;
-    box-shadow: 0 0 0 3px rgba(30, 138, 138, 0.1);
+    border-color: #13689e;
+    box-shadow: 0 0 0 3px rgba(19, 104, 158, 0.1);
 }
 
 .file-upload-area {
@@ -319,8 +319,8 @@
 }
 
 .file-upload-area:hover {
-    border-color: #1e8a8a;
-    background-color: rgba(30, 138, 138, 0.05);
+    border-color: #13689e;
+    background-color: rgba(19, 104, 158, 0.05);
 }
 
 .file-upload-text {
@@ -352,13 +352,13 @@
 
 .file-item-icon {
     font-size: 20px;
-    color: #1e8a8a;
+    color: #13689e;
 }
 
 .file-item-name {
     font-size: 14px;
     font-weight: 500;
-    color: #0c1e21;
+    color: #000000;
 }
 
 .file-item-remove {

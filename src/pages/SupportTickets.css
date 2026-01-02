@@ -16,7 +16,7 @@
 
 .page-header h2 {
     font-size: 36px;
-    color: #0c1e21;
+    color: #000000;
     margin-bottom: 10px;
     font-weight: 700;
 }
@@ -61,14 +61,14 @@
 .ticket-id {
     font-size: 18px;
     font-weight: 600;
-    color: #0c1e21;
+    color: #000000;
     margin-bottom: 5px;
 }
 
 .ticket-subject {
     font-size: 20px;
     font-weight: 600;
-    color: #0c1e21;
+    color: #000000;
     margin-bottom: 10px;
 }
 
@@ -120,7 +120,7 @@
 }
 
 .ticket-meta i {
-    color: #1e8a8a;
+    color: #13689e;
 }
 
 /* Filter Bar */
@@ -145,14 +145,14 @@
 
 .filter-btn:hover {
     background: #f8f9fa;
-    color: #1e8a8a;
-    border-color: #1e8a8a;
+    color: #13689e;
+    border-color: #13689e;
 }
 
 .filter-btn.active {
-    background: #1e8a8a;
+    background: #13689e;
     color: #ffffff;
-    border-color: #1e8a8a;
+    border-color: #13689e;
 }
 
 @media (max-width: 767px) {

@@ -12,7 +12,7 @@
 .admin-plans-header h1 {
     font-size: 28px;
     margin: 0;
-    color: #0c1e21;
+    color: #000000;
 }
 
 .plans-table-container {
@@ -31,7 +31,7 @@
     text-align: left;
     padding: 15px;
     border-bottom: 2px solid #f1f1f1;
-    color: #0c1e21;
+    color: #000000;
     font-weight: 600;
 }
 
@@ -49,7 +49,7 @@
 
 .plan-name-text {
     font-weight: 600;
-    color: #0c1e21;
+    color: #000000;
     margin-bottom: 2px;
 }
 
@@ -70,7 +70,7 @@
 
 .plan-price-text {
     font-weight: 700;
-    color: #1e8a8a;
+    color: #13689e;
 }
 
 .status-toggle {
@@ -116,8 +116,8 @@
 
 .action-btn:hover {
     background: #f8fafc;
-    color: #1e8a8a;
-    border-color: #1e8a8a;
+    color: #13689e;
+    border-color: #13689e;
 }
 
 .action-btn.delete:hover {
@@ -160,7 +160,7 @@
 .modal-header h2 {
     margin: 0;
     font-size: 24px;
-    color: #0c1e21;
+    color: #000000;
 }
 
 .form-grid {
@@ -199,9 +199,9 @@
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
-    border-color: #1e8a8a;
+    border-color: #13689e;
     outline: none;
-    box-shadow: 0 0 0 3px rgba(30, 138, 138, 0.1);
+    box-shadow: 0 0 0 3px rgba(19, 104, 158, 0.1);
 }
 
 .features-list {
@@ -227,8 +227,8 @@
 }
 
 .add-feature-btn:hover {
-    border-color: #1e8a8a;
-    color: #1e8a8a;
+    border-color: #13689e;
+    color: #13689e;
 }
 
 .modal-footer {

@@ -263,7 +263,7 @@
 
 /* Primary Button Fallback */
 .tj-primary-btn {
-    background-color: var(--tj-color-theme-primary, #1e8a8a);
+    background-color: var(--tj-color-theme-primary, #13689e);
     color: #ffffff;
     border: none;
     padding: 0 30px;
@@ -281,7 +281,7 @@
 .tj-primary-btn:hover {
     background-color: var(--tj-color-theme-primary-hover, #176c6c);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(30, 138, 138, 0.2);
+    box-shadow: 0 4px 12px rgba(19, 104, 158, 0.2);
 }
 
 .tj-primary-btn:disabled {
@@ -310,13 +310,13 @@
 }
 
 .upload-container:hover {
-    border-color: #1e8a8a;
+    border-color: #13689e;
     background: #f0f7f7;
 }
 
 .upload-container.has-file {
     border-style: solid;
-    border-color: #1e8a8a;
+    border-color: #13689e;
     background: #fff;
     padding: 15px;
 }
@@ -391,12 +391,12 @@
     bottom: 0;
     left: 0;
     height: 3px;
-    background: #1e8a8a;
+    background: #13689e;
     transition: width 0.3s ease;
 }
 
 .back-link {
-    color: #1e8a8a;
+    color: #13689e;
     font-weight: 600;
     text-decoration: none;
     transition: all 0.2s;
@@ -406,7 +406,7 @@
 }
 
 .back-link:hover {
-    color: #156b6b;
+    color: #0e4f7a;
     transform: translateX(-5px);
 }
 

@@ -21,7 +21,7 @@
     position: relative;
     height: 200px;
     overflow: hidden;
-    background: linear-gradient(135deg, #1e8a8a 0%, #0c1e21 100%);
+    background: linear-gradient(135deg, #13689e 0%, #000000 100%);
 }
 
 .analysis-image img {
@@ -40,7 +40,7 @@
     top: 15px;
     right: 15px;
     background: linear-gradient(45deg, #ffd700, #ffa500);
-    color: #0c1e21;
+    color: #000000;
     padding: 4px 12px;
     border-radius: 20px;
     font-size: 12px;
@@ -58,7 +58,7 @@
     left: 15px;
     background: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(4px);
-    color: #1e8a8a;
+    color: #13689e;
     padding: 4px 12px;
     border-radius: 20px;
     font-size: 11px;
@@ -78,7 +78,7 @@
 .analysis-details h3 {
     font-size: 20px;
     font-weight: 700;
-    color: #0c1e21;
+    color: #000000;
     margin-bottom: 12px;
     line-height: 1.4;
 }
@@ -117,7 +117,7 @@
     gap: 8px;
     background: none;
     border: none;
-    color: #1e8a8a;
+    color: #13689e;
     font-weight: 700;
     cursor: pointer;
     padding: 0;
@@ -127,7 +127,7 @@
 }
 
 .back-btn:hover {
-    color: #156b6b;
+    color: #0e4f7a;
     transform: translateX(-5px);
 }
 
@@ -216,15 +216,15 @@
 }
 
 .filter-btn:hover {
-    border-color: #1e8a8a;
-    color: #1e8a8a;
+    border-color: #13689e;
+    color: #13689e;
 }
 
 .filter-btn.active {
-    background: #1e8a8a;
+    background: #13689e;
     color: #fff;
-    border-color: #1e8a8a;
-    box-shadow: 0 4px 12px rgba(30, 138, 138, 0.3);
+    border-color: #13689e;
+    box-shadow: 0 4px 12px rgba(19, 104, 158, 0.3);
 }
 
 /* Premium Locked State */

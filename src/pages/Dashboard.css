@@ -32,7 +32,7 @@
 .welcome-icon {
     width: 100px;
     height: 100px;
-    background: rgba(30, 138, 138, 0.1);
+    background: rgba(19, 104, 158, 0.1);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -43,7 +43,7 @@
 .welcome-icon i,
 .welcome-icon span {
     font-size: 48px;
-    color: #1e8a8a;
+    color: #13689e;
 }
 
 .welcome-title h1 {
@@ -74,7 +74,7 @@
     justify-content: center;
     gap: 10px;
     padding: 14px 30px;
-    background-color: #1e8a8a;
+    background-color: #13689e;
     color: white;
     border: none;
     border-radius: 6px;
@@ -86,20 +86,21 @@
 }
 
 .welcome-actions .tj-primary-btn:hover {
-    background-color: #156b6b;
+    background-color: #0e4f7a;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(30, 138, 138, 0.3);
+    box-shadow: 0 4px 12px rgba(19, 104, 158, 0.3);
 }
 
 .welcome-actions .transparent-btn {
     background-color: transparent;
-    color: #1e8a8a;
-    border: 1px solid #1e8a8a;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
 .welcome-actions .transparent-btn:hover {
-    background-color: #1e8a8a;
-    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff !important;
+    border-color: rgba(255, 255, 255, 0.8);
 }
 
 /* Quick Links Grid */
@@ -113,7 +114,7 @@
 .quick-links h3 {
     font-size: 28px;
     margin-bottom: 30px;
-    color: #0c1e21;
+    color: #000000;
     font-weight: 600;
 }
 
@@ -124,7 +125,7 @@
 }
 
 .quick-link-item {
-    background: rgba(30, 138, 138, 0.05);
+    background: rgba(19, 104, 158, 0.05);
     border-radius: 8px;
     padding: 25px 20px;
     text-align: center;
@@ -135,7 +136,7 @@
 }
 
 .quick-link-item:hover {
-    background: #1e8a8a;
+    background: #13689e;
     transform: translateY(-5px);
 }
 
@@ -146,14 +147,14 @@
 .quick-link-icon i,
 .quick-link-icon span {
     font-size: 32px;
-    color: #1e8a8a;
+    color: #13689e;
     transition: all 0.3s ease;
 }
 
 .quick-link-title {
     font-size: 16px;
     font-weight: 600;
-    color: #0c1e21;
+    color: #000000;
     transition: all 0.3s ease;
 }
 
@@ -180,13 +181,13 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-left: 5px solid #1e8a8a;
+    border-left: 5px solid #13689e;
 }
 
 .referral-info h3 {
     font-size: 20px;
     margin-bottom: 5px;
-    color: #0c1e21;
+    color: #000000;
     font-weight: 600;
 }
 
@@ -203,13 +204,13 @@
     background: #f8f9fa;
     padding: 12px 24px;
     border-radius: 8px;
-    border: 2px dashed #1e8a8a;
+    border: 2px dashed #13689e;
 }
 
 .referral-code {
     font-family: 'Inter', monospace;
     font-weight: 700;
-    color: #1e8a8a;
+    color: #13689e;
     font-size: 20px;
     letter-spacing: 1.5px;
 }
@@ -228,8 +229,8 @@
 }
 
 .copy-btn:hover {
-    color: #1e8a8a;
-    background: rgba(30, 138, 138, 0.1);
+    color: #13689e;
+    background: rgba(19, 104, 158, 0.1);
 }
 
 .copy-btn i {
@@ -332,17 +333,17 @@
 
 /* Card: Users (Teal/Cyan) */
 .stat-card.card-users {
-    border-bottom: 4px solid #1e8a8a;
+    border-bottom: 4px solid #13689e;
     background: linear-gradient(145deg, #ffffff 0%, #f0fbfc 100%);
 }
 
 .stat-card.card-users .stat-icon {
-    background: rgba(30, 138, 138, 0.15);
-    color: #1e8a8a;
+    background: rgba(19, 104, 158, 0.15);
+    color: #13689e;
 }
 
 .stat-card.card-users:hover .stat-icon {
-    background: #1e8a8a;
+    background: #13689e;
     color: #ffffff !important;
 }
 
@@ -447,20 +448,16 @@
 /* General Text Styles */
 .stat-label {
     display: block;
-    font-size: 13px;
-    /* Slightly reduced to fit */
+    font-size: 12px;
     font-weight: 600;
     color: black !important;
-    /* Force black color override */
     margin-bottom: 5px;
     text-transform: uppercase;
     letter-spacing: 0px;
-    /* Reduced to fit long labels */
-    white-space: nowrap;
-    /* Prevent wrapping to keep alignment consistent */
-    overflow: hidden;
-    text-overflow: ellipsis;
+    line-height: 1.3;
+    /* Allow wrapping for longer labels */
 }
+
 
 .stat-value {
     display: block;

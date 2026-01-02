@@ -36,7 +36,7 @@
 .success-icon {
     width: 80px;
     height: 80px;
-    background-color: rgba(30, 138, 138, 0.1);
+    background-color: rgba(19, 104, 158, 0.1);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -66,7 +66,7 @@
 }
 
 .next-steps-box {
-    background-color: rgba(30, 138, 138, 0.05);
+    background-color: rgba(19, 104, 158, 0.05);
     /* Very light teal */
     border-left: 4px solid var(--tj-color-theme-primary);
     padding: 25px 30px;

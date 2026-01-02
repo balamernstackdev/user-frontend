@@ -48,13 +48,13 @@ const VerifyEmail = () => {
             <div className="verify-email-wrapper" style={{ maxWidth: '600px', width: '100%' }}>
                 <div className="verify-email-card" style={{ backgroundColor: '#fff', borderRadius: '12px', padding: '60px 50px', boxShadow: '0 10px 40px rgba(0, 0, 0, 0.08)', textAlign: 'center' }}>
                     <div className="verify-email-icon" style={{ width: '120px', height: '120px', background: status === 'success' ? '#e0f7fa' : '#fee2e2', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 30px' }}>
-                        {status === 'verifying' && <i className="fas fa-spinner fa-spin" style={{ fontSize: '60px', color: '#1e8a8a' }}></i>}
-                        {status === 'success' && <i className="fas fa-check-circle" style={{ fontSize: '60px', color: '#1e8a8a' }}></i>}
+                        {status === 'verifying' && <i className="fas fa-spinner fa-spin" style={{ fontSize: '60px', color: '#13689e' }}></i>}
+                        {status === 'success' && <i className="fas fa-check-circle" style={{ fontSize: '60px', color: '#13689e' }}></i>}
                         {status === 'error' && <i className="fas fa-circle-xmark" style={{ fontSize: '60px', color: '#ef4444' }}></i>}
                     </div>
 
                     <div className="verify-email-title" style={{ marginBottom: '30px' }}>
-                        <h2 style={{ fontSize: '36px', marginBottom: '15px', color: '#0c1e21' }}>
+                        <h2 style={{ fontSize: '36px', marginBottom: '15px', color: '#000000' }}>
                             {status === 'verifying' && 'Verifying Email...'}
                             {status === 'success' && 'Email Verified!'}
                             {status === 'error' && 'Verification Failed'}

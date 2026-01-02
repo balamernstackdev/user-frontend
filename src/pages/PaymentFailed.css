@@ -59,7 +59,7 @@
 .failure-title h2 {
     font-size: 36px;
     margin-bottom: 15px;
-    color: #0c1e21;
+    color: #000000;
     font-weight: 700;
 }
 
@@ -113,12 +113,12 @@
 
 .btn-transparent {
     background-color: transparent;
-    border: 1px solid #1e8a8a;
-    color: #1e8a8a;
+    border: 1px solid #13689e;
+    color: #13689e;
 }
 
 .btn-transparent:hover {
-    background-color: #1e8a8a;
+    background-color: #13689e;
     color: white;
 }
 
@@ -135,7 +135,7 @@
 }
 
 .support-link a {
-    color: #1e8a8a;
+    color: #13689e;
     text-decoration: none;
 }
 

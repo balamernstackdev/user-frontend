@@ -309,7 +309,7 @@ const TicketDetail = () => {
                                                 className="file-upload-area"
                                                 onClick={() => fileInputRef.current.click()}
                                             >
-                                                <i className="fas fa-cloud-arrow-up" style={{ fontSize: '24px', color: '#1e8a8a', marginBottom: '10px' }}></i>
+                                                <i className="fas fa-cloud-arrow-up" style={{ fontSize: '24px', color: '#13689e', marginBottom: '10px' }}></i>
                                                 <div className="file-upload-text">Click to upload files</div>
                                                 <input
                                                     type="file"

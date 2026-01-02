@@ -83,17 +83,17 @@ START: Theme Default CSS
    */
   --tj-color-common-white: #ffffff;
   --tj-color-common-black: #000000;
-  --tj-color-heading-primary: #0c1e21;
+  --tj-color-heading-primary: #000000;
   --tj-color-text-body: #364e52;
   --tj-color-text-body-2: #a9b8b8;
   --tj-color-text-body-3: #67787a;
   --tj-color-text-body-4: #18292c;
   --tj-color-text-body-5: rgba(255, 255, 255, 0.8);
-  --tj-color-theme-primary: #1e8a8a;
+  --tj-color-theme-primary: #13689e;
   --tj-color-theme-bg: #d8e5e5;
   --tj-color-theme-bg-2: #cee0e0;
   --tj-color-theme-bg-3: #202e30;
-  --tj-color-theme-dark: #0c1e21;
+  --tj-color-theme-dark: #000000;
   --tj-color-theme-dark-2: #18292c;
   --tj-color-theme-dark-3: #364e52;
   --tj-color-theme-dark-4: #67787a;
@@ -106,7 +106,7 @@ START: Theme Default CSS
   --tj-color-border-2: #313d3d;
   --tj-color-border-3: rgba(255, 255, 255, 0.1490196078);
   --tj-color-border-4: rgba(255, 255, 255, 0.2);
-  --tj-color-border-5: rgba(30, 138, 138, 0.1490196078);
+  --tj-color-border-5: rgba(19, 104, 158, 0.1490196078);
 }
 
 * {
@@ -2255,7 +2255,7 @@ START: Theme Header CSS
   position: relative;
   z-index: 2;
   text-align: center;
-  background: linear-gradient(-45deg, rgba(30, 138, 138, 0.3) 0%, rgba(30, 138, 138, 0) 50%, rgba(30, 138, 138, 0.3) 100%);
+  background: linear-gradient(-45deg, rgba(19, 104, 158, 0.3) 0%, rgba(19, 104, 158, 0) 50%, rgba(19, 104, 158, 0.3) 100%);
   color: var(--tj-color-theme-primary);
   font-size: 40px;
   -ms-flex-negative: 0;
@@ -2698,7 +2698,7 @@ START: Theme Footer CSS
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background-color: rgba(12, 30, 33, 0.3);
+  background-color: rgba(0, 0, 0, 0.3);
   font-size: 16px;
   line-height: 1;
 }
@@ -3788,7 +3788,7 @@ START: Theme Search CSS
   top: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(12, 30, 33, 0.01);
+  background-color: rgba(0, 0, 0, 0.01);
   z-index: 99;
   -webkit-transform: translateY(calc(-100% - 80px));
   -ms-transform: translateY(calc(-100% - 80px));
@@ -9012,7 +9012,7 @@ START: Client CSS
   bottom: 3px;
   inset-inline-start: auto;
   width: 100%;
-  border-bottom: 1px solid rgba(12, 30, 33, 0.2);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 }
 @media only screen and (min-width: 992px) and (max-width: 1199px) {
   .client-content {
@@ -9828,9 +9828,9 @@ START: Services CSS
   font-size: 70px;
   width: 80px;
   height: 80px;
-  background: linear-gradient(-45deg, rgba(30, 138, 138, 0.3) 0%, rgba(30, 138, 138, 0) 50%, rgba(30, 138, 138, 0.3) 100%);
+  background: linear-gradient(-45deg, rgba(19, 104, 158, 0.3) 0%, rgba(19, 104, 158, 0) 50%, rgba(19, 104, 158, 0.3) 100%);
   border-radius: 50%;
-  border: 1px solid rgba(30, 138, 138, 0.15);
+  border: 1px solid rgba(19, 104, 158, 0.15);
   display: -webkit-inline-box;
   display: -ms-inline-flexbox;
   display: inline-flex;
@@ -12312,8 +12312,8 @@ START: Blog CSS
   position: relative;
 }
 .blog-item.style-3 .blog-thumb::before {
-  background: -webkit-gradient(linear, left bottom, left top, from(rgb(12, 30, 33)), to(rgba(12, 30, 33, 0)));
-  background: linear-gradient(0deg, rgb(12, 30, 33) 0%, rgba(12, 30, 33, 0) 100%);
+  background: -webkit-gradient(linear, left bottom, left top, from(rgb(0, 0, 0)), to(rgba(0, 0, 0, 0)));
+  background: linear-gradient(0deg, rgb(0, 0, 0) 0%, rgba(0, 0, 0, 0) 100%);
   opacity: 1;
 }
 .blog-item.style-3 .blog-content {
@@ -13753,7 +13753,7 @@ START: Theme Slider CSS
 
 .tj-slider-item {
   min-height: 92.5vh;
-  background-color: #0c1e21;
+  background-color: #000000;
   position: relative;
   z-index: 1;
 }
@@ -13765,8 +13765,8 @@ START: Theme Slider CSS
   width: 100%;
   height: 100%;
   z-index: 2;
-  background: -webkit-gradient(linear, left top, right top, color-stop(20%, rgb(12, 30, 33)), color-stop(60%, rgba(12, 30, 33, 0.4)), to(rgba(12, 30, 33, 0.1)));
-  background: linear-gradient(90deg, rgb(12, 30, 33) 20%, rgba(12, 30, 33, 0.4) 60%, rgba(12, 30, 33, 0.1) 100%);
+  background: -webkit-gradient(linear, left top, right top, color-stop(20%, rgb(0, 0, 0)), color-stop(60%, rgba(0, 0, 0, 0.4)), to(rgba(0, 0, 0, 0.1)));
+  background: linear-gradient(90deg, rgb(0, 0, 0) 20%, rgba(0, 0, 0, 0.4) 60%, rgba(0, 0, 0, 0.1) 100%);
 }
 .tj-slider-item .slider-wrapper {
   padding: 195px 0 347px;
@@ -16421,7 +16421,7 @@ blockquote cite::before {
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
-  background-color: rgba(12, 30, 33, 0.4);
+  background-color: rgba(0, 0, 0, 0.4);
   position: absolute;
   width: 100%;
   height: 100%;
@@ -16766,8 +16766,8 @@ START: Animate CSS
 
 @-webkit-keyframes pulse3 {
   0% {
-    -webkit-box-shadow: 0 0 0 0px rgba(30, 138, 138, 0.4);
-    box-shadow: 0 0 0 0px rgba(30, 138, 138, 0.4);
+    -webkit-box-shadow: 0 0 0 0px rgba(19, 104, 158, 0.4);
+    box-shadow: 0 0 0 0px rgba(19, 104, 158, 0.4);
   }
   100% {
     -webkit-box-shadow: 0 0 0 8px rgba(0, 0, 0, 0);
@@ -16776,8 +16776,8 @@ START: Animate CSS
 }
 @keyframes pulse3 {
   0% {
-    -webkit-box-shadow: 0 0 0 0px rgba(30, 138, 138, 0.4);
-    box-shadow: 0 0 0 0px rgba(30, 138, 138, 0.4);
+    -webkit-box-shadow: 0 0 0 0px rgba(19, 104, 158, 0.4);
+    box-shadow: 0 0 0 0px rgba(19, 104, 158, 0.4);
   }
   100% {
     -webkit-box-shadow: 0 0 0 8px rgba(0, 0, 0, 0);
@@ -16954,8 +16954,8 @@ START: Hero CSS
   inset-inline-start: 0;
   width: 49%;
   height: 100%;
-  background: -webkit-gradient(linear, left top, right top, from(rgb(12, 30, 33)), color-stop(50%, rgba(12, 30, 33, 0.4)), to(rgba(12, 30, 33, 0)));
-  background: linear-gradient(90deg, rgb(12, 30, 33) 0%, rgba(12, 30, 33, 0.4) 50%, rgba(12, 30, 33, 0) 100%);
+  background: -webkit-gradient(linear, left top, right top, from(rgb(0, 0, 0)), color-stop(50%, rgba(0, 0, 0, 0.4)), to(rgba(0, 0, 0, 0)));
+  background: linear-gradient(90deg, rgb(0, 0, 0) 0%, rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 0) 100%);
   opacity: 0.5;
 }
 .h4-banner-section .banner-img-area .banner-img img {
@@ -19009,7 +19009,7 @@ START: Hero CSS
   position: absolute;
   width: 100%;
   height: 100%;
-  background: linear-gradient(-109deg, rgba(12, 30, 33, 0.95) 20%, rgba(12, 30, 33, 0.2) 40%, rgba(12, 30, 33, 0.95) 70%);
+  background: linear-gradient(-109deg, rgba(0, 0, 0, 0.95) 20%, rgba(0, 0, 0, 0.2) 40%, rgba(0, 0, 0, 0.95) 70%);
   z-index: 1;
 }
 .h5-banner-section .banner-scroll {
@@ -19597,12 +19597,12 @@ START: Home 5 About CSS
   pointer-events: none;
 }
 .h5-client-item .client-logo::after {
-  background: rgba(30, 138, 138, 0.6);
+  background: rgba(19, 104, 158, 0.6);
 }
 .h5-client-item .client-logo:hover {
   border-radius: 100%;
   backdrop-filter: blur(0);
-  background: rgba(30, 138, 138, 0.7);
+  background: rgba(19, 104, 158, 0.7);
 }
 .h5-client-item .client-logo:hover::before, .h5-client-item .client-logo:hover::after {
   opacity: 1;
@@ -20001,8 +20001,8 @@ START: Working process CSS
   }
 }
 .h5-working-process-item .process-step {
-  background-image: -webkit-gradient(linear, left top, left bottom, from(var(--tj-color-theme-primary)), color-stop(116.09%, rgba(30, 138, 138, 0)));
-  background-image: linear-gradient(180deg, var(--tj-color-theme-primary) 0%, rgba(30, 138, 138, 0) 116.09%);
+  background-image: -webkit-gradient(linear, left top, left bottom, from(var(--tj-color-theme-primary)), color-stop(116.09%, rgba(19, 104, 158, 0)));
+  background-image: linear-gradient(180deg, var(--tj-color-theme-primary) 0%, rgba(19, 104, 158, 0) 116.09%);
 }
 .h5-working-process .title {
   color: var(--tj-color-common-white);
@@ -21557,7 +21557,7 @@ START: Service CSS
   content: " ";
   width: 100%;
   height: 100%;
-  background: rgba(12, 30, 33, 0.5);
+  background: rgba(0, 0, 0, 0.5);
   position: absolute;
   inset-inline-start: 0;
   bottom: 0;
@@ -22202,10 +22202,10 @@ START: Testimonial CSS
 .h6-testimonial-wrapper .swiper {
   overflow: visible;
   height: 100%;
-  -webkit-mask-image: -webkit-gradient(linear, left bottom, left top, color-stop(5%, rgba(12, 30, 33, 0)), color-stop(21%, #0c1e21));
-  -webkit-mask-image: linear-gradient(0deg, rgba(12, 30, 33, 0) 5%, #0c1e21 21%);
-          mask-image: -webkit-gradient(linear, left bottom, left top, color-stop(5%, rgba(12, 30, 33, 0)), color-stop(21%, #0c1e21));
-          mask-image: linear-gradient(0deg, rgba(12, 30, 33, 0) 5%, #0c1e21 21%);
+  -webkit-mask-image: -webkit-gradient(linear, left bottom, left top, color-stop(5%, rgba(0, 0, 0, 0)), color-stop(21%, #000000));
+  -webkit-mask-image: linear-gradient(0deg, rgba(0, 0, 0, 0) 5%, #000000 21%);
+          mask-image: -webkit-gradient(linear, left bottom, left top, color-stop(5%, rgba(0, 0, 0, 0)), color-stop(21%, #000000));
+          mask-image: linear-gradient(0deg, rgba(0, 0, 0, 0) 5%, #000000 21%);
   -webkit-mask-repeat: no-repeat;
           mask-repeat: no-repeat;
   -webkit-mask-size: contain;
@@ -22213,10 +22213,10 @@ START: Testimonial CSS
 }
 @media only screen and (min-width: 768px) and (max-width: 991px), only screen and (min-width: 576px) and (max-width: 767px) {
   .h6-testimonial-wrapper .swiper {
-    -webkit-mask-image: -webkit-gradient(linear, right top, left top, from(rgba(12, 30, 33, 0)), color-stop(20%, #0c1e21));
-    -webkit-mask-image: linear-gradient(-90deg, rgba(12, 30, 33, 0) 0%, #0c1e21 20%);
-            mask-image: -webkit-gradient(linear, right top, left top, from(rgba(12, 30, 33, 0)), color-stop(20%, #0c1e21));
-            mask-image: linear-gradient(-90deg, rgba(12, 30, 33, 0) 0%, #0c1e21 20%);
+    -webkit-mask-image: -webkit-gradient(linear, right top, left top, from(rgba(0, 0, 0, 0)), color-stop(20%, #000000));
+    -webkit-mask-image: linear-gradient(-90deg, rgba(0, 0, 0, 0) 0%, #000000 20%);
+            mask-image: -webkit-gradient(linear, right top, left top, from(rgba(0, 0, 0, 0)), color-stop(20%, #000000));
+            mask-image: linear-gradient(-90deg, rgba(0, 0, 0, 0) 0%, #000000 20%);
   }
 }
 @media (max-width: 575px) {
@@ -22504,7 +22504,7 @@ START: Hero CSS
 }
 .h7-hero-item {
   min-height: 92.5vh;
-  background-color: #0c1e21;
+  background-color: #000000;
   position: relative;
 }
 .h7-hero-item::after {
@@ -22515,8 +22515,8 @@ START: Hero CSS
   width: 100%;
   height: 100%;
   z-index: 2;
-  background: -webkit-gradient(linear, left top, right top, color-stop(20%, rgb(12, 30, 33)), color-stop(60%, rgba(12, 30, 33, 0.4)), to(rgba(12, 30, 33, 0.1)));
-  background: linear-gradient(90deg, rgb(12, 30, 33) 20%, rgba(12, 30, 33, 0.4) 60%, rgba(12, 30, 33, 0.1) 100%);
+  background: -webkit-gradient(linear, left top, right top, color-stop(20%, rgb(0, 0, 0)), color-stop(60%, rgba(0, 0, 0, 0.4)), to(rgba(0, 0, 0, 0.1)));
+  background: linear-gradient(90deg, rgb(0, 0, 0) 20%, rgba(0, 0, 0, 0.4) 60%, rgba(0, 0, 0, 0.1) 100%);
 }
 .h7-hero-item-wrapper {
   padding: 242px 0 30px;
@@ -22612,7 +22612,7 @@ START: Hero CSS
   -o-object-fit: cover;
      object-fit: cover;
   padding: 20px 19px 18px;
-  background: linear-gradient(135deg, rgba(30, 138, 138, 0.3) 0%, rgba(30, 138, 138, 0) 50%, rgba(30, 138, 138, 0.3) 100%);
+  background: linear-gradient(135deg, rgba(19, 104, 158, 0.3) 0%, rgba(19, 104, 158, 0) 50%, rgba(19, 104, 158, 0.3) 100%);
   border: 3px solid var(--tj-color-theme-primary);
   border: 2px solid var(--tj-color-border-5);
   -webkit-box-sizing: border-box;
@@ -23968,7 +23968,7 @@ START: Hero CSS
 }
 .h8-hero-item {
   min-height: 92.5vh;
-  background-color: #0c1e21;
+  background-color: #000000;
   position: relative;
 }
 .h8-hero-item::after {
@@ -23979,8 +23979,8 @@ START: Hero CSS
   width: 100%;
   height: 100%;
   z-index: 2;
-  background: -webkit-gradient(linear, left top, right top, color-stop(20%, rgb(12, 30, 33)), color-stop(60%, rgba(12, 30, 33, 0.4)), to(rgba(12, 30, 33, 0.1)));
-  background: linear-gradient(90deg, rgb(12, 30, 33) 20%, rgba(12, 30, 33, 0.4) 60%, rgba(12, 30, 33, 0.1) 100%);
+  background: -webkit-gradient(linear, left top, right top, color-stop(20%, rgb(0, 0, 0)), color-stop(60%, rgba(0, 0, 0, 0.4)), to(rgba(0, 0, 0, 0.1)));
+  background: linear-gradient(90deg, rgb(0, 0, 0) 20%, rgba(0, 0, 0, 0.4) 60%, rgba(0, 0, 0, 0.1) 100%);
 }
 .h8-hero-item-wrapper {
   padding: 202px 0 30px;
@@ -24076,7 +24076,7 @@ START: Hero CSS
   -o-object-fit: cover;
      object-fit: cover;
   padding: 20px 19px 18px;
-  background: linear-gradient(135deg, rgba(30, 138, 138, 0.3) 0%, rgba(30, 138, 138, 0) 50%, rgba(30, 138, 138, 0.3) 100%);
+  background: linear-gradient(135deg, rgba(19, 104, 158, 0.3) 0%, rgba(19, 104, 158, 0) 50%, rgba(19, 104, 158, 0.3) 100%);
   border: 3px solid var(--tj-color-theme-primary);
   border: 2px solid var(--tj-color-border-5);
   -webkit-box-sizing: border-box;
@@ -25528,7 +25528,7 @@ START: Hero CSS
 }
 .h9-hero-item {
   min-height: 92.5vh;
-  background-color: #0c1e21;
+  background-color: #000000;
   position: relative;
 }
 .h9-hero-item::after {
@@ -25539,8 +25539,8 @@ START: Hero CSS
   width: 100%;
   height: 100%;
   z-index: 2;
-  background: -webkit-gradient(linear, left top, right top, color-stop(20%, rgb(12, 30, 33)), color-stop(60%, rgba(12, 30, 33, 0.4)), to(rgba(12, 30, 33, 0.1)));
-  background: linear-gradient(90deg, rgb(12, 30, 33) 20%, rgba(12, 30, 33, 0.4) 60%, rgba(12, 30, 33, 0.1) 100%);
+  background: -webkit-gradient(linear, left top, right top, color-stop(20%, rgb(0, 0, 0)), color-stop(60%, rgba(0, 0, 0, 0.4)), to(rgba(0, 0, 0, 0.1)));
+  background: linear-gradient(90deg, rgb(0, 0, 0) 20%, rgba(0, 0, 0, 0.4) 60%, rgba(0, 0, 0, 0.1) 100%);
 }
 .h9-hero-item-wrapper {
   padding: 162px 0 80px;
@@ -26606,8 +26606,8 @@ START: Home 9 About CSS
   width: 100%;
   padding: 20px 0 24px;
   margin: 30px 0;
-  border-top: 1px dashed rgba(12, 30, 33, 0.2);
-  border-bottom: 1px dashed rgba(12, 30, 33, 0.2);
+  border-top: 1px dashed rgba(0, 0, 0, 0.2);
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.2);
 }
 .h9-about-funfact .countup-item {
   width: 50%;
@@ -26642,8 +26642,8 @@ START: Home 9 About CSS
           transform: translateY(-50%);
   width: 0;
   height: 88%;
-  -webkit-border-end: 1px dashed rgba(12, 30, 33, 0.2);
-          border-inline-end: 1px dashed rgba(12, 30, 33, 0.2);
+  -webkit-border-end: 1px dashed rgba(0, 0, 0, 0.2);
+          border-inline-end: 1px dashed rgba(0, 0, 0, 0.2);
 }
 @media only screen and (min-width: 992px) and (max-width: 1199px) {
   .h9-about-funfact .countup-item:not(:first-child)::after {
@@ -26695,7 +26695,7 @@ START: Home 9 About CSS
     height: 0;
     -webkit-border-end: 0;
             border-inline-end: 0;
-    border-top: 1px dashed rgba(12, 30, 33, 0.2);
+    border-top: 1px dashed rgba(0, 0, 0, 0.2);
   }
 }
 .h9-about-img {
@@ -27346,10 +27346,10 @@ START: CTA CSS
   }
 }
 .h9-project-slider {
-  -webkit-mask-image: -webkit-gradient(linear, left top, right top, from(rgba(12, 30, 33, 0)), color-stop(20%, var(--tj-color-theme-dark)), color-stop(80%, var(--tj-color-theme-dark)), to(rgba(12, 30, 33, 0)));
-  -webkit-mask-image: linear-gradient(90deg, rgba(12, 30, 33, 0) 0%, var(--tj-color-theme-dark) 20%, var(--tj-color-theme-dark) 80%, rgba(12, 30, 33, 0) 100%);
-          mask-image: -webkit-gradient(linear, left top, right top, from(rgba(12, 30, 33, 0)), color-stop(20%, var(--tj-color-theme-dark)), color-stop(80%, var(--tj-color-theme-dark)), to(rgba(12, 30, 33, 0)));
-          mask-image: linear-gradient(90deg, rgba(12, 30, 33, 0) 0%, var(--tj-color-theme-dark) 20%, var(--tj-color-theme-dark) 80%, rgba(12, 30, 33, 0) 100%);
+  -webkit-mask-image: -webkit-gradient(linear, left top, right top, from(rgba(0, 0, 0, 0)), color-stop(20%, var(--tj-color-theme-dark)), color-stop(80%, var(--tj-color-theme-dark)), to(rgba(0, 0, 0, 0)));
+  -webkit-mask-image: linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, var(--tj-color-theme-dark) 20%, var(--tj-color-theme-dark) 80%, rgba(0, 0, 0, 0) 100%);
+          mask-image: -webkit-gradient(linear, left top, right top, from(rgba(0, 0, 0, 0)), color-stop(20%, var(--tj-color-theme-dark)), color-stop(80%, var(--tj-color-theme-dark)), to(rgba(0, 0, 0, 0)));
+          mask-image: linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, var(--tj-color-theme-dark) 20%, var(--tj-color-theme-dark) 80%, rgba(0, 0, 0, 0) 100%);
 }
 @media (max-width: 575px) {
   .h9-project-slider {
@@ -27410,8 +27410,8 @@ START: Blog CSS
 }
 .h9-blog-wrapper .blog-item:first-child.h5-blog-item .blog-thumb::before {
   display: block;
-  background: -webkit-gradient(linear, left top, left bottom, from(rgba(12, 30, 33, 0)), to(var(--tj-color-theme-dark)));
-  background: linear-gradient(180deg, rgba(12, 30, 33, 0) 0%, var(--tj-color-theme-dark) 100%);
+  background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0)), to(var(--tj-color-theme-dark)));
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, var(--tj-color-theme-dark) 100%);
   opacity: 1;
 }
 .h9-blog-wrapper .blog-item:first-child.h5-blog-item .blog-date {

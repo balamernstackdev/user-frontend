@@ -43,7 +43,7 @@
 }
 
 .meta-item i {
-    color: var(--tj-color-theme-primary, #1e8a8a);
+    color: var(--tj-color-theme-primary, #13689e);
 }
 
 .notification-status {
@@ -57,8 +57,8 @@
 }
 
 .status-unread {
-    background-color: var(--tj-color-theme-bg, rgba(30, 138, 138, 0.1));
-    color: var(--tj-color-theme-primary, #1e8a8a);
+    background-color: var(--tj-color-theme-bg, rgba(19, 104, 158, 0.1));
+    color: var(--tj-color-theme-primary, #13689e);
 }
 
 .status-read {
@@ -131,8 +131,8 @@
     align-items: center;
     gap: 10px;
     padding: 12px 24px;
-    background-color: var(--tj-color-theme-bg, rgba(30, 138, 138, 0.1));
-    color: var(--tj-color-theme-primary, #1e8a8a);
+    background-color: var(--tj-color-theme-bg, rgba(19, 104, 158, 0.1));
+    color: var(--tj-color-theme-primary, #13689e);
     border-radius: 8px;
     text-decoration: none;
     font-weight: var(--tj-fw-medium, 500);
@@ -143,7 +143,7 @@
 }
 
 .action-link:hover {
-    background-color: var(--tj-color-theme-primary, #1e8a8a);
+    background-color: var(--tj-color-theme-primary, #13689e);
     color: var(--tj-color-common-white, #ffffff);
 }
 
@@ -164,7 +164,7 @@
 }
 
 .back-button:hover {
-    color: var(--tj-color-theme-primary, #1e8a8a);
+    color: var(--tj-color-theme-primary, #13689e);
 }
 
 .back-button i {

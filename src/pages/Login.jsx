@@ -4,6 +4,7 @@ import { authService } from '../services/auth.service';
 import SEO from '../components/common/SEO';
 import StoxzoLogo from '../assets/images/Stoxzo_Logo.svg';
 import './Login.css';
+import bgImage from '../assets/images/bg.png';
 import { toast } from 'react-toastify';
 
 const Login = () => {
@@ -76,6 +77,7 @@ const Login = () => {
 
     return (
         <section className="login-section">
+            <div className="login-bg-watermark" style={{ backgroundImage: `url(${bgImage})` }}></div>
             <SEO title="Login" description="Login to your Stoxzo account." />
             <div className="login-wrapper">
                 <div className="login-card">
@@ -167,8 +169,7 @@ const Login = () => {
 
                     <div className="signup-link">
                         <p>
-                            Don't have an account?
-                            <Link to="/register">Sign Up</Link>
+                            Don't have an account? <Link to="/register">Sign Up</Link>
                         </p>
                     </div>
                 </div>

@@ -4,6 +4,7 @@ import { authService } from '../services/auth.service';
 import SEO from '../components/common/SEO';
 import StoxzoLogo from '../assets/images/Stoxzo_Logo.svg';
 import './Register.css';
+import bgImage from '../assets/images/bg.png';
 import { toast } from 'react-toastify';
 
 const Register = () => {
@@ -134,6 +135,7 @@ const Register = () => {
 
     return (
         <section className="register-section">
+            <div className="register-bg-watermark" style={{ backgroundImage: `url(${bgImage})` }}></div>
             <SEO title="Create Account" description="Join Stoxzo today." />
             <div className="register-wrapper">
                 <div className="register-card">
@@ -318,8 +320,7 @@ const Register = () => {
                     {/* Login Link */}
                     <div className="login-link">
                         <p>
-                            Already have an account?
-                            <Link to="/login">Sign In</Link>
+                            Already have an account? <Link to="/login">Sign In</Link>
                         </p>
                     </div>
                 </div>

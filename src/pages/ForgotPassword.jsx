@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { authService } from '../services/auth.service';
+import SEO from '../components/common/SEO';
 import StoxzoLogo from '../assets/images/Stoxzo_Logo.svg';
 import './ForgotPassword.css';
+import bgImage from '../assets/images/bg.png';
 import { toast } from 'react-toastify';
 
 const ForgotPassword = () => {
@@ -17,7 +19,7 @@ const ForgotPassword = () => {
             const response = await authService.forgotPassword(email);
             if (response.success) {
                 toast.success(response.message || 'Password reset link sent to your email.');
-                setEmail(''); // Clear form
+                setEmail('');
             }
         } catch (err) {
             toast.error(err.response?.data?.message || 'Failed to send reset email. Please try again.');
@@ -28,6 +30,8 @@ const ForgotPassword = () => {
 
     return (
         <section className="forgot-password-section">
+            <div className="forgot-password-bg-watermark" style={{ backgroundImage: `url(${bgImage})` }}></div>
+            <SEO title="Forgot Password" description="Reset your Stoxzo account password." />
             <div className="forgot-password-wrapper">
                 <div className="forgot-password-card">
                     <div className="forgot-password-logo">
@@ -38,13 +42,6 @@ const ForgotPassword = () => {
                     <div className="forgot-password-title">
                         <h2>Forgot Password?</h2>
                         <p>No worries! Enter your email address and we'll send you a link to reset your password.</p>
-                    </div>
-
-                    <div className="info-box">
-                        <p>
-                            <i className="fas fa-info-circle"></i>
-                            You will receive a password reset link via email if the account exists.
-                        </p>
                     </div>
 
                     <form className="forgot-password-form" onSubmit={handleSubmit}>

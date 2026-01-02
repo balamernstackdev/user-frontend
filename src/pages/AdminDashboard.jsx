@@ -87,7 +87,7 @@ const AdminDashboard = () => {
                         {/* Admin Stats Overview */}
                         <div className="admin-stats-grid stats-grid animate-fade-up">
                             <div className="stat-card card-users">
-                                <div className="stat-icon" style={{ color: '#1e8a8a' }}>
+                                <div className="stat-icon" style={{ color: '#13689e' }}>
                                     <i className="fas fa-users"></i>
                                 </div>
                                 <div className="stat-info">
@@ -101,7 +101,7 @@ const AdminDashboard = () => {
                                         <i className="fas fa-user-tie"></i>
                                     </div>
                                     <div className="stat-info">
-                                        <span className="stat-label">Active Marketers</span>
+                                        <span className="stat-label">Active Business Associates</span>
                                         <span className="stat-value">{loading ? '...' : stats.activeMarketers}</span>
                                     </div>
                                 </Link>

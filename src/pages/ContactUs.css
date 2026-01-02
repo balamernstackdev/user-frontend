@@ -1,6 +1,6 @@
 .contact-hero-section {
     padding: 80px 0 60px;
-    background: linear-gradient(135deg, rgba(30, 138, 138, 0.05) 0%, rgba(255, 255, 255, 0) 100%);
+    background: linear-gradient(135deg, rgba(19, 104, 158, 0.05) 0%, rgba(255, 255, 255, 0) 100%);
     position: relative;
 }
 
@@ -84,7 +84,7 @@
 .form-control:focus {
     border-color: var(--tj-color-theme-primary);
     background: #fff;
-    box-shadow: 0 0 0 3px rgba(30, 138, 138, 0.1);
+    box-shadow: 0 0 0 3px rgba(19, 104, 158, 0.1);
     outline: none;
 }
 
@@ -115,7 +115,7 @@ textarea.form-control {
 .info-item .icon {
     width: 50px;
     height: 50px;
-    background: rgba(30, 138, 138, 0.1);
+    background: rgba(19, 104, 158, 0.1);
     color: var(--tj-color-theme-primary);
     border-radius: 50%;
     display: flex;

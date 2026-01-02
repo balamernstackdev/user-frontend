@@ -8,7 +8,7 @@ const MarketerStats = ({ stats }) => {
             label: 'Total Referrals',
             value: stats.total_referrals,
             icon: 'fas fa-users',
-            color: '#1e8a8a'
+            color: '#13689e'
         },
         {
             label: 'Active Subscribers',

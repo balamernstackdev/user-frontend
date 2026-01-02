@@ -21,7 +21,7 @@
 }
 
 .legal-card a {
-    color: #1e8a8a;
+    color: #13689e;
 }
 
 .legal-card a:hover {
@@ -29,6 +29,6 @@
 }
 
 .page-header h2 {
-    color: #0c1e21;
+    color: #000000;
     /* Keep page title dark if it's on the light background, or adjust if needed */
 }

@@ -2,29 +2,27 @@
     --header-height: 180px;
     --mobile-header-height: 140px;
     min-height: 100vh;
-    /* Pink Animated Gradient (Restored) */
-    background: linear-gradient(-45deg, #e0f7fa, #b2ebf2, #e0f2f1, #ffffff);
-    background-size: 400% 400%;
-    animation: gradientShift 15s ease infinite;
+    /* Original 4-Color Gradient & Animation */
+    background: linear-gradient(90deg, #fdecea, #f8d7da, #eaf7f4, #e6f4ea);
+    background-size: 300% 300%;
+    animation: gradientShift 18s ease-in-out infinite;
     position: relative;
-    /* Ensure it covers everything */
     width: 100%;
 }
 
-/* Background Watermark */
-.dashboard-layout::before {
-    content: "";
-    position: absolute;
+/* Background Watermark - Increased specificity to prevent overrides */
+.dashboard-layout .dashboard-bg-watermark {
+    position: absolute !important;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background-image: url('/src/assets/images/bg.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: fixed;
-    opacity: 0.08;
+    opacity: 1;
+    /* Effectively what 5.50 was doing, but valid CSS */
     z-index: 0;
     pointer-events: none;
 }
@@ -43,8 +41,8 @@
     }
 }
 
-/* Ensure content sits above background */
-.dashboard-layout>* {
+/* Ensure content sits above background - Targeting non-watermark children */
+.dashboard-layout>*:not(.dashboard-bg-watermark) {
     position: relative;
     z-index: 1;
 }
@@ -57,39 +55,14 @@
 
 .dashboard-layout section,
 .dashboard-layout .welcome-section,
-.dashboard-layout .page-section,
-.dashboard-layout .admin-listing-page,
-.dashboard-layout .admin-files-page,
-.dashboard-layout .admin-form-page {
+.dashboard-layout .page-section {
     background: transparent !important;
     padding-top: 20px !important;
-    /* Reduced since main handles header height */
     padding-bottom: 80px;
 }
 
-/* Fix for duplicate background images */
-.dashboard-layout section::before,
-.dashboard-layout .welcome-section::before,
-.dashboard-layout .page-section::before,
-.dashboard-layout .admin-listing-page::before,
-.dashboard-layout .admin-files-page::before,
-.dashboard-layout .admin-form-page::before {
-    display: none !important;
-    background: none !important;
-}
-
 @media (max-width: 991px) {
-
     .dashboard-layout main.main-content {
         padding-top: var(--mobile-header-height) !important;
-    }
-
-    .dashboard-layout section,
-    .dashboard-layout .welcome-section,
-    .dashboard-layout .page-section,
-    .dashboard-layout .admin-listing-page,
-    .dashboard-layout .admin-files-page,
-    .dashboard-layout .admin-form-page {
-        padding-top: 15px !important;
     }
 }

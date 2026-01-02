@@ -163,11 +163,11 @@ const CreateTicket = () => {
                                             minWidth: '100px',
                                             cursor: 'pointer',
                                             padding: '12px',
-                                            border: `2px solid ${formData.priority === p ? '#1e8a8a' : '#e5e5e5'}`,
+                                            border: `2px solid ${formData.priority === p ? '#13689e' : '#e5e5e5'}`,
                                             borderRadius: '6px',
                                             textAlign: 'center',
-                                            backgroundColor: formData.priority === p ? 'rgba(30, 138, 138, 0.05)' : 'white',
-                                            color: formData.priority === p ? '#1e8a8a' : '#0c1e21',
+                                            backgroundColor: formData.priority === p ? 'rgba(19, 104, 158, 0.05)' : 'white',
+                                            color: formData.priority === p ? '#13689e' : '#000000',
                                             textTransform: 'capitalize',
                                             fontWeight: '500'
                                         }}>

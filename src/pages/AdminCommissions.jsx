@@ -109,7 +109,7 @@ const AdminCommissions = () => {
                             <p style={{ color: '#6c757d' }}>Manage and process marketer commissions</p>
                         </div>
                         <div className="header-actions" style={{ display: 'flex', gap: '10px' }}>
-                            <button className="tj-primary-btn btn-sm" onClick={handleExport} style={{ backgroundColor: '#1e8a8a', color: 'white' }}>
+                            <button className="tj-primary-btn btn-sm" onClick={handleExport} style={{ backgroundColor: '#13689e', color: 'white' }}>
                                 <span className="btn-text"><span>Export for Payout</span></span>
                             </button>
                             <select className="form-control" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} style={{ width: '200px' }}>

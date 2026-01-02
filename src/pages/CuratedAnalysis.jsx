@@ -138,7 +138,7 @@ const CuratedAnalysis = () => {
                                     <span className="badge bg-light text-primary">{analysis.category || 'Market Update'}</span>
                                     <span className="analysis-date"><i className="far fa-calendar-alt"></i> {formatDate(analysis.created_at)}</span>
                                 </div>
-                                <h1 className="mb-3" style={{ fontSize: '2rem', fontWeight: '700', color: '#0c1e21' }}>{analysis.title}</h1>
+                                <h1 className="mb-3" style={{ fontSize: '2rem', fontWeight: '700', color: '#000000' }}>{analysis.title}</h1>
                             </div>
 
                             <div className="analysis-content" dangerouslySetInnerHTML={{ __html: analysis.content }}></div>

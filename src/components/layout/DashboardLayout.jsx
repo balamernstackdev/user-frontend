@@ -2,11 +2,10 @@ import Header from './Header';
 import Footer from './Footer';
 import './DashboardLayout.css';
 import { useState, useEffect } from 'react';
+import bgImage from '../../assets/images/bg.png';
 
 const DashboardLayout = ({ children }) => {
-    // We can assume user is authenticated here or check context
     const user = JSON.parse(localStorage.getItem('user') || '{}');
-
     const [notificationCount, setNotificationCount] = useState(0);
 
     useEffect(() => {
@@ -29,12 +28,11 @@ const DashboardLayout = ({ children }) => {
 
     return (
         <div className="dashboard-layout">
+            <div className="dashboard-bg-watermark" style={{ backgroundImage: `url(${bgImage})` }}></div>
             <Header notificationCount={notificationCount} />
-
             <main className="main-content">
                 {children}
             </main>
-
             <Footer />
         </div>
     );

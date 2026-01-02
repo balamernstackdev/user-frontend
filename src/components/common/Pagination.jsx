@@ -12,16 +12,33 @@ import React from 'react';
 const Pagination = ({ currentPage, totalPages, onPageChange, disabled = false }) => {
     if (totalPages <= 1) return null;
 
+    const scrollToTop = () => {
+        // Use a small timeout to ensure DOM updates (if any) don't override the scroll
+        setTimeout(() => {
+            // Target all potential scrolling containers
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+
+            const layout = document.querySelector('.dashboard-layout');
+            if (layout) layout.scrollTop = 0;
+
+            const main = document.querySelector('main');
+            if (main) main.scrollTop = 0;
+        }, 50);
+    };
+
     const handlePrevious = () => {
         if (currentPage > 1 && !disabled) {
             onPageChange(currentPage - 1);
+            scrollToTop();
         }
     };
 
     const handleNext = () => {
         if (currentPage < totalPages && !disabled) {
             onPageChange(currentPage + 1);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            scrollToTop();
         }
     };
 

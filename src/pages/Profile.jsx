@@ -126,11 +126,11 @@ const Profile = () => {
         try {
             const response = await userService.updateMarketerProfile(marketerData);
             if (response.success) {
-                toast.success('Marketer profile updated successfully!');
+                toast.success('Business Associate profile updated successfully!');
                 fetchProfile();
             }
         } catch (error) {
-            let errorMessage = 'Failed to update marketer profile';
+            let errorMessage = 'Failed to update Business Associate profile';
             if (error.response?.data?.errors && Array.isArray(error.response.data.errors)) {
                 errorMessage = error.response.data.errors.map(err => err.message).join('. ');
             } else if (error.response?.data?.message) {
@@ -220,7 +220,7 @@ const Profile = () => {
                                                 className={`profile-nav-btn ${activeTab === 'marketer' ? 'active' : ''}`}
                                                 onClick={() => setActiveTab('marketer')}
                                             >
-                                                <span>Marketer Details</span>
+                                                <span>Business Associate Details</span>
                                                 <i className="fas fa-arrow-right"></i>
                                             </button>
 
@@ -251,7 +251,7 @@ const Profile = () => {
 
                                 {activeTab === 'profile' && (
                                     <div className="animate-fade-up">
-                                        <h3 style={{ marginBottom: '30px', color: '#0c1e21', fontWeight: 600 }}>Personal Information</h3>
+                                        <h3 style={{ marginBottom: '30px', color: '#000000', fontWeight: 600 }}>Personal Information</h3>
                                         <form onSubmit={handleProfileUpdate}>
                                             <div className="form-group">
                                                 <label htmlFor="name">Full Name</label>
@@ -300,7 +300,7 @@ const Profile = () => {
 
                                 {activeTab === 'marketer' && (
                                     <div className="animate-fade-up">
-                                        <h3 style={{ marginBottom: '30px', color: '#0c1e21', fontWeight: 600 }}>Marketer Information</h3>
+                                        <h3 style={{ marginBottom: '30px', color: '#000000', fontWeight: 600 }}>Business Associate Information</h3>
                                         <form onSubmit={handleMarketerUpdate}>
                                             <div className="form-group">
                                                 <label htmlFor="referralCode">Referral Code</label>
@@ -378,7 +378,7 @@ const Profile = () => {
 
                                 {activeTab === 'payout' && (
                                     <div className="animate-fade-up">
-                                        <h3 style={{ marginBottom: '30px', color: '#0c1e21', fontWeight: 600 }}>Payout Settings</h3>
+                                        <h3 style={{ marginBottom: '30px', color: '#000000', fontWeight: 600 }}>Payout Settings</h3>
                                         <form onSubmit={handleMarketerUpdate}>
                                             <div className="row">
                                                 <div className="col-md-6">
@@ -438,7 +438,7 @@ const Profile = () => {
                                             </div>
 
                                             <hr style={{ margin: '20px 0', borderColor: '#eee' }} />
-                                            <h5 style={{ marginBottom: '15px', color: '#0c1e21', fontSize: '16px' }}>UPI Details</h5>
+                                            <h5 style={{ marginBottom: '15px', color: '#000000', fontSize: '16px' }}>UPI Details</h5>
 
                                             <div className="form-group">
                                                 <label htmlFor="upiId">UPI ID (Optional)</label>
@@ -464,7 +464,7 @@ const Profile = () => {
 
                                 {activeTab === 'password' && (
                                     <div className="animate-fade-up">
-                                        <h3 style={{ marginBottom: '30px', color: '#0c1e21', fontWeight: 600 }}>Change Password</h3>
+                                        <h3 style={{ marginBottom: '30px', color: '#000000', fontWeight: 600 }}>Change Password</h3>
                                         <form onSubmit={handlePasswordChange}>
                                             <div className="form-group">
                                                 <label htmlFor="oldPassword">Current Password</label>
