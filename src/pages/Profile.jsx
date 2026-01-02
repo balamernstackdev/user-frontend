@@ -124,7 +124,7 @@ const Profile = () => {
         setSaving(true);
 
         try {
-            const response = await userService.updateMarketerProfile(marketerData);
+            const response = await userService.updateBusinessAssociateProfile(marketerData);
             if (response.success) {
                 toast.success('Business Associate profile updated successfully!');
                 fetchProfile();
@@ -214,7 +214,7 @@ const Profile = () => {
                                         <i className="fas fa-arrow-right"></i>
                                     </button>
 
-                                    {user?.role === 'marketer' && (
+                                    {user?.role === 'business_associate' && (
                                         <>
                                             <button
                                                 className={`profile-nav-btn ${activeTab === 'marketer' ? 'active' : ''}`}

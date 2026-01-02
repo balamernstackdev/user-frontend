@@ -11,7 +11,7 @@ const Header = ({ notificationCount = 0 }) => {
     const [showMobileMenu, setShowMobileMenu] = useState(false);
     const user = authService.getUser();
     const isAdmin = user?.role === 'admin';
-    const isMarketer = user?.role === 'marketer';
+    const isBusinessAssociate = user?.role === 'business_associate';
 
     const handleLogout = async () => {
         // Call logout API to clear cookies
@@ -63,16 +63,16 @@ const Header = ({ notificationCount = 0 }) => {
                                                 <li><Link to="/dashboard" onClick={() => setShowMobileMenu(false)}>Dashboard</Link></li>
                                                 <li><Link to="/profile" onClick={() => setShowMobileMenu(false)}>My Profile</Link></li>
 
-                                                {isMarketer && (
+                                                {isBusinessAssociate && (
                                                     <>
-                                                        <li><Link to="/marketer/referrals" onClick={() => setShowMobileMenu(false)}>Referrals</Link></li>
-                                                        <li><Link to="/marketer/commissions" onClick={() => setShowMobileMenu(false)}>Commissions</Link></li>
+                                                        <li><Link to="/business-associate/referrals" onClick={() => setShowMobileMenu(false)}>Referrals</Link></li>
+                                                        <li><Link to="/business-associate/commissions" onClick={() => setShowMobileMenu(false)}>Commissions</Link></li>
                                                     </>
                                                 )}
 
-                                                {!isMarketer && <li><Link to="/subscription" onClick={() => setShowMobileMenu(false)}>My Subscription</Link></li>}
+                                                {!isBusinessAssociate && <li><Link to="/subscription" onClick={() => setShowMobileMenu(false)}>My Subscription</Link></li>}
 
-                                                {isMarketer ? (
+                                                {isBusinessAssociate ? (
                                                     <li><Link to="/transactions" onClick={() => setShowMobileMenu(false)}>Transactions</Link></li>
                                                 ) : (
                                                     <li><Link to="/payments" onClick={() => setShowMobileMenu(false)}>My Payments</Link></li>
@@ -80,7 +80,7 @@ const Header = ({ notificationCount = 0 }) => {
 
                                                 <li><Link to="/tickets" onClick={() => setShowMobileMenu(false)}>My Tickets</Link></li>
 
-                                                {!isMarketer && <li><Link to="/downloads" onClick={() => setShowMobileMenu(false)}>My Downloads</Link></li>}
+                                                {!isBusinessAssociate && <li><Link to="/downloads" onClick={() => setShowMobileMenu(false)}>My Downloads</Link></li>}
                                                 <li><Link to="/curated-analysis" onClick={() => setShowMobileMenu(false)}>Market Analysis</Link></li>
                                                 <li><Link to="/faq" onClick={() => setShowMobileMenu(false)}>FAQ</Link></li>
                                                 <li><Link to="/how-to-use" onClick={() => setShowMobileMenu(false)}>How to Use</Link></li>
@@ -118,7 +118,7 @@ const Header = ({ notificationCount = 0 }) => {
                                                     <>
                                                         <li><Link to="/dashboard">Dashboard</Link></li>
 
-                                                        {isMarketer ? (
+                                                        {isBusinessAssociate ? (
                                                             /* Marketer Navigation - Organized Dropdowns */
                                                             <>
                                                                 <li
@@ -127,12 +127,12 @@ const Header = ({ notificationCount = 0 }) => {
                                                                     onMouseLeave={() => setShowMarketerMenu(false)}
                                                                 >
                                                                     <Link to="#" onClick={(e) => e.preventDefault()}>
-                                                                        Marketer <i className="fas fa-angle-down" style={{ fontSize: '12px', marginLeft: '5px' }}></i>
+                                                                        Business Associate <i className="fas fa-angle-down" style={{ fontSize: '12px', marginLeft: '5px' }}></i>
                                                                     </Link>
                                                                     {showMarketerMenu && (
                                                                         <ul className="sub-menu">
-                                                                            <li><Link to="/marketer/referrals">Referrals</Link></li>
-                                                                            <li><Link to="/marketer/commissions">Commissions</Link></li>
+                                                                            <li><Link to="/business-associate/referrals">Referrals</Link></li>
+                                                                            <li><Link to="/business-associate/commissions">Commissions</Link></li>
                                                                             <li><Link to="/curated-analysis">Analysis</Link></li>
                                                                         </ul>
                                                                     )}

@@ -80,29 +80,29 @@ function App() {
                 <Route path="/faq" element={<FAQ />} />
                 <Route path="/curated-analysis" element={<ProtectedRoute><CuratedAnalysis /></ProtectedRoute>} />
                 <Route path="/curated-analysis/:id" element={<ProtectedRoute><CuratedAnalysis /></ProtectedRoute>} />
-                <Route path="/notifications" element={<ProtectedRoute allowedRoles={['user', 'marketer', 'admin']}><Notifications /></ProtectedRoute>} />
-                <Route path="/notifications/:id" element={<ProtectedRoute allowedRoles={['user', 'marketer', 'admin']}><NotificationDetails /></ProtectedRoute>} />
+                <Route path="/notifications" element={<ProtectedRoute allowedRoles={['user', 'business_associate', 'admin']}><Notifications /></ProtectedRoute>} />
+                <Route path="/notifications/:id" element={<ProtectedRoute allowedRoles={['user', 'business_associate', 'admin']}><NotificationDetails /></ProtectedRoute>} />
 
                 {/* Protected Routes */}
-                <Route path="/dashboard" element={<ProtectedRoute allowedRoles={['user', 'marketer']}><Dashboard /></ProtectedRoute>} />
+                <Route path="/dashboard" element={<ProtectedRoute allowedRoles={['user', 'business_associate']}><Dashboard /></ProtectedRoute>} />
                 <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-                <Route path="/subscription" element={<ProtectedRoute allowedRoles={['user', 'marketer']}><Subscription /></ProtectedRoute>} />
-                <Route path="/payments" element={<ProtectedRoute allowedRoles={['user', 'marketer']}><MyPayments /></ProtectedRoute>} />
-                <Route path="/invoice/:transactionId" element={<ProtectedRoute allowedRoles={['user', 'marketer']}><Invoice /></ProtectedRoute>} />
-                <Route path="/referrals" element={<ProtectedRoute allowedRoles={['user', 'marketer']}><ReferredUsers /></ProtectedRoute>} />
-                <Route path="/checkout/:planId" element={<ProtectedRoute allowedRoles={['user', 'marketer']}><Checkout /></ProtectedRoute>} />
-                <Route path="/payment-success" element={<ProtectedRoute allowedRoles={['user', 'marketer']}><PaymentSuccess /></ProtectedRoute>} />
-                <Route path="/payment-failed" element={<ProtectedRoute allowedRoles={['user', 'marketer']}><PaymentFailed /></ProtectedRoute>} />
-                <Route path="/transactions" element={<ProtectedRoute allowedRoles={['user', 'marketer']}><Transactions /></ProtectedRoute>} />
-                <Route path="/downloads" element={<ProtectedRoute allowedRoles={['user', 'marketer']}><Downloads /></ProtectedRoute>} />
-                <Route path="/tickets" element={<ProtectedRoute allowedRoles={['user', 'marketer']}><SupportTickets /></ProtectedRoute>} />
-                <Route path="/tickets/create" element={<ProtectedRoute allowedRoles={['user', 'marketer']}><CreateTicket /></ProtectedRoute>} />
-                <Route path="/tickets/:id" element={<ProtectedRoute allowedRoles={['user', 'marketer', 'admin']}><TicketDetail /></ProtectedRoute>} />
+                <Route path="/subscription" element={<ProtectedRoute allowedRoles={['user', 'business_associate']}><Subscription /></ProtectedRoute>} />
+                <Route path="/payments" element={<ProtectedRoute allowedRoles={['user', 'business_associate']}><MyPayments /></ProtectedRoute>} />
+                <Route path="/invoice/:transactionId" element={<ProtectedRoute allowedRoles={['user', 'business_associate']}><Invoice /></ProtectedRoute>} />
+                <Route path="/referrals" element={<ProtectedRoute allowedRoles={['user', 'business_associate']}><ReferredUsers /></ProtectedRoute>} />
+                <Route path="/checkout/:planId" element={<ProtectedRoute allowedRoles={['user', 'business_associate']}><Checkout /></ProtectedRoute>} />
+                <Route path="/payment-success" element={<ProtectedRoute allowedRoles={['user', 'business_associate']}><PaymentSuccess /></ProtectedRoute>} />
+                <Route path="/payment-failed" element={<ProtectedRoute allowedRoles={['user', 'business_associate']}><PaymentFailed /></ProtectedRoute>} />
+                <Route path="/transactions" element={<ProtectedRoute allowedRoles={['user', 'business_associate']}><Transactions /></ProtectedRoute>} />
+                <Route path="/downloads" element={<ProtectedRoute allowedRoles={['user', 'business_associate']}><Downloads /></ProtectedRoute>} />
+                <Route path="/tickets" element={<ProtectedRoute allowedRoles={['user', 'business_associate']}><SupportTickets /></ProtectedRoute>} />
+                <Route path="/tickets/create" element={<ProtectedRoute allowedRoles={['user', 'business_associate']}><CreateTicket /></ProtectedRoute>} />
+                <Route path="/tickets/:id" element={<ProtectedRoute allowedRoles={['user', 'business_associate', 'admin']}><TicketDetail /></ProtectedRoute>} />
 
-                {/* Marketer Routes */}
-                <Route path="/marketer/referrals" element={<ProtectedRoute allowedRoles={['marketer']}><ReferredUsers /></ProtectedRoute>} />
-                <Route path="/marketer/commissions" element={<ProtectedRoute allowedRoles={['marketer']}><Commissions /></ProtectedRoute>} />
-                <Route path="/marketer/commissions/:id" element={<ProtectedRoute allowedRoles={['marketer']}><CommissionDetail /></ProtectedRoute>} />
+                {/* Business Associate Routes */}
+                <Route path="/business-associate/referrals" element={<ProtectedRoute allowedRoles={['business_associate']}><ReferredUsers /></ProtectedRoute>} />
+                <Route path="/business-associate/commissions" element={<ProtectedRoute allowedRoles={['business_associate']}><Commissions /></ProtectedRoute>} />
+                <Route path="/business-associate/commissions/:id" element={<ProtectedRoute allowedRoles={['business_associate']}><CommissionDetail /></ProtectedRoute>} />
 
                 {/* Admin Routes */}
                 <Route path="/admin/dashboard" element={<ProtectedRoute allowedRoles={['admin']}><AdminDashboard /></ProtectedRoute>} />
@@ -143,7 +143,7 @@ function App() {
                 <Route path="/contact" element={<ContactUs />} />
 
                 {/* Redirects for legacy/broken links */}
-                <Route path="/commissions" element={<Navigate to="/marketer/commissions" replace />} />
+                <Route path="/commissions" element={<Navigate to="/business-associate/commissions" replace />} />
 
                 {/* Default Routes */}
                 <Route path="/" element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} />} />

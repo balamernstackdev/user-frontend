@@ -14,7 +14,7 @@ const Transactions = () => {
     const [filter, setFilter] = useState('all');
 
     const user = authService.getUser();
-    const isMarketer = user?.role === 'marketer';
+    const isBusinessAssociate = user?.role === 'business_associate';
 
     useEffect(() => {
         fetchTransactions();
@@ -25,7 +25,7 @@ const Transactions = () => {
             setLoading(true);
             const params = filter !== 'all' ? { status: filter } : {};
 
-            if (isMarketer) {
+            if (isBusinessAssociate) {
                 // For marketers, fetch commissions and map to transaction format
                 const response = await CommissionService.getMyCommissions(params);
                 const commissions = response.data.commissions || [];
@@ -48,7 +48,7 @@ const Transactions = () => {
                 setTransactions(response.data);
             }
         } catch (err) {
-            toast.error(isMarketer ? 'Failed to load commission history' : 'Failed to load transactions');
+            toast.error(isBusinessAssociate ? 'Failed to load commission history' : 'Failed to load transactions');
             console.error(err);
         } finally {
             setLoading(false);
@@ -104,9 +104,9 @@ const Transactions = () => {
             <section className="page-section">
                 <div className="container">
                     <div className="page-header">
-                        <h2>{isMarketer ? 'Earnings History' : 'Transaction History'}</h2>
+                        <h2>{isBusinessAssociate ? 'Earnings History' : 'Transaction History'}</h2>
                         <p style={{ color: '#6c757d' }}>
-                            {isMarketer ? 'View all your commission earnings' : 'View all your payment transactions'}
+                            {isBusinessAssociate ? 'View all your commission earnings' : 'View all your payment transactions'}
                         </p>
                     </div>
 
@@ -119,19 +119,19 @@ const Transactions = () => {
                         </button>
                         <button
                             className={`filter-btn ${filter === 'success' ? 'active' : ''}`}
-                            onClick={() => setFilter(isMarketer ? 'paid' : 'success')}
+                            onClick={() => setFilter(isBusinessAssociate ? 'paid' : 'success')}
                         >
-                            {isMarketer ? 'Paid' : 'Success'}
+                            {isBusinessAssociate ? 'Paid' : 'Success'}
                         </button>
                         <button
                             className={`filter-btn ${filter === 'pending' ? 'active' : ''}`}
-                            onClick={() => setFilter(isMarketer ? 'pending' : 'pending')}
+                            onClick={() => setFilter(isBusinessAssociate ? 'pending' : 'pending')}
                         >
                             Pending
                         </button>
                         <button
                             className={`filter-btn ${filter === 'failed' ? 'active' : ''}`}
-                            onClick={() => setFilter(isMarketer ? 'rejected' : 'failed')}
+                            onClick={() => setFilter(isBusinessAssociate ? 'rejected' : 'failed')}
                         >
                             Failed
                         </button>
@@ -183,9 +183,9 @@ const Transactions = () => {
                         ) : (
                             <div className="no-transactions">
                                 <div className="empty-icon">💳</div>
-                                <h3>{isMarketer ? 'No earnings found' : 'No transactions found'}</h3>
-                                <p>{isMarketer ? "You haven't earned any commissions yet." : "You haven't made any transactions yet."}</p>
-                                {!isMarketer && (
+                                <h3>{isBusinessAssociate ? 'No earnings found' : 'No transactions found'}</h3>
+                                <p>{isBusinessAssociate ? "You haven't earned any commissions yet." : "You haven't made any transactions yet."}</p>
+                                {!isBusinessAssociate && (
                                     <button className="btn btn-primary" onClick={() => window.location.href = '/plans'}>
                                         Browse Plans
                                     </button>

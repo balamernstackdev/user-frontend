@@ -19,15 +19,15 @@ export const userService = {
         return response.data;
     },
 
-    // Get marketer profile
-    getMarketerProfile: async () => {
-        const response = await api.get('/users/marketer/profile');
+    // Get business associate profile
+    getBusinessAssociateProfile: async () => {
+        const response = await api.get('/users/business-associate/profile');
         return response.data;
     },
 
-    // Update marketer profile
-    updateMarketerProfile: async (profileData) => {
-        const response = await api.put('/users/marketer/profile', profileData);
+    // Update business associate profile
+    updateBusinessAssociateProfile: async (profileData) => {
+        const response = await api.put('/users/business-associate/profile', profileData);
         return response.data;
     },
 

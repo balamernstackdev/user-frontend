@@ -310,7 +310,7 @@ const Register = () => {
                                     </span>
                                 ) : (
                                     <span className="btn-icon">
-                                        <span>→</span>
+                                        <i className="fas fa-arrow-right"></i>
                                     </span>
                                 )}
                             </button>

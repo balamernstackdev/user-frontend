@@ -144,8 +144,8 @@ const AdminUsers = () => {
                                             <td>{user.email}</td>
                                             <td>
                                                 <span className={`plan-type-badge`} style={{
-                                                    background: user.role === 'admin' ? '#ffebee' : user.role === 'marketer' ? '#e3f2fd' : '#e8f5e9',
-                                                    color: user.role === 'admin' ? '#c62828' : user.role === 'marketer' ? '#1565c0' : '#2e7d32'
+                                                    background: user.role === 'admin' ? '#ffebee' : user.role === 'business_associate' ? '#e3f2fd' : '#e8f5e9',
+                                                    color: user.role === 'admin' ? '#c62828' : user.role === 'business_associate' ? '#1565c0' : '#2e7d32'
                                                 }}>
                                                     {user.role}
                                                 </span>
@@ -165,7 +165,7 @@ const AdminUsers = () => {
                                                         <i className="far fa-edit"></i>
                                                     </button>
 
-                                                    {user.role === 'marketer' && user.status === 'pending' && (
+                                                    {user.role === 'business_associate' && user.status === 'pending' && (
                                                         <button className="action-btn" onClick={() => handleStatusToggle(user, 'approved')} title="Approve" style={{ color: '#28a745', borderColor: '#28a745' }}>
                                                             <i className="fas fa-check"></i>
                                                         </button>
