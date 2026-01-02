@@ -39,6 +39,14 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Client-side validation
+        const emailRegex = /\S+@\S+\.\S+/;
+        if (!emailRegex.test(formData.email)) {
+            toast.error('Please enter a valid email address');
+            return;
+        }
+
         setLoading(true);
 
         try {

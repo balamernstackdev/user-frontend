@@ -17,7 +17,9 @@ const AdminDashboard = () => {
         activeMarketers: 0,
         pendingApprovals: 0,
         pendingCommissionsCount: 0,
-        totalRevenue: 0
+        totalRevenue: 0,
+        activeSubscriptions: 0,
+        expiringSubscriptions: 0
     });
     const [recentLogs, setRecentLogs] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -27,19 +29,31 @@ const AdminDashboard = () => {
             try {
                 // Fetch Stats
                 const statsResponse = await adminService.getStats();
-                const { totalUsers, activeMarketers, pendingMarketers, pendingPayouts, totalRevenue } = statsResponse.data;
+                const { totalUsers, activeMarketers, pendingMarketers, pendingCommissions, pendingPayouts, totalRevenue, activeSubscriptions, expiringSubscriptions } = statsResponse.data;
 
                 setStats({
                     totalUsers,
                     activeMarketers,
-                    pendingApprovals: pendingMarketers, // Mapping pendingMarketers to pendingApprovals state
-                    pendingCommissionsCount: pendingPayouts, // Mapping pendingPayouts to pendingCommissionsCount state
-                    totalRevenue
+                    pendingApprovals: (pendingMarketers || 0) + (pendingCommissions || 0),
+                    pendingMarketers: pendingMarketers || 0, // Store strictly for link logic
+                    pendingCommissions: pendingCommissions || 0, // Store strictly for link logic
+                    pendingCommissionsCount: pendingPayouts,
+                    totalRevenue,
+                    activeSubscriptions: activeSubscriptions || 0,
+                    expiringSubscriptions: expiringSubscriptions || 0
                 });
 
                 // Fetch Recent Activity
                 const logsRes = await activityService.getAllLogs({ limit: 5 });
-                setRecentLogs(logsRes.data || []);
+                if (logsRes.data && logsRes.data.logs) {
+                    setRecentLogs(logsRes.data.logs);
+                } else if (Array.isArray(logsRes.data)) {
+                    setRecentLogs(logsRes.data);
+                } else if (logsRes.data && Array.isArray(logsRes.data.data)) {
+                    setRecentLogs(logsRes.data.data);
+                } else {
+                    setRecentLogs([]);
+                }
 
             } catch (error) {
                 console.error("Error fetching dashboard data:", error);
@@ -50,6 +64,13 @@ const AdminDashboard = () => {
 
         fetchStats();
     }, []);
+
+    // Dynamic Link Logic
+    const getPendingLink = () => {
+        if (stats.pendingMarketers > 0) return "/admin/users?status=pending";
+        if (stats.pendingCommissions > 0) return "/admin/commissions?status=pending";
+        return "/admin/commissions"; // Default
+    };
 
     return (
         <DashboardLayout>
@@ -65,8 +86,8 @@ const AdminDashboard = () => {
 
                         {/* Admin Stats Overview */}
                         <div className="admin-stats-grid stats-grid animate-fade-up">
-                            <div className="stat-card">
-                                <div className="stat-icon" style={{ backgroundColor: 'rgba(30, 138, 138, 0.1)', color: '#1e8a8a' }}>
+                            <div className="stat-card card-users">
+                                <div className="stat-icon" style={{ color: '#1e8a8a' }}>
                                     <i className="fas fa-users"></i>
                                 </div>
                                 <div className="stat-info">
@@ -74,9 +95,9 @@ const AdminDashboard = () => {
                                     <span className="stat-value">{loading ? '...' : stats.totalUsers.toLocaleString()}</span>
                                 </div>
                             </div>
-                            <div className="stat-card">
-                                <Link to="/admin/users" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', width: '100%' }}>
-                                    <div className="stat-icon" style={{ backgroundColor: 'rgba(40, 167, 69, 0.1)', color: '#28a745' }}>
+                            <div className="stat-card card-active-marketers">
+                                <Link to="/admin/users" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', width: '100%', alignItems: 'center', gap: '25px' }}>
+                                    <div className="stat-icon" style={{ color: '#28a745' }}>
                                         <i className="fas fa-user-tie"></i>
                                     </div>
                                     <div className="stat-info">
@@ -85,9 +106,9 @@ const AdminDashboard = () => {
                                     </div>
                                 </Link>
                             </div>
-                            <div className="stat-card">
-                                <Link to="/admin/users" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', width: '100%' }}>
-                                    <div className="stat-icon" style={{ backgroundColor: 'rgba(255, 193, 7, 0.1)', color: '#ffc107' }}>
+                            <div className="stat-card card-pending">
+                                <Link to={getPendingLink()} style={{ textDecoration: 'none', color: 'inherit', display: 'flex', width: '100%', alignItems: 'center', gap: '25px' }}>
+                                    <div className="stat-icon" style={{ color: '#ffc107' }}>
                                         <i className="fas fa-clock-rotate-left"></i>
                                     </div>
                                     <div className="stat-info">
@@ -96,9 +117,9 @@ const AdminDashboard = () => {
                                     </div>
                                 </Link>
                             </div>
-                            <div className="stat-card">
-                                <Link to="/admin/commissions" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', width: '100%' }}>
-                                    <div className="stat-icon" style={{ backgroundColor: 'rgba(23, 162, 184, 0.1)', color: '#17a2b8' }}>
+                            <div className="stat-card card-payouts">
+                                <Link to="/admin/commissions" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', width: '100%', alignItems: 'center', gap: '25px' }}>
+                                    <div className="stat-icon" style={{ color: '#17a2b8' }}>
                                         <i className="fas fa-hand-holding-usd"></i>
                                     </div>
                                     <div className="stat-info">
@@ -107,14 +128,36 @@ const AdminDashboard = () => {
                                     </div>
                                 </Link>
                             </div>
-                            <div className="stat-card">
-                                <div className="stat-icon" style={{ backgroundColor: 'rgba(111, 66, 193, 0.1)', color: '#6f42c1' }}>
+                            <div className="stat-card card-revenue">
+                                <div className="stat-icon" style={{ color: '#6f42c1' }}>
                                     <i className="fas fa-chart-line"></i>
                                 </div>
                                 <div className="stat-info">
                                     <span className="stat-label">Total Revenue</span>
                                     <span className="stat-value">{loading ? '...' : `₹${stats.totalRevenue.toLocaleString()}`}</span>
                                 </div>
+                            </div>
+                            <div className="stat-card card-active-subs">
+                                <Link to="/admin/users?filter=active_sub" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', width: '100%', alignItems: 'center', gap: '25px' }}>
+                                    <div className="stat-icon" style={{ color: '#28a745' }}>
+                                        <i className="fas fa-check-circle"></i>
+                                    </div>
+                                    <div className="stat-info">
+                                        <span className="stat-label">Active Subs</span>
+                                        <span className="stat-value">{loading ? '...' : stats.activeSubscriptions}</span>
+                                    </div>
+                                </Link>
+                            </div>
+                            <div className="stat-card card-expiring">
+                                <Link to="/admin/users?filter=expiring" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', width: '100%', alignItems: 'center', gap: '25px' }}>
+                                    <div className="stat-icon" style={{ color: '#dc3545' }}>
+                                        <i className="fas fa-exclamation-triangle"></i>
+                                    </div>
+                                    <div className="stat-info">
+                                        <span className="stat-label">Expiring Soon</span>
+                                        <span className="stat-value">{loading ? '...' : stats.expiringSubscriptions}</span>
+                                    </div>
+                                </Link>
                             </div>
                         </div>
 

@@ -24,8 +24,8 @@ export const getTutorialsByCategory = async (category) => {
     return response.data;
 };
 
-export const getAdminTutorialsByCategory = async (category) => {
-    const response = await api.get(`/tutorials/admin/category/${category}`);
+export const getAdminTutorialsByCategory = async (category, params = {}) => {
+    const response = await api.get(`/tutorials/admin/category/${category}`, { params });
     return response.data;
 };
 

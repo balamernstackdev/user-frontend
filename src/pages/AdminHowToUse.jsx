@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import tutorialService from '../services/tutorial.service';
 import DashboardLayout from '../components/layout/DashboardLayout';
+import Pagination from '../components/common/Pagination';
 import './AdminListings.css';
 import { toast } from 'react-toastify';
 
@@ -9,15 +10,41 @@ const AdminHowToUse = () => {
     const navigate = useNavigate();
     const [tutorials, setTutorials] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [pagination, setPagination] = useState({ page: 1, limit: 5, total: 0 });
 
     const fetchTutorials = async () => {
         setLoading(true);
         try {
-            // We fetch 'HowToUse' category. You might want to also fetch 'Basics' if legacy data uses that.
-            // For now, let's assume new convention is 'HowToUse'
-            const response = await tutorialService.getAdminTutorialsByCategory('HowToUse');
-            const data = Array.isArray(response) ? response : (response.data || []);
-            setTutorials(data);
+            const params = {
+                limit: pagination.limit,
+                offset: (pagination.page - 1) * pagination.limit
+            };
+            const response = await tutorialService.getAdminTutorialsByCategory('HowToUse', params);
+
+            if (response.data && response.data.pagination) {
+                setTutorials(response.data.tutorials);
+                setPagination(prev => ({ ...prev, total: response.data.pagination.total }));
+            } else if (Array.isArray(response.data)) {
+                // Fallback for wrapped array { data: [...] }
+                const allData = response.data;
+                const startIndex = (pagination.page - 1) * pagination.limit;
+                const endIndex = startIndex + pagination.limit;
+                const paginatedData = allData.slice(startIndex, endIndex);
+
+                setTutorials(paginatedData);
+                setPagination(prev => ({ ...prev, total: allData.length }));
+            } else if (Array.isArray(response)) {
+                // Fallback for raw array response [...]
+                const allData = response;
+                const startIndex = (pagination.page - 1) * pagination.limit;
+                const endIndex = startIndex + pagination.limit;
+                const paginatedData = allData.slice(startIndex, endIndex);
+
+                setTutorials(paginatedData);
+                setPagination(prev => ({ ...prev, total: allData.length }));
+            } else {
+                setTutorials(response.data || []);
+            }
         } catch (error) {
             console.error('Error fetching tutorials:', error);
         } finally {
@@ -27,7 +54,7 @@ const AdminHowToUse = () => {
 
     useEffect(() => {
         fetchTutorials();
-    }, []);
+    }, [pagination.page]);
 
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this guide?')) {
@@ -139,6 +166,18 @@ const AdminHowToUse = () => {
                             </tbody>
                         </table>
                     </div>
+
+                    {/* Pagination */}
+                    {tutorials.length > 0 && (
+                        <Pagination
+                            currentPage={pagination.page}
+                            totalPages={Math.ceil(pagination.total / pagination.limit)}
+                            onPageChange={(newPage) => {
+                                setPagination(prev => ({ ...prev, page: newPage }));
+                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                            }}
+                        />
+                    )}
                 </div>
             </div>
         </DashboardLayout>

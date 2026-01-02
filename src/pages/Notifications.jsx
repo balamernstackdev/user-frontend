@@ -2,23 +2,42 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import { notificationService } from '../services/notification.service';
+import Pagination from '../components/common/Pagination';
 import SEO from '../components/common/SEO';
 import './Notifications.css';
 
 const Notifications = () => {
     const [notifications, setNotifications] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(0);
+    const LIMIT = 5;
 
     useEffect(() => {
         fetchNotifications();
-    }, []);
+    }, [page]);
 
     const fetchNotifications = async () => {
         try {
             setLoading(true);
-            const response = await notificationService.getNotifications();
+            const offset = (page - 1) * LIMIT;
+            const response = await notificationService.getNotifications({ limit: LIMIT, offset });
             if (response.success) {
-                setNotifications(response.data);
+                if (response.pagination) {
+                    setNotifications(response.data);
+                    setTotalPages(response.pagination.pages);
+                } else if (Array.isArray(response.data)) {
+                    // Fallback for stale backend
+                    const allData = response.data;
+                    const startIndex = (page - 1) * LIMIT;
+                    const endIndex = startIndex + LIMIT;
+                    const paginatedData = allData.slice(startIndex, endIndex);
+
+                    setNotifications(paginatedData);
+                    setTotalPages(Math.ceil(allData.length / LIMIT));
+                } else {
+                    setNotifications(response.data);
+                }
             }
         } catch (error) {
             console.error('Failed to fetch notifications:', error);
@@ -105,6 +124,15 @@ const Notifications = () => {
                                     </div>
                                 ))}
                             </div>
+
+                            <Pagination
+                                currentPage={page}
+                                totalPages={totalPages}
+                                onPageChange={(newPage) => {
+                                    setPage(newPage);
+                                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                                }}
+                            />
                         </>
                     ) : (
                         <div className="empty-state animate-fade-up">

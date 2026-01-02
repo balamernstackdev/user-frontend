@@ -2,13 +2,14 @@ import { useState, useEffect } from 'react';
 import ticketService from '../services/ticket.service';
 import { Link } from 'react-router-dom';
 import DashboardLayout from '../components/layout/DashboardLayout';
+import Pagination from '../components/common/Pagination';
 import './AdminListings.css';
 
 const AdminTickets = () => {
     const [tickets, setTickets] = useState([]);
     const [loading, setLoading] = useState(true);
     const [statusFilter, setStatusFilter] = useState('');
-    const [pagination, setPagination] = useState({ page: 1, limit: 20 });
+    const [pagination, setPagination] = useState({ page: 1, limit: 5, total: 0 });
 
     const fetchTickets = async () => {
         setLoading(true);
@@ -19,7 +20,28 @@ const AdminTickets = () => {
                 offset: (pagination.page - 1) * pagination.limit
             };
             const response = await ticketService.getAllTickets(params);
-            setTickets(response.data);
+            if (response.data && response.data.pagination) {
+                setTickets(response.data.tickets);
+                setPagination(prev => ({ ...prev, total: response.data.pagination.total }));
+            } else if (Array.isArray(response.data)) {
+                // Fallback for stale backend
+                const allData = response.data;
+                const startIndex = (pagination.page - 1) * pagination.limit;
+                const endIndex = startIndex + pagination.limit;
+                const paginatedData = allData.slice(startIndex, endIndex);
+
+                setTickets(paginatedData);
+                setPagination(prev => ({ ...prev, total: allData.length }));
+            } else if (response.data && response.data.data && Array.isArray(response.data.data)) {
+                // Fallback for wrapped array
+                const allData = response.data.data;
+                const startIndex = (pagination.page - 1) * pagination.limit;
+                const endIndex = startIndex + pagination.limit;
+                const paginatedData = allData.slice(startIndex, endIndex);
+
+                setTickets(paginatedData);
+                setPagination(prev => ({ ...prev, total: allData.length }));
+            }
         } catch (error) {
             console.error('Error fetching tickets:', error);
         } finally {
@@ -121,6 +143,18 @@ const AdminTickets = () => {
                                 )}
                             </tbody>
                         </table>
+
+                        {/* Pagination */}
+                        {tickets.length > 0 && (
+                            <Pagination
+                                currentPage={pagination.page}
+                                totalPages={Math.ceil(pagination.total / pagination.limit)}
+                                onPageChange={(newPage) => {
+                                    setPagination(prev => ({ ...prev, page: newPage }));
+                                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                                }}
+                            />
+                        )}
                     </div>
                 </div>
             </div>

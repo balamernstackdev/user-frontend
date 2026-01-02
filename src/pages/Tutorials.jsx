@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import TutorialService from '../services/tutorial.service';
+import Pagination from '../components/common/Pagination';
 import './Tutorials.css';
 import { toast } from 'react-toastify';
 
@@ -11,6 +12,9 @@ const Tutorials = () => {
     const [categories, setCategories] = useState([]);
     const [selectedTutorial, setSelectedTutorial] = useState(null);
     const [selectedCategory, setSelectedCategory] = useState('all');
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(0);
+    const LIMIT = 5;
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -20,7 +24,7 @@ const Tutorials = () => {
         } else {
             fetchTutorials();
         }
-    }, [id, selectedCategory]);
+    }, [id, selectedCategory, page]);
 
     const fetchCategories = async () => {
         try {
@@ -41,9 +45,28 @@ const Tutorials = () => {
     const fetchTutorials = async () => {
         try {
             setLoading(true);
-            const params = selectedCategory !== 'all' ? { category: selectedCategory } : {};
+            const offset = (page - 1) * LIMIT;
+            const params = {
+                limit: LIMIT,
+                offset,
+                ...(selectedCategory !== 'all' && { category: selectedCategory })
+            };
             const response = await TutorialService.getTutorials(params);
-            setTutorials(response.data);
+            if (response.pagination) {
+                setTutorials(response.data);
+                setTotalPages(response.pagination.pages);
+            } else if (Array.isArray(response.data)) {
+                // Fallback for stale backend
+                const allData = response.data;
+                const startIndex = (page - 1) * LIMIT;
+                const endIndex = startIndex + LIMIT;
+                const paginatedData = allData.slice(startIndex, endIndex);
+
+                setTutorials(paginatedData);
+                setTotalPages(Math.ceil(allData.length / LIMIT));
+            } else {
+                setTutorials(response.data);
+            }
         } catch (err) {
             toast.error('Failed to load tutorials');
             console.error(err);
@@ -128,7 +151,10 @@ const Tutorials = () => {
                             <div className="category-filter">
                                 <button
                                     className={`filter-btn ${selectedCategory === 'all' ? 'active' : ''}`}
-                                    onClick={() => setSelectedCategory('all')}
+                                    onClick={() => {
+                                        setSelectedCategory('all');
+                                        setPage(1);
+                                    }}
                                 >
                                     All
                                 </button>
@@ -136,7 +162,10 @@ const Tutorials = () => {
                                     <button
                                         key={cat.category}
                                         className={`filter-btn ${selectedCategory === cat.category ? 'active' : ''}`}
-                                        onClick={() => setSelectedCategory(cat.category)}
+                                        onClick={() => {
+                                            setSelectedCategory(cat.category);
+                                            setPage(1);
+                                        }}
                                     >
                                         {cat.category.replace(/([A-Z])/g, ' $1').trim()} ({cat.count})
                                     </button>
@@ -174,11 +203,23 @@ const Tutorials = () => {
                                     </div>
                                 )}
                             </div>
+
+                            {/* Pagination */}
+                            {!loading && tutorials.length > 0 && (
+                                <Pagination
+                                    currentPage={page}
+                                    totalPages={totalPages}
+                                    onPageChange={(newPage) => {
+                                        setPage(newPage);
+                                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                                    }}
+                                />
+                            )}
                         </div>
                     )}
                 </div>
             </section>
-        </DashboardLayout>
+        </DashboardLayout >
     );
 };
 

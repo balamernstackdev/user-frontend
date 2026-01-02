@@ -2,13 +2,14 @@
 import { useState, useEffect } from 'react';
 import paymentService from '../services/payment.service';
 import DashboardLayout from '../components/layout/DashboardLayout';
+import Pagination from '../components/common/Pagination';
 import './AdminListings.css';
 
 const AdminTransactions = () => {
     const [transactions, setTransactions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [statusFilter, setStatusFilter] = useState('success'); // success, pending, failed
-    const [pagination, setPagination] = useState({ page: 1, limit: 20 });
+    const [pagination, setPagination] = useState({ page: 1, limit: 5, total: 0 });
 
     const fetchTransactions = async () => {
         setLoading(true);
@@ -20,7 +21,20 @@ const AdminTransactions = () => {
             };
             const response = await paymentService.getAllTransactions(params);
             if (response.success) {
-                setTransactions(response.data);
+                // Handle both new (paginated) and old (array) response formats
+                if (response.data.pagination) {
+                    setTransactions(response.data.transactions);
+                    setPagination(prev => ({ ...prev, total: response.data.pagination.total }));
+                } else if (Array.isArray(response.data)) {
+                    // Fallback for stale backend
+                    const allData = response.data;
+                    const startIndex = (pagination.page - 1) * pagination.limit;
+                    const endIndex = startIndex + pagination.limit;
+                    const paginatedData = allData.slice(startIndex, endIndex);
+
+                    setTransactions(paginatedData);
+                    setPagination(prev => ({ ...prev, total: allData.length }));
+                }
             }
         } catch (error) {
             console.error('Error fetching transactions:', error);
@@ -99,6 +113,18 @@ const AdminTransactions = () => {
                                 )}
                             </tbody>
                         </table>
+
+                        {/* Pagination */}
+                        {transactions.length > 0 && (
+                            <Pagination
+                                currentPage={pagination.page}
+                                totalPages={Math.ceil(pagination.total / pagination.limit)}
+                                onPageChange={(newPage) => {
+                                    setPagination(prev => ({ ...prev, page: newPage }));
+                                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                                }}
+                            />
+                        )}
                     </div>
                 </div>
             </div>

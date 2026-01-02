@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import { activityService } from '../services/activity.service';
 import DashboardLayout from '../components/layout/DashboardLayout';
+import Pagination from '../components/common/Pagination';
 import './AdminListings.css';
 
 const AdminLogs = () => {
     const [logs, setLogs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState(''); // actionType
-    const [pagination, setPagination] = useState({ page: 1, limit: 50 });
+    const [pagination, setPagination] = useState({ page: 1, limit: 5, total: 0 });
 
     const fetchLogs = async () => {
         setLoading(true);
@@ -18,7 +19,28 @@ const AdminLogs = () => {
                 offset: (pagination.page - 1) * pagination.limit
             };
             const response = await activityService.getAllLogs(params);
-            setLogs(response.data);
+            if (response.data && response.data.pagination) {
+                setLogs(response.data.logs);
+                setPagination(prev => ({ ...prev, total: response.data.pagination.total }));
+            } else if (Array.isArray(response.data)) {
+                // Fallback for stale backend
+                const allData = response.data;
+                const startIndex = (pagination.page - 1) * pagination.limit;
+                const endIndex = startIndex + pagination.limit;
+                const paginatedData = allData.slice(startIndex, endIndex);
+
+                setLogs(paginatedData);
+                setPagination(prev => ({ ...prev, total: allData.length }));
+            } else if (response.data && response.data.data && Array.isArray(response.data.data)) {
+                // Fallback for wrapped array
+                const allData = response.data.data;
+                const startIndex = (pagination.page - 1) * pagination.limit;
+                const endIndex = startIndex + pagination.limit;
+                const paginatedData = allData.slice(startIndex, endIndex);
+
+                setLogs(paginatedData);
+                setPagination(prev => ({ ...prev, total: allData.length }));
+            }
         } catch (error) {
             console.error('Error fetching logs:', error);
         } finally {
@@ -99,23 +121,14 @@ const AdminLogs = () => {
 
                         {/* Pagination Buttons */}
                         {logs.length > 0 && (
-                            <div className="pagination-area mt-4" style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '20px' }}>
-                                <button
-                                    disabled={pagination.page === 1}
-                                    onClick={() => setPagination(prev => ({ ...prev, page: prev.page - 1 }))}
-                                    className="btn btn-sm btn-outline-secondary"
-                                >
-                                    Previous
-                                </button>
-                                <span style={{ alignSelf: 'center' }}>Page {pagination.page}</span>
-                                <button
-                                    disabled={logs.length < pagination.limit}
-                                    onClick={() => setPagination(prev => ({ ...prev, page: prev.page + 1 }))}
-                                    className="btn btn-sm btn-outline-secondary"
-                                >
-                                    Next
-                                </button>
-                            </div>
+                            <Pagination
+                                currentPage={pagination.page}
+                                totalPages={Math.ceil(pagination.total / pagination.limit)}
+                                onPageChange={(newPage) => {
+                                    setPagination(prev => ({ ...prev, page: newPage }));
+                                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                                }}
+                            />
                         )}
                     </div>
                 </div>

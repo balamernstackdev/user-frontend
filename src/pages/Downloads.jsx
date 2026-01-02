@@ -4,6 +4,7 @@ import DashboardLayout from '../components/layout/DashboardLayout';
 import FileService from '../services/file.service';
 import SubscriptionService from '../services/subscription.service';
 import SEO from '../components/common/SEO';
+import Pagination from '../components/common/Pagination';
 import './Downloads.css';
 import { toast } from 'react-toastify';
 
@@ -13,19 +14,40 @@ const Downloads = () => {
     const [loading, setLoading] = useState(true);
     const [downloading, setDownloading] = useState(null);
 
+    // Pagination State
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(0);
+    const LIMIT = 5; // Items per page
+
     useEffect(() => {
         fetchData();
-    }, []);
+    }, [page]);
 
     const fetchData = async () => {
         try {
             setLoading(true);
             const [filesRes, subRes] = await Promise.all([
-                FileService.getMyFiles(),
+                FileService.getMyFiles({ page, limit: LIMIT }),
                 SubscriptionService.getActiveSubscription()
             ]);
-            setFiles(filesRes.data);
             setSubscription(subRes.data);
+
+            if (filesRes.pagination) {
+                setFiles(filesRes.data);
+                setTotalPages(filesRes.pagination.pages);
+            } else if (Array.isArray(filesRes.data)) {
+                // Fallback for stale backend
+                const allData = filesRes.data;
+                const startIndex = (page - 1) * LIMIT;
+                const endIndex = startIndex + LIMIT;
+                const paginatedData = allData.slice(startIndex, endIndex);
+
+                setFiles(paginatedData);
+                // Determine total pages manually
+                setTotalPages(Math.ceil(allData.length / LIMIT));
+            } else {
+                setFiles(filesRes.data);
+            }
         } catch (err) {
             toast.error('Failed to load files');
             console.error(err);
@@ -35,6 +57,11 @@ const Downloads = () => {
     };
 
     const handleDownload = async (file) => {
+        if (!subscription || subscription.status !== 'active') {
+            toast.error('Please renew your subscription to download files.');
+            return;
+        }
+
         try {
             setDownloading(file.id);
             const response = await FileService.downloadFile(file.id);
@@ -123,15 +150,26 @@ const Downloads = () => {
                     )}
 
                     {subscription && (
-                        <div className="subscription-info-banner">
+                        <div className={`subscription-info-banner ${subscription.status === 'expired' ? 'expired' : ''}`}>
                             <div className="banner-item">
                                 <span className="banner-label">Current Plan:</span>
                                 <span className="banner-value">{subscription.plan_name}</span>
                             </div>
                             <div className="banner-item">
-                                <span className="banner-label">Valid Until:</span>
+                                <span className="banner-label">Status:</span>
+                                <span className={`banner-value status-${subscription.status}`}>
+                                    {subscription.status === 'active' ? 'Active' : 'Expired'}
+                                </span>
+                            </div>
+                            <div className="banner-item">
+                                <span className="banner-label">{subscription.status === 'expired' ? 'Expired On:' : 'Valid Until:'}</span>
                                 <span className="banner-value">{formatDate(subscription.end_date)}</span>
                             </div>
+                            {subscription.status === 'expired' && (
+                                <Link to="/plans" className="tj-primary-btn btn-sm ml-auto">
+                                    Renew Now
+                                </Link>
+                            )}
                         </div>
                     )}
 
@@ -185,6 +223,18 @@ const Downloads = () => {
                             )}
                         </div>
                     </div>
+
+                    {/* Pagination */}
+                    {!loading && files.length > 0 && (
+                        <Pagination
+                            currentPage={page}
+                            totalPages={totalPages}
+                            onPageChange={(newPage) => {
+                                setPage(newPage);
+                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                            }}
+                        />
+                    )}
                 </div>
             </section>
         </DashboardLayout>

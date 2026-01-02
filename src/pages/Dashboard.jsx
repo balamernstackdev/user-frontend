@@ -4,12 +4,14 @@ import DashboardLayout from '../components/layout/DashboardLayout';
 import MarketerStats from '../components/dashboard/MarketerStats';
 import { authService } from '../services/auth.service';
 import ReferralService from '../services/referral.service';
+import SubscriptionService from '../services/subscription.service';
 import SEO from '../components/common/SEO';
 import './Dashboard.css';
 
 const Dashboard = () => {
     const [user, setUser] = useState(null);
     const [marketerStats, setMarketerStats] = useState(null);
+    const [subscription, setSubscription] = useState(null);
     const [loading, setLoading] = useState(true);
     const [copySuccess, setCopySuccess] = useState(false);
 
@@ -26,7 +28,7 @@ const Dashboard = () => {
             if (currentUser.role === 'marketer') {
                 fetchMarketerStats();
             } else {
-                setLoading(false);
+                fetchUserStats();
             }
         } else {
             // Fallback for safety, should be handled by ProtectedRoute
@@ -46,6 +48,17 @@ const Dashboard = () => {
             setMarketerStats(response.data);
         } catch (error) {
             console.error('Failed to fetch marketer stats:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const fetchUserStats = async () => {
+        try {
+            const subResponse = await SubscriptionService.getActiveSubscription();
+            setSubscription(subResponse.data);
+        } catch (error) {
+            console.error('Failed to fetch user stats:', error);
         } finally {
             setLoading(false);
         }
@@ -98,6 +111,22 @@ const Dashboard = () => {
                                 </Link>
                             </div>
                         </div>
+
+                        {/* Subscription Expired Alert */}
+                        {subscription?.status === 'expired' && (
+                            <div className="alert-card animate-fade-up" style={{ animationDelay: '0.1s', backgroundColor: '#fff3cd', border: '1px solid #ffeeba', borderRadius: '10px', padding: '20px', marginBottom: '20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <i className="fas fa-exclamation-triangle" style={{ fontSize: '24px', color: '#856404', marginRight: '15px' }}></i>
+                                    <div>
+                                        <h3 style={{ color: '#856404', fontSize: '18px', marginBottom: '5px' }}>Subscription Expired</h3>
+                                        <p style={{ color: '#856404', marginBottom: '0' }}>Your <strong>{subscription.plan_name}</strong> subscription has expired. Renew now to access downloads.</p>
+                                    </div>
+                                </div>
+                                <Link to="/plans" className="tj-primary-btn" style={{ padding: '10px 20px' }}>
+                                    <span className="btn-text" style={{ fontSize: '14px' }}>Renew Now</span>
+                                </Link>
+                            </div>
+                        )}
 
                         {/* Marketer Specific Section */}
                         {user?.role === 'marketer' && !loading && (

@@ -1,17 +1,19 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { userService } from '../services/user.service';
 import DashboardLayout from '../components/layout/DashboardLayout';
+import Pagination from '../components/common/Pagination';
 import './AdminListings.css';
 import { toast } from 'react-toastify';
 
 const AdminUsers = () => {
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [filter, setFilter] = useState('all'); // all, marketer, admin
-    const [statusFilter, setStatusFilter] = useState(''); // active, inactive, pending
-    const [pagination, setPagination] = useState({ page: 1, limit: 20, total: 0 });
+    const [filter, setFilter] = useState(searchParams.get('filter') || 'all');
+    const [statusFilter, setStatusFilter] = useState(searchParams.get('status') || '');
+    const [pagination, setPagination] = useState({ page: 1, limit: 5, total: 0 });
 
     const fetchUsers = async () => {
         setLoading(true);
@@ -24,8 +26,28 @@ const AdminUsers = () => {
             if (statusFilter) params.status = statusFilter;
 
             const response = await userService.getAllUsers(params);
-            setUsers(response.data.users);
-            setPagination(prev => ({ ...prev, total: response.data.pagination.total }));
+            if (response.data && response.data.pagination) {
+                setUsers(response.data.users);
+                setPagination(prev => ({ ...prev, total: response.data.pagination.total }));
+            } else if (Array.isArray(response.data)) {
+                // Fallback for stale backend
+                const allData = response.data;
+                const startIndex = (pagination.page - 1) * pagination.limit;
+                const endIndex = startIndex + pagination.limit;
+                const paginatedData = allData.slice(startIndex, endIndex);
+
+                setUsers(paginatedData);
+                setPagination(prev => ({ ...prev, total: allData.length }));
+            } else if (response.data && response.data.data && Array.isArray(response.data.data)) {
+                // Fallback for wrapped array
+                const allData = response.data.data;
+                const startIndex = (pagination.page - 1) * pagination.limit;
+                const endIndex = startIndex + pagination.limit;
+                const paginatedData = allData.slice(startIndex, endIndex);
+
+                setUsers(paginatedData);
+                setPagination(prev => ({ ...prev, total: allData.length }));
+            }
         } catch (error) {
             console.error('Error fetching users:', error);
         } finally {
@@ -40,11 +62,18 @@ const AdminUsers = () => {
     const handleDeleteUser = async (id) => {
         if (window.confirm('Are you sure you want to delete this user?')) {
             try {
+                // Optimistic update: Remove from UI immediately
+                setUsers(prevUsers => prevUsers.filter(user => user.id !== id));
+
                 await userService.deleteUser(id);
+                // No need to fetchUsers() immediately if we trust the optimistic update,
+                // but fetching ensures sync with server.
                 fetchUsers();
             } catch (error) {
                 console.error('Error deleting user:', error);
                 toast.error('Failed to delete user');
+                // Revert or re-fetch on error
+                fetchUsers();
             }
         }
     };
@@ -155,23 +184,14 @@ const AdminUsers = () => {
 
                         {/* Pagination */}
                         {users.length > 0 && (
-                            <div className="pagination-area mt-4" style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
-                                <button
-                                    disabled={pagination.page === 1}
-                                    onClick={() => setPagination(prev => ({ ...prev, page: prev.page - 1 }))}
-                                    className="btn btn-sm btn-outline-secondary"
-                                >
-                                    Previous
-                                </button>
-                                <span style={{ alignSelf: 'center' }}>Page {pagination.page}</span>
-                                <button
-                                    disabled={users.length < pagination.limit}
-                                    onClick={() => setPagination(prev => ({ ...prev, page: prev.page + 1 }))}
-                                    className="btn btn-sm btn-outline-secondary"
-                                >
-                                    Next
-                                </button>
-                            </div>
+                            <Pagination
+                                currentPage={pagination.page}
+                                totalPages={Math.ceil(pagination.total / pagination.limit)}
+                                onPageChange={(newPage) => {
+                                    setPagination(prev => ({ ...prev, page: newPage }));
+                                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                                }}
+                            />
                         )}
                     </div>
                 </div>

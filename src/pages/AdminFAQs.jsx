@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import tutorialService from '../services/tutorial.service';
 import DashboardLayout from '../components/layout/DashboardLayout';
+import Pagination from '../components/common/Pagination';
 import './AdminListings.css'; // Reusing existing styles
 import { toast } from 'react-toastify';
 
@@ -9,14 +10,46 @@ const AdminFAQs = () => {
     const navigate = useNavigate();
     const [faqs, setFaqs] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [pagination, setPagination] = useState({ page: 1, limit: 5, total: 0 });
 
     const fetchFAQs = async () => {
         setLoading(true);
         try {
-            const response = await tutorialService.getAdminTutorialsByCategory('FAQ');
-            // Allow for array response or object with data property
-            const data = Array.isArray(response) ? response : (response.data || []);
-            setFaqs(data);
+            const params = {
+                limit: pagination.limit,
+                offset: (pagination.page - 1) * pagination.limit
+            };
+            const response = await tutorialService.getAdminTutorialsByCategory('FAQ', params);
+
+            // Allow for array response or object with data property and pagination
+            // Allow for array response or object with data property and pagination
+            if (response.data && response.data.pagination) {
+                setFaqs(response.data.tutorials);
+                setPagination(prev => ({ ...prev, total: response.data.pagination.total }));
+            } else if (Array.isArray(response.data)) {
+                // Fallback for wrapped array { data: [...] }
+                const allData = response.data;
+                const startIndex = (pagination.page - 1) * pagination.limit;
+                const endIndex = startIndex + pagination.limit;
+                // If backend ignores limit, we slice. If it respected limit but didn't send pagination, slice is safe (slice on smaller array is fine or empty)
+                // But wait, if backend respected limit, allData is already sliced? 
+                // Old backend returned ALL. So we must slice.
+                const paginatedData = allData.slice(startIndex, endIndex);
+
+                setFaqs(paginatedData);
+                setPagination(prev => ({ ...prev, total: allData.length }));
+            } else if (Array.isArray(response)) {
+                // Fallback for raw array response [...]
+                const allData = response;
+                const startIndex = (pagination.page - 1) * pagination.limit;
+                const endIndex = startIndex + pagination.limit;
+                const paginatedData = allData.slice(startIndex, endIndex);
+
+                setFaqs(paginatedData);
+                setPagination(prev => ({ ...prev, total: allData.length }));
+            } else {
+                setFaqs(response.data || []);
+            }
         } catch (error) {
             console.error('Error fetching FAQs:', error);
         } finally {
@@ -26,7 +59,7 @@ const AdminFAQs = () => {
 
     useEffect(() => {
         fetchFAQs();
-    }, []);
+    }, [pagination.page]);
 
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this FAQ?')) {
@@ -126,6 +159,18 @@ const AdminFAQs = () => {
                             </tbody>
                         </table>
                     </div>
+
+                    {/* Pagination */}
+                    {faqs.length > 0 && (
+                        <Pagination
+                            currentPage={pagination.page}
+                            totalPages={Math.ceil(pagination.total / pagination.limit)}
+                            onPageChange={(newPage) => {
+                                setPagination(prev => ({ ...prev, page: newPage }));
+                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                            }}
+                        />
+                    )}
                 </div>
             </div>
         </DashboardLayout>

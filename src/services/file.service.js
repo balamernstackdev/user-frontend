@@ -4,8 +4,8 @@ import api from './api';
  * File Service
  */
 
-export const getMyFiles = async () => {
-    const response = await api.get('/files/my-files');
+export const getMyFiles = async (params = {}) => {
+    const response = await api.get('/files/my-files', { params });
     return response.data;
 };
 

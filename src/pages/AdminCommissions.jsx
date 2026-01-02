@@ -1,15 +1,17 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import commissionService from '../services/commission.service';
 import DashboardLayout from '../components/layout/DashboardLayout';
+import Pagination from '../components/common/Pagination';
 import './AdminListings.css';
 import { toast } from 'react-toastify';
 
 const AdminCommissions = () => {
+    const [searchParams] = useSearchParams();
     const [commissions, setCommissions] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [statusFilter, setStatusFilter] = useState('pending'); // pending, approved, paid
-    const [pagination, setPagination] = useState({ page: 1, limit: 20 });
+    const [statusFilter, setStatusFilter] = useState(searchParams.get('status') || 'pending');
+    const [pagination, setPagination] = useState({ page: 1, limit: 5, total: 0 });
 
     const fetchCommissions = async () => {
         setLoading(true);
@@ -20,7 +22,28 @@ const AdminCommissions = () => {
                 offset: (pagination.page - 1) * pagination.limit
             };
             const response = await commissionService.getAllCommissions(params);
-            setCommissions(response.data);
+            if (response.data && response.data.pagination) {
+                setCommissions(response.data.commissions);
+                setPagination(prev => ({ ...prev, total: response.data.pagination.total }));
+            } else if (Array.isArray(response.data)) {
+                // Fallback for stale backend
+                const allData = response.data;
+                const startIndex = (pagination.page - 1) * pagination.limit;
+                const endIndex = startIndex + pagination.limit;
+                const paginatedData = allData.slice(startIndex, endIndex);
+
+                setCommissions(paginatedData);
+                setPagination(prev => ({ ...prev, total: allData.length }));
+            } else if (response.data && response.data.data && Array.isArray(response.data.data)) {
+                // Fallback for wrapped array
+                const allData = response.data.data;
+                const startIndex = (pagination.page - 1) * pagination.limit;
+                const endIndex = startIndex + pagination.limit;
+                const paginatedData = allData.slice(startIndex, endIndex);
+
+                setCommissions(paginatedData);
+                setPagination(prev => ({ ...prev, total: allData.length }));
+            }
         } catch (error) {
             console.error('Error fetching commissions:', error);
         } finally {
@@ -166,6 +189,18 @@ const AdminCommissions = () => {
                                 )}
                             </tbody>
                         </table>
+
+                        {/* Pagination */}
+                        {commissions.length > 0 && (
+                            <Pagination
+                                currentPage={pagination.page}
+                                totalPages={Math.ceil(pagination.total / pagination.limit)}
+                                onPageChange={(newPage) => {
+                                    setPagination(prev => ({ ...prev, page: newPage }));
+                                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                                }}
+                            />
+                        )}
                     </div>
                 </div>
             </div>
