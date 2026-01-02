@@ -31,7 +31,7 @@ const Header = ({ notificationCount = 0 }) => {
                         <div className="hamburger_inner">
                             <div className="hamburger_top">
                                 <div className="hamburger_logo">
-                                    <Link to="/" className="mobile_logo">
+                                    <Link to={user ? (isAdmin ? '/admin/dashboard' : '/dashboard') : '/'} className="mobile_logo">
                                         <img src={StoxzoLogo} alt="Stoxzo Logo" />
                                     </Link>
                                 </div>
@@ -104,7 +104,7 @@ const Header = ({ notificationCount = 0 }) => {
                                 <div className="header-wrapper">
                                     {/* Site Logo */}
                                     <div className="site_logo">
-                                        <Link className="logo" to="/">
+                                        <Link className="logo" to={user ? (isAdmin ? '/admin/dashboard' : '/dashboard') : '/'}>
                                             <img src={StoxzoLogo} alt="Stoxzo" />
                                         </Link>
                                     </div>
