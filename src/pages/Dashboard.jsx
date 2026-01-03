@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import DashboardLayout from '../components/layout/DashboardLayout';
-import MarketerStats from '../components/dashboard/MarketerStats';
+import BusinessAssociateStats from '../components/dashboard/BusinessAssociateStats';
 import { authService } from '../services/auth.service';
 import ReferralService from '../services/referral.service';
 import SubscriptionService from '../services/subscription.service';
@@ -10,7 +10,7 @@ import './Dashboard.css';
 
 const Dashboard = () => {
     const [user, setUser] = useState(null);
-    const [marketerStats, setMarketerStats] = useState(null);
+    const [businessAssociateStats, setBusinessAssociateStats] = useState(null);
     const [subscription, setSubscription] = useState(null);
     const [loading, setLoading] = useState(true);
     const [copySuccess, setCopySuccess] = useState(false);
@@ -62,12 +62,12 @@ const Dashboard = () => {
     const fetchMarketerStats = async () => {
         try {
             const response = await ReferralService.getStats();
-            setMarketerStats(response.data);
+            setBusinessAssociateStats(response.data);
             setLoading(false);
         } catch (error) {
             console.error('Failed to fetch business associate stats:', error);
             // Set empty stats to prevent blank page
-            setMarketerStats({});
+            setBusinessAssociateStats({});
             setLoading(false);
         }
     };
@@ -84,8 +84,8 @@ const Dashboard = () => {
     };
 
     const handleCopyCode = () => {
-        if (marketerStats?.referral_code) {
-            navigator.clipboard.writeText(marketerStats.referral_code);
+        if (businessAssociateStats?.referral_code) {
+            navigator.clipboard.writeText(businessAssociateStats.referral_code);
             setCopySuccess(true);
             setTimeout(() => setCopySuccess(false), 2000);
         }
@@ -99,7 +99,7 @@ const Dashboard = () => {
         { title: 'Transactions', icon: 'fas fa-history', link: '/transactions' },
     ];
 
-    const marketerLinks = [
+    const businessAssociateLinks = [
         { title: 'Referrals', icon: 'fas fa-users', link: '/referrals' }, // Corrected route
         { title: 'Commissions', icon: 'fas fa-chart-line', link: '/business-associate/commissions' },
     ];
@@ -155,19 +155,19 @@ const Dashboard = () => {
                                 </div>
                             )}
 
-                            {/* Marketer Specific Section */}
+                            {/* Business Associate Specific Section */}
                             {user?.role === 'business_associate' && !loading && (
                                 <div className="marketer-dashboard-section animate-fade-up" style={{ animationDelay: '0.1s' }}>
-                                    <MarketerStats stats={marketerStats} />
+                                    <BusinessAssociateStats stats={businessAssociateStats} />
 
-                                    {marketerStats?.referral_code && (
+                                    {businessAssociateStats?.referral_code && (
                                         <div className="referral-card">
                                             <div className="referral-info">
                                                 <h3>Your Referral Program</h3>
                                                 <p>Share your code and earn commissions on every successful referral.</p>
                                             </div>
                                             <div className="referral-code-wrapper">
-                                                <span className="referral-code">{marketerStats.referral_code}</span>
+                                                <span className="referral-code">{businessAssociateStats.referral_code}</span>
                                                 <button
                                                     className="copy-btn"
                                                     onClick={handleCopyCode}
@@ -190,7 +190,7 @@ const Dashboard = () => {
                                 <h3>Quick Links</h3>
                                 <div className="quick-links-grid">
                                     {(user?.role === 'business_associate'
-                                        ? [...marketerLinks, ...quickLinks].filter(item => item.title !== 'Subscriptions')
+                                        ? [...businessAssociateLinks, ...quickLinks].filter(item => item.title !== 'Subscriptions')
                                         : quickLinks
                                     ).map((item, index) => (
                                         <Link to={item.link} className="quick-link-item" key={index}>

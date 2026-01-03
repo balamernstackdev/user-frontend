@@ -1,10 +1,12 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
+import { useSettings } from '../../context/SettingsContext';
 import StoxzoLogo from '../../assets/images/Stoxzo_Logo.svg';
 import { authService } from '../../services/auth.service';
 import './Header.css';
 
 const Header = ({ notificationCount = 0 }) => {
+    const { settings } = useSettings();
     const [showSettings, setShowSettings] = useState(false);
     const [showMarketerMenu, setShowMarketerMenu] = useState(false);
     const [showAdminMenu, setShowAdminMenu] = useState(null); // 'manage', 'finance', 'support', 'system' or null
@@ -32,7 +34,7 @@ const Header = ({ notificationCount = 0 }) => {
                             <div className="hamburger_top">
                                 <div className="hamburger_logo">
                                     <Link to={user ? (isAdmin ? '/admin/dashboard' : '/dashboard') : '/'} className="mobile_logo">
-                                        <img src={StoxzoLogo} alt="Stoxzo Logo" />
+                                        <img src={StoxzoLogo} alt={settings.site_name || "Stoxzo Logo"} />
                                     </Link>
                                 </div>
                                 <div className="hamburger_close">
@@ -81,7 +83,7 @@ const Header = ({ notificationCount = 0 }) => {
                                                 <li><Link to="/tickets" onClick={() => setShowMobileMenu(false)}>My Tickets</Link></li>
 
                                                 {!isBusinessAssociate && <li><Link to="/downloads" onClick={() => setShowMobileMenu(false)}>My Downloads</Link></li>}
-                                                <li><Link to="/curated-analysis" onClick={() => setShowMobileMenu(false)}>Market Analysis</Link></li>
+                                                {!isBusinessAssociate && <li><Link to="/curated-analysis" onClick={() => setShowMobileMenu(false)}>Market Analysis</Link></li>}
                                                 <li><Link to="/faq" onClick={() => setShowMobileMenu(false)}>FAQ</Link></li>
                                                 <li><Link to="/how-to-use" onClick={() => setShowMobileMenu(false)}>How to Use</Link></li>
                                             </>
@@ -105,7 +107,7 @@ const Header = ({ notificationCount = 0 }) => {
                                     {/* Site Logo */}
                                     <div className="site_logo">
                                         <Link className="logo" to={user ? (isAdmin ? '/admin/dashboard' : '/dashboard') : '/'}>
-                                            <img src={StoxzoLogo} alt="Stoxzo" />
+                                            <img src={StoxzoLogo} alt={settings.site_name || "Stoxzo"} />
                                         </Link>
                                     </div>
 
@@ -133,7 +135,6 @@ const Header = ({ notificationCount = 0 }) => {
                                                                         <ul className="sub-menu">
                                                                             <li><Link to="/business-associate/referrals">Referrals</Link></li>
                                                                             <li><Link to="/business-associate/commissions">Commissions</Link></li>
-                                                                            <li><Link to="/curated-analysis">Analysis</Link></li>
                                                                         </ul>
                                                                     )}
                                                                 </li>
@@ -178,7 +179,7 @@ const Header = ({ notificationCount = 0 }) => {
 
                                                         <li><Link to="/faq">FAQ</Link></li>
                                                         <li><Link to="/how-to-use">How to Use</Link></li>
-                                                        <li><Link to="/curated-analysis">Analysis</Link></li>
+                                                        {!isBusinessAssociate && <li><Link to="/curated-analysis">Analysis</Link></li>}
                                                     </>
                                                 ) : (
                                                     /* Admin Navigation - All Links Exposed */
@@ -217,6 +218,7 @@ const Header = ({ notificationCount = 0 }) => {
                                                                 <ul className="sub-menu">
                                                                     <li><Link to="/admin/commissions">Commissions</Link></li>
                                                                     <li><Link to="/admin/transactions">Transactions</Link></li>
+                                                                    <li><Link to="/admin/ba-transactions">BA Transactions</Link></li>
                                                                 </ul>
                                                             )}
                                                         </li>
@@ -266,11 +268,9 @@ const Header = ({ notificationCount = 0 }) => {
                                         <div className="header-notification" style={{ position: 'relative', marginRight: '20px' }}>
                                             <Link to="/notifications" style={{ position: 'relative', display: 'inline-block', color: 'var(--tj-color-heading-primary)', fontSize: '20px' }}>
                                                 <i className="far fa-bell"></i>
-                                                {notificationCount > 0 && (
-                                                    <span className="notification-badge" style={{ position: 'absolute', top: '-8px', right: '-8px', backgroundColor: '#ff0000', color: '#ffffff', borderRadius: '50%', width: '18px', height: '18px', fontSize: '11px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '600' }}>
-                                                        {notificationCount}
-                                                    </span>
-                                                )}
+                                                <span className="notification-badge" style={{ position: 'absolute', top: '-8px', right: '-8px', backgroundColor: '#ff0000', color: '#ffffff', borderRadius: '50%', width: '18px', height: '18px', fontSize: '11px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '600' }}>
+                                                    {notificationCount}
+                                                </span>
                                             </Link>
                                         </div>
                                         <div className="header-button">

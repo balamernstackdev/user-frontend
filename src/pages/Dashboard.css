@@ -294,6 +294,14 @@
 
 /* --- New Stats Card Styling with Variety --- */
 
+.admin-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 25px;
+    margin-bottom: 40px;
+}
+
+
 .stats-grid .stat-card {
     background: #ffffff;
     border-radius: 16px;
@@ -305,6 +313,8 @@
     align-items: center;
     gap: 25px;
     /* Increased gap for proper icon/text separation */
+    min-height: 140px;
+    /* Ensure consistent height across rows */
     transition: all 0.3s ease;
     border: 1px solid rgba(0, 0, 0, 0.05);
     position: relative;

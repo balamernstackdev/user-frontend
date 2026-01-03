@@ -28,7 +28,7 @@ const AdminDashboard = () => {
         const fetchStats = async () => {
             try {
                 // Fetch Stats
-                const statsResponse = await adminService.getStats();
+                const statsResponse = await adminService.getDashboardStatus();
                 const { totalUsers, activeMarketers, pendingMarketers, pendingCommissions, pendingPayouts, totalRevenue, activeSubscriptions, expiringSubscriptions } = statsResponse.data;
 
                 setStats({
@@ -165,7 +165,7 @@ const AdminDashboard = () => {
                         <div className="recent-activity animate-fade-up" style={{ animationDelay: '0.2s', marginTop: '40px' }}>
                             <div className="d-flex justify-content-between align-items-center mb-4">
                                 <h3 className="mb-0">Recent System Activity</h3>
-                                <Link to="/admin/logs" className="btn btn-sm btn-outline-primary">View All Logs</Link>
+                                <Link to="/admin/logs" className="tj-btn tj-btn-sm tj-btn-outline-primary">View All Logs</Link>
                             </div>
 
                             <div className="listing-table-container">

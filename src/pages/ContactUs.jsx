@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { useSettings } from '../context/SettingsContext';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import SEO from '../components/common/SEO';
 import './ContactUs.css';
 
 const ContactUs = () => {
+    const { settings } = useSettings();
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -36,7 +38,7 @@ const ContactUs = () => {
 
     return (
         <DashboardLayout>
-            <SEO title="Contact Us" description="Have questions? Get in touch with Stoxzo support team." />
+            <SEO title="Contact Us" description={`Have questions? Get in touch with the ${settings.site_name || 'Stoxzo'} support team.`} />
 
             <section className="contact-hero-section">
                 <div className="container">
@@ -142,7 +144,7 @@ const ContactUs = () => {
                                         </div>
                                         <div className="details">
                                             <h4>Our Location</h4>
-                                            <p>993 Renner Burg, West Rond, MT 94251-030, USA</p>
+                                            <p>{settings.office_address || '993 Renner Burg, West Rond, MT 94251-030, USA'}</p>
                                         </div>
                                     </div>
 
@@ -152,7 +154,7 @@ const ContactUs = () => {
                                         </div>
                                         <div className="details">
                                             <h4>Phone Number</h4>
-                                            <p><a href="tel:+10095447818">+1 (009) 544-7818</a></p>
+                                            <p><a href={`tel:${(settings.contact_phone || '+1 (009) 544-7818').replace(/\D/g, '')}`}>{settings.contact_phone || '+1 (009) 544-7818'}</a></p>
                                         </div>
                                     </div>
 
@@ -162,17 +164,17 @@ const ContactUs = () => {
                                         </div>
                                         <div className="details">
                                             <h4>Email Address</h4>
-                                            <p><a href="mailto:support@stoxzo.com">support@stoxzo.com</a></p>
+                                            <p><a href={`mailto:${settings.support_email || 'support@stoxzo.com'}`}>{settings.support_email || 'support@stoxzo.com'}</a></p>
                                         </div>
                                     </div>
 
                                     <div className="social-connect">
                                         <h4>Follow Us</h4>
                                         <div className="social-links">
-                                            <a href="#" className="social-btn"><i className="fa-brands fa-facebook-f"></i></a>
-                                            <a href="#" className="social-btn"><i className="fa-brands fa-x-twitter"></i></a>
-                                            <a href="#" className="social-btn"><i className="fa-brands fa-instagram"></i></a>
-                                            <a href="#" className="social-btn"><i className="fa-brands fa-linkedin-in"></i></a>
+                                            <a href={settings.facebook_url || "#"} className="social-btn"><i className="fa-brands fa-facebook-f"></i></a>
+                                            <a href={settings.twitter_url || "#"} className="social-btn"><i className="fa-brands fa-x-twitter"></i></a>
+                                            <a href={settings.instagram_url || "#"} className="social-btn"><i className="fa-brands fa-instagram"></i></a>
+                                            <a href={settings.linkedin_url || "#"} className="social-btn"><i className="fa-brands fa-linkedin-in"></i></a>
                                         </div>
                                     </div>
                                 </div>

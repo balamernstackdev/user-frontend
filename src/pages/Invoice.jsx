@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import paymentService from '../services/payment.service';
 import { authService } from '../services/auth.service';
+import { useSettings } from '../context/SettingsContext';
 import './Invoice.css';
 import { toast } from 'react-toastify';
 
@@ -10,6 +11,8 @@ import { toast } from 'react-toastify';
 import logoUrl from '../assets/images/Stoxzo_Logo.svg';
 
 const Invoice = () => {
+    const { settings } = useSettings();
+    const location = useLocation();
     const { transactionId } = useParams();
     const [transaction, setTransaction] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -118,10 +121,9 @@ const Invoice = () => {
                             </div>
                             <div className="invoice-info" style={{ textAlign: 'right' }}>
                                 <img src={logoUrl} alt="Stoxzo" style={{ maxWidth: '150px', marginBottom: '15px' }} />
-                                <p><strong>Stoxzo</strong></p>
-                                <p>993 Renner Burg, West Rond</p>
-                                <p>MT 94251-030, USA</p>
-                                <p>support@stoxzo.com</p>
+                                <p><strong>{settings.site_name}</strong></p>
+                                <p>{settings.office_address}</p>
+                                <p>{settings.support_email}</p>
                             </div>
                         </div>
 

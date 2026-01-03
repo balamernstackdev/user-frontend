@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { authService } from '../services/auth.service';
+import { useSettings } from '../context/SettingsContext';
 import SEO from '../components/common/SEO';
 import StoxzoLogo from '../assets/images/Stoxzo_Logo.svg';
 import './Register.css';
@@ -8,6 +9,7 @@ import bgImage from '../assets/images/bg.png';
 import { toast } from 'react-toastify';
 
 const Register = () => {
+    const { settings } = useSettings();
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const [formData, setFormData] = useState({
@@ -136,12 +138,12 @@ const Register = () => {
     return (
         <section className="register-section">
             <div className="register-bg-watermark" style={{ backgroundImage: `url(${bgImage})` }}></div>
-            <SEO title="Create Account" description="Join Stoxzo today." />
+            <SEO title="Register" description={`Create your ${settings.site_name || 'Stoxzo'} account to get started.`} />
             <div className="register-wrapper">
                 <div className="register-card">
                     <div className="register-logo">
                         <Link to="/">
-                            <img src={StoxzoLogo} alt="Stoxzo Logo" />
+                            <img src={StoxzoLogo} alt={`${settings.site_name || 'Stoxzo'} Logo`} />
                         </Link>
                     </div>
 
@@ -163,6 +165,7 @@ const Register = () => {
                                     value={formData.firstName}
                                     onChange={handleChange}
                                     required
+                                    autoComplete="given-name"
                                 />
                                 {errors.firstName && (
                                     <span style={{ color: '#cf1322', fontSize: '12px', marginTop: '4px', display: 'block' }}>
@@ -180,6 +183,7 @@ const Register = () => {
                                     value={formData.lastName}
                                     onChange={handleChange}
                                     required
+                                    autoComplete="family-name"
                                 />
                                 {errors.lastName && (
                                     <span style={{ color: '#cf1322', fontSize: '12px', marginTop: '4px', display: 'block' }}>
@@ -200,6 +204,7 @@ const Register = () => {
                                 value={formData.email}
                                 onChange={handleChange}
                                 required
+                                autoComplete="email"
                             />
                             {errors.email && (
                                 <span style={{ color: '#cf1322', fontSize: '12px', marginTop: '4px', display: 'block' }}>
@@ -219,6 +224,7 @@ const Register = () => {
                                 value={formData.password}
                                 onChange={handleChange}
                                 required
+                                autoComplete="new-password"
                             />
                             <button
                                 type="button"
@@ -245,6 +251,7 @@ const Register = () => {
                                 value={formData.confirmPassword}
                                 onChange={handleChange}
                                 required
+                                autoComplete="new-password"
                             />
                             <button
                                 type="button"
@@ -271,6 +278,7 @@ const Register = () => {
                                 value={formData.referralCode}
                                 onChange={handleChange}
                                 required
+                                autoComplete="off"
                             />
                             {errors.referralCode && (
                                 <span style={{ color: '#cf1322', fontSize: '12px', marginTop: '4px', display: 'block' }}>

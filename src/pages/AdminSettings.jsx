@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import settingsService from '../services/settings.service';
+import { useSettings } from '../context/SettingsContext';
+import SEO from '../components/common/SEO';
 import './AdminListings.css';
 
 const AdminSettings = () => {
@@ -10,6 +12,14 @@ const AdminSettings = () => {
     const [saving, setSaving] = useState({});
     const [isValidating, setIsValidating] = useState(false);
     const [activeTab, setActiveTab] = useState('general');
+
+    const { fetchSettings: refreshGlobalSettings } = useSettings();
+
+    /* 
+       We still keep local state 'settings' as an array for the form rendering 
+       because the backend returns an array, and this component expects an array.
+       The context stores it as an object for easy access by key.
+    */
 
     useEffect(() => {
         fetchSettings();
@@ -39,6 +49,10 @@ const AdminSettings = () => {
             const setting = settings.find(s => s.key === key);
             await settingsService.update(key, setting.value);
             toast.success(`Saved ${key.replace(/_/g, ' ').toUpperCase()}`);
+
+            // Refresh global settings context with all settings for admin
+            refreshGlobalSettings(true);
+
         } catch (error) {
             console.error(`Error saving ${key}:`, error);
             toast.error(`Failed to save ${key}`);
@@ -106,18 +120,21 @@ const AdminSettings = () => {
     const tabs = [
         { id: 'general', label: 'General Settings', icon: 'fas fa-cog' },
         { id: 'payments', label: 'Payments & Payouts', icon: 'fas fa-wallet' },
-        { id: 'razorpay', label: 'RazorpayX Config', icon: 'fas fa-university' }
+        { id: 'razorpay', label: 'RazorpayX Config', icon: 'fas fa-university' },
+        { id: 'identity', label: 'Contact & Identity', icon: 'fas fa-address-card' }
     ];
 
     const filteredSettings = settings.filter(s => {
         if (activeTab === 'razorpay') return s.key.startsWith('razorpay_x');
         if (activeTab === 'payments') return (s.key.includes('payout') || (s.key.includes('razorpay') && !s.key.startsWith('razorpay_x'))) && !s.key.includes('commission');
-        if (activeTab === 'general') return !s.key.startsWith('razorpay_x') && !s.key.includes('payout') && (!s.key.includes('razorpay') || s.key.includes('commission'));
+        if (activeTab === 'identity') return ['contact_email', 'contact_phone', 'office_address', 'facebook_url', 'instagram_url', 'twitter_url', 'linkedin_url', 'footer_heading', 'office_hours'].includes(s.key);
+        if (activeTab === 'general') return !s.key.startsWith('razorpay_x') && !s.key.includes('payout') && (!s.key.includes('razorpay') || s.key.includes('commission')) && !['contact_email', 'contact_phone', 'office_address', 'facebook_url', 'instagram_url', 'twitter_url', 'linkedin_url', 'footer_heading', 'office_hours', 'footer_copyright'].includes(s.key);
         return false;
     });
 
     return (
         <DashboardLayout>
+            <SEO title="System Settings" description="Global platform configuration" />
             <div className="admin-listing-page animate-fade-up">
                 <div className="container">
                     <div className="admin-listing-header mb-4">
@@ -168,7 +185,7 @@ const AdminSettings = () => {
                                                 <div className="row align-items-center">
                                                     <div className="col-lg-4 col-md-12 mb-2 mb-lg-0">
                                                         <label className="form-label d-block fw-bold mb-1" style={{ fontSize: '13px', color: '#444', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                                                            {setting.key.replace(/_/g, ' ')}
+                                                            {setting.key.replace(/_/g, ' ').replace(/marketer/i, 'Business Associate')}
                                                         </label>
                                                         {setting.description && (
                                                             <div className="text-muted" style={{ fontSize: '11px', lineHeight: '1.4' }}>
@@ -181,8 +198,8 @@ const AdminSettings = () => {
                                                     </div>
                                                     <div className="col-lg-2 col-md-3 col-4 text-end">
                                                         <button
-                                                            className="tj-primary-btn w-100"
-                                                            style={{ height: '40px', padding: '0 20px', fontSize: '14px', borderRadius: '8px' }}
+                                                            className="tj-btn tj-btn-primary w-100"
+                                                            style={{ height: '40px', padding: '0 20px', fontSize: '14px', borderRadius: '50px' }}
                                                             onClick={() => handleSave(setting.key)}
                                                             disabled={saving[setting.key]}
                                                         >
@@ -203,8 +220,8 @@ const AdminSettings = () => {
                                                         <p className="mb-0 text-muted" style={{ fontSize: '12px' }}>Test if the provided Key ID and Secret are valid and connected to Razorpay.</p>
                                                     </div>
                                                     <button
-                                                        className="btn btn-outline-primary px-4"
-                                                        style={{ fontWeight: 600, fontSize: '14px', borderRadius: '8px' }}
+                                                        className="tj-btn tj-btn-outline-primary px-4"
+                                                        style={{ fontWeight: 600, fontSize: '14px', borderRadius: '50px' }}
                                                         onClick={handleValidateRazorpayX}
                                                         disabled={isValidating}
                                                     >

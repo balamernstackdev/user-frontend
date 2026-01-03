@@ -76,4 +76,6 @@ const AnalysisService = {
     }
 };
 
+export const analysisService = AnalysisService;
+
 export default AnalysisService;

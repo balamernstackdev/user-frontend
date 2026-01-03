@@ -13,3 +13,5 @@ export const activityService = {
         return response.data;
     }
 };
+
+export default activityService;

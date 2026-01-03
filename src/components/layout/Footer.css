@@ -87,6 +87,13 @@
     color: #ffffff;
 }
 
+.footer-contact-info .contact-item i {
+    margin-right: 10px;
+    color: #13689e;
+    width: 15px;
+    text-align: center;
+}
+
 /* Subscribe Section */
 .h10-footer-subscribe-wrapper {
     padding: 50px 0;

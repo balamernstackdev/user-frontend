@@ -92,7 +92,7 @@ const CommissionDetail = () => {
                         <i className="fas fa-exclamation-circle text-danger" style={{ fontSize: '3rem', marginBottom: '1rem' }}></i>
                         <h3>Error Loading Details</h3>
                         <p className="text-muted">{error || 'Commission not found'}</p>
-                        <Link to={isAdmin ? "/admin/commissions" : "/marketer/commissions"} className="tj-primary-btn mt-3">
+                        <Link to={isAdmin ? "/admin/commissions" : "/business-associate/commissions"} className="tj-primary-btn mt-3">
                             <span className="btn-text"><span>Back to Commissions</span></span>
                         </Link>
                     </div>
@@ -108,7 +108,7 @@ const CommissionDetail = () => {
             <section className="page-section">
                 <div className="container">
                     <div className="detail-header animate-fade-up">
-                        <Link to={isAdmin ? "/admin/commissions" : "/marketer/commissions"} className="back-link">
+                        <Link to={isAdmin ? "/admin/commissions" : "/business-associate/commissions"} className="back-link">
                             <i className="fas fa-arrow-left"></i> Back to Commissions
                         </Link>
                         <div className="header-content">
@@ -175,12 +175,12 @@ const CommissionDetail = () => {
                             {isAdmin && (
                                 <div className="detail-card mt-4">
                                     <div className="card-header-custom d-flex justify-content-between align-items-center">
-                                        <h4 className="card-title">Marketer Payout Information</h4>
+                                        <h4 className="card-title">Business Associate Payout Information</h4>
                                     </div>
                                     <div className="card-body-custom">
                                         <div className="row">
                                             <div className="col-md-6 mb-3">
-                                                <label className="text-muted small">Marketer Name</label>
+                                                <label className="text-muted small">Business Associate Name</label>
                                                 <div className="fw-bold">{commission.marketer_name}</div>
                                                 <div className="text-muted small">{commission.marketer_email}</div>
                                             </div>

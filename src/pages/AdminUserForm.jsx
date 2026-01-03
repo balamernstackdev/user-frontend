@@ -153,7 +153,7 @@ const AdminUserForm = () => {
                                                     onChange={handleChange}
                                                 >
                                                     <option value="user">User</option>
-                                                    <option value="marketer">Marketer</option>
+                                                    <option value="business_associate">Business Associate</option>
                                                     <option value="admin">Admin</option>
                                                 </select>
                                             </div>
@@ -174,16 +174,15 @@ const AdminUserForm = () => {
                                             </div>
                                         </div>
 
-                                        {!isEditMode && formData.role === 'user' && (
+                                        {!isEditMode && (formData.role === 'user' || formData.role === 'marketer' || formData.role === 'business_associate') && (
                                             <div className="mb-3">
-                                                <label className="form-label">Referral Code <span className="text-danger">*</span></label>
+                                                <label className="form-label">Referral Code</label>
                                                 <input
                                                     type="text"
                                                     className="form-control"
                                                     name="referralCode"
                                                     value={formData.referralCode}
                                                     onChange={handleChange}
-                                                    required
                                                     placeholder="Enter referral code"
                                                 />
                                             </div>

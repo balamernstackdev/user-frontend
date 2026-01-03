@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import paymentService from '../services/payment.service';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import Pagination from '../components/common/Pagination';
+import SEO from '../components/common/SEO';
 import './AdminListings.css';
 
 const AdminTransactions = () => {
@@ -49,6 +50,7 @@ const AdminTransactions = () => {
 
     return (
         <DashboardLayout>
+            <SEO title="Transaction History" description="View platform transactions" />
             <div className="admin-listing-page animate-fade-up">
                 <div className="container">
                     <div className="admin-listing-header">
@@ -57,12 +59,19 @@ const AdminTransactions = () => {
                             <p style={{ color: '#6c757d' }}>View and manage all customer transactions</p>
                         </div>
                         <div className="header-actions">
-                            <select className="form-control" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} style={{ width: '200px' }}>
-                                <option value="">All Status</option>
-                                <option value="success">Success</option>
-                                <option value="pending">Pending</option>
-                                <option value="failed">Failed</option>
-                            </select>
+                            <div className="filter-group">
+                                <select
+                                    className="custom-select"
+                                    value={statusFilter}
+                                    onChange={(e) => setStatusFilter(e.target.value)}
+                                    style={{ width: '200px' }}
+                                >
+                                    <option value="">All Status</option>
+                                    <option value="success">Success</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="failed">Failed</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
 

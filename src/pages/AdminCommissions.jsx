@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import commissionService from '../services/commission.service';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import Pagination from '../components/common/Pagination';
+import SEO from '../components/common/SEO';
 import './AdminListings.css';
 import { toast } from 'react-toastify';
 
@@ -76,7 +77,7 @@ const AdminCommissions = () => {
         }
 
         const headers = [
-            'Marketer Name', 'Marketer Email', 'Amount', 'Bank Name', 'Account Number',
+            'Business Associate Name', 'Business Associate Email', 'Amount', 'Bank Name', 'Account Number',
             'IFSC Code', 'Holder Name', 'UPI ID', 'Earned Date'
         ];
 
@@ -101,24 +102,32 @@ const AdminCommissions = () => {
 
     return (
         <DashboardLayout>
+            <SEO title="Commission Management" description="Manage business associate commissions" />
             <div className="admin-listing-page animate-fade-up">
                 <div className="container">
                     <div className="admin-listing-header">
                         <div className="header-title">
                             <h1>Commission Payouts</h1>
-                            <p style={{ color: '#6c757d' }}>Manage and process marketer commissions</p>
+                            <p style={{ color: '#6c757d' }}>Manage and process business associate commissions</p>
                         </div>
-                        <div className="header-actions" style={{ display: 'flex', gap: '10px' }}>
-                            <button className="tj-primary-btn btn-sm" onClick={handleExport} style={{ backgroundColor: '#13689e', color: 'white' }}>
+                        <div className="header-actions" style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                            <button className="tj-btn tj-btn-primary tj-btn-sm add-btn" onClick={handleExport} style={{ backgroundColor: '#13689e', color: 'white' }}>
                                 <span className="btn-text"><span>Export for Payout</span></span>
                             </button>
-                            <select className="form-control" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} style={{ width: '200px' }}>
-                                <option value="">All Status</option>
-                                <option value="pending">Pending</option>
-                                <option value="approved">Approved</option>
-                                <option value="paid">Paid</option>
-                                <option value="rejected">Rejected</option>
-                            </select>
+                            <div className="filter-group">
+                                <select
+                                    className="custom-select"
+                                    value={statusFilter}
+                                    onChange={(e) => setStatusFilter(e.target.value)}
+                                    style={{ width: '200px' }}
+                                >
+                                    <option value="">All Status</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="approved">Approved</option>
+                                    <option value="paid">Paid</option>
+                                    <option value="rejected">Rejected</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
 
@@ -126,7 +135,7 @@ const AdminCommissions = () => {
                         <table className="listing-table">
                             <thead>
                                 <tr>
-                                    <th>Marketer</th>
+                                    <th>Business Associate</th>
                                     <th>Amount</th>
                                     <th>Source</th>
                                     <th>Date</th>

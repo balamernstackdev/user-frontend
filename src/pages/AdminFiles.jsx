@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import fileService from '../services/file.service';
+import SEO from '../components/common/SEO';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import './AdminFiles.css';
 import { toast } from 'react-toastify';
@@ -60,6 +61,7 @@ const AdminFiles = () => {
 
     return (
         <DashboardLayout>
+            <SEO title="File Management" description="Manage downloadable files" />
             <div className="admin-files-page animate-fade-up">
                 <div className="container">
                     <div className="files-header">
@@ -69,14 +71,16 @@ const AdminFiles = () => {
                         </div>
                         <div className="header-actions">
                             <div className="file-filters">
-                                <select className="form-control" value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)} style={{ width: '150px' }}>
-                                    <option value="">All Categories</option>
-                                    <option value="e-book">E-Books</option>
-                                    <option value="software">Software</option>
-                                    <option value="template">Templates</option>
-                                    <option value="video">Videos</option>
-                                </select>
-                                <Link to="/admin/files/create" className="tj-primary-btn">
+                                <div className="filter-group">
+                                    <select className="custom-select" value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)} style={{ width: '180px' }}>
+                                        <option value="">All Categories</option>
+                                        <option value="e-book">E-Books</option>
+                                        <option value="software">Software</option>
+                                        <option value="template">Templates</option>
+                                        <option value="video">Videos</option>
+                                    </select>
+                                </div>
+                                <Link to="/admin/files/create" className="tj-btn tj-btn-primary">
                                     <span className="btn-text"><span><i className="fas fa-upload"></i> Upload File</span></span>
                                 </Link>
                             </div>

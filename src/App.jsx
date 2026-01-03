@@ -38,6 +38,7 @@ import AdminPayoutProcess from './pages/AdminPayoutProcess';
 import AdminTransactions from './pages/AdminTransactions';
 import AdminTickets from './pages/AdminTickets';
 import AdminLogs from './pages/AdminLogs';
+import AdminBATransactions from './pages/AdminBATransactions';
 import AdminFAQs from './pages/AdminFAQs';
 import AdminFAQForm from './pages/AdminFAQForm';
 import AdminHowToUse from './pages/AdminHowToUse';
@@ -72,14 +73,14 @@ function App() {
                 <Route path="/registration-success" element={<RegistrationSuccess />} />
                 <Route path="/verify-email" element={<VerifyEmail />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
-                <Route path="/reset-password/:token" element={<ResetPassword />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/plans" element={<Plans />} />
                 <Route path="/tutorials" element={<Tutorials />} />
                 <Route path="/tutorials/:id" element={<Tutorials />} />
                 <Route path="/how-to-use" element={<HowToUse />} />
                 <Route path="/faq" element={<FAQ />} />
-                <Route path="/curated-analysis" element={<ProtectedRoute><CuratedAnalysis /></ProtectedRoute>} />
-                <Route path="/curated-analysis/:id" element={<ProtectedRoute><CuratedAnalysis /></ProtectedRoute>} />
+                <Route path="/curated-analysis" element={<ProtectedRoute allowedRoles={['user', 'admin']}><CuratedAnalysis /></ProtectedRoute>} />
+                <Route path="/curated-analysis/:id" element={<ProtectedRoute allowedRoles={['user', 'admin']}><CuratedAnalysis /></ProtectedRoute>} />
                 <Route path="/notifications" element={<ProtectedRoute allowedRoles={['user', 'business_associate', 'admin']}><Notifications /></ProtectedRoute>} />
                 <Route path="/notifications/:id" element={<ProtectedRoute allowedRoles={['user', 'business_associate', 'admin']}><NotificationDetails /></ProtectedRoute>} />
 
@@ -116,6 +117,7 @@ function App() {
                 <Route path="/admin/commissions/:id" element={<ProtectedRoute allowedRoles={['admin']}><CommissionDetail /></ProtectedRoute>} />
                 <Route path="/admin/commissions/:id/pay" element={<ProtectedRoute allowedRoles={['admin']}><AdminPayoutProcess /></ProtectedRoute>} />
                 <Route path="/admin/transactions" element={<ProtectedRoute allowedRoles={['admin']}><AdminTransactions /></ProtectedRoute>} />
+                <Route path="/admin/ba-transactions" element={<ProtectedRoute allowedRoles={['admin']}><AdminBATransactions /></ProtectedRoute>} />
                 <Route path="/admin/tickets" element={<ProtectedRoute allowedRoles={['admin']}><AdminTickets /></ProtectedRoute>} />
                 <Route path="/admin/logs" element={<ProtectedRoute allowedRoles={['admin']}><AdminLogs /></ProtectedRoute>} />
                 <Route path="/admin/files" element={<ProtectedRoute allowedRoles={['admin']}><AdminFiles /></ProtectedRoute>} />

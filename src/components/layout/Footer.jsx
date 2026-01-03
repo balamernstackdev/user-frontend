@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react'; // Added useEffect
+import { useSettings } from '../../context/SettingsContext';
 import { WOW } from '../../vendor/wow.js'; // Import WOW from fixed vendor file
 import './Footer.css';
 
@@ -10,7 +11,10 @@ import blurShape2 from '../../html/assets/images/h10-footer-shape-blur-2.svg';
 import award1 from '../../html/assets/images/award-logo-white-1.webp';
 import award2 from '../../html/assets/images/award-logo-white-2.webp';
 
+// ... relevant imports ...
+
 const Footer = () => {
+    const { settings } = useSettings();
     const [email, setEmail] = useState('');
     const [agreeToTerms, setAgreeToTerms] = useState(false);
 
@@ -41,6 +45,66 @@ const Footer = () => {
         }
     };
 
+    const storedData = JSON.parse(localStorage.getItem('user') || '{}');
+    // Handle both potential structures: nested user object or direct properties
+    const userRole = storedData?.user?.role || storedData?.role;
+    const role = userRole?.toLowerCase();
+
+    const renderServicesLinks = () => {
+        if (role === 'admin') {
+            return (
+                <ul>
+                    <li><Link to="/admin/dashboard">Dashboard</Link></li>
+                    <li><Link to="/admin/users">User Management</Link></li>
+                    <li><Link to="/admin/commissions">Commissions</Link></li>
+                    <li><Link to="/admin/settings">Settings</Link></li>
+                </ul>
+            );
+        } else if (role === 'business_associate') {
+            return (
+                <ul>
+                    <li><Link to="/dashboard">Dashboard</Link></li>
+                    <li><Link to="/referrals">My Referrals</Link></li>
+                    <li><Link to="/business-associate/commissions">My Commissions</Link></li>
+                    <li><Link to="/subscription">Plans</Link></li>
+                </ul>
+            );
+        } else {
+            // Default User
+            return (
+                <ul>
+                    <li><Link to="/curated-analysis">Analysis</Link></li>
+                    <li><Link to="/subscription">Plans</Link></li>
+                    <li><Link to="/downloads">Downloads</Link></li>
+                    <li><Link to="/payments">Transactions</Link></li>
+                </ul>
+            );
+        }
+    };
+
+    const renderResourcesLinks = () => {
+        if (role === 'admin') {
+            return (
+                <ul>
+                    <li><Link to="/admin/tickets">Support Tickets</Link></li>
+                    <li><Link to="/admin/logs">System Logs</Link></li>
+                    <li><Link to="/admin/files">File Manager</Link></li>
+                    <li><Link to="/admin/analysis">Analyses</Link></li>
+                </ul>
+            );
+        } else {
+            // User & Business Associate share similar resources
+            return (
+                <ul>
+                    <li><Link to="/tickets">Support Tickets</Link></li>
+                    <li><Link to="/faq">FAQs</Link></li>
+                    <li><Link to="/how-to-use">How to Use</Link></li>
+                    <li><Link to="/contact">Contact Us</Link></li>
+                </ul>
+            );
+        }
+    }
+
     return (
         <footer className="tj-footer-section footer-2 h5-footer h10-footer section-gap-x" style={{ position: 'relative' }}>
             <div className="footer-main-area">
@@ -48,9 +112,9 @@ const Footer = () => {
                     <div className="row justify-content-between">
                         <div className="col-xl-5 col-lg-4 col-md-6">
                             <div className="footer-widget footer-col-1">
-                                <h2 className="h10-footer-title text-anim wow fadeInUp" data-wow-delay=".3s">Building Better Business from Together?
-                                    <a className="text-btn wow fadeInUp" data-wow-delay=".3s" href="mailto:hello@stoxzo.com">
-                                        <span className="btn-text"><span>hello@stoxzo.com</span></span>
+                                <h2 className="h10-footer-title text-anim wow fadeInUp" data-wow-delay=".3s">{settings.footer_heading || 'Building Better Business together'}
+                                    <a className="text-btn wow fadeInUp" data-wow-delay=".3s" href={`mailto:${settings.contact_email}`}>
+                                        <span className="btn-text"><span>{settings.contact_email}</span></span>
                                     </a>
                                 </h2>
                                 <div className="bg-shape-widget wow fadeInUpBig" data-wow-delay=".7s"></div>
@@ -59,23 +123,13 @@ const Footer = () => {
                         <div className="col-xl-2 col-lg-3 col-md-6">
                             <div className="footer-widget footer-col-2 widget-nav-menu wow fadeInUp" data-wow-delay=".3s">
                                 <h5 className="title">Services</h5>
-                                <ul>
-                                    <li><Link to="/curated-analysis">Analysis</Link></li>
-                                    <li><Link to="/subscription">Plans</Link></li>
-                                    <li><Link to="/downloads">Downloads</Link></li>
-                                    <li><Link to="/payments">Transactions</Link></li>
-                                </ul>
+                                {renderServicesLinks()}
                             </div>
                         </div>
                         <div className="col-xl-2 col-lg-2 col-md-6">
                             <div className="footer-widget footer-col-3 widget-nav-menu wow fadeInUp" data-wow-delay=".5s">
                                 <h5 className="title">Resources</h5>
-                                <ul>
-                                    <li><Link to="/tickets">Support Tickets</Link></li>
-                                    <li><Link to="/faq">FAQs</Link></li>
-                                    <li><Link to="/how-to-use">How to Use</Link></li>
-                                    <li><Link to="/contact">Contact Us</Link></li>
-                                </ul>
+                                {renderResourcesLinks()}
                             </div>
                         </div>
                         <div className="col-xl-3 col-lg-3 col-md-6">
@@ -83,14 +137,14 @@ const Footer = () => {
                                 <h5 className="title">Our Office</h5>
                                 <div className="footer-contact-info">
                                     <div className="contact-item">
-                                        <span>993 Renner Burg, West Rond, MT 94251-030, USA.</span>
+                                        <span><i className="fas fa-map-marker-alt"></i> {settings.office_address}</span>
                                     </div>
                                     <div className="contact-item">
-                                        <a href="tel:10095447818">P: +1 (009) 544-7818</a>
-                                        <a href="mailto:support@stoxzo.com">M: support@stoxzo.com</a>
+                                        <a href={`tel:${(settings.contact_phone || '').replace(/\D/g, '')}`}><i className="fas fa-phone"></i> {settings.contact_phone}</a>
+                                        <a href={`mailto:${settings.support_email}`}><i className="fas fa-envelope"></i> {settings.support_email}</a>
                                     </div>
                                     <div className="contact-item">
-                                        <span><i className="far fa-clock"></i> Mon-Fri 10am-10pm</span>
+                                        <span><i className="far fa-clock"></i> {settings.office_hours}</span>
                                     </div>
                                 </div>
                             </div>
@@ -112,14 +166,14 @@ const Footer = () => {
                         <div className="col-12">
                             <div className="copyright-content-area">
                                 <div className="copyright-text">
-                                    <p>© 2025 <Link to="/">Stoxzo</Link> All right reserved</p>
+                                    <p>© {new Date().getFullYear()} {settings.site_name || 'Stoxzo'} All right reserved</p>
                                 </div>
                                 <div className="social-links style-3">
                                     <ul>
-                                        <li><a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer"><i className="fa-brands fa-facebook-f"></i></a></li>
-                                        <li><a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer"><i className="fa-brands fa-instagram"></i></a></li>
-                                        <li><a href="https://x.com/" target="_blank" rel="noopener noreferrer"><i className="fa-brands fa-x-twitter"></i></a></li>
-                                        <li><a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer"><i className="fa-brands fa-linkedin-in"></i></a></li>
+                                        <li><a href={settings.facebook_url || "https://www.facebook.com/"} target="_blank" rel="noopener noreferrer"><i className="fa-brands fa-facebook-f"></i></a></li>
+                                        <li><a href={settings.instagram_url || "https://www.instagram.com/"} target="_blank" rel="noopener noreferrer"><i className="fa-brands fa-instagram"></i></a></li>
+                                        <li><a href={settings.twitter_url || "https://x.com/"} target="_blank" rel="noopener noreferrer"><i className="fa-brands fa-x-twitter"></i></a></li>
+                                        <li><a href={settings.linkedin_url || "https://www.linkedin.com/"} target="_blank" rel="noopener noreferrer"><i className="fa-brands fa-linkedin-in"></i></a></li>
                                     </ul>
                                 </div>
                                 <div className="copyright-menu">

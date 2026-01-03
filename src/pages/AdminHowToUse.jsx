@@ -89,7 +89,7 @@ const AdminHowToUse = () => {
                         </div>
                         <div className="header-actions">
                             <button
-                                className="tj-primary-btn"
+                                className="tj-btn tj-btn-primary"
                                 onClick={() => navigate('/admin/how-to-use/create')}
                                 style={{ padding: '8px 20px', fontSize: '14px' }}
                             >

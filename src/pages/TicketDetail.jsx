@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useSettings } from '../context/SettingsContext';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import ticketService from '../services/ticket.service';
 import { authService } from '../services/auth.service';
@@ -7,6 +8,7 @@ import './TicketDetail.css';
 import { toast } from 'react-toastify';
 
 const TicketDetail = () => {
+    const { settings } = useSettings();
     const { id } = useParams();
     const navigate = useNavigate();
     const [ticket, setTicket] = useState(null);
@@ -262,7 +264,7 @@ const TicketDetail = () => {
                                                         ? 'Support Team'
                                                         : (user?.role === 'admin' ? (ticket.user_name || 'Customer') : 'You')}
                                                 </h4>
-                                                <span>{message.is_admin_reply ? 'Stoxzo Support' : 'Customer'}</span>
+                                                <span>{message.is_admin_reply ? `${settings.site_name || 'Stoxzo'} Support` : 'Customer'}</span>
                                             </div>
                                         </div>
                                         <span className="reply-time">{formatDate(message.created_at)}</span>

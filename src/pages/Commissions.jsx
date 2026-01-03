@@ -173,7 +173,7 @@ const Commissions = () => {
                                                         {commission.paid_at ? formatDate(commission.paid_at) : '-'}
                                                     </td>
                                                     <td>
-                                                        <Link to={`/marketer/commissions/${commission.id}`} className="view-btn">
+                                                        <Link to={`/business-associate/commissions/${commission.id}`} className="view-btn">
                                                             View
                                                         </Link>
                                                     </td>

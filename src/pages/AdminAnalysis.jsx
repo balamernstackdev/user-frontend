@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import AnalysisService from '../services/analysis.service';
+import SEO from '../components/common/SEO';
 import './AdminListings.css'; // Reuse common admin listing styles
 import { toast } from 'react-toastify';
 
@@ -46,6 +47,7 @@ const AdminAnalysis = () => {
 
     return (
         <DashboardLayout>
+            <SEO title="Analysis Management" description="Manage market analysis content" />
             <section className="admin-listing-page animate-fade-up">
                 <div className="container">
                     <div className="page-header d-flex justify-content-between align-items-center mb-4">
@@ -53,7 +55,7 @@ const AdminAnalysis = () => {
                             <h2 className="tj-section-title">Manage Analysis</h2>
                             <p className="text-muted">Create and manage market reports for users</p>
                         </div>
-                        <Link to="/admin/analysis/create" className="tj-primary-btn">
+                        <Link to="/admin/analysis/create" className="tj-btn tj-btn-primary">
                             <span className="btn-text"><span>Create New Analysis</span></span>
                             <span className="btn-icon"><i className="fas fa-plus"></i></span>
                         </Link>
@@ -103,21 +105,21 @@ const AdminAnalysis = () => {
                                                 <td>
                                                     <div className="d-flex gap-2">
                                                         <button
-                                                            className="btn btn-sm btn-outline-primary"
+                                                            className="tj-btn tj-btn-sm tj-btn-outline-primary"
                                                             onClick={() => navigate(`/admin/analysis/edit/${item.id}`)}
                                                             title="Edit"
                                                         >
                                                             <i className="fas fa-edit"></i>
                                                         </button>
                                                         <button
-                                                            className="btn btn-sm btn-outline-danger"
+                                                            className="tj-btn tj-btn-sm tj-btn-outline-danger"
                                                             onClick={() => handleDelete(item.id)}
                                                             title="Delete"
                                                         >
                                                             <i className="fas fa-trash"></i>
                                                         </button>
                                                         <Link
-                                                            className="btn btn-sm btn-outline-info"
+                                                            className="tj-btn tj-btn-sm tj-btn-outline-info"
                                                             to={`/curated-analysis/${item.id}`}
                                                             target="_blank"
                                                             title="View"

@@ -44,7 +44,7 @@ const AdminPayoutProcess = () => {
         const hasUpiDetails = commission.marketer_upi_id;
 
         if (!hasBankDetails && !hasUpiDetails) {
-            toast.error('Cannot process payout. Marketer has not provided valid bank details or UPI ID.');
+            toast.error('Cannot process payout. Business Associate has not provided valid bank details or UPI ID.');
             return;
         }
 
@@ -83,7 +83,7 @@ const AdminPayoutProcess = () => {
                         <i className="fas fa-exclamation-circle text-danger h1 mb-3"></i>
                         <h3>Error Loading Details</h3>
                         <p className="text-muted">{error || 'Commission not found'}</p>
-                        <Link to="/admin/commissions" className="tj-primary-btn mt-3">
+                        <Link to="/admin/commissions" className="tj-btn tj-btn-primary mt-3">
                             <span className="btn-text"><span>Back to Commissions</span></span>
                         </Link>
                     </div>
@@ -101,7 +101,7 @@ const AdminPayoutProcess = () => {
                         <i className="fas fa-check-circle text-success h1 mb-3"></i>
                         <h3>Already Paid</h3>
                         <p className="text-muted">This commission has already been marked as paid.</p>
-                        <Link to="/admin/commissions" className="tj-primary-btn mt-3">
+                        <Link to="/admin/commissions" className="tj-btn tj-btn-primary mt-3">
                             <span className="btn-text"><span>Back to Commissions</span></span>
                         </Link>
                     </div>
@@ -131,7 +131,7 @@ const AdminPayoutProcess = () => {
 
                                 <div className="row mb-4">
                                     <div className="col-md-6">
-                                        <label className="text-muted small">Marketer Name</label>
+                                        <label className="text-muted small">Business Associate Name</label>
                                         <div className="h5">{commission.marketer_name}</div>
                                         <div className="text-muted small">{commission.marketer_email}</div>
                                     </div>
@@ -176,7 +176,7 @@ const AdminPayoutProcess = () => {
                                     ) : (
                                         <div className="alert alert-warning mb-0">
                                             <i className="fas fa-exclamation-triangle me-2"></i>
-                                            Marketer has not provided payout details yet.
+                                            Business Associate has not provided payout details yet.
                                         </div>
                                     )}
                                 </div>
@@ -226,7 +226,7 @@ const AdminPayoutProcess = () => {
 
                                     <button
                                         type="submit"
-                                        className="tj-primary-btn w-100 py-3"
+                                        className="tj-btn tj-btn-primary w-100 py-3"
                                         disabled={isSubmitting || (!commission.marketer_bank_name && !commission.marketer_upi_id)}
                                     >
                                         <span className="btn-text">
@@ -236,7 +236,7 @@ const AdminPayoutProcess = () => {
                                         </span>
                                     </button>
 
-                                    <Link to="/admin/commissions" className="btn btn-light w-100 mt-3 border">
+                                    <Link to="/admin/commissions" className="tj-btn tj-btn-secondary w-100 mt-3 border">
                                         Cancel
                                     </Link>
                                 </form>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import planService from '../services/plan.service';
+import SEO from '../components/common/SEO';
 import './AdminListings.css';
 import { toast } from 'react-toastify';
 
@@ -57,6 +58,7 @@ const AdminPlans = () => {
 
     return (
         <DashboardLayout>
+            <SEO title="Plan Management" description="Manage subscription plans" />
             <div className="admin-listing-page animate-fade-up">
                 <div className="container">
                     <div className="admin-listing-header">
@@ -64,7 +66,7 @@ const AdminPlans = () => {
                             <h1>Subscription Plans</h1>
                             <p style={{ color: '#6c757d' }}>Manage your product pricing and features</p>
                         </div>
-                        <button className="tj-primary-btn" onClick={() => navigate('/admin/plans/create')}>
+                        <button className="tj-btn tj-btn-primary add-btn" onClick={() => navigate('/admin/plans/create')}>
                             <span className="btn-text"><span>+ Create Plan</span></span>
                         </button>
                     </div>

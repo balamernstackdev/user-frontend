@@ -3,6 +3,7 @@ import ticketService from '../services/ticket.service';
 import { Link } from 'react-router-dom';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import Pagination from '../components/common/Pagination';
+import SEO from '../components/common/SEO';
 import './AdminListings.css';
 
 const AdminTickets = () => {
@@ -67,6 +68,7 @@ const AdminTickets = () => {
 
     return (
         <DashboardLayout>
+            <SEO title="Support Management" description="Manage support tickets" />
             <div className="admin-listing-page animate-fade-up">
                 <div className="container">
                     <div className="admin-listing-header">
@@ -75,13 +77,20 @@ const AdminTickets = () => {
                             <p style={{ color: '#6c757d' }}>Manage user support requests</p>
                         </div>
                         <div className="header-actions">
-                            <select className="form-control" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} style={{ width: '200px' }}>
-                                <option value="">All Status</option>
-                                <option value="open">Open</option>
-                                <option value="in_progress">In Progress</option>
-                                <option value="resolved">Resolved</option>
-                                <option value="closed">Closed</option>
-                            </select>
+                            <div className="filter-group">
+                                <select
+                                    className="custom-select"
+                                    value={statusFilter}
+                                    onChange={(e) => setStatusFilter(e.target.value)}
+                                    style={{ width: '200px' }}
+                                >
+                                    <option value="">All Status</option>
+                                    <option value="open">Open</option>
+                                    <option value="in_progress">In Progress</option>
+                                    <option value="resolved">Resolved</option>
+                                    <option value="closed">Closed</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
 

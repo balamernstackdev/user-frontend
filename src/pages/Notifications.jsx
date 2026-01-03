@@ -57,9 +57,15 @@ const Notifications = () => {
     };
 
     const getTimeAgo = (dateString) => {
+        if (!dateString) return '';
         const date = new Date(dateString);
+
+        // Fix for PG timestamp mismatch: adjusting for local timezone offset
+        // If the server sent a UTC time that was originally read as local, we need to shift it back.
+        const correctedDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+
         const now = new Date();
-        const diffInSeconds = Math.floor((now - date) / 1000);
+        const diffInSeconds = Math.floor((now - correctedDate) / 1000);
 
         if (diffInSeconds < 60) return 'Just now';
         if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} mins ago`;

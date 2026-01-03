@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { activityService } from '../services/activity.service';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import Pagination from '../components/common/Pagination';
+import SEO from '../components/common/SEO';
 import './AdminListings.css';
 
 const AdminLogs = () => {
@@ -54,6 +55,7 @@ const AdminLogs = () => {
 
     return (
         <DashboardLayout>
+            <SEO title="System Logs" description="View system activity logs" />
             <div className="admin-listing-page animate-fade-up">
                 <div className="container">
                     <div className="admin-listing-header">
@@ -62,13 +64,20 @@ const AdminLogs = () => {
                             <p style={{ color: '#6c757d' }}>Monitor system activities and security events</p>
                         </div>
                         <div className="header-actions">
-                            <select className="form-control" value={filter} onChange={(e) => setFilter(e.target.value)} style={{ width: '200px' }}>
-                                <option value="">All Actions</option>
-                                <option value="auth">Auth</option>
-                                <option value="payment">Payment</option>
-                                <option value="subscription">Subscription</option>
-                                <option value="admin_action">Admin Action</option>
-                            </select>
+                            <div className="filter-group">
+                                <select
+                                    className="custom-select"
+                                    value={filter}
+                                    onChange={(e) => setFilter(e.target.value)}
+                                    style={{ width: '200px' }}
+                                >
+                                    <option value="">All Actions</option>
+                                    <option value="auth">Auth</option>
+                                    <option value="payment">Payment</option>
+                                    <option value="subscription">Subscription</option>
+                                    <option value="admin_action">Admin Action</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
 

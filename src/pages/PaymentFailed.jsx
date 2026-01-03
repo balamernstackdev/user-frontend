@@ -1,9 +1,11 @@
 import { Link, useLocation } from 'react-router-dom';
+import { useSettings } from '../context/SettingsContext';
 import DashboardLayout from '../components/layout/DashboardLayout'; // Optional wrapping
 import './PaymentFailed.css';
 import StoxzoLogo from '../assets/images/Stoxzo_Logo.svg';
 
 const PaymentFailed = () => {
+    const { settings } = useSettings();
     const location = useLocation();
     const { error, code } = location.state || {}; // Expecting error details state
 
@@ -53,7 +55,7 @@ const PaymentFailed = () => {
 
                     <div className="support-link animate-fade-up" style={{ animationDelay: '0.4s' }}>
                         <p>
-                            Need help? Contact our support team at <a href="mailto:support@stoxzo.com">support@stoxzo.com</a>
+                            Need help? Contact our support team at <a href={`mailto:${settings.support_email}`}>{settings.support_email}</a>
                         </p>
                     </div>
                 </div>

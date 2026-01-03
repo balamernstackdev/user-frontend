@@ -102,10 +102,22 @@ const AdminPlanForm = () => {
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: type === 'checkbox' ? checked : value
-        }));
+        setFormData(prev => {
+            const newData = {
+                ...prev,
+                [name]: type === 'checkbox' ? checked : value
+            };
+
+            // Auto-generate slug from name if creating new plan
+            if (name === 'name' && !isEditMode) {
+                newData.slug = value
+                    .toLowerCase()
+                    .replace(/[^a-z0-9]+/g, '-')
+                    .replace(/^-+|-+$/g, '');
+            }
+
+            return newData;
+        });
     };
 
     const handleFeatureChange = (index, value) => {
@@ -141,6 +153,7 @@ const AdminPlanForm = () => {
             // Clean up data
             const payload = {
                 ...formData,
+                planType: formData.plan_type, // Required for backend validation middleware
                 monthly_price: formData.monthly_price ? Number(formData.monthly_price) : null,
                 yearly_price: formData.yearly_price ? Number(formData.yearly_price) : null,
                 lifetime_price: formData.lifetime_price ? Number(formData.lifetime_price) : null,

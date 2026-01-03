@@ -1,12 +1,13 @@
-import React from 'react';
+import { useSettings } from '../context/SettingsContext';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import SEO from '../components/common/SEO';
 import './LegalPages.css';
 
 const PrivacyPolicy = () => {
+    const { settings } = useSettings();
     return (
         <DashboardLayout>
-            <SEO title="Privacy Policy" description="Learn how Stoxzo protects your personal information." />
+            <SEO title="Privacy Policy" description={`Learn how ${settings.site_name || 'Stoxzo'} protects your personal information.`} />
             <section className="page-section">
                 <div className="container">
                     <div className="page-header text-center mb-5">
@@ -17,7 +18,7 @@ const PrivacyPolicy = () => {
                     <div className="card shadow-sm border-0 legal-card">
                         <div className="card-body p-4 p-md-5">
                             <h4>1. Introduction</h4>
-                            <p>Welcome to Stoxzo. We respect your privacy and are committed to protecting your personal data. This privacy policy will inform you as to how we look after your personal data when you visit our website and tell you about your privacy rights.</p>
+                            <p>Welcome to {settings.site_name || 'Stoxzo'}. We respect your privacy and are committed to protecting your personal data. This privacy policy will inform you as to how we look after your personal data when you visit our website and tell you about your privacy rights.</p>
 
                             <h4 className="mt-4">2. Data We Collect</h4>
                             <p>We may collect, use, store and transfer different kinds of personal data about you which we have grouped together follows: Identity Data, Contact Data, Financial Data, Transaction Data, and Technical Data.</p>
@@ -34,7 +35,7 @@ const PrivacyPolicy = () => {
                             <p>We have put in place appropriate security measures to prevent your personal data from being accidentally lost, used or accessed in an unauthorized way, altered or disclosed.</p>
 
                             <h4 className="mt-4">5. Contact Us</h4>
-                            <p>If you have any questions about this privacy policy or our privacy practices, please contact us at: <a href="mailto:support@stoxzo.com">support@stoxzo.com</a></p>
+                            <p>If you have any questions about this privacy policy or our privacy practices, please contact us at: <a href={`mailto:${settings.support_email || 'support@stoxzo.com'}`}>{settings.support_email || 'support@stoxzo.com'}</a></p>
                         </div>
                     </div>
                 </div>

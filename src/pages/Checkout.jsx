@@ -53,7 +53,7 @@ const Checkout = () => {
             setProcessing(true);
 
             // Create order
-            const response = await paymentService.createOrder(planId);
+            const response = await paymentService.createOrder(planId, plan.plan_type || 'monthly');
             const order = response.data; // Access nested data object
 
             if (selectedMethod === 'razorpay') {
@@ -61,9 +61,11 @@ const Checkout = () => {
                 setTimeout(async () => {
                     try {
                         const verifyResponse = await paymentService.verifyPayment({
-                            orderId: order.orderId,
-                            paymentId: 'pay_test_1234567890', // Test Payment ID
-                            signature: 'test_signature',      // Test Signature
+                            razorpayOrderId: order.orderId,
+                            razorpayPaymentId: 'pay_test_1234567890', // Test Payment ID
+                            razorpaySignature: 'test_signature',      // Test Signature
+                            planId,
+                            planType: plan.plan_type || 'monthly',
                             transactionId: order.transactionId
                         });
 

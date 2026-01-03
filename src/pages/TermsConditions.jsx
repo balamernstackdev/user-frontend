@@ -1,11 +1,12 @@
-import React from 'react';
+import { useSettings } from '../context/SettingsContext';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import SEO from '../components/common/SEO';
 import './LegalPages.css';
 const TermsConditions = () => {
+    const { settings } = useSettings();
     return (
         <DashboardLayout>
-            <SEO title="Terms & Conditions" description="Read the Terms and Conditions for using Stoxzo services." />
+            <SEO title="Terms & Conditions" description={`Read the Terms and Conditions for using ${settings.site_name || 'Stoxzo'} services.`} />
             <section className="page-section">
                 <div className="container">
                     <div className="page-header text-center mb-5">
@@ -19,7 +20,7 @@ const TermsConditions = () => {
                             <p>By accessing our website, you agree to be bound by these Terms of Service and to comply with all applicable laws and regulations.</p>
 
                             <h4 className="mt-4">2. Intellectual Property Rights</h4>
-                            <p>Other than the content you own, under these Terms, Stoxzo and/or its licensors own all the intellectual property rights and materials contained in this Website.</p>
+                            <p>Other than the content you own, under these Terms, {settings.site_name || 'Stoxzo'} and/or its licensors own all the intellectual property rights and materials contained in this Website.</p>
 
                             <h4 className="mt-4">3. Restrictions</h4>
                             <p>You are specifically restricted from all of the following:</p>
@@ -32,7 +33,7 @@ const TermsConditions = () => {
                             </ul>
 
                             <h4 className="mt-4">4. Limitation of Liability</h4>
-                            <p>In no event shall Stoxzo, nor any of its officers, directors and employees, be held liable for anything arising out of or in any way connected with your use of this Website.</p>
+                            <p>In no event shall {settings.site_name || 'Stoxzo'}, nor any of its officers, directors and employees, be held liable for anything arising out of or in any way connected with your use of this Website.</p>
 
                             <h4 className="mt-4">5. Governing Law & Jurisdiction</h4>
                             <p>These Terms will be governed by and interpreted in accordance with the laws of the State, and you submit to the non-exclusive jurisdiction of the state and federal courts located in us for the resolution of any disputes.</p>

@@ -9,12 +9,14 @@ import './html/assets/css/main.css';
 import App from './App.jsx'
 import './index.css'
 
+import { SettingsProvider } from './context/SettingsContext';
+
 ReactDOM.createRoot(document.getElementById('root')).render(
-    <React.StrictMode>
-        <BrowserRouter>
-            <HelmetProvider>
+    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <HelmetProvider>
+            <SettingsProvider>
                 <App />
-            </HelmetProvider>
-        </BrowserRouter>
-    </React.StrictMode>,
+            </SettingsProvider>
+        </HelmetProvider>
+    </BrowserRouter>,
 )

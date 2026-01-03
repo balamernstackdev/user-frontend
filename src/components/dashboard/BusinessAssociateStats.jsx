@@ -1,6 +1,6 @@
 import React from 'react';
 
-const MarketerStats = ({ stats }) => {
+const BusinessAssociateStats = ({ stats }) => {
     if (!stats) return null;
 
     const statItems = [
@@ -49,4 +49,4 @@ const MarketerStats = ({ stats }) => {
     );
 };
 
-export default MarketerStats;
+export default BusinessAssociateStats;

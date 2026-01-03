@@ -1,8 +1,10 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
+import { useSettings } from '../../context/SettingsContext';
 
 const SEO = ({ title, description, keywords, image }) => {
-    const siteTitle = 'Stoxzo';
+    const { settings } = useSettings();
+    const siteTitle = settings.site_name || 'Stoxzo';
     const defaultDescription = 'Professional website for stock market analysis';
     const currentTitle = title ? `${title} | ${siteTitle}` : siteTitle;
     const currentDescription = description || defaultDescription;

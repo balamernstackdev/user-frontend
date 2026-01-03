@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { authService } from '../services/auth.service';
+import { useSettings } from '../context/SettingsContext';
 import SEO from '../components/common/SEO';
 import StoxzoLogo from '../assets/images/Stoxzo_Logo.svg';
 import './Login.css';
@@ -8,6 +9,7 @@ import bgImage from '../assets/images/bg.png';
 import { toast } from 'react-toastify';
 
 const Login = () => {
+    const { settings } = useSettings();
     const navigate = useNavigate();
     const location = useLocation();
     const [formData, setFormData] = useState({
@@ -78,12 +80,12 @@ const Login = () => {
     return (
         <section className="login-section">
             <div className="login-bg-watermark" style={{ backgroundImage: `url(${bgImage})` }}></div>
-            <SEO title="Login" description="Login to your Stoxzo account." />
+            <SEO title="Login" description={`Login to your ${settings.site_name || 'Stoxzo'} account.`} />
             <div className="login-wrapper">
                 <div className="login-card">
                     <div className="login-logo">
                         <Link to="/">
-                            <img src={StoxzoLogo} alt="Stoxzo Logo" />
+                            <img src={StoxzoLogo} alt={`${settings.site_name || 'Stoxzo'} Logo`} />
                         </Link>
                     </div>
 
@@ -103,6 +105,7 @@ const Login = () => {
                                 value={formData.email}
                                 onChange={handleChange}
                                 required
+                                autoComplete="email"
                             />
                         </div>
 
@@ -117,6 +120,7 @@ const Login = () => {
                                     value={formData.password}
                                     onChange={handleChange}
                                     required
+                                    autoComplete="current-password"
                                 />
                                 <button
                                     type="button"

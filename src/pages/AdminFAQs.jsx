@@ -94,9 +94,9 @@ const AdminFAQs = () => {
                         </div>
                         <div className="header-actions">
                             <button
-                                className="tj-primary-btn"
+                                className="tj-primary-btn add-btn"
                                 onClick={() => navigate('/admin/faqs/create')}
-                                style={{ padding: '8px 20px', fontSize: '14px' }}
+                                style={{ fontSize: '14px' }}
                             >
                                 <span className="btn-text"><span>+ Add FAQ</span></span>
                             </button>
