@@ -53,6 +53,7 @@ import AdminAnalysisForm from './pages/AdminAnalysisForm';
 import AdminEmailTemplates from './pages/AdminEmailTemplates';
 import AdminEmailTemplateEdit from './pages/AdminEmailTemplateEdit';
 import AdminAnnouncements from './pages/AdminAnnouncements';
+import AdminAnnouncementForm from './pages/AdminAnnouncementForm';
 import AdminSettings from './pages/AdminSettings';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsConditions from './pages/TermsConditions';
@@ -165,6 +166,8 @@ function App() {
                 <Route path="/admin/email-templates" element={<ProtectedRoute allowedRoles={['admin']}><AdminEmailTemplates /></ProtectedRoute>} />
                 <Route path="/admin/email-templates/:id" element={<ProtectedRoute allowedRoles={['admin']}><AdminEmailTemplateEdit /></ProtectedRoute>} />
                 <Route path="/admin/announcements" element={<ProtectedRoute allowedRoles={['admin', 'support_agent']}><AdminAnnouncements /></ProtectedRoute>} />
+                <Route path="/admin/announcements/create" element={<ProtectedRoute allowedRoles={['admin']}><AdminAnnouncementForm /></ProtectedRoute>} />
+                <Route path="/admin/announcements/edit/:id" element={<ProtectedRoute allowedRoles={['admin']}><AdminAnnouncementForm /></ProtectedRoute>} />
 
                 {/* Legal Pages */}
                 <Route path="/privacy" element={<PrivacyPolicy />} />

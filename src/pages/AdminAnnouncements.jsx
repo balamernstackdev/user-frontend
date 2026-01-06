@@ -1,20 +1,16 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import announcementService from '../services/announcement.service';
 import { authService } from '../services/auth.service';
 import { toast } from 'react-toastify';
 import SkeletonLoader from '../components/dashboard/SkeletonLoader';
+import './AdminListings.css';
 
 const AdminAnnouncements = () => {
+    const navigate = useNavigate();
     const [announcements, setAnnouncements] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [submitting, setSubmitting] = useState(false);
-    const [formData, setFormData] = useState({
-        title: '',
-        content: '',
-        type: 'dashboard',
-        target_role: 'all'
-    });
 
     const user = authService.getUser();
     const isAdmin = user?.role === 'admin';
@@ -29,8 +25,9 @@ const AdminAnnouncements = () => {
             // Pass view='admin' for admin and support agents to see all announcements
             const params = (isAdmin || isSupport) ? { view: 'admin' } : {};
             const response = await announcementService.getAll(params);
-            if (response.success) {
-                setAnnouncements(response.data);
+            if (response.success || Array.isArray(response.data)) {
+                // Adjust based on if getAll returns { success: true, data: [] } or just []
+                setAnnouncements(response.data || []);
             }
         } catch (error) {
             console.error('Error fetching announcements:', error);
@@ -40,114 +37,40 @@ const AdminAnnouncements = () => {
         }
     };
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setSubmitting(true);
-        try {
-            const response = await announcementService.create(formData);
-            if (response.success) {
-                toast.success('Announcement created successfully');
-                setFormData({
-                    title: '',
-                    content: '',
-                    type: 'dashboard',
-                    target_role: 'all'
-                });
+    const handleDelete = async (id) => {
+        if (window.confirm('Are you sure you want to delete this announcement?')) {
+            try {
+                await announcementService.delete(id);
+                toast.success('Announcement deleted successfully');
                 fetchAnnouncements();
+            } catch (error) {
+                console.error('Error deleting announcement:', error);
+                toast.error('Failed to delete announcement');
             }
-        } catch (error) {
-            console.error('Error creating announcement:', error);
-            toast.error(error.response?.data?.message || 'Failed to create announcement');
-        } finally {
-            setSubmitting(false);
         }
     };
 
-
-
     return (
         <DashboardLayout>
-            <section className="page-section">
+            <div className="admin-listing-page animate-fade-up">
                 <div className="container">
-                    <div className="page-header animate-fade-up">
-                        <h1>Manage Announcements</h1>
-                        <p>Broadcast messages to users via dashboard or email.</p>
+                    <div className="admin-listing-header">
+                        <div className="header-title">
+                            <h1>Manage Announcements</h1>
+                            <p style={{ color: '#6c757d' }}>Broadcast messages to users via dashboard or email.</p>
+                        </div>
+                        {isAdmin && (
+                            <button
+                                className="tj-btn tj-btn-primary"
+                                onClick={() => navigate('/admin/announcements/create')}
+                            >
+                                <i className="fas fa-plus"></i> Create New
+                            </button>
+                        )}
                     </div>
 
                     <div className="row">
-                        {/* Create Form */}
-                        {isAdmin && (
-                            <div className="col-lg-4 mb-4">
-                                <div className="content-card animate-fade-up" style={{ animationDelay: '0.1s' }}>
-                                    <h3 className="card-title">Create New</h3>
-                                    <form onSubmit={handleSubmit}>
-                                        <div className="form-group">
-                                            <label htmlFor="title">Title</label>
-                                            <input
-                                                type="text"
-                                                id="title"
-                                                name="title"
-                                                className="form-control"
-                                                value={formData.title}
-                                                onChange={handleChange}
-                                                required
-                                            />
-                                        </div>
-                                        <div className="form-group">
-                                            <label htmlFor="content">Content</label>
-                                            <textarea
-                                                id="content"
-                                                name="content"
-                                                className="form-control"
-                                                value={formData.content}
-                                                onChange={handleChange}
-                                                rows="4"
-                                                required
-                                            ></textarea>
-                                        </div>
-                                        <div className="form-group">
-                                            <label htmlFor="type">Type</label>
-                                            <select
-                                                id="type"
-                                                name="type"
-                                                className="form-control"
-                                                value={formData.type}
-                                                onChange={handleChange}
-                                            >
-                                                <option value="dashboard">Dashboard Only</option>
-                                                <option value="email">Email Only</option>
-                                                <option value="both">Both</option>
-                                            </select>
-                                        </div>
-                                        <div className="form-group">
-                                            <label htmlFor="target_role">Target Audience</label>
-                                            <select
-                                                id="target_role"
-                                                name="target_role"
-                                                className="form-control"
-                                                value={formData.target_role}
-                                                onChange={handleChange}
-                                            >
-                                                <option value="all">All Users</option>
-                                                <option value="user">Regular Users</option>
-                                                <option value="business_associate">Business Associates</option>
-                                            </select>
-                                        </div>
-                                        <button type="submit" className="btn btn-primary w-100" disabled={submitting}>
-                                            {submitting ? 'Posting...' : 'Post Announcement'}
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* List */}
-                        <div className={isAdmin ? "col-lg-8" : "col-lg-12"}>
+                        <div className="col-12">
                             {/* Admin View: Table */}
                             {isAdmin && (
                                 <div className="content-card animate-fade-up" style={{ animationDelay: '0.2s' }}>
@@ -163,6 +86,7 @@ const AdminAnnouncements = () => {
                                                         <th>Type</th>
                                                         <th>Audience</th>
                                                         <th>Date</th>
+                                                        <th>Actions</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -180,11 +104,29 @@ const AdminAnnouncements = () => {
                                                                 </td>
                                                                 <td>{item.target_role}</td>
                                                                 <td>{new Date(item.created_at).toLocaleDateString()}</td>
+                                                                <td>
+                                                                    <div className="d-flex gap-2">
+                                                                        <button
+                                                                            className="btn btn-sm btn-outline-primary"
+                                                                            onClick={() => navigate(`/admin/announcements/edit/${item.id}`)}
+                                                                            title="Edit"
+                                                                        >
+                                                                            <i className="fas fa-edit"></i>
+                                                                        </button>
+                                                                        <button
+                                                                            className="btn btn-sm btn-outline-danger"
+                                                                            onClick={() => handleDelete(item.id)}
+                                                                            title="Delete"
+                                                                        >
+                                                                            <i className="fas fa-trash"></i>
+                                                                        </button>
+                                                                    </div>
+                                                                </td>
                                                             </tr>
                                                         ))
                                                     ) : (
                                                         <tr>
-                                                            <td colSpan="4" className="text-center py-4">No announcements yet</td>
+                                                            <td colSpan="5" className="text-center py-4">No announcements yet</td>
                                                         </tr>
                                                     )}
                                                 </tbody>
@@ -230,7 +172,7 @@ const AdminAnnouncements = () => {
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
         </DashboardLayout>
     );
 };
