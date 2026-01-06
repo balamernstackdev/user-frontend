@@ -2,7 +2,7 @@ import api from './api';
 import TokenService from './token.service';
 
 /**
- * Authentication Service
+
  * Handles all authentication-related API calls
  */
 const AuthService = {

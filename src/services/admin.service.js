@@ -38,7 +38,13 @@ export const adminService = {
             responseType: 'blob'
         });
         return response.data;
-    }
+    },
+
+    exportTransactions: (params) => adminService.exportData('transactions', 'csv', params),
+    exportUsers: (params) => adminService.exportData('users', 'csv', params),
+    exportMarketersCSV: (params) => adminService.exportData('marketers', 'csv', params),
+    exportMarketersPDF: (params) => adminService.exportData('marketers', 'pdf', params),
+    exportCommissions: (params) => adminService.exportData('commissions', 'csv', params)
 };
 
 export default adminService;
