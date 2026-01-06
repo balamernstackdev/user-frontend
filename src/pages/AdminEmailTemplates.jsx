@@ -4,6 +4,7 @@ import DashboardLayout from '../components/layout/DashboardLayout';
 import EmailTemplateService from '../services/emailTemplate.service';
 import { toast } from 'react-toastify';
 import SkeletonLoader from '../components/dashboard/SkeletonLoader';
+import './AdminListings.css';
 
 const AdminEmailTemplates = () => {
     const [templates, setTemplates] = useState([]);
@@ -29,19 +30,21 @@ const AdminEmailTemplates = () => {
 
     return (
         <DashboardLayout>
-            <section className="page-section">
+            <div className="admin-listing-page animate-fade-up">
                 <div className="container">
-                    <div className="page-header animate-fade-up">
-                        <h1>Email Templates</h1>
-                        <p>Manage dynamic email content for system notifications.</p>
+                    <div className="admin-listing-header">
+                        <div className="header-title">
+                            <h1>Email Templates</h1>
+                            <p style={{ color: '#6c757d' }}>Manage dynamic email content for system notifications.</p>
+                        </div>
                     </div>
 
-                    <div className="content-card animate-fade-up" style={{ animationDelay: '0.1s' }}>
+                    <div className="listing-table-container animate-fade-up" style={{ animationDelay: '0.1s' }}>
                         {loading ? (
                             <SkeletonLoader type="table" count={5} />
                         ) : (
                             <div className="table-responsive">
-                                <table className="table">
+                                <table className="listing-table">
                                     <thead>
                                         <tr>
                                             <th>Name</th>
@@ -54,15 +57,15 @@ const AdminEmailTemplates = () => {
                                         {templates.length > 0 ? (
                                             templates.map((template) => (
                                                 <tr key={template.id}>
-                                                    <td>
-                                                        <div style={{ fontWeight: 600, color: '#1a1a1a' }}>{template.name}</div>
-                                                        <div style={{ fontSize: '12px', color: '#6c757d' }}>Slug: {template.slug}</div>
+                                                    <td className="plan-info-cell">
+                                                        <div className="plan-name-text">{template.name}</div>
+                                                        <div className="plan-slug-text">Slug: {template.slug}</div>
                                                     </td>
-                                                    <td>{template.subject}</td>
+                                                    <td style={{ fontWeight: 600, color: '#475569' }}>{template.subject}</td>
                                                     <td>{new Date(template.updated_at).toLocaleDateString()}</td>
                                                     <td>
-                                                        <Link to={`/admin/email-templates/${template.id}`} className="btn btn-sm btn-outline-primary">
-                                                            <i className="fas fa-edit"></i> Edit
+                                                        <Link to={`/admin/email-templates/${template.id}`} className="tj-btn-sm tj-btn-outline-primary" style={{ textDecoration: 'none' }}>
+                                                            <i className="fas fa-edit me-1"></i> Edit
                                                         </Link>
                                                     </td>
                                                 </tr>
@@ -78,7 +81,7 @@ const AdminEmailTemplates = () => {
                         )}
                     </div>
                 </div>
-            </section>
+            </div>
         </DashboardLayout>
     );
 };

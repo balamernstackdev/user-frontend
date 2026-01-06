@@ -4,6 +4,7 @@ import SEO from '../components/common/SEO';
 import { FileText, Download, Calendar, Users, Briefcase, CreditCard, DollarSign } from 'lucide-react';
 import adminService from '../services/admin.service';
 import { toast } from 'react-toastify';
+import './AdminListings.css';
 
 const AdminReports = () => {
     const [loading, setLoading] = useState(false);
@@ -119,99 +120,101 @@ const AdminReports = () => {
     return (
         <DashboardLayout>
             <SEO title="Admin Reports" description="Generate and download system reports" />
-            <div className="container-fluid py-4">
-                <div className="d-flex justify-content-between align-items-center mb-4">
-                    <div>
-                        <h1 className="h3 mb-1">Reports Center</h1>
-                        <p className="text-muted small mb-0">Generate comprehensive reports for system analysis</p>
+            <div className="admin-listing-page animate-fade-up">
+                <div className="container">
+                    <div className="admin-listing-header">
+                        <div className="header-title">
+                            <h1>Reports Center</h1>
+                            <p style={{ color: '#6c757d' }}>Generate comprehensive reports for system analysis</p>
+                        </div>
                     </div>
-                </div>
 
-                {/* Filter Section */}
-                <div className="card border-0 shadow-sm mb-4">
-                    <div className="card-body p-4">
-                        <div className="row align-items-end g-3">
-                            <div className="col-md-4">
-                                <label className="form-label small text-muted fw-bold">Start Date</label>
-                                <div className="input-group">
-                                    <span className="input-group-text bg-light border-end-0">
-                                        <Calendar size={18} className="text-muted" />
-                                    </span>
-                                    <input
-                                        type="date"
-                                        name="startDate"
-                                        className="form-control border-start-0 ps-0"
-                                        value={dateRange.startDate}
-                                        onChange={handleDateChange}
-                                    />
+                    {/* Filter Section */}
+                    <div className="card border-0 shadow-sm mb-4">
+                        <div className="card-body p-4">
+                            <div className="row align-items-end g-3">
+                                <div className="col-md-4">
+                                    <label className="form-label small text-muted fw-bold">Start Date</label>
+                                    <div className="input-group">
+                                        <span className="input-group-text bg-light border-end-0">
+                                            <Calendar size={18} className="text-muted" />
+                                        </span>
+                                        <input
+                                            type="date"
+                                            name="startDate"
+                                            className="form-control border-start-0 ps-0"
+                                            value={dateRange.startDate}
+                                            onChange={handleDateChange}
+                                        />
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="col-md-4">
-                                <label className="form-label small text-muted fw-bold">End Date</label>
-                                <div className="input-group">
-                                    <span className="input-group-text bg-light border-end-0">
-                                        <Calendar size={18} className="text-muted" />
-                                    </span>
-                                    <input
-                                        type="date"
-                                        name="endDate"
-                                        className="form-control border-start-0 ps-0"
-                                        value={dateRange.endDate}
-                                        onChange={handleDateChange}
-                                    />
+                                <div className="col-md-4">
+                                    <label className="form-label small text-muted fw-bold">End Date</label>
+                                    <div className="input-group">
+                                        <span className="input-group-text bg-light border-end-0">
+                                            <Calendar size={18} className="text-muted" />
+                                        </span>
+                                        <input
+                                            type="date"
+                                            name="endDate"
+                                            className="form-control border-start-0 ps-0"
+                                            value={dateRange.endDate}
+                                            onChange={handleDateChange}
+                                        />
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="col-md-4">
-                                {(dateRange.startDate || dateRange.endDate) && (
-                                    <button
-                                        className="btn btn-outline-secondary w-100"
-                                        onClick={clearFilters}
-                                    >
-                                        Clear Filters
-                                    </button>
-                                )}
+                                <div className="col-md-4">
+                                    {(dateRange.startDate || dateRange.endDate) && (
+                                        <button
+                                            className="btn btn-outline-secondary w-100"
+                                            onClick={clearFilters}
+                                        >
+                                            Clear Filters
+                                        </button>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                {/* Reports Grid */}
-                <div className="row g-4">
-                    <div className="col-md-6 col-lg-3">
-                        <ExportCard
-                            title="Users Report"
-                            description="Export detailed list of all registered users, primarily for regular user analysis."
-                            icon={Users}
-                            type="users"
-                            color="#3b82f6"
-                        />
-                    </div>
-                    <div className="col-md-6 col-lg-3">
-                        <ExportCard
-                            title="Transactions"
-                            description="Recent payment transactions and statuses. Useful for financial reconciliation."
-                            icon={CreditCard}
-                            type="transactions"
-                            color="#10b981"
-                        />
-                    </div>
-                    <div className="col-md-6 col-lg-3">
-                        <ExportCard
-                            title="Business Assoc."
-                            description="Active marketers and their performance metrics. Includes referral codes."
-                            icon={Briefcase}
-                            type="marketers"
-                            color="#8b5cf6"
-                        />
-                    </div>
-                    <div className="col-md-6 col-lg-3">
-                        <ExportCard
-                            title="Commissions"
-                            description="Payout history and pending commissions for business associates."
-                            icon={DollarSign}
-                            type="commissions"
-                            color="#f59e0b"
-                        />
+                    {/* Reports Grid */}
+                    <div className="row g-4">
+                        <div className="col-md-6 col-lg-3">
+                            <ExportCard
+                                title="Users Report"
+                                description="Export detailed list of all registered users, primarily for regular user analysis."
+                                icon={Users}
+                                type="users"
+                                color="#3b82f6"
+                            />
+                        </div>
+                        <div className="col-md-6 col-lg-3">
+                            <ExportCard
+                                title="Transactions"
+                                description="Recent payment transactions and statuses. Useful for financial reconciliation."
+                                icon={CreditCard}
+                                type="transactions"
+                                color="#10b981"
+                            />
+                        </div>
+                        <div className="col-md-6 col-lg-3">
+                            <ExportCard
+                                title="Business Associates"
+                                description="Active marketers and their performance metrics. Includes referral codes."
+                                icon={Briefcase}
+                                type="marketers"
+                                color="#8b5cf6"
+                            />
+                        </div>
+                        <div className="col-md-6 col-lg-3">
+                            <ExportCard
+                                title="Commissions"
+                                description="Payout history and pending commissions for business associates."
+                                icon={DollarSign}
+                                type="commissions"
+                                color="#f59e0b"
+                            />
+                        </div>
                     </div>
                 </div>
             </div>
