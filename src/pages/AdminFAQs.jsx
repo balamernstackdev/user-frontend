@@ -61,6 +61,9 @@ const AdminFAQs = () => {
         fetchFAQs();
     }, [pagination.page]);
 
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const isAdmin = user.role === 'admin';
+
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this FAQ?')) {
             try {
@@ -93,13 +96,15 @@ const AdminFAQs = () => {
                             <p style={{ color: '#6c757d' }}>Manage Frequently Asked Questions</p>
                         </div>
                         <div className="header-actions">
-                            <button
-                                className="tj-primary-btn add-btn"
-                                onClick={() => navigate('/admin/faqs/create')}
-                                style={{ fontSize: '14px' }}
-                            >
-                                <span className="btn-text"><span>+ Add FAQ</span></span>
-                            </button>
+                            {isAdmin && (
+                                <button
+                                    className="tj-primary-btn add-btn"
+                                    onClick={() => navigate('/admin/faqs/create')}
+                                    style={{ fontSize: '14px' }}
+                                >
+                                    <span className="btn-text"><span>+ Add FAQ</span></span>
+                                </button>
+                            )}
                         </div>
                     </div>
 
@@ -110,14 +115,14 @@ const AdminFAQs = () => {
                                     <th>Question</th>
                                     <th>Answer (Preview)</th>
                                     <th>Status</th>
-                                    <th>Actions</th>
+                                    {isAdmin && <th>Actions</th>}
                                 </tr>
                             </thead>
                             <tbody>
                                 {loading ? (
-                                    <tr><td colSpan="4" className="text-center">Loading...</td></tr>
+                                    <tr><td colSpan={isAdmin ? "4" : "3"} className="text-center">Loading...</td></tr>
                                 ) : faqs.length === 0 ? (
-                                    <tr><td colSpan="4" className="text-center" style={{ padding: '50px' }}>No FAQs found</td></tr>
+                                    <tr><td colSpan={isAdmin ? "4" : "3"} className="text-center" style={{ padding: '50px' }}>No FAQs found</td></tr>
                                 ) : (
                                     faqs.map(faq => (
                                         <tr key={faq.id}>
@@ -131,28 +136,32 @@ const AdminFAQs = () => {
                                             </td>
                                             <td>
                                                 <button
-                                                    onClick={() => handleTogglePublish(faq.id, faq.is_published)}
+                                                    onClick={() => isAdmin && handleTogglePublish(faq.id, faq.is_published)}
                                                     className={`plan-type-badge`}
                                                     style={{
                                                         background: faq.is_published ? 'rgba(40, 167, 69, 0.1)' : 'rgba(239, 68, 68, 0.1)',
                                                         color: faq.is_published ? '#28a745' : '#ef4444',
                                                         border: 'none',
-                                                        cursor: 'pointer'
+                                                        cursor: isAdmin ? 'pointer' : 'default',
+                                                        opacity: isAdmin ? 1 : 0.8
                                                     }}
+                                                    disabled={!isAdmin}
                                                 >
                                                     {faq.is_published ? 'Published' : 'Draft'}
                                                 </button>
                                             </td>
-                                            <td>
-                                                <div className="actions-cell">
-                                                    <button className="action-btn" onClick={() => navigate(`/admin/faqs/edit/${faq.id}`)} title="Edit">
-                                                        <i className="far fa-edit"></i>
-                                                    </button>
-                                                    <button className="action-btn delete" onClick={() => handleDelete(faq.id)} title="Delete">
-                                                        <i className="fas fa-trash"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
+                                            {isAdmin && (
+                                                <td>
+                                                    <div className="actions-cell">
+                                                        <button className="action-btn" onClick={() => navigate(`/admin/faqs/edit/${faq.id}`)} title="Edit">
+                                                            <i className="far fa-edit"></i>
+                                                        </button>
+                                                        <button className="action-btn delete" onClick={() => handleDelete(faq.id)} title="Delete">
+                                                            <i className="fas fa-trash"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            )}
                                         </tr>
                                     ))
                                 )}

@@ -57,11 +57,18 @@ const HowToUse = () => {
 
                                         {guide.video_url && (
                                             <div className="video-container">
-                                                <div className="video-placeholder">
-                                                    <i className="fas fa-video"></i>
-                                                    <p>Video: {guide.title}</p>
-                                                    <a href={guide.video_url} target="_blank" rel="noopener noreferrer" className="btn btn-sm btn-primary mt-2">Watch Video</a>
-                                                </div>
+                                                {(guide.video_url.match(/\.(mp4|webm|ogg|mov)$/i) || guide.video_url.includes('cloudinary')) ? (
+                                                    <video controls>
+                                                        <source src={guide.video_url} />
+                                                        Your browser does not support the video tag.
+                                                    </video>
+                                                ) : (
+                                                    <div className="video-placeholder">
+                                                        <i className="fas fa-video"></i>
+                                                        <p>Video: {guide.title}</p>
+                                                        <a href={guide.video_url} target="_blank" rel="noopener noreferrer" className="btn btn-sm btn-primary mt-2">Watch Video</a>
+                                                    </div>
+                                                )}
                                             </div>
                                         )}
                                     </div>

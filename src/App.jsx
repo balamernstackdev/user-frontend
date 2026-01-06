@@ -31,6 +31,8 @@ import CommissionDetail from './pages/CommissionDetail';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminPlans from './pages/AdminPlans';
 import AdminPlanForm from './pages/AdminPlanForm';
+import AdminSubscriptions from './pages/AdminSubscriptions';
+import AdminSubscriptionForm from './pages/AdminSubscriptionForm';
 import AdminUsers from './pages/AdminUsers';
 import AdminUserForm from './pages/AdminUserForm';
 import AdminCommissions from './pages/AdminCommissions';
@@ -45,15 +47,21 @@ import AdminHowToUse from './pages/AdminHowToUse';
 import AdminHowToUseForm from './pages/AdminHowToUseForm';
 import AdminFiles from './pages/AdminFiles';
 import AdminFileForm from './pages/AdminFileForm';
+import AdminReports from './pages/AdminReports';
 import AdminAnalysis from './pages/AdminAnalysis';
 import AdminAnalysisForm from './pages/AdminAnalysisForm';
+import AdminEmailTemplates from './pages/AdminEmailTemplates';
+import AdminEmailTemplateEdit from './pages/AdminEmailTemplateEdit';
+import AdminAnnouncements from './pages/AdminAnnouncements';
 import AdminSettings from './pages/AdminSettings';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsConditions from './pages/TermsConditions';
 import ContactUs from './pages/ContactUs';
+import Maintenance from './pages/Maintenance';
 import NotFound from './pages/NotFound';
 import ProtectedRoute from './components/ProtectedRoute';
 import { authService } from './services/auth.service';
+import { useSettings } from './context/SettingsContext';
 import ScrollToTop from './components/ScrollToTop';
 
 import { ToastContainer } from 'react-toastify';
@@ -61,6 +69,16 @@ import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
     const isAuthenticated = authService.isAuthenticated();
+    const user = authService.getUser();
+    const { settings } = useSettings();
+
+    // Check for Maintenance Mode
+    const isMaintenanceMode = settings.maintenance_mode === 'true' || settings.maintenance_mode === true;
+    const isAdmin = user?.role === 'admin';
+
+    if (isMaintenanceMode && !isAdmin) {
+        return <Maintenance />;
+    }
 
     return (
         <div className="App">
@@ -81,8 +99,8 @@ function App() {
                 <Route path="/faq" element={<FAQ />} />
                 <Route path="/curated-analysis" element={<ProtectedRoute allowedRoles={['user', 'admin']}><CuratedAnalysis /></ProtectedRoute>} />
                 <Route path="/curated-analysis/:id" element={<ProtectedRoute allowedRoles={['user', 'admin']}><CuratedAnalysis /></ProtectedRoute>} />
-                <Route path="/notifications" element={<ProtectedRoute allowedRoles={['user', 'business_associate', 'admin']}><Notifications /></ProtectedRoute>} />
-                <Route path="/notifications/:id" element={<ProtectedRoute allowedRoles={['user', 'business_associate', 'admin']}><NotificationDetails /></ProtectedRoute>} />
+                <Route path="/notifications" element={<ProtectedRoute allowedRoles={['user', 'business_associate', 'admin', 'support_agent']}><Notifications /></ProtectedRoute>} />
+                <Route path="/notifications/:id" element={<ProtectedRoute allowedRoles={['user', 'business_associate', 'admin', 'support_agent']}><NotificationDetails /></ProtectedRoute>} />
 
                 {/* Protected Routes */}
                 <Route path="/dashboard" element={<ProtectedRoute allowedRoles={['user', 'business_associate']}><Dashboard /></ProtectedRoute>} />
@@ -98,7 +116,7 @@ function App() {
                 <Route path="/downloads" element={<ProtectedRoute allowedRoles={['user', 'business_associate']}><Downloads /></ProtectedRoute>} />
                 <Route path="/tickets" element={<ProtectedRoute allowedRoles={['user', 'business_associate']}><SupportTickets /></ProtectedRoute>} />
                 <Route path="/tickets/create" element={<ProtectedRoute allowedRoles={['user', 'business_associate']}><CreateTicket /></ProtectedRoute>} />
-                <Route path="/tickets/:id" element={<ProtectedRoute allowedRoles={['user', 'business_associate', 'admin']}><TicketDetail /></ProtectedRoute>} />
+                <Route path="/tickets/:id" element={<ProtectedRoute allowedRoles={['user', 'business_associate', 'admin', 'support_agent']}><TicketDetail /></ProtectedRoute>} />
 
                 {/* Business Associate Routes */}
                 <Route path="/business-associate/referrals" element={<ProtectedRoute allowedRoles={['business_associate']}><ReferredUsers /></ProtectedRoute>} />
@@ -106,29 +124,35 @@ function App() {
                 <Route path="/business-associate/commissions/:id" element={<ProtectedRoute allowedRoles={['business_associate']}><CommissionDetail /></ProtectedRoute>} />
 
                 {/* Admin Routes */}
-                <Route path="/admin/dashboard" element={<ProtectedRoute allowedRoles={['admin']}><AdminDashboard /></ProtectedRoute>} />
+                <Route path="/admin/dashboard" element={<ProtectedRoute allowedRoles={['admin', 'finance_manager']}><AdminDashboard /></ProtectedRoute>} />
                 <Route path="/admin/plans/create" element={<ProtectedRoute allowedRoles={['admin']}><AdminPlanForm /></ProtectedRoute>} />
                 <Route path="/admin/plans/edit/:id" element={<ProtectedRoute allowedRoles={['admin']}><AdminPlanForm /></ProtectedRoute>} />
                 <Route path="/admin/plans" element={<ProtectedRoute allowedRoles={['admin']}><AdminPlans /></ProtectedRoute>} />
+                <Route path="/admin/subscriptions" element={<ProtectedRoute allowedRoles={['admin', 'finance_manager']}><AdminSubscriptions /></ProtectedRoute>} />
+                <Route path="/admin/subscriptions/create" element={<ProtectedRoute allowedRoles={['admin', 'finance_manager']}><AdminSubscriptionForm /></ProtectedRoute>} />
+                <Route path="/admin/subscriptions/edit/:id" element={<ProtectedRoute allowedRoles={['admin', 'finance_manager']}><AdminSubscriptionForm /></ProtectedRoute>} />
                 <Route path="/admin/users" element={<ProtectedRoute allowedRoles={['admin']}><AdminUsers /></ProtectedRoute>} />
                 <Route path="/admin/users/create" element={<ProtectedRoute allowedRoles={['admin']}><AdminUserForm /></ProtectedRoute>} />
                 <Route path="/admin/users/edit/:id" element={<ProtectedRoute allowedRoles={['admin']}><AdminUserForm /></ProtectedRoute>} />
-                <Route path="/admin/commissions" element={<ProtectedRoute allowedRoles={['admin']}><AdminCommissions /></ProtectedRoute>} />
-                <Route path="/admin/commissions/:id" element={<ProtectedRoute allowedRoles={['admin']}><CommissionDetail /></ProtectedRoute>} />
-                <Route path="/admin/commissions/:id/pay" element={<ProtectedRoute allowedRoles={['admin']}><AdminPayoutProcess /></ProtectedRoute>} />
-                <Route path="/admin/transactions" element={<ProtectedRoute allowedRoles={['admin']}><AdminTransactions /></ProtectedRoute>} />
-                <Route path="/admin/ba-transactions" element={<ProtectedRoute allowedRoles={['admin']}><AdminBATransactions /></ProtectedRoute>} />
-                <Route path="/admin/tickets" element={<ProtectedRoute allowedRoles={['admin']}><AdminTickets /></ProtectedRoute>} />
+                <Route path="/admin/commissions" element={<ProtectedRoute allowedRoles={['admin', 'finance_manager']}><AdminCommissions /></ProtectedRoute>} />
+                <Route path="/admin/commissions/:id" element={<ProtectedRoute allowedRoles={['admin', 'finance_manager']}><CommissionDetail /></ProtectedRoute>} />
+                <Route path="/admin/commissions/:id/pay" element={<ProtectedRoute allowedRoles={['admin', 'finance_manager']}><AdminPayoutProcess /></ProtectedRoute>} />
+                <Route path="/admin/transactions" element={<ProtectedRoute allowedRoles={['admin', 'finance_manager']}><AdminTransactions /></ProtectedRoute>} />
+                <Route path="/admin/ba-transactions" element={<ProtectedRoute allowedRoles={['admin', 'finance_manager']}><AdminBATransactions /></ProtectedRoute>} />
+                <Route path="/admin/tickets" element={<ProtectedRoute allowedRoles={['admin', 'support_agent']}><AdminTickets /></ProtectedRoute>} />
                 <Route path="/admin/logs" element={<ProtectedRoute allowedRoles={['admin']}><AdminLogs /></ProtectedRoute>} />
                 <Route path="/admin/files" element={<ProtectedRoute allowedRoles={['admin']}><AdminFiles /></ProtectedRoute>} />
                 <Route path="/admin/files/create" element={<ProtectedRoute allowedRoles={['admin']}><AdminFileForm /></ProtectedRoute>} />
                 <Route path="/admin/files/edit/:id" element={<ProtectedRoute allowedRoles={['admin']}><AdminFileForm /></ProtectedRoute>} />
 
+                {/* Admin Reports */}
+                <Route path="/admin/reports" element={<ProtectedRoute allowedRoles={['admin']}><AdminReports /></ProtectedRoute>} />
+
                 {/* Admin Content Management */}
-                <Route path="/admin/faqs" element={<ProtectedRoute allowedRoles={['admin']}><AdminFAQs /></ProtectedRoute>} />
+                <Route path="/admin/faqs" element={<ProtectedRoute allowedRoles={['admin', 'support_agent']}><AdminFAQs /></ProtectedRoute>} />
                 <Route path="/admin/faqs/create" element={<ProtectedRoute allowedRoles={['admin']}><AdminFAQForm /></ProtectedRoute>} />
                 <Route path="/admin/faqs/edit/:id" element={<ProtectedRoute allowedRoles={['admin']}><AdminFAQForm /></ProtectedRoute>} />
-                <Route path="/admin/how-to-use" element={<ProtectedRoute allowedRoles={['admin']}><AdminHowToUse /></ProtectedRoute>} />
+                <Route path="/admin/how-to-use" element={<ProtectedRoute allowedRoles={['admin', 'support_agent']}><AdminHowToUse /></ProtectedRoute>} />
                 <Route path="/admin/how-to-use/create" element={<ProtectedRoute allowedRoles={['admin']}><AdminHowToUseForm /></ProtectedRoute>} />
                 <Route path="/admin/how-to-use/edit/:id" element={<ProtectedRoute allowedRoles={['admin']}><AdminHowToUseForm /></ProtectedRoute>} />
 
@@ -138,6 +162,9 @@ function App() {
                 <Route path="/admin/analysis/edit/:id" element={<ProtectedRoute allowedRoles={['admin']}><AdminAnalysisForm /></ProtectedRoute>} />
 
                 <Route path="/admin/settings" element={<ProtectedRoute allowedRoles={['admin']}><AdminSettings /></ProtectedRoute>} />
+                <Route path="/admin/email-templates" element={<ProtectedRoute allowedRoles={['admin']}><AdminEmailTemplates /></ProtectedRoute>} />
+                <Route path="/admin/email-templates/:id" element={<ProtectedRoute allowedRoles={['admin']}><AdminEmailTemplateEdit /></ProtectedRoute>} />
+                <Route path="/admin/announcements" element={<ProtectedRoute allowedRoles={['admin', 'support_agent']}><AdminAnnouncements /></ProtectedRoute>} />
 
                 {/* Legal Pages */}
                 <Route path="/privacy" element={<PrivacyPolicy />} />

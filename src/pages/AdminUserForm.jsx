@@ -155,6 +155,8 @@ const AdminUserForm = () => {
                                                     <option value="user">User</option>
                                                     <option value="business_associate">Business Associate</option>
                                                     <option value="admin">Admin</option>
+                                                    <option value="finance_manager">Finance Manager</option>
+                                                    <option value="support_agent">Support Agent</option>
                                                 </select>
                                             </div>
 

@@ -7,6 +7,8 @@ import './AdminListings.css';
 import { toast } from 'react-toastify';
 
 const AdminPlans = () => {
+    const { settings } = useSettings();
+    const symbol = settings.currency_symbol || '₹';
     const navigate = useNavigate();
     const [plans, setPlans] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -50,9 +52,9 @@ const AdminPlans = () => {
     };
 
     const formatPrice = (plan) => {
-        if (plan.monthly_price) return `₹${plan.monthly_price}/mo`;
-        if (plan.yearly_price) return `₹${plan.yearly_price}/yr`;
-        if (plan.lifetime_price) return `₹${plan.lifetime_price} (LT)`;
+        if (plan.monthly_price) return `${symbol}${plan.monthly_price}/mo`;
+        if (plan.yearly_price) return `${symbol}${plan.yearly_price}/yr`;
+        if (plan.lifetime_price) return `${symbol}${plan.lifetime_price} (LT)`;
         return 'Free/Contact';
     };
 
@@ -66,8 +68,26 @@ const AdminPlans = () => {
                             <h1>Subscription Plans</h1>
                             <p style={{ color: '#6c757d' }}>Manage your product pricing and features</p>
                         </div>
-                        <button className="tj-btn tj-btn-primary add-btn" onClick={() => navigate('/admin/plans/create')}>
-                            <span className="btn-text"><span>+ Create Plan</span></span>
+                        <button
+                            className="tj-primary-btn"
+                            onClick={() => navigate('/admin/plans/create')}
+                            style={{
+                                height: '38px',
+                                borderRadius: '50px',
+                                padding: '0 20px',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                backgroundColor: '#13689e',
+                                color: 'white',
+                                border: 'none',
+                                textDecoration: 'none',
+                                fontWeight: 600
+                            }}
+                        >
+                            <span className="btn-text">Create Plan</span>
+                            <span className="btn-icon">
+                                <i className="fas fa-arrow-right"></i>
+                            </span>
                         </button>
                     </div>
 

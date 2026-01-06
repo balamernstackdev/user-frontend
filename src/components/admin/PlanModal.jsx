@@ -211,7 +211,10 @@ const PlanModal = ({ plan, onSave, onClose }) => {
                                     </div>
                                 ))}
                                 <button type="button" className="add-feature-btn" onClick={addFeature}>
-                                    <i className="fas fa-plus"></i> Add Another Feature
+                                    <span className="btn-text">Add Another Feature</span>
+                                    <span className="btn-icon">
+                                        <i className="fas fa-arrow-right"></i>
+                                    </span>
                                 </button>
                             </div>
                         </div>
@@ -220,7 +223,10 @@ const PlanModal = ({ plan, onSave, onClose }) => {
                     <div className="modal-footer">
                         <button type="button" className="btn-secondary" onClick={onClose}>Cancel</button>
                         <button type="submit" className="tj-primary-btn">
-                            <span className="btn-text"><span>{plan ? 'Update Plan' : 'Create Plan'}</span></span>
+                            <span className="btn-text">{plan ? 'Update Plan' : 'Create Plan'}</span>
+                            <span className="btn-icon">
+                                <i className="fas fa-arrow-right"></i>
+                            </span>
                         </button>
                     </div>
                 </form>

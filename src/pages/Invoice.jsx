@@ -102,16 +102,26 @@ const Invoice = () => {
         }
     };
 
-    // Calculate tax/total if needed (assuming amount includes tax for now or 0 tax)
-    const subtotal = Number(transaction.amount);
-    const tax = 0;
-    const total = subtotal + tax;
+    // Calculate tax/total (Exclusive: Add tax to base amount)
+    const baseAmount = Number(transaction.amount);
+    const taxRate = Number(settings.tax_rate) || 0;
+
+    let tax = 0;
+    let finalTotal = baseAmount;
+
+    if (taxRate > 0) {
+        tax = baseAmount * (taxRate / 100);
+        finalTotal = baseAmount + tax;
+    }
 
     return (
         <DashboardLayout>
             <section className="page-section">
                 <div className="container">
                     <div className="invoice-card animate-fade-up">
+                        {/* ... existing header ... */}
+                        {/* ... existing details ... */}
+
                         <div className="invoice-header">
                             <div className="invoice-info">
                                 <h2>Invoice</h2>
@@ -159,22 +169,22 @@ const Invoice = () => {
                                         {transaction.plan_type && ` - ${transaction.plan_type.charAt(0).toUpperCase() + transaction.plan_type.slice(1)}`}
                                     </td>
                                     <td>1</td>
-                                    <td style={{ textAlign: 'right' }}>₹{Number(transaction.amount)?.toFixed(2)}</td>
-                                    <td style={{ textAlign: 'right' }}>₹{Number(transaction.amount)?.toFixed(2)}</td>
+                                    <td style={{ textAlign: 'right' }}>₹{baseAmount?.toFixed(2)}</td>
+                                    <td style={{ textAlign: 'right' }}>₹{baseAmount?.toFixed(2)}</td>
                                 </tr>
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <td colSpan="3" style={{ textAlign: 'right', fontWeight: 'bold' }}>Subtotal:</td>
-                                    <td style={{ textAlign: 'right' }}>₹{subtotal?.toFixed(2)}</td>
+                                    <td colSpan="3" style={{ textAlign: 'right', fontWeight: 'bold' }}>Subtotal (Taxable):</td>
+                                    <td style={{ textAlign: 'right' }}>₹{baseAmount?.toFixed(2)}</td>
                                 </tr>
                                 <tr>
-                                    <td colSpan="3" style={{ textAlign: 'right', fontWeight: 'bold' }}>Tax (0%):</td>
+                                    <td colSpan="3" style={{ textAlign: 'right', fontWeight: 'bold' }}>Tax ({taxRate}%):</td>
                                     <td style={{ textAlign: 'right' }}>₹{tax.toFixed(2)}</td>
                                 </tr>
                                 <tr>
                                     <td colSpan="3" style={{ textAlign: 'right', fontWeight: 'bold', fontSize: '18px', color: 'var(--tj-color-heading-primary)' }}>Total:</td>
-                                    <td style={{ textAlign: 'right', fontSize: '18px', fontWeight: 'bold', color: 'var(--tj-color-heading-primary)' }}>₹{total?.toFixed(2)}</td>
+                                    <td style={{ textAlign: 'right', fontSize: '18px', fontWeight: 'bold', color: 'var(--tj-color-heading-primary)' }}>₹{finalTotal?.toFixed(2)}</td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -184,6 +194,7 @@ const Invoice = () => {
                                 <span className="btn-text"><span>Print Invoice</span></span>
                                 <span className="btn-icon"><i className="fas fa-print"></i></span>
                             </button>
+
                             <Link to="/payments" className="tj-primary-btn transparent-btn">
                                 <span className="btn-text"><span>Back to Payments</span></span>
                                 <span className="btn-icon"><i className="fas fa-arrow-left"></i></span>

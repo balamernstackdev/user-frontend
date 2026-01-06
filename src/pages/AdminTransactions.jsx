@@ -5,12 +5,17 @@ import DashboardLayout from '../components/layout/DashboardLayout';
 import Pagination from '../components/common/Pagination';
 import SEO from '../components/common/SEO';
 import './AdminListings.css';
+import { toast } from 'react-toastify';
+import { adminService } from '../services/admin.service';
 
 const AdminTransactions = () => {
     const [transactions, setTransactions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [statusFilter, setStatusFilter] = useState('success'); // success, pending, failed
-    const [pagination, setPagination] = useState({ page: 1, limit: 5, total: 0 });
+    const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0 });
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const [showExportDropdown, setShowExportDropdown] = useState(false);
 
     const fetchTransactions = async () => {
         setLoading(true);
@@ -18,7 +23,9 @@ const AdminTransactions = () => {
             const params = {
                 status: statusFilter,
                 limit: pagination.limit,
-                offset: (pagination.page - 1) * pagination.limit
+                offset: (pagination.page - 1) * pagination.limit,
+                startDate,
+                endDate
             };
             const response = await paymentService.getAllTransactions(params);
             if (response.success) {
@@ -46,7 +53,27 @@ const AdminTransactions = () => {
 
     useEffect(() => {
         fetchTransactions();
-    }, [pagination.page, statusFilter]);
+    }, [pagination.page, statusFilter, startDate, endDate]);
+
+    const handleExport = async (format) => {
+        try {
+            const params = { startDate, endDate };
+            const blob = await adminService.exportData('transactions', format, params);
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `transactions_${new Date().toISOString().split('T')[0]}.${format}`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+
+            toast.success(`Transactions exported successfully!`);
+        } catch (error) {
+            console.error('Export error:', error);
+            toast.error('Failed to export transactions. Please try again.');
+        }
+    };
 
     return (
         <DashboardLayout>
@@ -59,18 +86,88 @@ const AdminTransactions = () => {
                             <p style={{ color: '#6c757d' }}>View and manage all customer transactions</p>
                         </div>
                         <div className="header-actions">
+                            <div className="d-flex align-items-center gap-2">
+                                <input
+                                    type="date"
+                                    className="form-control form-control-sm"
+                                    value={startDate}
+                                    onChange={(e) => setStartDate(e.target.value)}
+                                    title="From Date"
+                                    style={{ width: '120px', height: '38px', padding: '0 12px', fontSize: '13px', borderRadius: '50px', border: '1px solid #e2e8f0' }}
+                                />
+                                <span className="text-muted small">to</span>
+                                <input
+                                    type="date"
+                                    className="form-control form-control-sm"
+                                    value={endDate}
+                                    onChange={(e) => setEndDate(e.target.value)}
+                                    title="To Date"
+                                    style={{ width: '120px', height: '38px', padding: '0 12px', fontSize: '13px', borderRadius: '50px', border: '1px solid #e2e8f0' }}
+                                />
+                                {(startDate || endDate) && (
+                                    <button
+                                        className="btn btn-sm btn-link text-danger p-0 ms-1"
+                                        onClick={() => { setStartDate(''); setEndDate(''); }}
+                                        title="Clear Dates"
+                                    >
+                                        <i className="fas fa-times-circle"></i>
+                                    </button>
+                                )}
+                            </div>
+
                             <div className="filter-group">
                                 <select
                                     className="custom-select"
                                     value={statusFilter}
                                     onChange={(e) => setStatusFilter(e.target.value)}
-                                    style={{ width: '200px' }}
+                                    style={{ width: '160px', borderRadius: '50px' }}
                                 >
                                     <option value="">All Status</option>
                                     <option value="success">Success</option>
                                     <option value="pending">Pending</option>
                                     <option value="failed">Failed</option>
                                 </select>
+                            </div>
+
+                            <div className="btn-group" style={{ position: 'relative' }}>
+                                <button
+                                    className="btn btn-sm dropdown-toggle"
+                                    type="button"
+                                    onClick={() => setShowExportDropdown(!showExportDropdown)}
+                                    style={{
+                                        display: 'flex', alignItems: 'center', gap: '8px',
+                                        padding: '0 25px', borderRadius: '50px', fontWeight: '600',
+                                        backgroundColor: '#13689e', color: 'white', border: 'none',
+                                        transition: 'all 0.3s ease', height: '38px'
+                                    }}
+                                >
+                                    <i className="fas fa-file-export"></i>
+                                    <span>Export Options</span>
+                                </button>
+                                {showExportDropdown && (
+                                    <ul className="dropdown-menu show shadow" style={{ display: 'block', position: 'absolute', top: '100%', right: 0, left: 'auto', zIndex: 1000, minWidth: '200px', padding: '8px', border: '1px solid #eef2f6', borderRadius: '12px', marginTop: '8px' }}>
+                                        <li>
+                                            <button
+                                                className="dropdown-item rounded-2"
+                                                onClick={() => { handleExport('csv'); setShowExportDropdown(false); }}
+                                                style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 15px', transition: 'all 0.2s' }}
+                                            >
+                                                <i className="fas fa-file-csv text-primary" style={{ fontSize: '18px' }}></i>
+                                                <span>Download CSV</span>
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button
+                                                className="dropdown-item rounded-2"
+                                                onClick={() => { handleExport('pdf'); setShowExportDropdown(false); }}
+                                                style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 15px', transition: 'all 0.2s' }}
+                                            >
+                                                <i className="fas fa-file-pdf text-danger" style={{ fontSize: '18px' }}></i>
+                                                <span>Download PDF</span>
+                                            </button>
+                                        </li>
+                                    </ul>
+                                )}
                             </div>
                         </div>
                     </div>

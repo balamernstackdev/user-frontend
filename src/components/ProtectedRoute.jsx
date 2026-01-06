@@ -15,9 +15,11 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
         return <Navigate to="/login" replace />;
     }
 
-    // Check role authorization if allowedRoles is specified
     if (allowedRoles && user && !allowedRoles.includes(user.role)) {
-        if (user.role === 'admin') {
+        if (user.role === 'support_agent') {
+            return <Navigate to="/admin/tickets" replace />;
+        }
+        if (['admin', 'finance_manager'].includes(user.role)) {
             return <Navigate to="/admin/dashboard" replace />;
         }
         return <Navigate to="/dashboard" replace />;

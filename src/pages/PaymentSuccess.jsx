@@ -63,12 +63,28 @@ const PaymentSuccess = () => {
                             <span className="btn-text"><span>Go to Dashboard</span></span>
                             <span className="btn-icon"><i className="fas fa-arrow-right"></i></span>
                         </Link>
-                        {/* 
-                        <Link to="/invoices" className="tj-primary-btn transparent-btn">
-                            <span className="btn-text"><span>View Invoice</span></span>
-                            <span className="btn-icon"><i className="tji-arrow-right-long"></i></span>
-                        </Link>
-                        */}
+                        <button
+                            onClick={async () => {
+                                try {
+                                    if (!transaction?.id) return;
+                                    const blob = await import('../services/payment.service').then(m => m.default.downloadInvoice(transaction.id));
+                                    const url = window.URL.createObjectURL(blob);
+                                    const link = document.createElement('a');
+                                    link.href = url;
+                                    link.setAttribute('download', `invoice_${transaction.id}.pdf`);
+                                    document.body.appendChild(link);
+                                    link.click();
+                                    link.parentNode.removeChild(link);
+                                } catch (err) {
+                                    console.error('Download failed', err);
+                                    // You might want to import toast globally or pass it
+                                }
+                            }}
+                            className="tj-primary-btn transparent-btn"
+                        >
+                            <span className="btn-text"><span>Download Invoice</span></span>
+                            <span className="btn-icon"><i className="fas fa-file-invoice"></i></span>
+                        </button>
                     </div>
                 </div>
             </div>

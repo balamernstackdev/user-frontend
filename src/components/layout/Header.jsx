@@ -13,6 +13,9 @@ const Header = ({ notificationCount = 0 }) => {
     const [showMobileMenu, setShowMobileMenu] = useState(false);
     const user = authService.getUser();
     const isAdmin = user?.role === 'admin';
+    const isFinance = user?.role === 'finance_manager' || isAdmin;
+    const isSupport = user?.role === 'support_agent' || isAdmin;
+    const isStaff = isAdmin || isFinance || isSupport;
     const isBusinessAssociate = user?.role === 'business_associate';
 
     const handleLogout = async () => {
@@ -33,8 +36,8 @@ const Header = ({ notificationCount = 0 }) => {
                         <div className="hamburger_inner">
                             <div className="hamburger_top">
                                 <div className="hamburger_logo">
-                                    <Link to={user ? (isAdmin ? '/admin/dashboard' : '/dashboard') : '/'} className="mobile_logo">
-                                        <img src={StoxzoLogo} alt={settings.site_name || "Stoxzo Logo"} />
+                                    <Link to={user ? (isAdmin || isFinance ? '/admin/dashboard' : (isSupport ? '/admin/tickets' : '/dashboard')) : '/'} className="mobile_logo">
+                                        <img src={settings.logo_url || StoxzoLogo} alt={settings.site_name || "Stoxzo Logo"} />
                                     </Link>
                                 </div>
                                 <div className="hamburger_close">
@@ -46,17 +49,25 @@ const Header = ({ notificationCount = 0 }) => {
                             <div className="hamburger_menu">
                                 <nav>
                                     <ul>
-                                        {isAdmin ? (
-                                            // Admin Mobile Menu
+                                        {isStaff ? (
+                                            // Staff Mobile Menu
                                             <>
-                                                <li><Link to="/admin/dashboard" onClick={() => setShowMobileMenu(false)}>Admin Dashboard</Link></li>
-                                                <li><Link to="/admin/plans" onClick={() => setShowMobileMenu(false)}>Manage Plans</Link></li>
-                                                <li><Link to="/admin/files" onClick={() => setShowMobileMenu(false)}>Downloads</Link></li>
-                                                <li><Link to="/admin/analysis" onClick={() => setShowMobileMenu(false)}>Market Analysis</Link></li>
-                                                <li><Link to="/admin/transactions" onClick={() => setShowMobileMenu(false)}>Transactions</Link></li>
-                                                <li><Link to="/admin/users" onClick={() => setShowMobileMenu(false)}>User Management</Link></li>
-                                                <li><Link to="/admin/tickets" onClick={() => setShowMobileMenu(false)}>Support Tickets</Link></li>
-                                                <li><Link to="/admin/logs" onClick={() => setShowMobileMenu(false)}>System Logs</Link></li>
+                                                {isAdmin && <li><Link to="/admin/dashboard" onClick={() => setShowMobileMenu(false)}>Admin Dashboard</Link></li>}
+                                                {isAdmin && <li><Link to="/admin/plans" onClick={() => setShowMobileMenu(false)}>Manage Plans</Link></li>}
+                                                {isFinance && <li><Link to="/admin/subscriptions" onClick={() => setShowMobileMenu(false)}>User Subscriptions</Link></li>}
+                                                {isAdmin && <li><Link to="/admin/files" onClick={() => setShowMobileMenu(false)}>Downloads</Link></li>}
+                                                {isAdmin && <li><Link to="/admin/analysis" onClick={() => setShowMobileMenu(false)}>Market Analysis</Link></li>}
+                                                {isFinance && <li><Link to="/admin/transactions" onClick={() => setShowMobileMenu(false)}>Transactions</Link></li>}
+                                                {isAdmin && <li><Link to="/admin/users" onClick={() => setShowMobileMenu(false)}>User Management</Link></li>}
+                                                {isSupport && (
+                                                    <>
+                                                        <li><Link to="/admin/tickets" onClick={() => setShowMobileMenu(false)}>Support Tickets</Link></li>
+                                                        <li><Link to="/faq" onClick={() => setShowMobileMenu(false)}>FAQs</Link></li>
+                                                        <li><Link to="/admin/announcements" onClick={() => setShowMobileMenu(false)}>Announcements</Link></li>
+                                                        <li><Link to="/how-to-use" onClick={() => setShowMobileMenu(false)}>How To Use</Link></li>
+                                                    </>
+                                                )}
+                                                {isAdmin && <li><Link to="/admin/logs" onClick={() => setShowMobileMenu(false)}>System Logs</Link></li>}
                                                 <li><Link to="/profile" onClick={() => setShowMobileMenu(false)}>My Profile</Link></li>
                                             </>
                                         ) : (
@@ -106,8 +117,8 @@ const Header = ({ notificationCount = 0 }) => {
                                 <div className="header-wrapper">
                                     {/* Site Logo */}
                                     <div className="site_logo">
-                                        <Link className="logo" to={user ? (isAdmin ? '/admin/dashboard' : '/dashboard') : '/'}>
-                                            <img src={StoxzoLogo} alt={settings.site_name || "Stoxzo"} />
+                                        <Link className="logo" to={user ? (isAdmin || isFinance ? '/admin/dashboard' : (isSupport ? '/admin/tickets' : '/dashboard')) : '/'}>
+                                            <img src={settings.logo_url || StoxzoLogo} alt={settings.site_name || "Stoxzo"} />
                                         </Link>
                                     </div>
 
@@ -115,7 +126,7 @@ const Header = ({ notificationCount = 0 }) => {
                                     <div className="menu-area d-none d-lg-inline-flex align-items-center">
                                         <nav className="mainmenu">
                                             <ul>
-                                                {!isAdmin ? (
+                                                {!isStaff ? (
                                                     /* User & Marketer Navigation */
                                                     <>
                                                         <li><Link to="/dashboard">Dashboard</Link></li>
@@ -182,81 +193,93 @@ const Header = ({ notificationCount = 0 }) => {
                                                         {!isBusinessAssociate && <li><Link to="/curated-analysis">Analysis</Link></li>}
                                                     </>
                                                 ) : (
-                                                    /* Admin Navigation - All Links Exposed */
+                                                    /* Staff Navigation - All Links Exposed conditionally */
                                                     <>
-                                                        <li><Link to="/admin/dashboard">Dashboard</Link></li>
+                                                        {isAdmin && <li><Link to="/admin/dashboard">Dashboard</Link></li>}
 
                                                         {/* Management */}
-                                                        <li
-                                                            className="has-dropdown"
-                                                            onMouseEnter={() => setShowAdminMenu('manage')}
-                                                            onMouseLeave={() => setShowAdminMenu(null)}
-                                                        >
-                                                            <Link to="#" onClick={(e) => e.preventDefault()}>
-                                                                Manage <i className="fas fa-angle-down" style={{ fontSize: '12px', marginLeft: '5px' }}></i>
-                                                            </Link>
-                                                            {showAdminMenu === 'manage' && (
-                                                                <ul className="sub-menu">
-                                                                    <li><Link to="/admin/users">Users</Link></li>
-                                                                    <li><Link to="/admin/plans">Plans</Link></li>
-                                                                    <li><Link to="/admin/files">Downloads</Link></li>
-                                                                    <li><Link to="/admin/analysis">Analysis</Link></li>
-                                                                </ul>
-                                                            )}
-                                                        </li>
+                                                        {(isAdmin || isFinance) && (
+                                                            <li
+                                                                className="has-dropdown"
+                                                                onMouseEnter={() => setShowAdminMenu('manage')}
+                                                                onMouseLeave={() => setShowAdminMenu(null)}
+                                                            >
+                                                                <Link to="#" onClick={(e) => e.preventDefault()}>
+                                                                    Manage <i className="fas fa-angle-down" style={{ fontSize: '12px', marginLeft: '5px' }}></i>
+                                                                </Link>
+                                                                {showAdminMenu === 'manage' && (
+                                                                    <ul className="sub-menu">
+                                                                        {isAdmin && <li><Link to="/admin/users">Users</Link></li>}
+                                                                        {isAdmin && <li><Link to="/admin/plans">Plans</Link></li>}
+                                                                        {(isAdmin || isFinance) && <li><Link to="/admin/subscriptions">Subscriptions</Link></li>}
+                                                                        {isAdmin && <li><Link to="/admin/files">Downloads</Link></li>}
+                                                                        {isAdmin && <li><Link to="/admin/analysis">Analysis</Link></li>}
+                                                                    </ul>
+                                                                )}
+                                                            </li>
+                                                        )}
 
                                                         {/* Finance */}
-                                                        <li
-                                                            className="has-dropdown"
-                                                            onMouseEnter={() => setShowAdminMenu('finance')}
-                                                            onMouseLeave={() => setShowAdminMenu(null)}
-                                                        >
-                                                            <Link to="#" onClick={(e) => e.preventDefault()}>
-                                                                Finance <i className="fas fa-angle-down" style={{ fontSize: '12px', marginLeft: '5px' }}></i>
-                                                            </Link>
-                                                            {showAdminMenu === 'finance' && (
-                                                                <ul className="sub-menu">
-                                                                    <li><Link to="/admin/commissions">Commissions</Link></li>
-                                                                    <li><Link to="/admin/transactions">Transactions</Link></li>
-                                                                    <li><Link to="/admin/ba-transactions">BA Transactions</Link></li>
-                                                                </ul>
-                                                            )}
-                                                        </li>
+                                                        {isFinance && (
+                                                            <li
+                                                                className="has-dropdown"
+                                                                onMouseEnter={() => setShowAdminMenu('finance')}
+                                                                onMouseLeave={() => setShowAdminMenu(null)}
+                                                            >
+                                                                <Link to="#" onClick={(e) => e.preventDefault()}>
+                                                                    Finance <i className="fas fa-angle-down" style={{ fontSize: '12px', marginLeft: '5px' }}></i>
+                                                                </Link>
+                                                                {showAdminMenu === 'finance' && (
+                                                                    <ul className="sub-menu">
+                                                                        <li><Link to="/admin/commissions">Commissions</Link></li>
+                                                                        <li><Link to="/admin/transactions">Transactions</Link></li>
+                                                                        <li><Link to="/admin/ba-transactions">BA Transactions</Link></li>
+                                                                    </ul>
+                                                                )}
+                                                            </li>
+                                                        )}
 
                                                         {/* Support & Content */}
-                                                        <li
-                                                            className="has-dropdown"
-                                                            onMouseEnter={() => setShowAdminMenu('support')}
-                                                            onMouseLeave={() => setShowAdminMenu(null)}
-                                                        >
-                                                            <Link to="#" onClick={(e) => e.preventDefault()}>
-                                                                Support <i className="fas fa-angle-down" style={{ fontSize: '12px', marginLeft: '5px' }}></i>
-                                                            </Link>
-                                                            {showAdminMenu === 'support' && (
-                                                                <ul className="sub-menu">
-                                                                    <li><Link to="/admin/tickets">Tickets</Link></li>
-                                                                    <li><Link to="/admin/faqs">FAQs</Link></li>
-                                                                    <li><Link to="/admin/how-to-use">How To Use</Link></li>
-                                                                </ul>
-                                                            )}
-                                                        </li>
+                                                        {isSupport && (
+                                                            <li
+                                                                className="has-dropdown"
+                                                                onMouseEnter={() => setShowAdminMenu('support')}
+                                                                onMouseLeave={() => setShowAdminMenu(null)}
+                                                            >
+                                                                <Link to="#" onClick={(e) => e.preventDefault()}>
+                                                                    Support <i className="fas fa-angle-down" style={{ fontSize: '12px', marginLeft: '5px' }}></i>
+                                                                </Link>
+                                                                {showAdminMenu === 'support' && (
+                                                                    <ul className="sub-menu">
+                                                                        <li><Link to="/admin/tickets">Tickets</Link></li>
+                                                                        <li><Link to="/faq">FAQs</Link></li>
+                                                                        <li><Link to="/admin/announcements">Announcements</Link></li>
+                                                                        <li><Link to="/how-to-use">How To Use</Link></li>
+                                                                    </ul>
+                                                                )}
+                                                            </li>
+                                                        )}
 
                                                         {/* System */}
-                                                        <li
-                                                            className="has-dropdown"
-                                                            onMouseEnter={() => setShowAdminMenu('system')}
-                                                            onMouseLeave={() => setShowAdminMenu(null)}
-                                                        >
-                                                            <Link to="#" onClick={(e) => e.preventDefault()}>
-                                                                System <i className="fas fa-angle-down" style={{ fontSize: '12px', marginLeft: '5px' }}></i>
-                                                            </Link>
-                                                            {showAdminMenu === 'system' && (
-                                                                <ul className="sub-menu">
-                                                                    <li><Link to="/admin/logs">Logs</Link></li>
-                                                                    <li><Link to="/admin/settings">Settings</Link></li>
-                                                                </ul>
-                                                            )}
-                                                        </li>
+                                                        {isAdmin && (
+                                                            <li
+                                                                className="has-dropdown"
+                                                                onMouseEnter={() => setShowAdminMenu('system')}
+                                                                onMouseLeave={() => setShowAdminMenu(null)}
+                                                            >
+                                                                <Link to="#" onClick={(e) => e.preventDefault()}>
+                                                                    System <i className="fas fa-angle-down" style={{ fontSize: '12px', marginLeft: '5px' }}></i>
+                                                                </Link>
+                                                                {showAdminMenu === 'system' && (
+                                                                    <ul className="sub-menu">
+                                                                        <li><Link to="/admin/logs">Logs</Link></li>
+                                                                        <li><Link to="/admin/email-templates">Email Templates</Link></li>
+                                                                        <li><Link to="/admin/reports">Reports</Link></li>
+                                                                        <li><Link to="/admin/settings">Settings</Link></li>
+                                                                    </ul>
+                                                                )}
+                                                            </li>
+                                                        )}
                                                     </>
                                                 )}
                                             </ul>
@@ -271,6 +294,21 @@ const Header = ({ notificationCount = 0 }) => {
                                                 <span className="notification-badge" style={{ position: 'absolute', top: '-8px', right: '-8px', backgroundColor: '#ff0000', color: '#ffffff', borderRadius: '50%', width: '18px', height: '18px', fontSize: '11px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '600' }}>
                                                     {notificationCount}
                                                 </span>
+                                            </Link>
+                                        </div>
+                                        <div className="header-profile-avatar" style={{ marginRight: '20px' }}>
+                                            <Link to="/profile">
+                                                {user?.avatar_url ? (
+                                                    <img
+                                                        src={user.avatar_url}
+                                                        alt="Profile"
+                                                        style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #e5e5e5' }}
+                                                    />
+                                                ) : (
+                                                    <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#666' }}>
+                                                        <i className="fas fa-user"></i>
+                                                    </div>
+                                                )}
                                             </Link>
                                         </div>
                                         <div className="header-button">

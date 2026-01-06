@@ -102,6 +102,36 @@ const Profile = () => {
         }
     };
 
+    const handleAvatarChange = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        // Basic validation
+        if (file.size > 5 * 1024 * 1024) {
+            toast.error('Image size should be less than 5MB');
+            return;
+        }
+
+        const toastId = toast.loading('Uploading avatar...');
+
+        try {
+            const response = await userService.uploadAvatar(file);
+            if (response.success) {
+                toast.update(toastId, { render: 'Avatar updated successfully!', type: 'success', isLoading: false, autoClose: 3000 });
+                // Update local state
+                setProfile(prev => ({
+                    ...prev,
+                    user: { ...prev.user, avatar_url: response.data.avatarUrl }
+                }));
+                // Also update user state if needed, though userService updates TokenService
+                setUser(prev => ({ ...prev, avatar_url: response.data.avatarUrl }));
+            }
+        } catch (error) {
+            console.error(error);
+            toast.update(toastId, { render: 'Failed to upload avatar', type: 'error', isLoading: false, autoClose: 3000 });
+        }
+    };
+
     const handleProfileUpdate = async (e) => {
         e.preventDefault();
         setSaving(true);
@@ -199,9 +229,33 @@ const Profile = () => {
                         <div className="col-lg-4">
                             <div className="profile-card">
                                 <div className="profile-header">
-                                    <div className="profile-avatar">
-                                        <i className="fas fa-user-circle"></i>
+                                    <div className="profile-avatar" onClick={() => document.getElementById('avatar-upload').click()} style={{ cursor: 'pointer', position: 'relative', overflow: 'hidden' }}>
+                                        {(profile?.user?.avatar_url || user?.avatar_url) ? (
+                                            <img
+                                                src={profile?.user?.avatar_url || user?.avatar_url}
+                                                alt="Profile"
+                                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                            />
+                                        ) : (
+                                            <i className="fas fa-user-circle"></i>
+                                        )}
+                                        <div className="avatar-overlay avatar-hover-overlay" style={{
+                                            position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+                                            background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                            opacity: 0, transition: '0.3s opacity',
+                                            borderRadius: '50%'
+                                        }}
+                                        >
+                                            <i className="fas fa-camera" style={{ color: 'white', fontSize: '1.5rem' }}></i>
+                                        </div>
                                     </div>
+                                    <input
+                                        type="file"
+                                        id="avatar-upload"
+                                        accept="image/*"
+                                        style={{ display: 'none' }}
+                                        onChange={handleAvatarChange}
+                                    />
                                     <h3 className="profile-name">{profile?.user?.name || user?.name || 'User'}</h3>
                                     <p className="profile-email">{profile?.user?.email || user?.email || 'email@example.com'}</p>
                                 </div>

@@ -56,6 +56,9 @@ const AdminHowToUse = () => {
         fetchTutorials();
     }, [pagination.page]);
 
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const isAdmin = user.role === 'admin';
+
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this guide?')) {
             try {
@@ -88,13 +91,29 @@ const AdminHowToUse = () => {
                             <p style={{ color: '#6c757d' }}>Manage instructional guides and videos</p>
                         </div>
                         <div className="header-actions">
-                            <button
-                                className="tj-btn tj-btn-primary"
-                                onClick={() => navigate('/admin/how-to-use/create')}
-                                style={{ padding: '8px 20px', fontSize: '14px' }}
-                            >
-                                <span className="btn-text"><span>+ Add Guide</span></span>
-                            </button>
+                            {isAdmin && (
+                                <button
+                                    className="tj-primary-btn"
+                                    onClick={() => navigate('/admin/how-to-use/create')}
+                                    style={{
+                                        height: '38px',
+                                        borderRadius: '50px',
+                                        padding: '0 20px',
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        backgroundColor: '#13689e',
+                                        color: 'white',
+                                        border: 'none',
+                                        textDecoration: 'none',
+                                        fontWeight: 600
+                                    }}
+                                >
+                                    <span className="btn-text">Add Guide</span>
+                                    <span className="btn-icon">
+                                        <i className="fas fa-arrow-right"></i>
+                                    </span>
+                                </button>
+                            )}
                         </div>
                     </div>
 
@@ -107,14 +126,14 @@ const AdminHowToUse = () => {
                                     <th>Description</th>
                                     <th>Video</th>
                                     <th>Status</th>
-                                    <th>Actions</th>
+                                    {isAdmin && <th>Actions</th>}
                                 </tr>
                             </thead>
                             <tbody>
                                 {loading ? (
-                                    <tr><td colSpan="6" className="text-center">Loading...</td></tr>
+                                    <tr><td colSpan={isAdmin ? "6" : "5"} className="text-center">Loading...</td></tr>
                                 ) : tutorials.length === 0 ? (
-                                    <tr><td colSpan="6" className="text-center" style={{ padding: '50px' }}>No guides found</td></tr>
+                                    <tr><td colSpan={isAdmin ? "6" : "5"} className="text-center" style={{ padding: '50px' }}>No guides found</td></tr>
                                 ) : (
                                     tutorials.map(tutorial => (
                                         <tr key={tutorial.id}>
@@ -138,28 +157,32 @@ const AdminHowToUse = () => {
                                             </td>
                                             <td>
                                                 <button
-                                                    onClick={() => handleTogglePublish(tutorial.id, tutorial.is_published)}
+                                                    onClick={() => isAdmin && handleTogglePublish(tutorial.id, tutorial.is_published)}
                                                     className={`plan-type-badge`}
                                                     style={{
                                                         background: tutorial.is_published ? 'rgba(40, 167, 69, 0.1)' : 'rgba(239, 68, 68, 0.1)',
                                                         color: tutorial.is_published ? '#28a745' : '#ef4444',
                                                         border: 'none',
-                                                        cursor: 'pointer'
+                                                        cursor: isAdmin ? 'pointer' : 'default',
+                                                        opacity: isAdmin ? 1 : 0.8
                                                     }}
+                                                    disabled={!isAdmin}
                                                 >
                                                     {tutorial.is_published ? 'Published' : 'Draft'}
                                                 </button>
                                             </td>
-                                            <td>
-                                                <div className="actions-cell">
-                                                    <button className="action-btn" onClick={() => navigate(`/admin/how-to-use/edit/${tutorial.id}`)} title="Edit">
-                                                        <i className="far fa-edit"></i>
-                                                    </button>
-                                                    <button className="action-btn delete" onClick={() => handleDelete(tutorial.id)} title="Delete">
-                                                        <i className="fas fa-trash"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
+                                            {isAdmin && (
+                                                <td>
+                                                    <div className="actions-cell">
+                                                        <button className="action-btn" onClick={() => navigate(`/admin/how-to-use/edit/${tutorial.id}`)} title="Edit">
+                                                            <i className="far fa-edit"></i>
+                                                        </button>
+                                                        <button className="action-btn delete" onClick={() => handleDelete(tutorial.id)} title="Delete">
+                                                            <i className="fas fa-trash"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            )}
                                         </tr>
                                     ))
                                 )}

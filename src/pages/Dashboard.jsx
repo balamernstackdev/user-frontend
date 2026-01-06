@@ -1,4 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import StatCard from '../components/dashboard/StatCard';
+import RevenueChart from '../components/dashboard/RevenueChart';
+import RecentActivityList from '../components/dashboard/RecentActivityList';
+import AnnouncementWidget from '../components/dashboard/AnnouncementWidget';
+import { useSettings } from '../context/SettingsContext';
 import { Link } from 'react-router-dom';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import BusinessAssociateStats from '../components/dashboard/BusinessAssociateStats';
@@ -21,8 +26,8 @@ const Dashboard = () => {
         console.log('Current user:', currentUser);
 
         if (currentUser) {
-            // Redirect admin to admin dashboard
-            if (currentUser.role === 'admin') {
+            // Redirect admin and internal roles to admin dashboard
+            if (['admin', 'finance_manager', 'support_agent'].includes(currentUser.role)) {
                 window.location.href = '/admin/dashboard';
                 return;
             }
@@ -42,7 +47,7 @@ const Dashboard = () => {
 
             if (storedUser) {
                 // Admin redirect check for stored user
-                if (storedUser.role === 'admin') {
+                if (['admin', 'finance_manager', 'support_agent'].includes(storedUser.role)) {
                     window.location.href = '/admin/dashboard';
                     return;
                 }
@@ -85,7 +90,8 @@ const Dashboard = () => {
 
     const handleCopyCode = () => {
         if (businessAssociateStats?.referral_code) {
-            navigator.clipboard.writeText(businessAssociateStats.referral_code);
+            const referralUrl = `${window.location.origin}/register?ref=${businessAssociateStats.referral_code}`;
+            navigator.clipboard.writeText(referralUrl);
             setCopySuccess(true);
             setTimeout(() => setCopySuccess(false), 2000);
         }
@@ -118,11 +124,11 @@ const Dashboard = () => {
                 <section className="welcome-section">
                     <div className="container-fluid">
                         <div className="welcome-content">
+                            {/* Announcements Widget */}
+                            <AnnouncementWidget />
+
                             {/* Welcome Card */}
                             <div className="welcome-card animate-fade-up">
-                                <div className="welcome-icon">
-                                    <i className="far fa-check-circle"></i>
-                                </div>
                                 <div className="welcome-title">
                                     <h1>Welcome Back, {user?.name || 'User'}!</h1>
                                     <p>You have successfully logged in to your account. We're excited to have you here!</p>
@@ -164,14 +170,16 @@ const Dashboard = () => {
                                         <div className="referral-card">
                                             <div className="referral-info">
                                                 <h3>Your Referral Program</h3>
-                                                <p>Share your code and earn commissions on every successful referral.</p>
+                                                <p>Share your link and earn commissions on every successful referral.</p>
                                             </div>
                                             <div className="referral-code-wrapper">
-                                                <span className="referral-code">{businessAssociateStats.referral_code}</span>
+                                                <span className="referral-code">
+                                                    {`${window.location.origin}/register?ref=${businessAssociateStats.referral_code}`}
+                                                </span>
                                                 <button
                                                     className="copy-btn"
                                                     onClick={handleCopyCode}
-                                                    title="Copy Code"
+                                                    title="Copy Link"
                                                 >
                                                     {copySuccess ? (
                                                         <i className="fas fa-check" style={{ color: '#28a745' }}></i>

@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import DashboardLayout from '../components/layout/DashboardLayout';
-import { userService } from '../services/user.service';
-import paymentService from '../services/payment.service';
 import { activityService } from '../services/activity.service';
 import { authService } from '../services/auth.service';
 import adminService from '../services/admin.service';
 import SEO from '../components/common/SEO';
+import { Users, UserCheck, Clock, CreditCard, TrendingUp, AlertCircle, CheckCircle } from 'lucide-react';
 import './Dashboard.css';
-import './AdminListings.css'; // For table styles
+import './AdminListings.css';
+
+// New Components
+import StatCard from '../components/dashboard/StatCard';
+import RevenueChart from '../components/dashboard/RevenueChart';
+import PlanDistributionChart from '../components/dashboard/PlanDistributionChart';
+import UserRoleChart from '../components/dashboard/UserRoleChart';
+import RecentActivityList from '../components/dashboard/RecentActivityList';
 
 const AdminDashboard = () => {
     const user = authService.getUser();
@@ -19,31 +25,100 @@ const AdminDashboard = () => {
         pendingCommissionsCount: 0,
         totalRevenue: 0,
         activeSubscriptions: 0,
-        expiringSubscriptions: 0
+        expiringSubscriptions: 0,
+        analytics: {
+            revenueTrend: [],
+            planDistribution: [],
+            roleDistribution: []
+        }
     });
     const [recentLogs, setRecentLogs] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [dateRange, setDateRange] = useState({
+        startDate: '',
+        endDate: ''
+    });
+
+    const handleDateChange = (e) => {
+        const { name, value } = e.target;
+        setDateRange(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    const clearFilters = () => {
+        setDateRange({ startDate: '', endDate: '' });
+    };
 
     useEffect(() => {
         const fetchStats = async () => {
             try {
-                // Fetch Stats
-                const statsResponse = await adminService.getDashboardStatus();
-                const { totalUsers, activeMarketers, pendingMarketers, pendingCommissions, pendingPayouts, totalRevenue, activeSubscriptions, expiringSubscriptions } = statsResponse.data;
+                setLoading(true);
+
+                // Only pass dateRange if it has actual values
+                const params = (dateRange.startDate || dateRange.endDate) ? dateRange : {};
+                const statsResponse = await adminService.getDashboardStatus(params);
+                const {
+                    totalUsers, activeMarketers, pendingMarketers, pendingCommissions,
+                    pendingPayouts, totalRevenue, activeSubscriptions, expiringSubscriptions,
+                    analytics
+                } = statsResponse.data;
+
+                // Process Revenue Trend to ensure smooth line chart
+                const processRevenueData = (rawTrend) => {
+                    if (dateRange.startDate || dateRange.endDate) {
+                        return rawTrend?.map(item => ({
+                            date: new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+                            fullDate: item.date,
+                            revenue: Number(item.revenue) || 0
+                        })) || [];
+                    }
+
+                    const days = 30;
+                    const today = new Date();
+                    const filledData = [];
+
+                    for (let i = days - 1; i >= 0; i--) {
+                        const d = new Date();
+                        d.setDate(today.getDate() - i);
+                        const dateStr = d.toISOString().split('T')[0];
+                        const found = rawTrend?.find(item => item.date === dateStr);
+
+                        filledData.push({
+                            date: d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+                            fullDate: dateStr,
+                            revenue: found ? Number(found.revenue) : 0
+                        });
+                    }
+                    return filledData;
+                };
+
+                const processedRevenue = processRevenueData(analytics?.revenueTrend);
 
                 setStats({
                     totalUsers,
                     activeMarketers,
                     pendingApprovals: (pendingMarketers || 0) + (pendingCommissions || 0),
-                    pendingMarketers: pendingMarketers || 0, // Store strictly for link logic
-                    pendingCommissions: pendingCommissions || 0, // Store strictly for link logic
+                    pendingMarketers: pendingMarketers || 0,
+                    pendingCommissions: pendingCommissions || 0,
                     pendingCommissionsCount: pendingPayouts,
                     totalRevenue,
                     activeSubscriptions: activeSubscriptions || 0,
-                    expiringSubscriptions: expiringSubscriptions || 0
+                    expiringSubscriptions: expiringSubscriptions || 0,
+                    analytics: {
+                        revenueTrend: processedRevenue,
+                        planDistribution: analytics?.planDistribution?.map(item => ({
+                            ...item,
+                            count: Number(item.count) || 0
+                        })) || [],
+                        roleDistribution: analytics?.roleDistribution?.map(item => ({
+                            ...item,
+                            count: Number(item.count) || 0
+                        })) || []
+                    }
                 });
 
-                // Fetch Recent Activity
                 const logsRes = await activityService.getAllLogs({ limit: 5 });
                 if (logsRes.data && logsRes.data.logs) {
                     setRecentLogs(logsRes.data.logs);
@@ -51,8 +126,6 @@ const AdminDashboard = () => {
                     setRecentLogs(logsRes.data);
                 } else if (logsRes.data && Array.isArray(logsRes.data.data)) {
                     setRecentLogs(logsRes.data.data);
-                } else {
-                    setRecentLogs([]);
                 }
 
             } catch (error) {
@@ -63,156 +136,151 @@ const AdminDashboard = () => {
         };
 
         fetchStats();
-    }, []);
+    }, [dateRange]);
 
-    // Dynamic Link Logic
     const getPendingLink = () => {
         if (stats.pendingMarketers > 0) return "/admin/users?status=pending";
         if (stats.pendingCommissions > 0) return "/admin/commissions?status=pending";
-        return "/admin/commissions"; // Default
+        return "/admin/commissions";
     };
 
     return (
         <DashboardLayout>
-            <SEO title="Admin Dashboard" description="System overview and management." />
+            <SEO title="Admin Dashboard" description="Advanced Analytics & System Overview" />
             <section className="welcome-section">
                 <div className="container-fluid">
                     <div className="welcome-content">
-                        {/* Welcome Header */}
                         <div className="welcome-header animate-fade-up mb-4">
-                            <h1 className="section-title">Welcome back, {user?.name || 'Admin'}! 👋</h1>
-                            <p className="section-subtitle">Here's what's happening with your platform today.</p>
+                            <div>
+                                <h1 className="section-title">Welcome back, {user?.name || 'Admin'}! 👋</h1>
+                                <p className="section-subtitle">Real-time system health and growth analytics.</p>
+                            </div>
+                            <div className="last-updated text-muted small">
+                                <Clock size={14} style={{ display: 'inline', marginRight: '5px' }} />
+                                Last updated: {new Date().toLocaleTimeString()}
+                            </div>
                         </div>
 
-                        {/* Admin Stats Overview */}
+                        {/* Stats Grid */}
                         <div className="admin-stats-grid stats-grid animate-fade-up">
-                            <div className="stat-card card-users">
-                                <div className="stat-icon" style={{ color: '#13689e' }}>
-                                    <i className="fas fa-users"></i>
-                                </div>
-                                <div className="stat-info">
-                                    <span className="stat-label">Total Users</span>
-                                    <span className="stat-value">{loading ? '...' : stats.totalUsers.toLocaleString()}</span>
-                                </div>
+                            <StatCard
+                                label="Total Users"
+                                value={stats.totalUsers.toLocaleString()}
+                                icon={Users}
+                                className="card-users"
+                                isLoading={loading}
+                            />
+                            <StatCard
+                                label="Active Business Associates"
+                                value={stats.activeMarketers}
+                                icon={UserCheck}
+                                iconColor="#28a745"
+                                iconBgColor="rgba(40, 167, 69, 0.1)"
+                                link="/admin/users"
+                                isLoading={loading}
+                                className="card-active-marketers"
+                            />
+                            <StatCard
+                                label="Pending Approvals"
+                                value={stats.pendingApprovals}
+                                icon={Clock}
+                                iconColor="#ffc107"
+                                iconBgColor="rgba(255, 193, 7, 0.1)"
+                                link={getPendingLink()}
+                                isLoading={loading}
+                                className="card-pending"
+                            />
+                            <StatCard
+                                label="Pending Payouts"
+                                value={stats.pendingCommissionsCount || 0}
+                                icon={CreditCard}
+                                iconColor="#17a2b8"
+                                iconBgColor="rgba(23, 162, 184, 0.1)"
+                                link="/admin/commissions?status=pending"
+                                isLoading={loading}
+                                className="card-payouts"
+                            />
+                            <StatCard
+                                label="Total Revenue"
+                                value={`₹${stats.totalRevenue.toLocaleString()}`}
+                                icon={TrendingUp}
+                                iconColor="#6f42c1"
+                                iconBgColor="rgba(111, 66, 193, 0.1)"
+                                isLoading={loading}
+                                className="card-revenue"
+                            />
+                            <StatCard
+                                label="Active Subs"
+                                value={stats.activeSubscriptions}
+                                icon={CheckCircle}
+                                iconColor="#20c997"
+                                iconBgColor="rgba(32, 201, 151, 0.1)"
+                                link="/admin/subscriptions?status=active"
+                                isLoading={loading}
+                                className="card-active-subs"
+                            />
+                            <StatCard
+                                label="Expiring Soon"
+                                value={stats.expiringSubscriptions}
+                                icon={AlertCircle}
+                                iconColor="#dc3545"
+                                iconBgColor="rgba(220, 53, 69, 0.1)"
+                                link="/admin/subscriptions?status=active"
+                                isLoading={loading}
+                                className="card-expiring"
+                            />
+                        </div>
+
+                        {/* Analytics Row 1 */}
+                        <div className="row mt-4 animate-fade-up" style={{ animationDelay: '0.1s' }}>
+                            <div className="col-lg-8 mb-4">
+                                <RevenueChart
+                                    data={stats.analytics.revenueTrend}
+                                    dateRange={dateRange}
+                                    onDateChange={handleDateChange}
+                                    onClearFilters={clearFilters}
+                                    isLoading={loading}
+                                />
                             </div>
-                            <div className="stat-card card-active-marketers">
-                                <Link to="/admin/users" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', width: '100%', alignItems: 'center', gap: '25px' }}>
-                                    <div className="stat-icon" style={{ color: '#28a745' }}>
-                                        <i className="fas fa-user-tie"></i>
-                                    </div>
-                                    <div className="stat-info">
-                                        <span className="stat-label">Active Business Associates</span>
-                                        <span className="stat-value">{loading ? '...' : stats.activeMarketers}</span>
-                                    </div>
-                                </Link>
-                            </div>
-                            <div className="stat-card card-pending">
-                                <Link to={getPendingLink()} style={{ textDecoration: 'none', color: 'inherit', display: 'flex', width: '100%', alignItems: 'center', gap: '25px' }}>
-                                    <div className="stat-icon" style={{ color: '#ffc107' }}>
-                                        <i className="fas fa-clock-rotate-left"></i>
-                                    </div>
-                                    <div className="stat-info">
-                                        <span className="stat-label">Pending Approvals</span>
-                                        <span className="stat-value">{loading ? '...' : stats.pendingApprovals}</span>
-                                    </div>
-                                </Link>
-                            </div>
-                            <div className="stat-card card-payouts">
-                                <Link to="/admin/commissions" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', width: '100%', alignItems: 'center', gap: '25px' }}>
-                                    <div className="stat-icon" style={{ color: '#17a2b8' }}>
-                                        <i className="fas fa-hand-holding-usd"></i>
-                                    </div>
-                                    <div className="stat-info">
-                                        <span className="stat-label">Pending Payouts</span>
-                                        <span className="stat-value">{loading ? '...' : stats.pendingCommissionsCount}</span>
-                                    </div>
-                                </Link>
-                            </div>
-                            <div className="stat-card card-revenue">
-                                <div className="stat-icon" style={{ color: '#6f42c1' }}>
-                                    <i className="fas fa-chart-line"></i>
-                                </div>
-                                <div className="stat-info">
-                                    <span className="stat-label">Total Revenue</span>
-                                    <span className="stat-value">{loading ? '...' : `₹${stats.totalRevenue.toLocaleString()}`}</span>
-                                </div>
-                            </div>
-                            <div className="stat-card card-active-subs">
-                                <Link to="/admin/users?filter=active_sub" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', width: '100%', alignItems: 'center', gap: '25px' }}>
-                                    <div className="stat-icon" style={{ color: '#28a745' }}>
-                                        <i className="fas fa-check-circle"></i>
-                                    </div>
-                                    <div className="stat-info">
-                                        <span className="stat-label">Active Subs</span>
-                                        <span className="stat-value">{loading ? '...' : stats.activeSubscriptions}</span>
-                                    </div>
-                                </Link>
-                            </div>
-                            <div className="stat-card card-expiring">
-                                <Link to="/admin/users?filter=expiring" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', width: '100%', alignItems: 'center', gap: '25px' }}>
-                                    <div className="stat-icon" style={{ color: '#dc3545' }}>
-                                        <i className="fas fa-exclamation-triangle"></i>
-                                    </div>
-                                    <div className="stat-info">
-                                        <span className="stat-label">Expiring Soon</span>
-                                        <span className="stat-value">{loading ? '...' : stats.expiringSubscriptions}</span>
-                                    </div>
-                                </Link>
+                            <div className="col-lg-4 mb-4">
+                                <PlanDistributionChart
+                                    data={stats.analytics.planDistribution}
+                                    isLoading={loading}
+                                />
                             </div>
                         </div>
 
-                        {/* Recent Activity Section (Replaces Administrative Tools) */}
-                        <div className="recent-activity animate-fade-up" style={{ animationDelay: '0.2s', marginTop: '40px' }}>
-                            <div className="d-flex justify-content-between align-items-center mb-4">
-                                <h3 className="mb-0">Recent System Activity</h3>
-                                <Link to="/admin/logs" className="tj-btn tj-btn-sm tj-btn-outline-primary">View All Logs</Link>
-                            </div>
+                        {/* Analytics Row 2 */}
+                        <div className="row animate-fade-up" style={{ animationDelay: '0.2s' }}>
+                            <div className="col-lg-5 mb-4">
+                                <UserRoleChart
+                                    data={stats.analytics.roleDistribution}
+                                    isLoading={loading}
+                                />
 
-                            <div className="listing-table-container">
-                                <table className="listing-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Timestamp</th>
-                                            <th>User</th>
-                                            <th>Action</th>
-                                            <th>Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {loading ? (
-                                            <tr><td colSpan="4" className="text-center">Loading...</td></tr>
-                                        ) : recentLogs.length === 0 ? (
-                                            <tr><td colSpan="4" className="text-center">No recent activity</td></tr>
-                                        ) : (
-                                            recentLogs.map(log => (
-                                                <tr key={log.id}>
-                                                    <td style={{ whiteSpace: 'nowrap' }}>{new Date(log.created_at).toLocaleString()}</td>
-                                                    <td>
-                                                        <div className="d-flex flex-column">
-                                                            <span style={{ fontWeight: 500 }}>{log.user_name || 'System'}</span>
-                                                            <span style={{ fontSize: '12px', color: '#6c757d' }}>{log.user_email}</span>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <span className="badge" style={{ background: '#f8f9fa', color: '#333', marginRight: '8px' }}>{log.action_type}</span>
-                                                        <span style={{ fontSize: '14px' }}>{log.description || log.action}</span>
-                                                    </td>
-                                                    <td>
-                                                        <span style={{
-                                                            color: log.status === 'success' ? '#28a745' : '#dc3545',
-                                                            fontWeight: 500,
-                                                            textTransform: 'capitalize'
-                                                        }}>
-                                                            {log.status}
-                                                        </span>
-                                                    </td>
-                                                </tr>
-                                            ))
-                                        )}
-                                    </tbody>
-                                </table>
+                                {stats.expiringSubscriptions > 0 && !loading && (
+                                    <div className="analytics-card bg-warning-soft border-0 mt-4">
+                                        <div className="d-flex align-items-center gap-3">
+                                            <div className="warning-icon-bg">
+                                                <AlertCircle size={24} className="text-warning-dark" />
+                                            </div>
+                                            <div>
+                                                <h5 className="mb-1 text-warning-dark">{stats.expiringSubscriptions} Subscriptions Expiring</h5>
+                                                <p className="mb-0 text-muted small">Action needed within 7 days.</p>
+                                            </div>
+                                            <Link to="/admin/subscriptions?status=active" className="btn btn-sm btn-warning ms-auto">View</Link>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                            <div className="col-lg-7 mb-4">
+                                <RecentActivityList
+                                    logs={recentLogs}
+                                    isLoading={loading}
+                                />
                             </div>
                         </div>
+
                     </div>
                 </div>
             </section>

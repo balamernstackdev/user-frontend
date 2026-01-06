@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import ReCAPTCHA from 'react-google-recaptcha';
 import { authService } from '../services/auth.service';
 import { useSettings } from '../context/SettingsContext';
 import SEO from '../components/common/SEO';
@@ -19,6 +20,8 @@ const Login = () => {
     });
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+    const [recaptchaToken, setRecaptchaToken] = useState(null);
+    const recaptchaRef = useRef(null);
 
     useEffect(() => {
         if (location.state?.message) {
@@ -40,6 +43,14 @@ const Login = () => {
         });
     };
 
+    const handleRecaptchaChange = (token) => {
+        setRecaptchaToken(token);
+    };
+
+    const handleRecaptchaExpired = () => {
+        setRecaptchaToken(null);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -47,6 +58,10 @@ const Login = () => {
         const emailRegex = /\S+@\S+\.\S+/;
         if (!emailRegex.test(formData.email)) {
             toast.error('Please enter a valid email address');
+            if (recaptchaRef.current) {
+                recaptchaRef.current.reset();
+                setRecaptchaToken(null);
+            }
             return;
         }
 
@@ -54,6 +69,17 @@ const Login = () => {
 
         try {
             const { remember, ...loginData } = formData;
+
+            // Check reCAPTCHA if enabled
+            if (settings.security_method === 'recaptcha') {
+                if (!recaptchaToken) {
+                    toast.error('Please complete the security check.');
+                    setLoading(false);
+                    return;
+                }
+                loginData.recaptchaToken = recaptchaToken;
+            }
+
             const response = await authService.login(loginData);
 
             if (response.success) {
@@ -64,7 +90,9 @@ const Login = () => {
 
                 // Redirect based on role
                 const userRole = response.data.user.role;
-                if (userRole === 'admin') {
+                if (userRole === 'support_agent') {
+                    navigate('/admin/tickets');
+                } else if (['admin', 'finance_manager'].includes(userRole)) {
                     navigate('/admin/dashboard');
                 } else {
                     navigate('/dashboard');
@@ -72,6 +100,10 @@ const Login = () => {
             }
         } catch (err) {
             toast.error(err.response?.data?.message || 'Login failed. Please try again.');
+            if (recaptchaRef.current) {
+                recaptchaRef.current.reset();
+                setRecaptchaToken(null);
+            }
         } finally {
             setLoading(false);
         }
@@ -154,6 +186,16 @@ const Login = () => {
                         </div>
 
                         <div className="login-btn-wrapper">
+                            {settings.security_method === 'recaptcha' && settings.recaptcha_site_key && (
+                                <div style={{ marginBottom: '20px', display: 'flex', justifyContent: 'center' }}>
+                                    <ReCAPTCHA
+                                        ref={recaptchaRef}
+                                        sitekey={settings.recaptcha_site_key}
+                                        onChange={handleRecaptchaChange}
+                                        onExpired={handleRecaptchaExpired}
+                                    />
+                                </div>
+                            )}
                             <button type="submit" className="tj-primary-btn" disabled={loading}>
                                 <span className="btn-text">
                                     <span>{loading ? 'Signing in...' : 'Sign In'}</span>
@@ -170,7 +212,6 @@ const Login = () => {
                             </button>
                         </div>
                     </form>
-
                     <div className="signup-link">
                         <p>
                             Don't have an account? <Link to="/register">Sign Up</Link>

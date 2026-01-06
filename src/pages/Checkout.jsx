@@ -57,28 +57,80 @@ const Checkout = () => {
             const order = response.data; // Access nested data object
 
             if (selectedMethod === 'razorpay') {
-                // Simulate embedded payment processing
-                setTimeout(async () => {
-                    try {
-                        const verifyResponse = await paymentService.verifyPayment({
-                            razorpayOrderId: order.orderId,
-                            razorpayPaymentId: 'pay_test_1234567890', // Test Payment ID
-                            razorpaySignature: 'test_signature',      // Test Signature
-                            planId,
-                            planType: plan.plan_type || 'monthly',
-                            transactionId: order.transactionId
-                        });
+                const {
+                    orderId,
+                    subscriptionId,
+                    isRecurring,
+                    amount,
+                    currency,
+                    transactionId,
+                    key
+                } = response.data; // Access nested data
 
-                        if (verifyResponse.success) {
-                            navigate('/payment-success', { state: { transaction: verifyResponse.data.transaction } });
-                        } else {
-                            navigate('/payment-failed', { state: { error: 'Payment verification failed' } });
+                // Razorpay options
+                const options = {
+                    key: key,
+                    amount: amount,
+                    currency: currency,
+                    name: "Dashboard App",
+                    description: plan.name,
+                    image: "/logo192.png", // Add your logo here
+
+                    // Subscription vs Order
+                    ...(isRecurring && subscriptionId
+                        ? { subscription_id: subscriptionId }
+                        : { order_id: orderId }
+                    ),
+
+                    handler: async function (response) {
+                        try {
+                            const verifyData = {
+                                transactionId: transactionId,
+                                razorpayPaymentId: response.razorpay_payment_id,
+                                razorpaySignature: response.razorpay_signature,
+                            };
+
+                            if (isRecurring) {
+                                verifyData.razorpaySubscriptionId = response.razorpay_subscription_id;
+                                // For subscriptions, order_id might not be returned in handler response or is different
+                            } else {
+                                verifyData.razorpayOrderId = response.razorpay_order_id;
+                            }
+
+                            const verifyResponse = await paymentService.verifyPayment(verifyData);
+
+                            if (verifyResponse.success) {
+                                navigate('/payment-success', { state: { transaction: verifyResponse.data.transaction } });
+                            } else {
+                                navigate('/payment-failed', { state: { error: 'Payment verification failed' } });
+                            }
+                        } catch (err) {
+                            console.error(err);
+                            navigate('/payment-failed', { state: { error: err.message || 'Payment verification failed' } });
                         }
-                    } catch (err) {
-                        console.error(err);
-                        navigate('/payment-failed', { state: { error: err.message || 'Payment verification failed' } });
+                    },
+                    prefill: {
+                        name: user.name,
+                        email: user.email,
+                        contact: user.phone || ''
+                    },
+                    theme: {
+                        color: "#3399cc"
                     }
-                }, 2000); // 2 second delay to simulate processing
+                };
+
+                const rzp1 = new window.Razorpay(options);
+                rzp1.on('payment.failed', function (response) {
+                    navigate('/payment-failed', {
+                        state: {
+                            error: response.error.description,
+                            metadata: response.error.metadata
+                        }
+                    });
+                });
+                rzp1.open();
+
+                setProcessing(false); // Reset processing state as modal is open
             } else {
                 toast.info('Only Credit/Debit Card/NetBanking (via Razorpay) is currently supported.');
                 setProcessing(false);

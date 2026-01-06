@@ -4,9 +4,11 @@ import { Link } from 'react-router-dom';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import Pagination from '../components/common/Pagination';
 import SEO from '../components/common/SEO';
+import { useSocket } from '../context/SocketContext';
 import './AdminListings.css';
 
 const AdminTickets = () => {
+    const { socket } = useSocket();
     const [tickets, setTickets] = useState([]);
     const [loading, setLoading] = useState(true);
     const [statusFilter, setStatusFilter] = useState('');
@@ -52,7 +54,17 @@ const AdminTickets = () => {
 
     useEffect(() => {
         fetchTickets();
-    }, [pagination.page, statusFilter]);
+
+        if (socket) {
+            socket.on('new_notification', (notification) => {
+                if (notification.type === 'info' && notification.title.includes('Ticket')) {
+                    fetchTickets();
+                }
+            });
+
+            return () => socket.off('new_notification');
+        }
+    }, [pagination.page, statusFilter, socket]);
 
     const formatDate = (dateString) => {
         if (!dateString) return 'N/A';

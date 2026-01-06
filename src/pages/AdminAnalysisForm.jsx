@@ -337,8 +337,13 @@ const AdminAnalysisForm = () => {
                                             disabled={submitting || uploading.image || uploading.pdf}
                                         >
                                             <span className="btn-text">
-                                                <span>{submitting ? 'Saving...' : (isEdit ? <><i className="fas fa-save mr-2"></i> Update Analysis</> : <><i className="fas fa-plus mr-2"></i> Create Analysis</>)}</span>
+                                                <span>{submitting ? 'Saving...' : (isEdit ? 'Update Analysis' : 'Create Analysis')}</span>
                                             </span>
+                                            {!submitting && (
+                                                <span className="btn-icon">
+                                                    <i className="fas fa-arrow-right"></i>
+                                                </span>
+                                            )}
                                         </button>
                                         <button
                                             type="button"

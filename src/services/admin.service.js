@@ -1,8 +1,8 @@
 import instance from './api';
 
 export const adminService = {
-    getDashboardStatus: async () => {
-        const response = await instance.get('/admin/dashboard-status');
+    getDashboardStatus: async (params = {}) => {
+        const response = await instance.get('/admin/dashboard-status', { params });
         return response.data;
     },
 
@@ -23,6 +23,20 @@ export const adminService = {
      */
     getBusinessAssociates: async (params = {}) => {
         const response = await instance.get('/admin/business-associates', { params });
+        return response.data;
+    },
+
+    /**
+     * Export data to CSV or PDF
+     * @param {string} type - Data type ('transactions', 'commissions', 'users')
+     * @param {string} format - File format ('csv', 'pdf')
+     * @returns {Promise<Blob>} File blob
+     */
+    exportData: async (type, format, params = {}) => {
+        const response = await instance.get(`/admin/export/${type}/${format}`, {
+            params,
+            responseType: 'blob'
+        });
         return response.data;
     }
 };

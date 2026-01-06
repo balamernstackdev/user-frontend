@@ -10,12 +10,15 @@ import App from './App.jsx'
 import './index.css'
 
 import { SettingsProvider } from './context/SettingsContext';
+import { SocketProvider } from './context/SocketContext';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <HelmetProvider>
             <SettingsProvider>
-                <App />
+                <SocketProvider>
+                    <App />
+                </SocketProvider>
             </SettingsProvider>
         </HelmetProvider>
     </BrowserRouter>,

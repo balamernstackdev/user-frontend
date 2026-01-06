@@ -161,6 +161,7 @@
     border: 1px solid #f5c6cb;
 }
 
+
 @media (max-width: 767px) {
     .form-row {
         flex-direction: column;
@@ -170,4 +171,16 @@
     .profile-card {
         padding: 30px 20px;
     }
+}
+
+.profile-avatar {
+    position: relative;
+}
+
+.avatar-hover-overlay {
+    opacity: 0;
+}
+
+.profile-avatar:hover .avatar-hover-overlay {
+    opacity: 1;
 }

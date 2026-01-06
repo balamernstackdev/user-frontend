@@ -20,6 +20,8 @@ const AdminHowToUseForm = () => {
         isPublished: true,
         category: 'HowToUse'
     });
+    const [videoFile, setVideoFile] = useState(null);
+    const [thumbnailFile, setThumbnailFile] = useState(null);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -64,17 +66,45 @@ const AdminHowToUseForm = () => {
         setLoading(true);
 
         try {
-            const dataToSubmit = {
-                ...formData,
-                isPublished: formData.isPublished,
-                orderIndex: parseInt(formData.orderIndex) // Ensure number
-            };
+            const data = new FormData();
+            data.append('title', formData.title);
+            data.append('description', formData.description || '');
+            data.append('content', formData.content);
+            data.append('orderIndex', formData.orderIndex);
+            data.append('isPublished', formData.isPublished);
+            data.append('category', formData.category);
+
+            // Append existing URLs if no new file (backend should handle this or ignored if key is videoUrl?)
+            // Actually backend looks for `req.body.videoUrl` OR `req.files['video']`.
+            // So I should append videoUrl from state if no file, or just let backend keep old one?
+            // Existing backend logic:
+            // let videoUrl = req.body.videoUrl; 
+            // if (req.files && req.files['video']) videoUrl = req.files['video'][0].path;
+
+            // So if I don't send file, I should send the existing URL so it doesn't get wiped if I update the model blindly?
+            // Wait, Update logic:
+            // const tutorialData = ...
+            // if (videoUrl) tutorialData.video_url = videoUrl;
+            // It only updates if `videoUrl` (from body or file) is truthy.
+            // If I send nothing, it won't update.
+            // But Create logic requires valid data.
+
+            // Safe bet: append existing URL to body just in case (though backend reads it).
+            data.append('videoUrl', formData.videoUrl || '');
+            data.append('thumbnailUrl', formData.thumbnailUrl || '');
+
+            if (videoFile) {
+                data.append('video', videoFile);
+            }
+            if (thumbnailFile) {
+                data.append('thumbnail', thumbnailFile);
+            }
 
             if (isEditMode) {
-                await tutorialService.updateTutorial(id, dataToSubmit);
+                await tutorialService.updateTutorial(id, data);
                 toast.success('Guide updated successfully');
             } else {
-                await tutorialService.createTutorial(dataToSubmit);
+                await tutorialService.createTutorial(data);
                 toast.success('Guide created successfully');
             }
             navigate('/admin/how-to-use');
@@ -142,32 +172,45 @@ const AdminHowToUseForm = () => {
                                     <div className="row">
                                         <div className="col-md-6">
                                             <div className="form-group">
-                                                <label htmlFor="videoUrl">Video URL</label>
+                                                <label htmlFor="video">Upload Video</label>
                                                 <input
-                                                    type="text"
-                                                    id="videoUrl"
-                                                    name="videoUrl"
+                                                    type="file"
+                                                    id="video"
+                                                    name="video"
+                                                    accept="video/*"
                                                     className="form-control"
-                                                    value={formData.videoUrl}
-                                                    onChange={handleChange}
-                                                    placeholder="YouTube/Vimeo Link"
+                                                    onChange={(e) => setVideoFile(e.target.files[0])}
                                                 />
+                                                {formData.videoUrl && <small className="text-muted">Current: <a href={formData.videoUrl} target="_blank" rel="noreferrer">View Video</a></small>}
                                             </div>
                                         </div>
                                         <div className="col-md-6">
                                             <div className="form-group">
-                                                <label htmlFor="orderIndex">Display Order</label>
+                                                <label htmlFor="thumbnail">Upload Thumbnail</label>
                                                 <input
-                                                    type="number"
-                                                    id="orderIndex"
-                                                    name="orderIndex"
+                                                    type="file"
+                                                    id="thumbnail"
+                                                    name="thumbnail"
+                                                    accept="image/*"
                                                     className="form-control"
-                                                    value={formData.orderIndex}
-                                                    onChange={handleChange}
-                                                    min="0"
+                                                    onChange={(e) => setThumbnailFile(e.target.files[0])}
                                                 />
+                                                {formData.thumbnailUrl && <small className="text-muted">Current: <a href={formData.thumbnailUrl} target="_blank" rel="noreferrer">View Thumbnail</a></small>}
                                             </div>
                                         </div>
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label htmlFor="orderIndex">Display Order</label>
+                                        <input
+                                            type="number"
+                                            id="orderIndex"
+                                            name="orderIndex"
+                                            className="form-control"
+                                            value={formData.orderIndex}
+                                            onChange={handleChange}
+                                            min="0"
+                                        />
                                     </div>
 
                                     <div className="form-group checkbox-group">

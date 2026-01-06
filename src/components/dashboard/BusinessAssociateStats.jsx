@@ -35,9 +35,11 @@ const BusinessAssociateStats = ({ stats }) => {
     return (
         <div className="stats-grid marketer-stats-grid">
             {statItems.map((item, index) => (
-                <div className="stat-card" key={index}>
-                    <div className="stat-icon" style={{ color: item.color, backgroundColor: `${item.color}15` }}>
-                        <i className={item.icon}></i>
+                <div className="stat-card" key={index} style={{ borderBottom: `4px solid ${item.color}` }}>
+                    <div className="stat-icon-wrapper">
+                        <div className="stat-icon" style={{ color: item.color, backgroundColor: `${item.color}15` }}>
+                            <i className={item.icon}></i>
+                        </div>
                     </div>
                     <div className="stat-info">
                         <span className="stat-label">{item.label}</span>

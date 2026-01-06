@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSettings } from '../../context/SettingsContext';
 import './SecurePaymentCard.css';
 
 const SecurePaymentCard = ({ plan, amount, onPay, processing, onCancel }) => {
@@ -27,7 +28,7 @@ const SecurePaymentCard = ({ plan, amount, onPay, processing, onCancel }) => {
 
             <div className="payment-amount-display">
                 <span className="label">Amount to Pay</span>
-                <div className="value">₹{amount}</div>
+                <div className="value">{symbol}{amount}</div>
             </div>
 
             <div className="card-form-container">
@@ -94,7 +95,7 @@ const SecurePaymentCard = ({ plan, amount, onPay, processing, onCancel }) => {
                     disabled={processing}
                 >
                     <span className="btn-text">
-                        <span>{processing ? 'Processing Securely...' : `Pay ₹${amount}`}</span>
+                        <span>{processing ? 'Processing Securely...' : `Pay ${symbol}${amount}`}</span>
                     </span>
                     {!processing && <span className="btn-icon"><i className="fas fa-arrow-right"></i></span>}
                 </button>

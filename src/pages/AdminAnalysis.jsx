@@ -55,9 +55,26 @@ const AdminAnalysis = () => {
                             <h2 className="tj-section-title">Manage Analysis</h2>
                             <p className="text-muted">Create and manage market reports for users</p>
                         </div>
-                        <Link to="/admin/analysis/create" className="tj-btn tj-btn-primary">
-                            <span className="btn-text"><span>Create New Analysis</span></span>
-                            <span className="btn-icon"><i className="fas fa-plus"></i></span>
+                        <Link
+                            to="/admin/analysis/create"
+                            className="tj-primary-btn"
+                            style={{
+                                height: '38px',
+                                borderRadius: '50px',
+                                padding: '0 20px',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                backgroundColor: '#13689e',
+                                color: 'white',
+                                border: 'none',
+                                textDecoration: 'none',
+                                fontWeight: 600
+                            }}
+                        >
+                            <span className="btn-text">Create New Analysis</span>
+                            <span className="btn-icon">
+                                <i className="fas fa-arrow-right"></i>
+                            </span>
                         </Link>
                     </div>
 

@@ -75,6 +75,16 @@ const PaymentService = {
     getTransaction: async (id) => {
         const response = await api.get(`/payments/transactions/${id}`);
         return response.data;
+    },
+
+    /**
+     * Download Invoice PDF
+     * @param {string} transactionId
+     * @returns {Promise<Blob>} PDF Blob
+     */
+    downloadInvoice: async (transactionId) => {
+        const response = await api.get(`/invoices/${transactionId}/download`, { responseType: 'blob' });
+        return response.data;
     }
 };
 

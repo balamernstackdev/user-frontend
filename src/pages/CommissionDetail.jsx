@@ -161,7 +161,11 @@ const CommissionDetail = () => {
                                         </div>
                                         <div className="detail-group">
                                             <label>Paid Date</label>
-                                            <div className="detail-value">{formatDate(commission.paid_at)}</div>
+                                            <div className="detail-value">
+                                                {commission.status === 'paid' ? formatDate(commission.paid_at) : (
+                                                    <span className="text-muted italic small">Pending Payout</span>
+                                                )}
+                                            </div>
                                         </div>
                                         <div className="detail-group">
                                             <label>Commission ID</label>

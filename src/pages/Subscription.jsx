@@ -1,17 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import subscriptionService from '../services/subscription.service';
+import { authService } from '../services/auth.service';
+import { toast } from 'react-toastify';
 import './Subscription.css';
 
 const Subscription = () => {
     const [subscription, setSubscription] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
+        const user = authService.getUser();
+        if (user?.role === 'business_associate') {
+            navigate('/dashboard');
+            return;
+        }
         fetchSubscription();
-    }, []);
+    }, [navigate]);
 
     const fetchSubscription = async () => {
         try {
@@ -143,6 +150,12 @@ const Subscription = () => {
                                         <span className="info-label">Amount</span>
                                         <span className="info-value">{getPriceDisplay()}</span>
                                     </div>
+                                    <div className="info-item">
+                                        <span className="info-label">Auto Renew</span>
+                                        <span className={`info-value ${subscription.auto_renew ? 'text-success' : 'text-muted'}`}>
+                                            {subscription.auto_renew ? 'On' : 'Off'}
+                                        </span>
+                                    </div>
                                 </div>
                                 <div className="subscription-features">
                                     <h4>Plan Features</h4>
@@ -165,6 +178,27 @@ const Subscription = () => {
                                         <span className="btn-text"><span>View Payment History</span></span>
                                         <span className="btn-icon"><i className="fas fa-arrow-right"></i></span>
                                     </Link>
+                                    {subscription.auto_renew && (
+                                        <button
+                                            onClick={async () => {
+                                                if (window.confirm('Are you sure you want to cancel auto-renewal? Your subscription will remain active until the end of the current period.')) {
+                                                    try {
+                                                        const res = await subscriptionService.cancelSubscription(subscription.id);
+                                                        if (res.success) {
+                                                            fetchSubscription();
+                                                            toast.success('Auto-renewal cancelled successfully');
+                                                        }
+                                                    } catch (err) {
+                                                        toast.error('Failed to cancel auto-renewal');
+                                                    }
+                                                }
+                                            }}
+                                            className="tj-primary-btn danger-btn"
+                                            style={{ backgroundColor: '#dc3545', borderColor: '#dc3545' }}
+                                        >
+                                            <span className="btn-text"><span>Cancel Auto-renew</span></span>
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         </div>

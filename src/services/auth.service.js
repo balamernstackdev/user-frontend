@@ -25,8 +25,7 @@ const AuthService = {
      * @returns {Promise<object>} Response data
      */
     login: async (credentials) => {
-        const { email, password } = credentials;
-        const response = await api.post('/auth/login', { email, password });
+        const response = await api.post('/auth/login', credentials);
         if (response.data.data?.accessToken) {
             TokenService.setUser(response.data.data);
         }

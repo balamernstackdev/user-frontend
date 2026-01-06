@@ -318,7 +318,9 @@
     cursor: pointer;
 }
 
-.file-upload-area:hover {
+
+.file-upload-area:hover,
+.file-upload-area.dragover {
     border-color: #13689e;
     background-color: rgba(19, 104, 158, 0.05);
 }

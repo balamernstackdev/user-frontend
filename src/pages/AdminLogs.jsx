@@ -8,14 +8,19 @@ import './AdminListings.css';
 const AdminLogs = () => {
     const [logs, setLogs] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [filter, setFilter] = useState(''); // actionType
-    const [pagination, setPagination] = useState({ page: 1, limit: 5, total: 0 });
+    const [filters, setFilters] = useState({
+        actionType: '',
+        userId: '',
+        startDate: '',
+        endDate: ''
+    });
+    const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0 });
 
     const fetchLogs = async () => {
         setLoading(true);
         try {
             const params = {
-                actionType: filter,
+                ...filters,
                 limit: pagination.limit,
                 offset: (pagination.page - 1) * pagination.limit
             };
@@ -25,22 +30,11 @@ const AdminLogs = () => {
                 setPagination(prev => ({ ...prev, total: response.data.pagination.total }));
             } else if (Array.isArray(response.data)) {
                 // Fallback for stale backend
-                const allData = response.data;
-                const startIndex = (pagination.page - 1) * pagination.limit;
-                const endIndex = startIndex + pagination.limit;
-                const paginatedData = allData.slice(startIndex, endIndex);
-
-                setLogs(paginatedData);
-                setPagination(prev => ({ ...prev, total: allData.length }));
-            } else if (response.data && response.data.data && Array.isArray(response.data.data)) {
-                // Fallback for wrapped array
-                const allData = response.data.data;
-                const startIndex = (pagination.page - 1) * pagination.limit;
-                const endIndex = startIndex + pagination.limit;
-                const paginatedData = allData.slice(startIndex, endIndex);
-
-                setLogs(paginatedData);
-                setPagination(prev => ({ ...prev, total: allData.length }));
+                setLogs(response.data);
+                setPagination(prev => ({ ...prev, total: response.data.length }));
+            } else if (response.data && response.data.data) {
+                setLogs(response.data.data);
+                setPagination(prev => ({ ...prev, total: response.data.data.length || 0 }));
             }
         } catch (error) {
             console.error('Error fetching logs:', error);
@@ -50,8 +44,16 @@ const AdminLogs = () => {
     };
 
     useEffect(() => {
-        fetchLogs();
-    }, [pagination.page, filter]);
+        const timeoutId = setTimeout(() => {
+            fetchLogs();
+        }, 500); // Debounce
+        return () => clearTimeout(timeoutId);
+    }, [pagination.page, filters]);
+
+    const handleFilterChange = (key, value) => {
+        setFilters(prev => ({ ...prev, [key]: value }));
+        setPagination(prev => ({ ...prev, page: 1 }));
+    };
 
     return (
         <DashboardLayout>
@@ -64,19 +66,41 @@ const AdminLogs = () => {
                             <p style={{ color: '#6c757d' }}>Monitor system activities and security events</p>
                         </div>
                         <div className="header-actions">
-                            <div className="filter-group">
+                            <div className="filter-group" style={{ display: 'flex', gap: '10px' }}>
+                                <input
+                                    type="text"
+                                    placeholder="Search by User ID..."
+                                    className="form-control"
+                                    style={{ width: '180px' }}
+                                    value={filters.userId}
+                                    onChange={(e) => handleFilterChange('userId', e.target.value)}
+                                />
                                 <select
                                     className="custom-select"
-                                    value={filter}
-                                    onChange={(e) => setFilter(e.target.value)}
-                                    style={{ width: '200px' }}
+                                    value={filters.actionType}
+                                    onChange={(e) => handleFilterChange('actionType', e.target.value)}
+                                    style={{ width: '150px' }}
                                 >
                                     <option value="">All Actions</option>
                                     <option value="auth">Auth</option>
                                     <option value="payment">Payment</option>
-                                    <option value="subscription">Subscription</option>
+                                    <option value="new_commission">Commission</option>
                                     <option value="admin_action">Admin Action</option>
                                 </select>
+                                <input
+                                    type="date"
+                                    className="form-control"
+                                    style={{ width: '140px' }}
+                                    value={filters.startDate}
+                                    onChange={(e) => handleFilterChange('startDate', e.target.value)}
+                                />
+                                <input
+                                    type="date"
+                                    className="form-control"
+                                    style={{ width: '140px' }}
+                                    value={filters.endDate}
+                                    onChange={(e) => handleFilterChange('endDate', e.target.value)}
+                                />
                             </div>
                         </div>
                     </div>

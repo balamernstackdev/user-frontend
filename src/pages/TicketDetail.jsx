@@ -7,7 +7,10 @@ import { authService } from '../services/auth.service';
 import './TicketDetail.css';
 import { toast } from 'react-toastify';
 
+import { useSocket } from '../context/SocketContext';
+
 const TicketDetail = () => {
+    const { socket } = useSocket();
     const { settings } = useSettings();
     const { id } = useParams();
     const navigate = useNavigate();
@@ -22,7 +25,28 @@ const TicketDetail = () => {
 
     useEffect(() => {
         fetchTicketDetails();
-    }, [id]);
+
+        if (socket) {
+            socket.emit('join_chat', id);
+
+            socket.on('new_message', (message) => {
+                setMessages(prev => {
+                    // Avoid duplicates if fetch and socket happen together
+                    if (prev.some(m => m.id === message.id)) return prev;
+                    return [...prev, message];
+                });
+
+                // Scroll to bottom
+                setTimeout(() => {
+                    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+                }, 100);
+            });
+
+            return () => {
+                socket.off('new_message');
+            };
+        }
+    }, [id, socket]);
 
     const fetchTicketDetails = async () => {
         try {
@@ -38,22 +62,43 @@ const TicketDetail = () => {
         }
     };
 
+    const processFiles = (files) => {
+        const validFiles = files.filter(file => {
+            if (file.size > 10 * 1024 * 1024) {
+                toast.error(`File ${file.name} is too large. Maximum size is 10MB.`);
+                return false;
+            }
+            return true;
+        });
+        setReplyFiles(prev => [...prev, ...validFiles]);
+    };
+
     const handleFileSelect = (e) => {
         if (e.target.files && e.target.files.length > 0) {
-            const files = Array.from(e.target.files);
-            const validFiles = files.filter(file => {
-                if (file.size > 10 * 1024 * 1024) {
-                    toast.error(`File ${file.name} is too large. Maximum size is 10MB.`);
-                    return false;
-                }
-                return true;
-            });
-            setReplyFiles(prev => [...prev, ...validFiles]);
+            processFiles(Array.from(e.target.files));
         }
     };
 
     const handleRemoveFile = (fileName) => {
         setReplyFiles(prev => prev.filter(file => file.name !== fileName));
+    };
+
+    const handleDragOver = (e) => {
+        e.preventDefault();
+        e.currentTarget.classList.add('dragover');
+    };
+
+    const handleDragLeave = (e) => {
+        e.preventDefault();
+        e.currentTarget.classList.remove('dragover');
+    };
+
+    const handleDrop = (e) => {
+        e.preventDefault();
+        e.currentTarget.classList.remove('dragover');
+        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+            processFiles(Array.from(e.dataTransfer.files));
+        }
     };
 
     const handleSendMessage = async (e) => {
@@ -310,9 +355,13 @@ const TicketDetail = () => {
                                             <div
                                                 className="file-upload-area"
                                                 onClick={() => fileInputRef.current.click()}
+                                                onDragOver={handleDragOver}
+                                                onDragLeave={handleDragLeave}
+                                                onDrop={handleDrop}
                                             >
                                                 <i className="fas fa-cloud-arrow-up" style={{ fontSize: '24px', color: '#13689e', marginBottom: '10px' }}></i>
-                                                <div className="file-upload-text">Click to upload files</div>
+                                                <div className="file-upload-text">Click to upload or drag and drop</div>
+                                                <div style={{ fontSize: '12px', color: '#999', marginTop: '5px' }}>PNG, JPG, PDF up to 10MB</div>
                                                 <input
                                                     type="file"
                                                     id="fileInput"

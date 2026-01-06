@@ -6,19 +6,25 @@ import Pagination from '../components/common/Pagination';
 import SEO from '../components/common/SEO';
 import './AdminListings.css';
 import { toast } from 'react-toastify';
+import { adminService } from '../services/admin.service';
 
 const AdminCommissions = () => {
     const [searchParams] = useSearchParams();
     const [commissions, setCommissions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [statusFilter, setStatusFilter] = useState(searchParams.get('status') || 'pending');
-    const [pagination, setPagination] = useState({ page: 1, limit: 5, total: 0 });
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0 });
+    const [showExportDropdown, setShowExportDropdown] = useState(false);
 
     const fetchCommissions = async () => {
         setLoading(true);
         try {
             const params = {
                 status: statusFilter,
+                startDate,
+                endDate,
                 limit: pagination.limit,
                 offset: (pagination.page - 1) * pagination.limit
             };
@@ -54,7 +60,7 @@ const AdminCommissions = () => {
 
     useEffect(() => {
         fetchCommissions();
-    }, [pagination.page, statusFilter]);
+    }, [pagination.page, statusFilter, startDate, endDate]);
 
     const handleApprove = async (id) => {
         if (window.confirm('Approve this commission?')) {
@@ -69,35 +75,43 @@ const AdminCommissions = () => {
         }
     };
 
-    const handleExport = () => {
-        const approvedCommissions = commissions.filter(c => c.status === 'approved');
-        if (approvedCommissions.length === 0) {
-            toast.warn('No approved commissions to export. Please filter by "Approved" or ensure there are approved records.');
-            return;
+    const handleExport = async () => {
+        try {
+            const params = { startDate, endDate };
+            const blob = await adminService.exportData('payouts', 'csv', params);
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `payouts_export_${new Date().toISOString().split('T')[0]}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            toast.success('Payout export generated successfully!');
+        } catch (error) {
+            console.error('Export error:', error);
+            toast.error('Failed to generate payout export.');
         }
+    };
 
-        const headers = [
-            'Business Associate Name', 'Business Associate Email', 'Amount', 'Bank Name', 'Account Number',
-            'IFSC Code', 'Holder Name', 'UPI ID', 'Earned Date'
-        ];
+    const handleGeneralExport = async (format) => {
+        try {
+            const params = { startDate, endDate };
+            const blob = await adminService.exportData('commissions', format, params);
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `commissions_${new Date().toISOString().split('T')[0]}.${format}`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
 
-        const csvRows = approvedCommissions.map(c => [
-            `"${c.marketer_name}"`, `"${c.marketer_email}"`, c.amount, `"${c.marketer_bank_name || ''}"`,
-            `"${c.marketer_account_number || ''}"`, `"${c.marketer_ifsc_code || ''}"`,
-            `"${c.marketer_account_holder || ''}"`, `"${c.marketer_upi_id || ''}"`,
-            `"${new Date(c.created_at).toLocaleDateString()}"`
-        ]);
-
-        const csvContent = [headers, ...csvRows].map(e => e.join(',')).join('\n');
-        const blob = new Blob([csvContent], { type: 'text/csv' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.setAttribute('hidden', '');
-        a.setAttribute('href', url);
-        a.setAttribute('download', `payouts_export_${new Date().toISOString().split('T')[0]}.csv`);
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
+            toast.success(`Commissions exported successfully!`);
+        } catch (error) {
+            console.error('Export error:', error);
+            toast.error('Failed to export commissions. Please try again.');
+        }
     };
 
     return (
@@ -111,15 +125,95 @@ const AdminCommissions = () => {
                             <p style={{ color: '#6c757d' }}>Manage and process business associate commissions</p>
                         </div>
                         <div className="header-actions" style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-                            <button className="tj-btn tj-btn-primary tj-btn-sm add-btn" onClick={handleExport} style={{ backgroundColor: '#13689e', color: 'white' }}>
-                                <span className="btn-text"><span>Export for Payout</span></span>
-                            </button>
+                            <div className="btn-group" style={{ position: 'relative' }}>
+                                <button
+                                    className="tj-btn tj-btn-primary"
+                                    onClick={() => setShowExportDropdown(!showExportDropdown)}
+                                    style={{ backgroundColor: '#13689e', color: 'white', display: 'flex', alignItems: 'center', gap: '8px', height: '38px', borderRadius: '50px', padding: '0 20px' }}
+                                >
+                                    <i className="fas fa-file-export"></i>
+                                    <span className="btn-text">Export Options</span>
+                                </button>
+                                {showExportDropdown && (
+                                    <ul className="dropdown-menu show" style={{
+                                        display: 'block',
+                                        position: 'absolute',
+                                        top: '100%',
+                                        right: 0,
+                                        zIndex: 1000,
+                                        minWidth: '200px',
+                                        padding: '8px 0',
+                                        margin: '5px 0 0',
+                                        fontSize: '14px',
+                                        backgroundColor: '#fff',
+                                        border: '1px solid rgba(0,0,0,.1)',
+                                        borderRadius: '8px',
+                                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
+                                    }}>
+
+                                        <div style={{ height: '1px', backgroundColor: '#edf2f7', margin: '4px 0' }}></div>
+                                        <li>
+                                            <button
+                                                className="dropdown-item"
+                                                onClick={() => { handleGeneralExport('csv'); setShowExportDropdown(false); }}
+                                                style={{ display: 'flex', alignItems: 'center', gap: '10px', width: '100%', padding: '10px 20px', fontWeight: 400, color: '#475569', backgroundColor: 'transparent', border: 0, cursor: 'pointer', textAlign: 'left', transition: 'all 0.2s' }}
+                                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f8fafc'}
+                                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                            >
+                                                <i className="fas fa-file-csv" style={{ fontSize: '14px' }}></i>
+                                                <span>Download All (CSV)</span>
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button
+                                                className="dropdown-item"
+                                                onClick={() => { handleGeneralExport('pdf'); setShowExportDropdown(false); }}
+                                                style={{ display: 'flex', alignItems: 'center', gap: '10px', width: '100%', padding: '10px 20px', fontWeight: 400, color: '#475569', backgroundColor: 'transparent', border: 0, cursor: 'pointer', textAlign: 'left', transition: 'all 0.2s' }}
+                                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f8fafc'}
+                                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                            >
+                                                <i className="fas fa-file-pdf" style={{ fontSize: '14px' }}></i>
+                                                <span>Download All (PDF)</span>
+                                            </button>
+                                        </li>
+                                    </ul>
+                                )}
+                            </div>
+                            <div className="d-flex align-items-center gap-2">
+                                <input
+                                    type="date"
+                                    className="form-control form-control-sm"
+                                    value={startDate}
+                                    onChange={(e) => setStartDate(e.target.value)}
+                                    title="From Date"
+                                    style={{ width: '120px', height: '38px', padding: '0 12px', fontSize: '13px', borderRadius: '50px', border: '1px solid #e2e8f0' }}
+                                />
+                                <span className="text-muted small">to</span>
+                                <input
+                                    type="date"
+                                    className="form-control form-control-sm"
+                                    value={endDate}
+                                    onChange={(e) => setEndDate(e.target.value)}
+                                    title="To Date"
+                                    style={{ width: '120px', height: '38px', padding: '0 12px', fontSize: '13px', borderRadius: '50px', border: '1px solid #e2e8f0' }}
+                                />
+                                {(startDate || endDate) && (
+                                    <button
+                                        className="btn btn-sm btn-link text-danger p-0 ms-1"
+                                        onClick={() => { setStartDate(''); setEndDate(''); }}
+                                        title="Clear Dates"
+                                    >
+                                        <i className="fas fa-times-circle"></i>
+                                    </button>
+                                )}
+                            </div>
+
                             <div className="filter-group">
                                 <select
                                     className="custom-select"
                                     value={statusFilter}
                                     onChange={(e) => setStatusFilter(e.target.value)}
-                                    style={{ width: '200px' }}
+                                    style={{ width: '160px', borderRadius: '50px' }}
                                 >
                                     <option value="">All Status</option>
                                     <option value="pending">Pending</option>

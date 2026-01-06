@@ -48,6 +48,33 @@ const UserService = {
         return response.data;
     },
 
+    /**
+     * Upload user avatar
+     * @param {File} file - Image file
+     * @returns {Promise<object>} Response data
+     */
+    uploadAvatar: async (file) => {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const response = await api.post('/users/avatar', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+
+        if (response.data.data && response.data.data.avatarUrl) {
+            const currentUser = TokenService.getUser();
+            const updatedUser = {
+                ...currentUser,
+                avatar_url: response.data.data.avatarUrl
+            };
+            TokenService.setUser(updatedUser);
+        }
+
+        return response.data;
+    },
+
 
     /**
      * Get business associate profile

@@ -66,7 +66,6 @@ const Footer = () => {
                     <li><Link to="/dashboard">Dashboard</Link></li>
                     <li><Link to="/referrals">My Referrals</Link></li>
                     <li><Link to="/business-associate/commissions">My Commissions</Link></li>
-                    <li><Link to="/subscription">Plans</Link></li>
                 </ul>
             );
         } else {
@@ -178,8 +177,9 @@ const Footer = () => {
                                 </div>
                                 <div className="copyright-menu">
                                     <ul>
-                                        <li><Link to="/privacy">Privacy Policy</Link></li>
-                                        <li><Link to="/terms">Terms & Condition</Link></li>
+                                        <li><Link to={settings.privacy_policy_url || "/privacy"}>Privacy Policy</Link></li>
+                                        <li><Link to={settings.terms_conditions_url || "/terms"}>Terms & Condition</Link></li>
+                                        {settings.refund_policy_url && <li><Link to={settings.refund_policy_url}>Refund Policy</Link></li>}
                                     </ul>
                                 </div>
                             </div>

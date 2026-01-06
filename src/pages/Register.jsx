@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import ReCAPTCHA from 'react-google-recaptcha';
 import { authService } from '../services/auth.service';
 import { useSettings } from '../context/SettingsContext';
 import SEO from '../components/common/SEO';
@@ -25,6 +26,7 @@ const Register = () => {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
+    const [recaptchaToken, setRecaptchaToken] = useState(null);
 
     // Extract referral code from URL
     useEffect(() => {
@@ -44,6 +46,10 @@ const Register = () => {
         if (errors[name]) {
             setErrors({ ...errors, [name]: '' });
         }
+    };
+
+    const handleRecaptchaChange = (token) => {
+        setRecaptchaToken(token);
     };
 
     const validateForm = () => {
@@ -102,13 +108,22 @@ const Register = () => {
         setErrors({});
 
         try {
-            // Combine first and last name for API
             const { firstName, lastName, confirmPassword, agreeToTerms, ...rest } = formData;
             const registrationData = {
                 ...rest,
                 name: `${firstName} ${lastName}`.trim(),
                 role: 'user' // Default role
             };
+
+            // Check reCAPTCHA if enabled
+            if (settings.security_method === 'recaptcha') {
+                if (!recaptchaToken) {
+                    toast.error('Please complete the security check.');
+                    setLoading(false);
+                    return;
+                }
+                registrationData.recaptchaToken = recaptchaToken;
+            }
 
             const response = await authService.register(registrationData);
 
@@ -308,6 +323,14 @@ const Register = () => {
 
                         {/* Submit Button */}
                         <div className="register-btn-wrapper">
+                            {settings.security_method === 'recaptcha' && settings.recaptcha_site_key && (
+                                <div style={{ marginBottom: '20px', display: 'flex', justifyContent: 'center' }}>
+                                    <ReCAPTCHA
+                                        sitekey={settings.recaptcha_site_key}
+                                        onChange={handleRecaptchaChange}
+                                    />
+                                </div>
+                            )}
                             <button type="submit" className="tj-primary-btn" disabled={loading}>
                                 <span className="btn-text">
                                     <span>{loading ? 'Creating Account...' : 'Create Account'}</span>

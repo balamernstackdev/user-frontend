@@ -15,8 +15,12 @@ const Plans = () => {
     const user = authService.getUser();
 
     useEffect(() => {
+        if (user?.role === 'business_associate') {
+            navigate('/dashboard');
+            return;
+        }
         fetchPlans();
-    }, [selectedType]);
+    }, [selectedType, user, navigate]);
 
     const fetchPlans = async () => {
         try {
@@ -49,9 +53,10 @@ const Plans = () => {
     };
 
     const formatPrice = (plan) => {
-        if (plan.monthly_price) return { amount: `₹${plan.monthly_price}`, period: '/month' };
-        if (plan.yearly_price) return { amount: `₹${plan.yearly_price}`, period: '/year' };
-        if (plan.lifetime_price) return { amount: `₹${plan.lifetime_price}`, period: '(Lifetime)' };
+        const symbol = settings.currency_symbol || '₹';
+        if (plan.monthly_price) return { amount: `${symbol}${plan.monthly_price}`, period: '/month' };
+        if (plan.yearly_price) return { amount: `${symbol}${plan.yearly_price}`, period: '/year' };
+        if (plan.lifetime_price) return { amount: `${symbol}${plan.lifetime_price}`, period: '(Lifetime)' };
         return { amount: 'Contact Us', period: '' };
     };
 

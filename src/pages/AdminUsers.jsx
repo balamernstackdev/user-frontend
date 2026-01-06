@@ -6,6 +6,7 @@ import Pagination from '../components/common/Pagination';
 import SEO from '../components/common/SEO';
 import './AdminListings.css';
 import { toast } from 'react-toastify';
+import { adminService } from '../services/admin.service';
 
 const AdminUsers = () => {
     const navigate = useNavigate();
@@ -14,14 +15,19 @@ const AdminUsers = () => {
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState(searchParams.get('filter') || 'all');
     const [statusFilter, setStatusFilter] = useState(searchParams.get('status') || '');
-    const [pagination, setPagination] = useState({ page: 1, limit: 5, total: 0 });
+    const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0 });
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const [showExportDropdown, setShowExportDropdown] = useState(false);
 
     const fetchUsers = async () => {
         setLoading(true);
         try {
             const params = {
                 limit: pagination.limit,
-                offset: (pagination.page - 1) * pagination.limit
+                offset: (pagination.page - 1) * pagination.limit,
+                startDate,
+                endDate
             };
             if (filter !== 'all') params.role = filter;
             if (statusFilter) params.status = statusFilter;
@@ -71,7 +77,7 @@ const AdminUsers = () => {
 
     useEffect(() => {
         fetchUsers();
-    }, [pagination.page, filter, statusFilter]);
+    }, [pagination.page, filter, statusFilter, startDate, endDate]);
 
     const handleDeleteUser = async (id) => {
         if (window.confirm('Are you sure you want to delete this user?')) {
@@ -102,6 +108,35 @@ const AdminUsers = () => {
         }
     };
 
+    const handleExport = async (format) => {
+        try {
+            const isMarketerExport = filter === 'business_associate';
+            const type = isMarketerExport ? 'marketers' : 'users';
+
+            const params = {
+                startDate,
+                endDate,
+                role: isMarketerExport ? undefined : (filter !== 'all' ? filter : undefined),
+                status: statusFilter || undefined
+            };
+
+            const blob = await adminService.exportData(type, format, params);
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${type}_${new Date().toISOString().split('T')[0]}.${format}`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+
+            toast.success(`${type.charAt(0).toUpperCase() + type.slice(1)} exported successfully!`);
+        } catch (error) {
+            console.error('Export error:', error);
+            toast.error(`Failed to export ${filter === 'business_associate' ? 'marketers' : 'users'}. Please try again.`);
+        }
+    };
+
     return (
         <DashboardLayout>
             <SEO title="User Management" description="Manage platform users and roles" />
@@ -112,12 +147,42 @@ const AdminUsers = () => {
                             <h1>User Management</h1>
                             <p style={{ color: '#6c757d' }}>Manage users, marketers, and admins</p>
                         </div>
-                        <div className="header-actions" style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
+                        <div className="header-actions">
+                            <div className="d-flex align-items-center gap-2">
+                                <input
+                                    type="date"
+                                    className="form-control form-control-sm"
+                                    value={startDate}
+                                    onChange={(e) => setStartDate(e.target.value)}
+                                    title="From Date"
+                                    style={{ width: '120px', height: '38px', padding: '0 12px', fontSize: '13px', borderRadius: '50px', border: '1px solid #e2e8f0' }}
+                                />
+                                <span className="text-muted small">to</span>
+                                <input
+                                    type="date"
+                                    className="form-control form-control-sm"
+                                    value={endDate}
+                                    onChange={(e) => setEndDate(e.target.value)}
+                                    title="To Date"
+                                    style={{ width: '120px', height: '38px', padding: '0 12px', fontSize: '13px', borderRadius: '50px', border: '1px solid #e2e8f0' }}
+                                />
+                                {(startDate || endDate) && (
+                                    <button
+                                        className="btn btn-sm btn-link text-danger p-0 ms-1"
+                                        onClick={() => { setStartDate(''); setEndDate(''); }}
+                                        title="Clear Dates"
+                                    >
+                                        <i className="fas fa-times-circle"></i>
+                                    </button>
+                                )}
+                            </div>
+
                             <div className="filter-group">
                                 <select
                                     className="custom-select"
                                     value={filter}
                                     onChange={(e) => setFilter(e.target.value)}
+                                    style={{ borderRadius: '50px' }}
                                 >
                                     <option value="all">All Roles</option>
                                     <option value="user">Users</option>
@@ -128,6 +193,7 @@ const AdminUsers = () => {
                                     className="custom-select"
                                     value={statusFilter}
                                     onChange={(e) => setStatusFilter(e.target.value)}
+                                    style={{ borderRadius: '50px' }}
                                 >
                                     <option value="">All Status</option>
                                     <option value="active">Active</option>
@@ -135,12 +201,67 @@ const AdminUsers = () => {
                                     <option value="pending">Pending</option>
                                 </select>
                             </div>
+
+                            <div className="btn-group" style={{ position: 'relative' }}>
+                                <button
+                                    className="btn btn-sm dropdown-toggle"
+                                    type="button"
+                                    onClick={() => setShowExportDropdown(!showExportDropdown)}
+                                    style={{
+                                        display: 'flex', alignItems: 'center', gap: '8px',
+                                        padding: '0 20px', borderRadius: '50px', fontWeight: '600',
+                                        backgroundColor: '#13689e', color: 'white', border: 'none',
+                                        transition: 'all 0.3s ease', height: '38px'
+                                    }}
+                                >
+                                    <i className="fas fa-file-export"></i>
+                                    <span>Export Options</span>
+                                </button>
+                                {showExportDropdown && (
+                                    <ul className="dropdown-menu show shadow" style={{ display: 'block', position: 'absolute', top: '100%', right: 0, left: 'auto', zIndex: 1000, minWidth: '200px', padding: '8px', border: '1px solid #eef2f6', borderRadius: '12px', marginTop: '8px' }}>
+                                        <li>
+                                            <button
+                                                className="dropdown-item rounded-2"
+                                                onClick={() => { handleExport('csv'); setShowExportDropdown(false); }}
+                                                style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 15px', transition: 'all 0.2s' }}
+                                            >
+                                                <i className="fas fa-file-csv text-primary" style={{ fontSize: '18px' }}></i>
+                                                <span>Download CSV</span>
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button
+                                                className="dropdown-item rounded-2"
+                                                onClick={() => { handleExport('pdf'); setShowExportDropdown(false); }}
+                                                style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 15px', transition: 'all 0.2s' }}
+                                            >
+                                                <i className="fas fa-file-pdf text-danger" style={{ fontSize: '18px' }}></i>
+                                                <span>Download PDF</span>
+                                            </button>
+                                        </li>
+                                    </ul>
+                                )}
+                            </div>
                             <button
-                                className="tj-btn tj-btn-primary"
+                                className="tj-primary-btn"
                                 onClick={() => navigate('/admin/users/create')}
-                                style={{ padding: '8px 20px', fontSize: '14px' }}
+                                style={{
+                                    height: '38px',
+                                    borderRadius: '50px',
+                                    padding: '0 20px',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    backgroundColor: '#13689e',
+                                    color: 'white',
+                                    border: 'none',
+                                    textDecoration: 'none',
+                                    fontWeight: 600
+                                }}
                             >
-                                <span className="btn-text"><span>+ Add User</span></span>
+                                <span className="btn-text">Add User</span>
+                                <span className="btn-icon">
+                                    <i className="fas fa-arrow-right"></i>
+                                </span>
                             </button>
                         </div>
                     </div>

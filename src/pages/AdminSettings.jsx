@@ -11,15 +11,12 @@ const AdminSettings = () => {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState({});
     const [isValidating, setIsValidating] = useState(false);
+    const [isUploading, setIsUploading] = useState({});
+    const [testEmail, setTestEmail] = useState('');
+    const [isTestingSMTP, setIsTestingSMTP] = useState(false);
     const [activeTab, setActiveTab] = useState('general');
 
     const { fetchSettings: refreshGlobalSettings } = useSettings();
-
-    /* 
-       We still keep local state 'settings' as an array for the form rendering 
-       because the backend returns an array, and this component expects an array.
-       The context stores it as an object for easy access by key.
-    */
 
     useEffect(() => {
         fetchSettings();
@@ -38,8 +35,26 @@ const AdminSettings = () => {
         }
     };
 
-    const handleChange = (key, newValue) => {
-        setSettings(prev => prev.map(s => s.key === key ? { ...s, value: newValue } : s));
+    const handleTestSMTP = async () => {
+        if (!testEmail) {
+            toast.error('Please enter a test recipient email');
+            return;
+        }
+
+        setIsTestingSMTP(true);
+        try {
+            const response = await settingsService.testSMTP(testEmail);
+            toast.success(response.message || 'Test email sent successfully');
+        } catch (error) {
+            console.error('SMTP test error:', error);
+            toast.error(error.response?.data?.message || 'Failed to send test email');
+        } finally {
+            setIsTestingSMTP(false);
+        }
+    };
+
+    const handleChange = (key, value) => {
+        setSettings(prev => prev.map(s => s.key === key ? { ...s, value: value } : s));
     };
 
     const handleSave = async (key) => {
@@ -49,10 +64,7 @@ const AdminSettings = () => {
             const setting = settings.find(s => s.key === key);
             await settingsService.update(key, setting.value);
             toast.success(`Saved ${key.replace(/_/g, ' ').toUpperCase()}`);
-
-            // Refresh global settings context with all settings for admin
             refreshGlobalSettings(true);
-
         } catch (error) {
             console.error(`Error saving ${key}:`, error);
             toast.error(`Failed to save ${key}`);
@@ -61,9 +73,30 @@ const AdminSettings = () => {
         }
     };
 
+    const handleFileUpload = async (key, file) => {
+        if (!file) return;
+
+        setIsUploading(prev => ({ ...prev, [key]: true }));
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            const response = await settingsService.uploadBranding(formData);
+            const url = response.data.url;
+            handleChange(key, url);
+            await settingsService.update(key, url);
+            toast.success(`${key.replace(/_/g, ' ').toUpperCase()} uploaded successfully`);
+            refreshGlobalSettings(true);
+        } catch (error) {
+            console.error(`Upload error for ${key}:`, error);
+            toast.error(`Failed to upload ${key.replace(/_/g, ' ')}`);
+        } finally {
+            setIsUploading(prev => ({ ...prev, [key]: false }));
+        }
+    };
+
     const handleValidateRazorpayX = async () => {
         setIsValidating(true);
-
         const keyId = settings.find(s => s.key === 'razorpay_x_key_id')?.value;
         const keySecret = settings.find(s => s.key === 'razorpay_x_key_secret')?.value;
 
@@ -86,7 +119,23 @@ const AdminSettings = () => {
     };
 
     const renderInput = (setting) => {
-        if (setting.type === 'boolean') {
+        if (setting.key === 'security_method') {
+            return (
+                <select
+                    className="form-select"
+                    value={setting.value}
+                    onChange={(e) => handleChange(setting.key, e.target.value)}
+                    style={{ backgroundColor: '#fff', border: '1px solid #e2e8f0' }}
+                >
+                    <option value="none">None (Disabled)</option>
+                    <option value="recaptcha">Google reCAPTCHA v3</option>
+                    <option value="turnstile">Cloudflare Turnstile (Coming Soon)</option>
+                    <option value="math_captcha">Simple Math Captcha (Coming Soon)</option>
+                </select>
+            );
+        }
+
+        if (setting.type === 'boolean' || setting.key === 'maintenance_mode') {
             return (
                 <div className="form-check form-switch p-0 m-0 d-flex align-items-center" style={{ minHeight: '38px' }}>
                     <input
@@ -104,7 +153,79 @@ const AdminSettings = () => {
             );
         }
 
-        const isSecret = setting.key.includes('secret') || setting.key.includes('password') || setting.key.includes('key');
+        if (setting.key === 'logo_url' || setting.key === 'favicon_url') {
+            return (
+                <div className="d-flex flex-column gap-2">
+                    {setting.value && (
+                        <div className="mb-2 p-2 border rounded bg-light d-inline-block shadow-sm" style={{ maxWidth: '200px' }}>
+                            <img
+                                src={setting.value}
+                                alt={setting.key}
+                                style={{ maxHeight: '60px', maxWidth: '100%', display: 'block', margin: '0 auto' }}
+                            />
+                        </div>
+                    )}
+                    <div className="d-flex align-items-center gap-2">
+                        <div className="flex-grow-1">
+                            <input
+                                type="text"
+                                className="form-control"
+                                value={setting.value || ''}
+                                onChange={(e) => handleChange(setting.key, e.target.value)}
+                                placeholder="Asset URL"
+                                style={{ backgroundColor: '#fff', border: '1px solid #e2e8f0', fontSize: '12px' }}
+                            />
+                        </div>
+                        <div className="position-relative">
+                            <input
+                                type="file"
+                                id={`file-${setting.key}`}
+                                className="d-none"
+                                accept="image/*"
+                                onChange={(e) => handleFileUpload(setting.key, e.target.files[0])}
+                                disabled={isUploading[setting.key]}
+                            />
+                            <label
+                                htmlFor={`file-${setting.key}`}
+                                className="btn btn-outline-primary m-0 d-flex align-items-center justify-content-center"
+                                style={{ height: '38px', width: '38px', borderRadius: '8px', cursor: 'pointer', padding: 0 }}
+                                title="Upload Image"
+                            >
+                                {isUploading[setting.key] ? (
+                                    <span className="spinner-border spinner-border-sm" role="status"></span>
+                                ) : (
+                                    <i className="fas fa-upload"></i>
+                                )}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        if (setting.key === 'brand_color') {
+            return (
+                <div className="d-flex align-items-center gap-3">
+                    <input
+                        type="color"
+                        className="form-control form-control-color"
+                        value={setting.value || '#13689e'}
+                        onChange={(e) => handleChange(setting.key, e.target.value)}
+                        style={{ width: '60px', height: '38px', cursor: 'pointer' }}
+                    />
+                    <input
+                        type="text"
+                        className="form-control"
+                        value={setting.value || ''}
+                        onChange={(e) => handleChange(setting.key, e.target.value)}
+                        placeholder="#13689e"
+                        style={{ backgroundColor: '#fff', border: '1px solid #e2e8f0' }}
+                    />
+                </div>
+            );
+        }
+
+        const isSecret = setting.key.includes('secret') || setting.key.includes('password') || setting.key.includes('pass') || setting.key.includes('key');
 
         return (
             <input
@@ -120,16 +241,44 @@ const AdminSettings = () => {
     const tabs = [
         { id: 'general', label: 'General Settings', icon: 'fas fa-cog' },
         { id: 'payments', label: 'Payments & Payouts', icon: 'fas fa-wallet' },
-        { id: 'razorpay', label: 'RazorpayX Config', icon: 'fas fa-university' },
-        { id: 'identity', label: 'Contact & Identity', icon: 'fas fa-address-card' }
+        { id: 'email', label: 'Email (SMTP)', icon: 'fas fa-envelope' },
+        { id: 'branding', label: 'Branding & SEO', icon: 'fas fa-palette' },
+        { id: 'security', label: 'Security', icon: 'fas fa-shield-alt' },
+        { id: 'identity', label: 'Identity & Legal', icon: 'fas fa-address-card' }
     ];
 
     const filteredSettings = settings.filter(s => {
-        if (activeTab === 'razorpay') return s.key.startsWith('razorpay_x');
-        if (activeTab === 'payments') return (s.key.includes('payout') || (s.key.includes('razorpay') && !s.key.startsWith('razorpay_x'))) && !s.key.includes('commission');
-        if (activeTab === 'identity') return ['contact_email', 'contact_phone', 'office_address', 'facebook_url', 'instagram_url', 'twitter_url', 'linkedin_url', 'footer_heading', 'office_hours'].includes(s.key);
-        if (activeTab === 'general') return !s.key.startsWith('razorpay_x') && !s.key.includes('payout') && (!s.key.includes('razorpay') || s.key.includes('commission')) && !['contact_email', 'contact_phone', 'office_address', 'facebook_url', 'instagram_url', 'twitter_url', 'linkedin_url', 'footer_heading', 'office_hours', 'footer_copyright'].includes(s.key);
+        if (activeTab === 'payments') {
+            return (s.key.includes('payout') || s.key.includes('razorpay')) && !s.key.includes('commission');
+        }
+        if (activeTab === 'email') {
+            return s.key.startsWith('smtp_');
+        }
+        if (activeTab === 'branding') {
+            return ['logo_url', 'favicon_url', 'brand_color', 'meta_description', 'meta_keywords', 'google_analytics_id', 'facebook_pixel_id'].includes(s.key);
+        }
+        if (activeTab === 'security') {
+            return s.key.startsWith('recaptcha_') || s.key === 'security_method';
+        }
+        if (activeTab === 'identity') {
+            return ['contact_email', 'contact_phone', 'office_address', 'facebook_url', 'instagram_url', 'twitter_url', 'linkedin_url', 'footer_heading', 'office_hours', 'privacy_policy_url', 'terms_conditions_url', 'refund_policy_url'].includes(s.key);
+        }
+        if (activeTab === 'general') {
+            return [
+                'site_name', 'support_email', 'maintenance_mode',
+                'currency_code', 'currency_symbol', 'tax_rate',
+                'marketer_commission_default', 'marketer_commission_tier2', 'marketer_commission_tier3'
+            ].includes(s.key) || s.key.includes('commission');
+        }
         return false;
+    }).sort((a, b) => {
+        if (activeTab === 'payments') {
+            const isARX = a.key.startsWith('razorpay_x');
+            const isBRX = b.key.startsWith('razorpay_x');
+            if (!isARX && isBRX) return -1;
+            if (isARX && !isBRX) return 1;
+        }
+        return 0;
     });
 
     return (
@@ -145,7 +294,6 @@ const AdminSettings = () => {
                     </div>
 
                     <div className="row">
-                        {/* Tab Navigation */}
                         <div className="col-12 mb-4">
                             <div className="d-flex overflow-auto pb-2" style={{ gap: '10px' }}>
                                 {tabs.map(tab => (
@@ -162,7 +310,6 @@ const AdminSettings = () => {
                             </div>
                         </div>
 
-                        {/* Settings Content */}
                         <div className="col-12">
                             <div className="listing-table-container shadow-sm border-0 p-4 bg-white rounded-3">
                                 <h5 className="mb-4 d-flex align-items-center" style={{ fontWeight: 700, color: '#000000' }}>
@@ -180,39 +327,123 @@ const AdminSettings = () => {
                                     </div>
                                 ) : (
                                     <div className="settings-list">
-                                        {filteredSettings.map(setting => (
-                                            <div key={setting.key} className="mb-4 pb-4 border-bottom last-no-border">
-                                                <div className="row align-items-center">
-                                                    <div className="col-lg-4 col-md-12 mb-2 mb-lg-0">
-                                                        <label className="form-label d-block fw-bold mb-1" style={{ fontSize: '13px', color: '#444', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                                                            {setting.key.replace(/_/g, ' ').replace(/marketer/i, 'Business Associate')}
-                                                        </label>
-                                                        {setting.description && (
-                                                            <div className="text-muted" style={{ fontSize: '11px', lineHeight: '1.4' }}>
-                                                                {setting.description}
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                    <div className="col-lg-6 col-md-9 col-8">
-                                                        {renderInput(setting)}
-                                                    </div>
-                                                    <div className="col-lg-2 col-md-3 col-4 text-end">
-                                                        <button
-                                                            className="tj-btn tj-btn-primary w-100"
-                                                            style={{ height: '40px', padding: '0 20px', fontSize: '14px', borderRadius: '50px' }}
-                                                            onClick={() => handleSave(setting.key)}
-                                                            disabled={saving[setting.key]}
-                                                        >
-                                                            {saving[setting.key] ? (
-                                                                <span className="spinner-border spinner-border-sm" role="status"></span>
-                                                            ) : 'Save'}
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        ))}
+                                        {filteredSettings.map((setting, index) => {
+                                            const isRazorpayX = setting.key.startsWith('razorpay_x');
+                                            const prevIsRazorpayX = index > 0 ? filteredSettings[index - 1].key.startsWith('razorpay_x') : null;
 
-                                        {activeTab === 'razorpay' && (
+                                            const isSEO = ['meta_description', 'meta_keywords', 'google_analytics_id', 'facebook_pixel_id'].includes(setting.key);
+                                            const prevIsSEO = index > 0 ? ['meta_description', 'meta_keywords', 'google_analytics_id', 'facebook_pixel_id'].includes(filteredSettings[index - 1].key) : false;
+
+                                            return (
+                                                <React.Fragment key={setting.key}>
+                                                    {activeTab === 'payments' && index === 0 && !isRazorpayX && (
+                                                        <div className="mb-4 pb-2 border-bottom">
+                                                            <h6 className="mb-0 text-primary fw-bold" style={{ fontSize: '15px' }}>
+                                                                <i className="fas fa-credit-card me-2"></i>
+                                                                Payment Gateway (Customer Payments)
+                                                            </h6>
+                                                        </div>
+                                                    )}
+
+                                                    {activeTab === 'payments' && isRazorpayX && prevIsRazorpayX === false && (
+                                                        <div className="mt-5 mb-4 pb-2 border-bottom">
+                                                            <h6 className="mb-0 text-primary fw-bold" style={{ fontSize: '15px' }}>
+                                                                <i className="fas fa-university me-2"></i>
+                                                                RazorpayX Configuration (Vendor Payouts)
+                                                            </h6>
+                                                        </div>
+                                                    )}
+
+                                                    {activeTab === 'branding' && index === 0 && !isSEO && (
+                                                        <div className="mb-4 pb-2 border-bottom">
+                                                            <h6 className="mb-0 text-primary fw-bold" style={{ fontSize: '15px' }}>
+                                                                <i className="fas fa-paint-brush me-2"></i>
+                                                                Visual Branding
+                                                            </h6>
+                                                        </div>
+                                                    )}
+
+                                                    {activeTab === 'branding' && isSEO && !prevIsSEO && (
+                                                        <div className="mt-5 mb-4 pb-2 border-bottom">
+                                                            <h6 className="mb-0 text-primary fw-bold" style={{ fontSize: '15px' }}>
+                                                                <i className="fas fa-chart-line me-2"></i>
+                                                                SEO & Analytics
+                                                            </h6>
+                                                        </div>
+                                                    )}
+
+                                                    {activeTab === 'email' && index === 0 && (
+                                                        <div className="mb-4 p-3 bg-light rounded-3 d-flex justify-content-between align-items-center animate-fade-up shadow-sm border border-primary-subtle">
+                                                            <div>
+                                                                <h6 className="mb-1 fw-bold text-primary"><i className="fas fa-vial me-2"></i>Test SMTP Configuration</h6>
+                                                                <p className="small text-muted mb-0">Verify if your email settings are working correctly.</p>
+                                                            </div>
+                                                            <div className="d-flex align-items-center gap-2">
+                                                                <input
+                                                                    type="email"
+                                                                    className="form-control form-control-sm"
+                                                                    placeholder="Recipient email"
+                                                                    value={testEmail}
+                                                                    onChange={(e) => setTestEmail(e.target.value)}
+                                                                    style={{ width: '200px', backgroundColor: '#fff' }}
+                                                                />
+                                                                <button
+                                                                    className="btn btn-primary btn-sm px-3"
+                                                                    onClick={handleTestSMTP}
+                                                                    disabled={isTestingSMTP}
+                                                                    style={{ borderRadius: '6px' }}
+                                                                >
+                                                                    {isTestingSMTP ? (
+                                                                        <><span className="spinner-border spinner-border-sm me-1"></span>Testing...</>
+                                                                    ) : (
+                                                                        <><i className="fas fa-paper-plane me-1"></i> Send Test</>
+                                                                    )}
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    )}
+
+                                                    <div className="mb-4 pb-4 border-bottom last-no-border">
+                                                        <div className="row align-items-center">
+                                                            <div className="col-lg-4 col-md-12 mb-2 mb-lg-0">
+                                                                <label className="form-label d-block fw-bold mb-1" style={{ fontSize: '13px', color: '#444', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                                                                    {setting.key.replace(/_/g, ' ').replace(/marketer/i, 'Business Associate')}
+                                                                </label>
+                                                                {setting.description && (
+                                                                    <div className="text-muted" style={{ fontSize: '11px', lineHeight: '1.4' }}>
+                                                                        {setting.description}
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                            <div className="col-lg-6 col-md-9 col-8">
+                                                                {renderInput(setting)}
+                                                            </div>
+                                                            <div className="col-lg-2 col-md-3 col-4 text-end">
+                                                                <button
+                                                                    className="tj-primary-btn w-100"
+                                                                    style={{ height: '40px', padding: '0 20px', fontSize: '14px', borderRadius: '50px' }}
+                                                                    onClick={() => handleSave(setting.key)}
+                                                                    disabled={saving[setting.key]}
+                                                                >
+                                                                    <span className="btn-text">
+                                                                        {saving[setting.key] ? (
+                                                                            <span className="spinner-border spinner-border-sm" role="status"></span>
+                                                                        ) : 'Save'}
+                                                                    </span>
+                                                                    {!saving[setting.key] && (
+                                                                        <span className="btn-icon">
+                                                                            <i className="fas fa-arrow-right"></i>
+                                                                        </span>
+                                                                    )}
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </React.Fragment>
+                                            );
+                                        })}
+
+                                        {activeTab === 'payments' && settings.some(s => s.key.startsWith('razorpay_x')) && (
                                             <div className="mt-4 pt-4 border-top">
                                                 <div className="d-flex align-items-center justify-content-between p-3 rounded-3" style={{ backgroundColor: '#f8fafc', border: '1px dashed #cbd5e1' }}>
                                                     <div>
@@ -220,21 +451,28 @@ const AdminSettings = () => {
                                                         <p className="mb-0 text-muted" style={{ fontSize: '12px' }}>Test if the provided Key ID and Secret are valid and connected to Razorpay.</p>
                                                     </div>
                                                     <button
-                                                        className="tj-btn tj-btn-outline-primary px-4"
-                                                        style={{ fontWeight: 600, fontSize: '14px', borderRadius: '50px' }}
+                                                        className="tj-primary-btn px-4"
+                                                        style={{ fontWeight: 600, fontSize: '14px', borderRadius: '50px', height: '40px' }}
                                                         onClick={handleValidateRazorpayX}
                                                         disabled={isValidating}
                                                     >
-                                                        {isValidating ? (
-                                                            <>
-                                                                <span className="spinner-border spinner-border-sm me-2" role="status"></span>
-                                                                Validating...
-                                                            </>
-                                                        ) : (
-                                                            <>
-                                                                <i className="fas fa-plug me-2"></i>
-                                                                Test Connection
-                                                            </>
+                                                        <span className="btn-text">
+                                                            {isValidating ? (
+                                                                <>
+                                                                    <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                                                                    Validating...
+                                                                </>
+                                                            ) : (
+                                                                <>
+                                                                    <i className="fas fa-plug me-2"></i>
+                                                                    Test Connection
+                                                                </>
+                                                            )}
+                                                        </span>
+                                                        {!isValidating && (
+                                                            <span className="btn-icon">
+                                                                <i className="fas fa-arrow-right"></i>
+                                                            </span>
                                                         )}
                                                     </button>
                                                 </div>
