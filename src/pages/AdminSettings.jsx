@@ -26,7 +26,22 @@ const AdminSettings = () => {
         setLoading(true);
         try {
             const response = await settingsService.getAll();
-            setSettings(response.data.data || []);
+            const fetchedSettings = response.data.data || [];
+
+            // Ensure Google Auth keys exist
+            const requiredKeys = [
+                { key: 'google_client_id', value: '', description: 'Google OAuth Client ID from Google Cloud Console', type: 'string' },
+                { key: 'google_client_secret', value: '', description: 'Google OAuth Client Secret', type: 'password' }
+            ];
+
+            const mergedSettings = [...fetchedSettings];
+            requiredKeys.forEach(req => {
+                if (!mergedSettings.find(s => s.key === req.key)) {
+                    mergedSettings.push(req);
+                }
+            });
+
+            setSettings(mergedSettings);
         } catch (error) {
             console.error('Error fetching settings:', error);
             toast.error('Failed to load settings');
@@ -258,7 +273,7 @@ const AdminSettings = () => {
             return ['logo_url', 'favicon_url', 'brand_color', 'meta_description', 'meta_keywords', 'google_analytics_id', 'facebook_pixel_id'].includes(s.key);
         }
         if (activeTab === 'security') {
-            return s.key.startsWith('recaptcha_') || s.key === 'security_method';
+            return s.key.startsWith('recaptcha_') || s.key.startsWith('google_client_') || s.key === 'security_method';
         }
         if (activeTab === 'identity') {
             return ['contact_email', 'contact_phone', 'office_address', 'facebook_url', 'instagram_url', 'twitter_url', 'linkedin_url', 'footer_heading', 'office_hours', 'privacy_policy_url', 'terms_conditions_url', 'refund_policy_url'].includes(s.key);
@@ -300,11 +315,11 @@ const AdminSettings = () => {
                                     <button
                                         key={tab.id}
                                         onClick={() => setActiveTab(tab.id)}
-                                        className={`btn px-4 py-2 rounded-pill d-flex align-items-center transition-all ${activeTab === tab.id ? 'btn-primary' : 'btn-light'}`}
-                                        style={{ whiteSpace: 'nowrap', fontWeight: 600, fontSize: '14px' }}
+                                        className={`btn px-4 py-2 rounded-pill d-flex align-items-center justify-content-center transition-all ${activeTab === tab.id ? 'btn-primary' : 'btn-light'}`}
+                                        style={{ whiteSpace: 'nowrap', fontWeight: 600, fontSize: '14px', gap: '8px' }}
                                     >
-                                        <i className={`${tab.icon} me-2`}></i>
-                                        {tab.label}
+                                        <i className={`${tab.icon}`} style={{ fontSize: '1.1em', marginTop: '1px' }}></i>
+                                        <span>{tab.label}</span>
                                     </button>
                                 ))}
                             </div>

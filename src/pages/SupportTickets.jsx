@@ -111,31 +111,45 @@ const SupportTickets = () => {
                                     </div>
                                 </div>
                             ) : tickets.length > 0 ? (
-                                tickets.map((ticket) => (
-                                    <div
-                                        key={ticket.id}
-                                        className={`ticket-card ${getStatusClass(ticket.status)}`}
-                                        onClick={() => navigate(`/tickets/${ticket.id}`)}
-                                    >
-                                        <div className="ticket-header">
-                                            <div>
-                                                <div className="ticket-id">#{ticket.ticket_number || ticket.id.slice(0, 8).toUpperCase()}</div>
-                                                <div className="ticket-subject">{ticket.subject}</div>
+                                <div className="bg-white rounded-4 shadow-sm overflow-hidden border-0">
+                                    {tickets.map((ticket, index) => {
+                                        const statusConfig = {
+                                            'open': { border: '#0d6efd', badge: 'bg-primary-subtle text-primary' },
+                                            'in_progress': { border: '#0dcaf0', badge: 'bg-info-subtle text-info-emphasis' },
+                                            'resolved': { border: '#198754', badge: 'bg-success-subtle text-success' },
+                                            'closed': { border: '#6c757d', badge: 'bg-secondary-subtle text-secondary' }
+                                        };
+                                        const config = statusConfig[ticket.status] || statusConfig['open'];
+
+                                        return (
+                                            <div
+                                                key={ticket.id}
+                                                className={`p-4 ${index !== tickets.length - 1 ? 'border-bottom' : ''}`}
+                                                onClick={() => navigate(`/tickets/${ticket.id}`)}
+                                                style={{ cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: `4px solid ${config.border}` }}
+                                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f8f9fa'}
+                                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fff'}
+                                            >
+                                                <div className="d-flex justify-content-between align-items-start mb-2">
+                                                    <div>
+                                                        <span className="badge bg-light text-secondary border mb-2 font-monospace">#{ticket.ticket_number || ticket.id.slice(0, 8).toUpperCase()}</span>
+                                                        <h5 className="mb-1 fw-bold text-dark">{ticket.subject}</h5>
+                                                    </div>
+                                                    <span className={`badge rounded-pill ${config.badge}`}>
+                                                        {ticket.status === 'in_progress' ? 'In Progress' : ticket.status.charAt(0).toUpperCase() + ticket.status.slice(1)}
+                                                    </span>
+                                                </div>
+                                                <p className="text-muted mb-3 small text-truncate" style={{ maxWidth: '800px' }}>
+                                                    {ticket.message_preview || ticket.description || 'No description available.'}
+                                                </p>
+                                                <div className="d-flex flex-wrap gap-3 text-muted small">
+                                                    <span><i className="far fa-calendar-alt me-1"></i> {formatDate(ticket.created_at)}</span>
+                                                    <span><i className="fas fa-tag me-1"></i> {ticket.category || 'General'}</span>
+                                                </div>
                                             </div>
-                                            <span className={`ticket-status ${getStatusClass(ticket.status)}`}>
-                                                {ticket.status === 'in_progress' ? 'In Progress' : ticket.status.charAt(0).toUpperCase() + ticket.status.slice(1)}
-                                            </span>
-                                        </div>
-                                        <div className="ticket-description">
-                                            {ticket.message_preview || ticket.description || 'No description available.'}
-                                        </div>
-                                        <div className="ticket-meta">
-                                            <span><i className="far fa-calendar"></i> Created: {formatDate(ticket.created_at)}</span>
-                                            <span><i className="far fa-clock"></i> Last Updated: {formatDate(ticket.updated_at)}</span>
-                                            <span><i className="fas fa-user-circle"></i> {ticket.category || 'General'}</span>
-                                        </div>
-                                    </div>
-                                ))
+                                        );
+                                    })}
+                                </div>
                             ) : (
                                 <div className="text-center p-5" style={{ backgroundColor: '#fff', borderRadius: '12px' }}>
                                     <div style={{ fontSize: '48px', marginBottom: '15px' }}>🎫</div>

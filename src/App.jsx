@@ -64,6 +64,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import { authService } from './services/auth.service';
 import { useSettings } from './context/SettingsContext';
 import ScrollToTop from './components/ScrollToTop';
+import BusinessAssociateDashboard from './pages/BusinessAssociateDashboard';
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -120,6 +121,7 @@ function App() {
                 <Route path="/tickets/:id" element={<ProtectedRoute allowedRoles={['user', 'business_associate', 'admin', 'support_agent']}><TicketDetail /></ProtectedRoute>} />
 
                 {/* Business Associate Routes */}
+                <Route path="/business-associate/dashboard" element={<ProtectedRoute allowedRoles={['business_associate']}><BusinessAssociateDashboard /></ProtectedRoute>} />
                 <Route path="/business-associate/referrals" element={<ProtectedRoute allowedRoles={['business_associate']}><ReferredUsers /></ProtectedRoute>} />
                 <Route path="/business-associate/commissions" element={<ProtectedRoute allowedRoles={['business_associate']}><Commissions /></ProtectedRoute>} />
                 <Route path="/business-associate/commissions/:id" element={<ProtectedRoute allowedRoles={['business_associate']}><CommissionDetail /></ProtectedRoute>} />

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import announcementService from '../../services/announcement.service';
 import SkeletonLoader from './SkeletonLoader';
+import { Megaphone } from 'lucide-react';
 
 const AnnouncementWidget = () => {
     const [announcements, setAnnouncements] = useState([]);
@@ -48,7 +49,7 @@ const AnnouncementWidget = () => {
                     justifyContent: 'center',
                     marginRight: '15px'
                 }}>
-                    <i className="fas fa-bullhorn" style={{ fontSize: '18px' }}></i>
+                    <Megaphone size={18} />
                 </div>
                 <div>
                     <h3 className="card-title mb-0" style={{ fontSize: '18px' }}>Announcements</h3>

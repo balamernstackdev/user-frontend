@@ -8,6 +8,7 @@ import SEO from '../components/common/SEO';
 import { Users, UserCheck, Clock, CreditCard, TrendingUp, AlertCircle, CheckCircle } from 'lucide-react';
 import './Dashboard.css';
 import './AdminListings.css';
+import { Settings as SettingsIcon } from 'lucide-react';
 
 // New Components
 import StatCard from '../components/dashboard/StatCard';
@@ -148,12 +149,12 @@ const AdminDashboard = () => {
         <DashboardLayout>
             <SEO title="Admin Dashboard" description="Advanced Analytics & System Overview" />
             <section className="welcome-section">
-                <div className="container-fluid">
+                <div className="admin-container">
                     <div className="welcome-content">
                         <div className="welcome-header animate-fade-up mb-4">
                             <div>
-                                <h1 className="section-title">Welcome back, {user?.name || 'Admin'}! 👋</h1>
-                                <p className="section-subtitle">Real-time system health and growth analytics.</p>
+                                <h1 className="section-title" style={{ fontSize: '2.5rem', fontWeight: 'bold' }}>Welcome back, {user?.name || 'Admin'}! 👋</h1>
+                                <p className="section-subtitle" style={{ fontSize: '1.15rem' }}>Real-time system health and growth analytics.</p>
                             </div>
                             <div className="last-updated text-muted small">
                                 <Clock size={14} style={{ display: 'inline', marginRight: '5px' }} />
@@ -284,6 +285,15 @@ const AdminDashboard = () => {
                     </div>
                 </div>
             </section>
+
+            {/* Floating Settings Gear - From Screenshot */}
+            <Link
+                to="/admin/settings"
+                className="floating-settings-btn"
+                title="System Settings"
+            >
+                <SettingsIcon size={20} />
+            </Link>
         </DashboardLayout>
     );
 };

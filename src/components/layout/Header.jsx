@@ -119,7 +119,7 @@ const Header = ({ notificationCount = 0 }) => {
                                 <div className="header-wrapper">
                                     {/* Site Logo */}
                                     <div className="site_logo">
-                                        <Link className="logo" to={user ? (isAdmin || isFinance ? '/admin/dashboard' : (isSupport ? '/admin/tickets' : '/dashboard')) : '/'}>
+                                        <Link className="logo" to={user ? (isAdmin || isFinance ? '/admin/dashboard' : (isSupport ? '/admin/tickets' : (isBusinessAssociate ? '/business-associate/dashboard' : '/dashboard'))) : '/'}>
                                             <img src={settings.logo_url || StoxzoLogo} alt={settings.site_name || "Stoxzo"} />
                                         </Link>
                                     </div>
@@ -131,7 +131,7 @@ const Header = ({ notificationCount = 0 }) => {
                                                 {!isStaff ? (
                                                     /* User & Marketer Navigation */
                                                     <>
-                                                        <li><Link to="/dashboard">Dashboard</Link></li>
+                                                        <li><Link to={isBusinessAssociate ? "/business-associate/dashboard" : "/dashboard"}>Dashboard</Link></li>
 
                                                         {isBusinessAssociate ? (
                                                             /* Marketer Navigation - Organized Dropdowns */

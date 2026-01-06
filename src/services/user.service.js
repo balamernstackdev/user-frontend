@@ -13,10 +13,12 @@ const UserService = {
     getProfile: async () => {
         const response = await api.get('/users/profile');
         // Update stored user data if changed
-        if (response.data.data) {
+        if (response.data.data && response.data.data.user) {
             const currentUser = TokenService.getUser();
-            const updatedUser = { ...currentUser, ...response.data.data };
-            TokenService.setUser(updatedUser);
+            if (currentUser) {
+                currentUser.user = { ...currentUser.user, ...response.data.data.user };
+                TokenService.setUser(currentUser);
+            }
         }
         return response.data;
     },
@@ -30,9 +32,11 @@ const UserService = {
         const response = await api.put('/users/profile', profileData);
         if (response.data.data) {
             const currentUser = TokenService.getUser();
-            // Preserve token, update user info
-            const updatedUser = { ...currentUser, ...response.data.data };
-            TokenService.setUser(updatedUser);
+            if (currentUser && currentUser.user) {
+                // Preserve token, update user info
+                currentUser.user = { ...currentUser.user, ...response.data.data };
+                TokenService.setUser(currentUser);
+            }
         }
         return response.data;
     },
@@ -65,11 +69,10 @@ const UserService = {
 
         if (response.data.data && response.data.data.avatarUrl) {
             const currentUser = TokenService.getUser();
-            const updatedUser = {
-                ...currentUser,
-                avatar_url: response.data.data.avatarUrl
-            };
-            TokenService.setUser(updatedUser);
+            if (currentUser && currentUser.user) {
+                currentUser.user.avatar_url = response.data.data.avatarUrl;
+                TokenService.setUser(currentUser);
+            }
         }
 
         return response.data;

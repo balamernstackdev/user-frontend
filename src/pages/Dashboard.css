@@ -1,476 +1,335 @@
-/* Dashboard/Welcome Section Styling */
-.welcome-section {
-    /* Padding handled by DashboardLayout */
-    background: transparent !important;
-    position: relative;
-    /* overflow: hidden; Removed to allow scrolling */
-    margin-top: -30px;
+/* PREMIUM USER DASHBOARD STYLES */
+
+.dashboard-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 60vh;
 }
 
-.welcome-section .container-fluid {
-    padding: 0;
+.user-dashboard-container {
     max-width: 1400px;
     margin: 0 auto;
+    padding: 20px 30px;
 }
 
-/* Welcome content needs to be relative to show above any potential section elements */
-.welcome-content {
-    position: relative;
-    z-index: 1;
+.admin-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px 30px;
+    width: 100%;
 }
 
-.welcome-card {
-    margin-bottom: 30px;
-}
-
-.welcome-title h1 {
-    font-size: 32px;
-    font-weight: 800;
-    margin-bottom: 8px;
-    letter-spacing: -0.5px;
-}
-
-.welcome-title p {
-    font-size: 15px;
-    color: #6c757d;
-    margin-bottom: 0;
-}
-
+.dashboard-header h1,
 .section-title {
-    font-size: 32px;
+    font-size: 24px;
     font-weight: 700;
-    color: black !important;
-    background: none !important;
-    -webkit-text-fill-color: black !important;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
+    color: #1a1a1a;
 }
 
-.section-subtitle {
-    font-size: 16px;
-    color: black !important;
-    margin-bottom: 30px;
-    font-weight: 500;
-}
-
-/* --- New Stats Card Styling with Variety --- */
-
+/* STATS GRID (Matching Admin Layout Exactly) */
+.user-stats-grid,
 .admin-stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 25px;
     margin-bottom: 40px;
 }
 
-.stats-grid .stat-card {
+/* STAT CARD REFINEMENT */
+.stat-card {
     background: #ffffff;
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
     display: flex;
     align-items: center;
-    gap: 25px;
+    gap: 20px !important;
+    transition: all 0.3s ease;
+    border: 1px solid #eef2f6;
+    text-decoration: none;
     min-height: 140px;
-    transition: all 0.3s ease;
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    position: relative;
-    overflow: hidden;
-    /* Remove old gradients for cleaner look if requested, but current style is nice. Keeping varied styles. */
 }
 
-.stats-grid .stat-card:hover {
+.stat-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.06);
 }
 
-.stats-grid .stat-icon-wrapper {
-    flex-shrink: 0;
-}
-
-.stats-grid .stat-icon {
-    width: 50px;
-    height: 50px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    transition: all 0.3s ease;
-}
-
-/* Card Specific Styles */
 .stat-card.card-users {
-    border-bottom: 4px solid #13689e;
-    background: linear-gradient(145deg, #ffffff 0%, #f0fbfc 100%);
-}
-
-.stat-card.card-users .stat-icon {
-    background: rgba(19, 104, 158, 0.15);
-    color: #13689e;
+    border-bottom: 4px solid #3b82f6;
 }
 
 .stat-card.card-active-marketers {
-    border-bottom: 4px solid #28a745;
-    background: linear-gradient(145deg, #ffffff 0%, #f0fdf4 100%);
-}
-
-.stat-card.card-active-marketers .stat-icon {
-    background: rgba(40, 167, 69, 0.15);
-    color: #28a745;
+    border-bottom: 4px solid #10b981;
 }
 
 .stat-card.card-pending {
-    border-bottom: 4px solid #ffc107;
-    background: linear-gradient(145deg, #ffffff 0%, #fffdf0 100%);
+    border-bottom: 4px solid #f59e0b;
 }
 
-.stat-card.card-pending .stat-icon {
-    background: rgba(255, 193, 7, 0.15);
-    color: #d39e00;
-}
-
-.stat-card.card-revenue {
-    border-bottom: 4px solid #6f42c1;
-    background: linear-gradient(145deg, #ffffff 0%, #f8f0ff 100%);
-}
-
-.stat-card.card-revenue .stat-icon {
-    background: rgba(111, 66, 193, 0.15);
-    color: #6f42c1;
+.stat-card.card-payouts {
+    border-bottom: 4px solid #06b6d4;
 }
 
 .stat-label {
     display: block;
-    font-size: 12px;
-    font-weight: 600;
-    color: black !important;
-    margin-bottom: 5px;
-    text-transform: uppercase;
-    line-height: 1.3;
+    font-size: 11px !important;
+    font-weight: 800 !important;
+    color: #94a3b8 !important;
+    margin-bottom: 4px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px;
 }
 
 .stat-value {
     display: block;
-    font-size: 28px;
-    font-weight: 700;
-    color: #343a40;
+    font-size: 26px !important;
+    font-weight: 800 !important;
+    color: #1a202c !important;
     line-height: 1.2;
 }
 
-
-/* --- New Charts and Dashboard Components --- */
-
-.chart-container {
-    margin-top: 10px;
+.stat-icon-wrapper {
+    flex-shrink: 0;
 }
 
-.chart-card .card-header {
-    background: transparent;
-    padding: 0;
-    margin-bottom: 20px;
-    border: none;
+.stat-icon {
+    width: 48px !important;
+    height: 48px !important;
+    border-radius: 12px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 20px !important;
 }
 
-.filter-badge {
-    background: rgba(19, 104, 158, 0.1);
-    color: #13689e;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-}
-
-/* Donut Chart Center Text */
-.donut-center-text {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    pointer-events: none;
-}
-
-.donut-value {
-    display: block;
-    font-size: 32px;
-    font-weight: 700;
-    color: #333;
-    line-height: 1;
-}
-
-.donut-label {
-    font-size: 13px;
-    color: #888;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-/* Activity Timeline */
-.activity-timeline {
-    position: relative;
-    padding-left: 10px;
-}
-
-.activity-item {
-    display: flex;
-    gap: 15px;
-    padding-bottom: 25px;
-    position: relative;
-}
-
-.activity-indicator {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.indicator-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    z-index: 2;
-}
-
-.indicator-line {
-    width: 2px;
-    flex-grow: 1;
-    background: #eef2f6;
-    margin-top: 5px;
-}
-
-.bg-success {
-    background-color: #28a745 !important;
-}
-
-.bg-danger {
-    background-color: #dc3545 !important;
-}
-
-.activity-user {
-    color: #333;
-    font-size: 14px;
-}
-
-.activity-time {
-    color: #999;
-    font-size: 11px;
-}
-
-.activity-desc {
-    color: #666;
-    font-size: 13px;
-    line-height: 1.5;
-}
-
-/* Warning Widget */
-.bg-warning-soft {
-    background: #fff8e1;
-    padding: 15px;
-    border-radius: 12px;
-}
-
-.text-warning-dark {
-    color: #f57f17;
-}
-
-.text-warning-emphasis {
-    color: #856404;
-}
-
-/* Analytics Card Base */
-.analytics-card {
-    background: #ffffff;
-    border-radius: 12px;
-    padding: 24px;
-    border: 1px solid #eef2f6;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-    height: 100%;
-    /* Ensure full height */
-}
-
-/* Business Associate / Marketer Dashboard Specifics */
-.marketer-dashboard-section {
-    margin-top: 30px;
-}
-
-.marketer-stats-grid {
-    margin-bottom: 30px;
-}
-
-/* Referral Program Card */
-.referral-card {
-    background: linear-gradient(135deg, #13689e 0%, #0a4a70 100%);
-    border-radius: 16px;
-    padding: 30px;
-    color: white;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 40px;
-    box-shadow: 0 10px 30px rgba(19, 104, 158, 0.2);
-    position: relative;
-    overflow: hidden;
-}
-
-.referral-card::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    right: -10%;
-    width: 300px;
-    height: 300px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 50%;
-    z-index: 0;
-}
-
-.referral-info {
-    position: relative;
-    z-index: 1;
-}
-
-.referral-info h3 {
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 10px;
-    color: white;
-}
-
-.referral-info p {
-    font-size: 16px;
-    color: rgba(255, 255, 255, 0.8);
-    margin-bottom: 0;
-}
-
-.referral-code-wrapper {
-    display: flex;
-    align-items: center;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    padding: 8px 15px;
-    border-radius: 50px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    position: relative;
-    z-index: 1;
-    max-width: 100%;
-}
-
-.referral-code {
-    font-size: 14px;
-    font-weight: 600;
-    margin-right: 15px;
-    word-break: break-all;
-    color: white;
-}
-
-.copy-btn {
-    background: white;
-    color: #13689e;
-    border: none;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.copy-btn:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
-}
-
-/* Quick Links Grid */
-.quick-links {
-    margin-top: 40px;
-}
-
-.quick-links h3 {
-    font-size: 22px;
-    font-weight: 700;
-    margin-bottom: 25px;
-    color: #333;
-}
-
-.quick-links-grid {
+/* MAIN GRID LAYOUT REFINEMENT */
+.dashboard-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    grid-template-columns: 1fr 340px;
+    gap: 30px;
+    align-items: start;
+}
+
+.section-title-sm {
+    font-size: 14px;
+    font-weight: 700;
+    color: #334155;
+    margin-bottom: 20px;
+}
+
+/* QUICK ACTIONS GRID (Main Area) */
+.quick-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     gap: 20px;
 }
 
-.quick-link-item {
+.quick-action-card {
     background: white;
-    border-radius: 12px;
-    padding: 24px 15px;
-    text-align: center;
-    text-decoration: none;
-    color: #333;
+    padding: 30px;
+    border-radius: 20px;
     border: 1px solid #eef2f6;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
-    flex-direction: column;
     align-items: center;
     gap: 15px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
 }
 
-.quick-link-item:hover {
+.quick-action-card:hover {
     transform: translateY(-5px);
-    border-color: #13689e;
-    box-shadow: 0 10px 20px rgba(19, 104, 158, 0.08);
-    color: #13689e;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    border-color: #cbd5e1;
 }
 
-.quick-link-icon {
-    width: 50px;
-    height: 50px;
-    background: rgba(19, 104, 158, 0.08);
-    color: #13689e;
+.q-icon-wrapper {
+    width: 48px;
+    height: 48px;
     border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 20px;
+    flex-shrink: 0;
+}
+
+/* ANALYTICS & CHART CARDS */
+.analytics-card,
+.chart-card {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    border: 1px solid #eef2f6;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
     transition: all 0.3s ease;
 }
 
-.quick-link-item:hover .quick-link-icon {
-    background: #13689e;
+.analytics-card:hover {
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.06);
+}
+
+.chart-card .card-header h4 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.q-info {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.q-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.q-desc {
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 2px;
+}
+
+.q-arrow {
+    color: #94a3b8;
+    opacity: 0.5;
+    transition: transform 0.2s;
+}
+
+.quick-action-card:hover .q-arrow {
+    transform: translateX(4px);
+    opacity: 1;
+}
+
+/* SIDEBAR CARDS */
+.sidebar-card {
+    background: white;
+    padding: 24px;
+    border-radius: 20px;
+    border: 1px solid #eef2f6;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+}
+
+.sidebar-card h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.compact-links {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.link-row {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border-radius: 12px;
+    text-decoration: none;
+    color: #4a5568;
+    transition: all 0.2s ease;
+}
+
+.link-row:hover {
+    background: #f7fafc;
+    color: #13689e;
+}
+
+.help-gradient {
+    background: linear-gradient(135deg, #13689e 0%, #0a4a70 100%);
+    text-align: center;
+    color: white;
+    padding: 30px;
+    border-radius: 20px;
+}
+
+.help-gradient h3,
+.help-gradient p {
     color: white;
 }
 
-.quick-link-title {
-    font-size: 14px;
-    font-weight: 600;
+.premium-referral-card {
+    background: #f8fbff;
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px dashed #13689e;
 }
 
-/* Responsive adjustments */
-@media (max-width: 991px) {
-    .referral-card {
-        flex-direction: column;
-        text-align: center;
-        gap: 25px;
-    }
+.ref-body input {
+    flex-grow: 1;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 13px;
+    color: #64748b;
+    outline: none;
+}
 
-    .referral-info h3 {
-        font-size: 20px;
+/* RESPONSIVE */
+@media (max-width: 1200px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
     }
 }
 
 @media (max-width: 768px) {
-    .section-title {
-        font-size: 24px;
+
+    .user-stats-grid,
+    .admin-stats-grid {
+        grid-template-columns: 1fr;
     }
 
-    .stat-value {
-        font-size: 22px;
+    .user-dashboard-container {
+        padding: 15px;
+    }
+}
+
+/* FLOATING SETTINGS BUTTON */
+.floating-settings-btn {
+    position: fixed;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    background: #1a1a1a;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px 0 0 12px;
+    /* Anchor to right edge */
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
+    z-index: 999;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none;
+}
+
+.floating-settings-btn:hover {
+    width: 54px;
+    background: #000;
+    color: #3b82f6;
+}
+
+.floating-settings-btn svg {
+    animation: rotateGear 4s linear infinite;
+}
+
+@keyframes rotateGear {
+    from {
+        transform: rotate(0deg);
     }
 
-    .donut-value {
-        font-size: 24px;
-    }
-
-    .quick-links-grid {
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    to {
+        transform: rotate(360deg);
     }
 }

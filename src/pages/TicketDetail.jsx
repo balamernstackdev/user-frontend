@@ -4,7 +4,7 @@ import { useSettings } from '../context/SettingsContext';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import ticketService from '../services/ticket.service';
 import { authService } from '../services/auth.service';
-import './TicketDetail.css';
+// import './TicketDetail.css';
 import { toast } from 'react-toastify';
 
 import { useSocket } from '../context/SocketContext';
@@ -197,41 +197,43 @@ const TicketDetail = () => {
         <DashboardLayout>
             <section className="page-section">
                 <div className="container">
-                    <div className="ticket-detail-card animate-fade-up">
-                        <Link to="/tickets" className="back-button">
-                            <i className="fas fa-arrow-left"></i>
-                            <span>Back to Tickets</span>
-                        </Link>
+                    <div className="card border-0 shadow-sm p-4 rounded-4 animate-fade-up">
+                        <div className="mb-4">
+                            <Link to="/tickets" className="text-decoration-none text-muted small fw-medium d-inline-flex align-items-center hover-opacity">
+                                <i className="fas fa-arrow-left me-2"></i>
+                                <span>Back to Tickets</span>
+                            </Link>
+                        </div>
 
-                        <div className="ticket-header">
+                        <div className="d-flex flex-column flex-lg-row justify-content-between gap-4 mb-4 pb-4 border-bottom">
                             <div className="ticket-header-left">
-                                <h1>{ticket.subject}</h1>
-                                <div className="ticket-meta">
-                                    <span className="meta-item">
-                                        <i className="fas fa-hashtag"></i>
-                                        <span>#{ticket.ticket_number || ticket._id?.substring(0, 8).toUpperCase()}</span>
+                                <h1 className="h2 fw-bold text-dark mb-3">{ticket.subject}</h1>
+                                <div className="d-flex flex-wrap gap-3 text-muted small">
+                                    <span className="d-inline-flex align-items-center bg-light px-3 py-2 rounded-pill">
+                                        <i className="fas fa-hashtag me-2 text-primary"></i>
+                                        <span className="font-monospace">#{ticket.ticket_number || ticket._id?.substring(0, 8).toUpperCase()}</span>
                                     </span>
-                                    <span className="meta-item">
-                                        <i className="far fa-calendar"></i>
-                                        <span>Created: {formatDate(ticket.created_at)}</span>
+                                    <span className="d-inline-flex align-items-center bg-light px-3 py-2 rounded-pill">
+                                        <i className="far fa-calendar me-2 text-primary"></i>
+                                        <span>{formatDate(ticket.created_at)}</span>
                                     </span>
                                     {ticket.category && (
-                                        <span className="meta-item">
-                                            <i className="fas fa-tag"></i>
+                                        <span className="d-inline-flex align-items-center bg-light px-3 py-2 rounded-pill">
+                                            <i className="fas fa-tag me-2 text-primary"></i>
                                             <span>{ticket.category}</span>
                                         </span>
                                     )}
-                                    <span className="meta-item">
-                                        <i className="fas fa-exclamation-circle"></i>
+                                    <span className="d-inline-flex align-items-center bg-light px-3 py-2 rounded-pill">
+                                        <i className="fas fa-exclamation-circle me-2 text-primary"></i>
                                         <span style={{ textTransform: 'capitalize' }}>Priority: {ticket.priority}</span>
                                     </span>
                                 </div>
                             </div>
-                            <div className="ticket-header-actions" style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                            <div className="ticket-header-actions d-flex align-items-start gap-3">
                                 {user?.role === 'admin' ? (
                                     <div className="status-dropdown-container">
                                         <select
-                                            className={`ticket-status-select ${ticket.status}`}
+                                            className={`form-select form-select-sm fw-bold border-0 bg-${ticket.status === 'open' ? 'primary' : ticket.status === 'resolved' ? 'success' : 'secondary'}-subtle text-${ticket.status === 'open' ? 'primary' : ticket.status === 'resolved' ? 'success' : 'secondary'}`}
                                             value={ticket.status}
                                             onChange={async (e) => {
                                                 const newStatus = e.target.value;
@@ -243,16 +245,7 @@ const TicketDetail = () => {
                                                     toast.error('Failed to update status');
                                                 }
                                             }}
-                                            style={{
-                                                padding: '5px 15px',
-                                                borderRadius: '20px',
-                                                border: 'none',
-                                                fontWeight: '600',
-                                                fontSize: '14px',
-                                                cursor: 'pointer',
-                                                textTransform: 'capitalize',
-                                                height: 'auto'
-                                            }}
+                                            style={{ borderRadius: '20px', paddingRight: '2rem' }}
                                         >
                                             <option value="open">Open</option>
                                             <option value="in_progress">In Progress</option>
@@ -261,31 +254,33 @@ const TicketDetail = () => {
                                         </select>
                                     </div>
                                 ) : (
-                                    <span className={`ticket-status ${ticket.status}`}>{ticket.status.replace('_', ' ')}</span>
+                                    <span className={`badge rounded-pill px-3 py-2 bg-${ticket.status === 'open' ? 'primary' : ticket.status === 'resolved' ? 'success' : 'secondary'}-subtle text-${ticket.status === 'open' ? 'primary' : ticket.status === 'resolved' ? 'success' : 'secondary'} text-uppercase`}>
+                                        {ticket.status.replace('_', ' ')}
+                                    </span>
                                 )}
 
                                 {ticket.status !== 'closed' && (
-                                    <button className="btn btn-danger-outline" onClick={handleCloseTicket}>
+                                    <button className="btn btn-outline-danger btn-sm rounded-pill px-3" onClick={handleCloseTicket}>
                                         Close Ticket
                                     </button>
                                 )}
                             </div>
                         </div>
 
-                        <div className="ticket-content">
-                            <div className="ticket-content-body">
-                                <p>{ticket.message || ticket.description}</p>
+                        <div className="ticket-content mb-5">
+                            <div className="ticket-content-body p-4 bg-light rounded-3 mb-3">
+                                <p className="mb-0 text-dark">{ticket.message || ticket.description}</p>
                             </div>
 
                             {/* Attachments if any */}
                             {ticket.attachments && ticket.attachments.length > 0 && (
                                 <div className="ticket-attachments">
-                                    <div className="attachments-title">Attachments</div>
-                                    <div className="attachment-list">
+                                    <div className="fw-bold small text-muted mb-2 text-uppercase">Attachments</div>
+                                    <div className="d-flex flex-wrap gap-2">
                                         {ticket.attachments.map((att, idx) => (
-                                            <a key={idx} href={att.url} className="attachment-item" target="_blank" rel="noopener noreferrer">
-                                                <i className={`far ${getFileIcon(att.name)} attachment-icon`}></i>
-                                                <span className="attachment-name">{att.name}</span>
+                                            <a key={idx} href={att.url} className="btn btn-white border btn-sm d-inline-flex align-items-center gap-2" target="_blank" rel="noopener noreferrer">
+                                                <i className={`far ${getFileIcon(att.name)} text-primary`}></i>
+                                                <span>{att.name}</span>
                                             </a>
                                         ))}
                                     </div>
@@ -294,94 +289,96 @@ const TicketDetail = () => {
                         </div>
 
                         <div className="conversation-section">
-                            <h3 className="conversation-title">Conversation</h3>
+                            <h3 className="h5 fw-bold mb-4 d-flex align-items-center">
+                                <span className="bg-primary rounded-circle p-1 me-2" style={{ width: '8px', height: '8px' }}></span>
+                                Conversation
+                            </h3>
 
-                            {messages.map((message, index) => (
-                                <div key={index} className={`reply-item animate-fade-up ${message.is_admin_reply ? 'admin-message' : ''}`}>
-                                    <div className="reply-header">
-                                        <div className="reply-author">
-                                            <div className="reply-avatar">
-                                                {message.is_admin_reply ? 'ST' : (user?.firstname?.charAt(0) || 'U')}
-                                            </div>
-                                            <div className="reply-author-info">
-                                                <h4>
+                            <div className="d-flex flex-column gap-4 mb-5">
+                                {messages.map((message, index) => (
+                                    <div key={index} className={`d-flex gap-3 ${message.is_admin_reply ? 'flex-row-reverse' : ''}`}>
+                                        <div className={`flex-shrink-0 rounded-circle d-flex align-items-center justify-content-center text-white fw-bold ${message.is_admin_reply ? 'bg-primary' : 'bg-secondary'}`} style={{ width: '40px', height: '40px' }}>
+                                            {message.is_admin_reply ? 'ST' : (user?.firstname?.charAt(0) || 'U')}
+                                        </div>
+                                        <div className={`flex-grow-1 ${message.is_admin_reply ? 'text-end' : ''}`}>
+                                            <div className="mb-1">
+                                                <span className="fw-bold text-dark me-2">
                                                     {message.is_admin_reply
                                                         ? 'Support Team'
                                                         : (user?.role === 'admin' ? (ticket.user_name || 'Customer') : 'You')}
-                                                </h4>
-                                                <span>{message.is_admin_reply ? `${settings.site_name || 'Stoxzo'} Support` : 'Customer'}</span>
+                                                </span>
+                                                <small className="text-muted">{formatDate(message.created_at)}</small>
                                             </div>
-                                        </div>
-                                        <span className="reply-time">{formatDate(message.created_at)}</span>
-                                    </div>
-                                    <div className="reply-content">
-                                        <p>{message.message}</p>
-                                    </div>
-                                    {/* Message attachments if any (assuming structure) */}
-                                    {message.attachments && message.attachments.length > 0 && (
-                                        <div className="reply-attachments">
-                                            <div className="attachment-list">
-                                                {message.attachments.map((att, idx) => (
-                                                    <a key={idx} href={att.url || '#'} className="attachment-item" target="_blank" rel="noopener noreferrer">
-                                                        <i className={`far ${getFileIcon(att.name || 'file')} attachment-icon`}></i>
-                                                        <span className="attachment-name">{att.name || 'Attachment'}</span>
-                                                    </a>
-                                                ))}
+                                            <div className={`d-inline-block p-3 rounded-3 text-start ${message.is_admin_reply ? 'bg-primary-subtle text-dark' : 'bg-light text-dark'}`} style={{ maxWidth: '85%' }}>
+                                                <p className="mb-0">{message.message}</p>
                                             </div>
+                                            {/* Message attachments if any (assuming structure) */}
+                                            {message.attachments && message.attachments.length > 0 && (
+                                                <div className={`mt-2 d-flex flex-wrap gap-2 ${message.is_admin_reply ? 'justify-content-end' : ''}`}>
+                                                    {message.attachments.map((att, idx) => (
+                                                        <a key={idx} href={att.url || '#'} className="btn btn-white border btn-sm d-inline-flex align-items-center gap-2 bg-white" target="_blank" rel="noopener noreferrer">
+                                                            <i className={`far ${getFileIcon(att.name || 'file')} text-primary`}></i>
+                                                            <span className="small">{att.name || 'Attachment'}</span>
+                                                        </a>
+                                                    ))}
+                                                </div>
+                                            )}
                                         </div>
-                                    )}
-                                </div>
-                            ))}
+                                    </div>
+                                ))}
 
-                            {messages.length === 0 && <p className="text-muted">No messages yet.</p>}
+                                {messages.length === 0 && <p className="text-center text-muted py-4 small">No conversation history yet.</p>}
+                            </div>
 
                             {ticket.status !== 'closed' && (
-                                <div className="reply-form animate-fade-up">
-                                    <h4 className="reply-form-title">Add Reply</h4>
+                                <div className="reply-form bg-light p-4 rounded-4">
+                                    <h4 className="h6 fw-bold mb-3">Add Reply</h4>
                                     <form onSubmit={handleSendMessage}>
-                                        <div className="form-input">
-                                            <label htmlFor="replyMessage">Your Message</label>
+                                        <div className="mb-3">
+                                            <label htmlFor="replyMessage" className="form-label visually-hidden">Your Message</label>
                                             <textarea
                                                 id="replyMessage"
+                                                className="form-control border-0 shadow-sm"
+                                                rows="4"
                                                 value={newMessage}
                                                 onChange={(e) => setNewMessage(e.target.value)}
                                                 placeholder="Type your reply here..."
                                                 required={replyFiles.length === 0}
+                                                style={{ resize: 'none' }}
                                             />
                                         </div>
 
-                                        <div className="form-input">
-                                            <label>Attachments (Optional)</label>
+                                        <div className="mb-3">
                                             <div
-                                                className="file-upload-area"
+                                                className="border-2 border-dashed rounded-3 p-4 text-center cursor-pointer bg-white"
                                                 onClick={() => fileInputRef.current.click()}
                                                 onDragOver={handleDragOver}
                                                 onDragLeave={handleDragLeave}
                                                 onDrop={handleDrop}
+                                                style={{ borderColor: '#dee2e6' }}
                                             >
-                                                <i className="fas fa-cloud-arrow-up" style={{ fontSize: '24px', color: '#13689e', marginBottom: '10px' }}></i>
-                                                <div className="file-upload-text">Click to upload or drag and drop</div>
-                                                <div style={{ fontSize: '12px', color: '#999', marginTop: '5px' }}>PNG, JPG, PDF up to 10MB</div>
+                                                <i className="fas fa-cloud-upload-alt text-primary mb-2 fs-4"></i>
+                                                <div className="small fw-medium text-dark">Click to upload or drag and drop</div>
+                                                <div className="small text-muted mt-1">PNG, JPG, PDF up to 10MB</div>
                                                 <input
                                                     type="file"
                                                     id="fileInput"
                                                     ref={fileInputRef}
-                                                    className="file-input"
+                                                    className="d-none"
                                                     multiple
                                                     accept=".png,.jpg,.jpeg,.pdf,.doc,.docx"
                                                     onChange={handleFileSelect}
-                                                    style={{ display: 'none' }}
                                                 />
                                             </div>
                                             {replyFiles.length > 0 && (
-                                                <div className="file-list" style={{ display: 'block' }}>
+                                                <div className="mt-3 d-flex flex-column gap-2">
                                                     {replyFiles.map((file, idx) => (
-                                                        <div key={idx} className="file-item">
-                                                            <div className="file-item-info">
-                                                                <div className="file-item-icon"><i className={`far ${getFileIcon(file.name)}`}></i></div>
-                                                                <div className="file-item-name">{file.name}</div>
+                                                        <div key={idx} className="d-flex align-items-center justify-content-between p-2 bg-white rounded border shadow-sm">
+                                                            <div className="d-flex align-items-center overflow-hidden">
+                                                                <i className={`far ${getFileIcon(file.name)} text-muted me-2`}></i>
+                                                                <span className="small text-truncate">{file.name}</span>
                                                             </div>
-                                                            <button type="button" className="file-item-remove" onClick={() => handleRemoveFile(file.name)}>
+                                                            <button type="button" className="btn btn-link btn-sm text-danger p-0" onClick={() => handleRemoveFile(file.name)}>
                                                                 <i className="fas fa-times"></i>
                                                             </button>
                                                         </div>
@@ -390,10 +387,10 @@ const TicketDetail = () => {
                                             )}
                                         </div>
 
-                                        <div className="form-actions">
+                                        <div className="text-end">
                                             <button type="submit" className="tj-primary-btn" disabled={sending}>
                                                 <span className="btn-text"><span>{sending ? 'Sending...' : 'Send Reply'}</span></span>
-                                                {!sending && <span className="btn-icon"><i className="fas fa-arrow-right"></i></span>}
+                                                {!sending && <span className="btn-icon"><i className="fas fa-paper-plane"></i></span>}
                                             </button>
                                         </div>
                                     </form>
@@ -401,8 +398,9 @@ const TicketDetail = () => {
                             )}
 
                             {ticket.status === 'closed' && (
-                                <div className="closed-notice">
-                                    <p>This ticket has been closed. Please create a new ticket if you need further assistance.</p>
+                                <div className="alert alert-secondary d-flex align-items-center rounded-3 border-0 bg-secondary-subtle" role="alert">
+                                    <i className="fas fa-lock me-2"></i>
+                                    <div>This ticket has been closed. Please create a new ticket if you need further assistance.</div>
                                 </div>
                             )}
                         </div>

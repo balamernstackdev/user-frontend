@@ -109,7 +109,7 @@ p {
   align-items: center !important;
   justify-content: center !important;
   border: none !important;
-  border-radius: 18px !important;
+  border-radius: 30px !important;
   padding: 12px 25px !important;
   font-weight: 600 !important;
   transition: all 0.3s ease !important;
@@ -117,6 +117,7 @@ p {
   overflow: hidden;
   white-space: nowrap !important;
 }
+
 
 .tj-primary-btn:hover {
   background-color: #0f5480 !important;
@@ -150,8 +151,8 @@ p {
 }
 
 .tj-primary-btn:hover .btn-icon {
-  background-color: rgba(255, 255, 255, 0.25) !important;
-  border-color: rgba(255, 255, 255, 0.6) !important;
+  background-color: transparent !important;
+  border-color: transparent !important;
   transform: translateX(3px) !important;
 }
 
