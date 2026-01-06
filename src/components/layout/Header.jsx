@@ -10,13 +10,15 @@ const Header = ({ notificationCount = 0 }) => {
     const [showSettings, setShowSettings] = useState(false);
     const [showMarketerMenu, setShowMarketerMenu] = useState(false);
     const [showAdminMenu, setShowAdminMenu] = useState(null); // 'manage', 'finance', 'support', 'system' or null
+    const [showProfileMenu, setShowProfileMenu] = useState(false);
     const [showMobileMenu, setShowMobileMenu] = useState(false);
     const user = authService.getUser();
-    const isAdmin = user?.role === 'admin';
-    const isFinance = user?.role === 'finance_manager' || isAdmin;
-    const isSupport = user?.role === 'support_agent' || isAdmin;
+    const userRole = (user?.role || '').toLowerCase().trim();
+    const isAdmin = userRole === 'admin';
+    const isFinance = userRole === 'finance_manager' || isAdmin;
+    const isSupport = userRole === 'support_agent' || isAdmin;
     const isStaff = isAdmin || isFinance || isSupport;
-    const isBusinessAssociate = user?.role === 'business_associate';
+    const isBusinessAssociate = userRole === 'business_associate';
 
     const handleLogout = async () => {
         // Call logout API to clear cookies
@@ -62,9 +64,9 @@ const Header = ({ notificationCount = 0 }) => {
                                                 {isSupport && (
                                                     <>
                                                         <li><Link to="/admin/tickets" onClick={() => setShowMobileMenu(false)}>Support Tickets</Link></li>
-                                                        <li><Link to="/faq" onClick={() => setShowMobileMenu(false)}>FAQs</Link></li>
+                                                        <li><Link to="/admin/faqs" onClick={() => setShowMobileMenu(false)}>FAQs</Link></li>
                                                         <li><Link to="/admin/announcements" onClick={() => setShowMobileMenu(false)}>Announcements</Link></li>
-                                                        <li><Link to="/how-to-use" onClick={() => setShowMobileMenu(false)}>How To Use</Link></li>
+                                                        <li><Link to="/admin/how-to-use" onClick={() => setShowMobileMenu(false)}>How To Use</Link></li>
                                                     </>
                                                 )}
                                                 {isAdmin && <li><Link to="/admin/logs" onClick={() => setShowMobileMenu(false)}>System Logs</Link></li>}
@@ -252,9 +254,9 @@ const Header = ({ notificationCount = 0 }) => {
                                                                 {showAdminMenu === 'support' && (
                                                                     <ul className="sub-menu">
                                                                         <li><Link to="/admin/tickets">Tickets</Link></li>
-                                                                        <li><Link to="/faq">FAQs</Link></li>
+                                                                        <li><Link to="/admin/faqs">FAQs</Link></li>
                                                                         <li><Link to="/admin/announcements">Announcements</Link></li>
-                                                                        <li><Link to="/how-to-use">How To Use</Link></li>
+                                                                        <li><Link to="/admin/how-to-use">How To Use</Link></li>
                                                                     </ul>
                                                                 )}
                                                             </li>
@@ -298,16 +300,19 @@ const Header = ({ notificationCount = 0 }) => {
                                                 )}
                                             </Link>
                                         </div>
-                                        <div className="header-profile-avatar" style={{ marginRight: '20px' }}>
+                                        <div
+                                            className="header-profile-avatar"
+                                            style={{ marginRight: '20px' }}
+                                        >
                                             <Link to="/profile">
                                                 {user?.avatar_url ? (
                                                     <img
                                                         src={user.avatar_url}
                                                         alt="Profile"
-                                                        style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #e5e5e5' }}
+                                                        style={{ width: '40px', height: '40px', borderRadius: '15px', objectFit: 'contain', border: '1px solid #e5e5e5', background: '#fff' }}
                                                     />
                                                 ) : (
-                                                    <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#666' }}>
+                                                    <div style={{ width: '40px', height: '40px', borderRadius: '15px', background: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#666' }}>
                                                         <i className="fas fa-user"></i>
                                                     </div>
                                                 )}

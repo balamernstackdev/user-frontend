@@ -151,11 +151,11 @@ function App() {
 
                 {/* Admin Content Management */}
                 <Route path="/admin/faqs" element={<ProtectedRoute allowedRoles={['admin', 'support_agent']}><AdminFAQs /></ProtectedRoute>} />
-                <Route path="/admin/faqs/create" element={<ProtectedRoute allowedRoles={['admin']}><AdminFAQForm /></ProtectedRoute>} />
-                <Route path="/admin/faqs/edit/:id" element={<ProtectedRoute allowedRoles={['admin']}><AdminFAQForm /></ProtectedRoute>} />
+                <Route path="/admin/faqs/create" element={<ProtectedRoute allowedRoles={['admin', 'support_agent']}><AdminFAQForm /></ProtectedRoute>} />
+                <Route path="/admin/faqs/edit/:id" element={<ProtectedRoute allowedRoles={['admin', 'support_agent']}><AdminFAQForm /></ProtectedRoute>} />
                 <Route path="/admin/how-to-use" element={<ProtectedRoute allowedRoles={['admin', 'support_agent']}><AdminHowToUse /></ProtectedRoute>} />
-                <Route path="/admin/how-to-use/create" element={<ProtectedRoute allowedRoles={['admin']}><AdminHowToUseForm /></ProtectedRoute>} />
-                <Route path="/admin/how-to-use/edit/:id" element={<ProtectedRoute allowedRoles={['admin']}><AdminHowToUseForm /></ProtectedRoute>} />
+                <Route path="/admin/how-to-use/create" element={<ProtectedRoute allowedRoles={['admin', 'support_agent']}><AdminHowToUseForm /></ProtectedRoute>} />
+                <Route path="/admin/how-to-use/edit/:id" element={<ProtectedRoute allowedRoles={['admin', 'support_agent']}><AdminHowToUseForm /></ProtectedRoute>} />
 
                 {/* Admin Curated Analysis */}
                 <Route path="/admin/analysis" element={<ProtectedRoute allowedRoles={['admin']}><AdminAnalysis /></ProtectedRoute>} />
@@ -166,8 +166,8 @@ function App() {
                 <Route path="/admin/email-templates" element={<ProtectedRoute allowedRoles={['admin']}><AdminEmailTemplates /></ProtectedRoute>} />
                 <Route path="/admin/email-templates/:id" element={<ProtectedRoute allowedRoles={['admin']}><AdminEmailTemplateEdit /></ProtectedRoute>} />
                 <Route path="/admin/announcements" element={<ProtectedRoute allowedRoles={['admin', 'support_agent']}><AdminAnnouncements /></ProtectedRoute>} />
-                <Route path="/admin/announcements/create" element={<ProtectedRoute allowedRoles={['admin']}><AdminAnnouncementForm /></ProtectedRoute>} />
-                <Route path="/admin/announcements/edit/:id" element={<ProtectedRoute allowedRoles={['admin']}><AdminAnnouncementForm /></ProtectedRoute>} />
+                <Route path="/admin/announcements/create" element={<ProtectedRoute allowedRoles={['admin', 'support_agent']}><AdminAnnouncementForm /></ProtectedRoute>} />
+                <Route path="/admin/announcements/edit/:id" element={<ProtectedRoute allowedRoles={['admin', 'support_agent']}><AdminAnnouncementForm /></ProtectedRoute>} />
 
                 {/* Legal Pages */}
                 <Route path="/privacy" element={<PrivacyPolicy />} />

@@ -170,6 +170,9 @@
     line-height: 1.8;
     color: #1a1a1a;
     /* Darker for clarity */
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
 }
 
 .analysis-content p,

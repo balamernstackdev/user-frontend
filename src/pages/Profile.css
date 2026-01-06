@@ -33,18 +33,20 @@
 }
 
 .profile-avatar {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    background: rgba(19, 104, 158, 0.1);
+    width: 200px;
+    height: 200px;
+    border-radius: 12px;
+    background: #ffffff;
+    border: 1px solid #e5e5e5;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0 auto 20px;
+    overflow: hidden;
 }
 
 .profile-avatar i {
-    font-size: 48px;
+    font-size: 80px;
     color: #13689e;
 }
 

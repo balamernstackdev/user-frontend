@@ -58,20 +58,8 @@ const AdminAnalysis = () => {
                         <Link
                             to="/admin/analysis/create"
                             className="tj-primary-btn"
-                            style={{
-                                height: '38px',
-                                borderRadius: '50px',
-                                padding: '0 20px',
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                backgroundColor: '#13689e',
-                                color: 'white',
-                                border: 'none',
-                                textDecoration: 'none',
-                                fontWeight: 600
-                            }}
                         >
-                            <span className="btn-text">Create New Analysis</span>
+                            <span className="btn-text">Add Analysis</span>
                             <span className="btn-icon">
                                 <i className="fas fa-arrow-right"></i>
                             </span>

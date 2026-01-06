@@ -5,6 +5,7 @@ import DashboardLayout from '../components/layout/DashboardLayout';
 import Pagination from '../components/common/Pagination';
 import './AdminListings.css'; // Reusing existing styles
 import { toast } from 'react-toastify';
+import { authService } from '../services/auth.service';
 
 const AdminFAQs = () => {
     const navigate = useNavigate();
@@ -61,8 +62,13 @@ const AdminFAQs = () => {
         fetchFAQs();
     }, [pagination.page]);
 
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    const isAdmin = user.role === 'admin';
+    const user = authService.getUser();
+    const userRole = (user?.role || '').toLowerCase().trim();
+    const isAdmin = userRole === 'admin';
+    const isSupport = userRole === 'support_agent' || isAdmin;
+    const isAllowed = isSupport;
+
+    console.log('AdminFAQs Debug:', { user, role: user?.role, userRole, isAllowed });
 
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this FAQ?')) {
@@ -96,13 +102,15 @@ const AdminFAQs = () => {
                             <p style={{ color: '#6c757d' }}>Manage Frequently Asked Questions</p>
                         </div>
                         <div className="header-actions">
-                            {isAdmin && (
+                            {isAllowed && (
                                 <button
-                                    className="tj-primary-btn add-btn"
+                                    className="tj-primary-btn"
                                     onClick={() => navigate('/admin/faqs/create')}
-                                    style={{ fontSize: '14px' }}
                                 >
-                                    <span className="btn-text"><span>+ Add FAQ</span></span>
+                                    <span className="btn-text">Add FAQ</span>
+                                    <span className="btn-icon">
+                                        <i className="fas fa-arrow-right"></i>
+                                    </span>
                                 </button>
                             )}
                         </div>
@@ -115,14 +123,14 @@ const AdminFAQs = () => {
                                     <th>Question</th>
                                     <th>Answer (Preview)</th>
                                     <th>Status</th>
-                                    {isAdmin && <th>Actions</th>}
+                                    {isAllowed && <th>Actions</th>}
                                 </tr>
                             </thead>
                             <tbody>
                                 {loading ? (
-                                    <tr><td colSpan={isAdmin ? "4" : "3"} className="text-center">Loading...</td></tr>
+                                    <tr><td colSpan={isAllowed ? "4" : "3"} className="text-center">Loading...</td></tr>
                                 ) : faqs.length === 0 ? (
-                                    <tr><td colSpan={isAdmin ? "4" : "3"} className="text-center" style={{ padding: '50px' }}>No FAQs found</td></tr>
+                                    <tr><td colSpan={isAllowed ? "4" : "3"} className="text-center" style={{ padding: '50px' }}>No FAQs found</td></tr>
                                 ) : (
                                     faqs.map(faq => (
                                         <tr key={faq.id}>
@@ -136,21 +144,21 @@ const AdminFAQs = () => {
                                             </td>
                                             <td>
                                                 <button
-                                                    onClick={() => isAdmin && handleTogglePublish(faq.id, faq.is_published)}
+                                                    onClick={() => isAllowed && handleTogglePublish(faq.id, faq.is_published)}
                                                     className={`plan-type-badge`}
                                                     style={{
                                                         background: faq.is_published ? 'rgba(40, 167, 69, 0.1)' : 'rgba(239, 68, 68, 0.1)',
                                                         color: faq.is_published ? '#28a745' : '#ef4444',
                                                         border: 'none',
-                                                        cursor: isAdmin ? 'pointer' : 'default',
-                                                        opacity: isAdmin ? 1 : 0.8
+                                                        cursor: isAllowed ? 'pointer' : 'default',
+                                                        opacity: isAllowed ? 1 : 0.8
                                                     }}
-                                                    disabled={!isAdmin}
+                                                    disabled={!isAllowed}
                                                 >
                                                     {faq.is_published ? 'Published' : 'Draft'}
                                                 </button>
                                             </td>
-                                            {isAdmin && (
+                                            {isAllowed && (
                                                 <td>
                                                     <div className="actions-cell">
                                                         <button className="action-btn" onClick={() => navigate(`/admin/faqs/edit/${faq.id}`)} title="Edit">

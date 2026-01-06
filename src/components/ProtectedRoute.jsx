@@ -15,7 +15,9 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
         return <Navigate to="/login" replace />;
     }
 
-    if (allowedRoles && user && !allowedRoles.includes(user.role)) {
+    const userRole = (user?.role || '').toLowerCase().trim();
+
+    if (allowedRoles && user && !allowedRoles.map(r => r.toLowerCase()).includes(userRole)) {
         if (user.role === 'support_agent') {
             return <Navigate to="/admin/tickets" replace />;
         }

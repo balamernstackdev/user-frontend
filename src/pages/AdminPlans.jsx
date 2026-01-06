@@ -22,7 +22,7 @@ const AdminPlans = () => {
         try {
             setLoading(true);
             const response = await planService.getPlans();
-            setPlans(response.data.data || []);
+            setPlans(response.data || []);
         } catch (err) {
             toast.error('Failed to load plans');
         } finally {
@@ -72,20 +72,8 @@ const AdminPlans = () => {
                         <button
                             className="tj-primary-btn"
                             onClick={() => navigate('/admin/plans/create')}
-                            style={{
-                                height: '38px',
-                                borderRadius: '50px',
-                                padding: '0 20px',
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                backgroundColor: '#13689e',
-                                color: 'white',
-                                border: 'none',
-                                textDecoration: 'none',
-                                fontWeight: 600
-                            }}
                         >
-                            <span className="btn-text">Create Plan</span>
+                            <span className="btn-text">Add Plan</span>
                             <span className="btn-icon">
                                 <i className="fas fa-arrow-right"></i>
                             </span>

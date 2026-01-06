@@ -3,6 +3,51 @@
     display: none !important;
 }
 
+/* Profile Dropdown Fix */
+.header-profile-avatar.has-dropdown {
+    position: relative;
+}
+
+.header-profile-avatar.has-dropdown::before {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    left: 0;
+    right: 0;
+    height: 20px;
+    z-index: 1;
+}
+
+.profile-dropdown {
+    position: absolute !important;
+    top: 100% !important;
+    right: 0 !important;
+    left: auto !important;
+    width: 200px !important;
+    background: white !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+    border-radius: 12px !important;
+    padding: 10px 0 !important;
+    display: block !important;
+    z-index: 1000 !important;
+}
+
+.profile-dropdown li a,
+.profile-dropdown li button {
+    padding: 10px 20px !important;
+    display: flex !important;
+    align-items: center !important;
+    color: #333 !important;
+    transition: all 0.2s ease !important;
+}
+
+.profile-dropdown li a:hover,
+.profile-dropdown li button:hover {
+    background: #f8f9fa !important;
+    color: #13689e !important;
+    padding-left: 25px !important;
+}
+
 /* Renamed Hamburger Trigger */
 .hamburger-trigger {
     display: none;

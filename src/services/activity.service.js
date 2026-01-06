@@ -7,6 +7,12 @@ export const activityService = {
         return response.data;
     },
 
+    // Get current user logs
+    getMyLogs: async (params) => {
+        const response = await api.get('/activity-logs/my', { params });
+        return response.data;
+    },
+
     // Get system stats
     getSystemStats: async (params) => {
         const response = await api.get('/activity-logs/stats', { params });

@@ -6,6 +6,7 @@ import SubscriptionService from '../services/subscription.service';
 import SEO from '../components/common/SEO';
 import './CuratedAnalysis.css';
 import { toast } from 'react-toastify';
+import { authService } from '../services/auth.service';
 
 const CuratedAnalysis = () => {
     const { id } = useParams();
@@ -15,6 +16,9 @@ const CuratedAnalysis = () => {
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('all');
     const [hasAccess, setHasAccess] = useState(false);
+    const user = authService.getUser();
+    const userRole = (user?.role || '').toLowerCase().trim();
+    const isStaff = userRole === 'admin' || userRole === 'support_agent' || userRole === 'business_associate' || userRole === 'finance_manager';
 
     useEffect(() => {
         if (id) {
@@ -26,6 +30,11 @@ const CuratedAnalysis = () => {
     }, [id, filter]);
 
     const checkSubscription = async () => {
+        if (isStaff) {
+            setHasAccess(true);
+            return;
+        }
+
         try {
             const response = await SubscriptionService.getActiveSubscription();
             if (response.data && response.data.status === 'active') {

@@ -5,6 +5,7 @@ import DashboardLayout from '../components/layout/DashboardLayout';
 import Pagination from '../components/common/Pagination';
 import './AdminListings.css';
 import { toast } from 'react-toastify';
+import { authService } from '../services/auth.service';
 
 const AdminHowToUse = () => {
     const navigate = useNavigate();
@@ -56,8 +57,13 @@ const AdminHowToUse = () => {
         fetchTutorials();
     }, [pagination.page]);
 
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    const isAdmin = user.role === 'admin';
+    const user = authService.getUser();
+    const userRole = (user?.role || '').toLowerCase().trim();
+    const isAdmin = userRole === 'admin';
+    const isSupport = userRole === 'support_agent' || isAdmin;
+    const isAllowed = isSupport;
+
+    console.log('AdminHowToUse Debug:', { user, role: user?.role, userRole, isAllowed });
 
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this guide?')) {
@@ -91,22 +97,10 @@ const AdminHowToUse = () => {
                             <p style={{ color: '#6c757d' }}>Manage instructional guides and videos</p>
                         </div>
                         <div className="header-actions">
-                            {isAdmin && (
+                            {isAllowed && (
                                 <button
                                     className="tj-primary-btn"
                                     onClick={() => navigate('/admin/how-to-use/create')}
-                                    style={{
-                                        height: '38px',
-                                        borderRadius: '50px',
-                                        padding: '0 20px',
-                                        display: 'inline-flex',
-                                        alignItems: 'center',
-                                        backgroundColor: '#13689e',
-                                        color: 'white',
-                                        border: 'none',
-                                        textDecoration: 'none',
-                                        fontWeight: 600
-                                    }}
                                 >
                                     <span className="btn-text">Add Guide</span>
                                     <span className="btn-icon">
@@ -126,14 +120,14 @@ const AdminHowToUse = () => {
                                     <th>Description</th>
                                     <th>Video</th>
                                     <th>Status</th>
-                                    {isAdmin && <th>Actions</th>}
+                                    {isAllowed && <th>Actions</th>}
                                 </tr>
                             </thead>
                             <tbody>
                                 {loading ? (
-                                    <tr><td colSpan={isAdmin ? "6" : "5"} className="text-center">Loading...</td></tr>
+                                    <tr><td colSpan={isAllowed ? "6" : "5"} className="text-center">Loading...</td></tr>
                                 ) : tutorials.length === 0 ? (
-                                    <tr><td colSpan={isAdmin ? "6" : "5"} className="text-center" style={{ padding: '50px' }}>No guides found</td></tr>
+                                    <tr><td colSpan={isAllowed ? "6" : "5"} className="text-center" style={{ padding: '50px' }}>No guides found</td></tr>
                                 ) : (
                                     tutorials.map(tutorial => (
                                         <tr key={tutorial.id}>
@@ -157,21 +151,21 @@ const AdminHowToUse = () => {
                                             </td>
                                             <td>
                                                 <button
-                                                    onClick={() => isAdmin && handleTogglePublish(tutorial.id, tutorial.is_published)}
+                                                    onClick={() => isAllowed && handleTogglePublish(tutorial.id, tutorial.is_published)}
                                                     className={`plan-type-badge`}
                                                     style={{
                                                         background: tutorial.is_published ? 'rgba(40, 167, 69, 0.1)' : 'rgba(239, 68, 68, 0.1)',
                                                         color: tutorial.is_published ? '#28a745' : '#ef4444',
                                                         border: 'none',
-                                                        cursor: isAdmin ? 'pointer' : 'default',
-                                                        opacity: isAdmin ? 1 : 0.8
+                                                        cursor: isAllowed ? 'pointer' : 'default',
+                                                        opacity: isAllowed ? 1 : 0.8
                                                     }}
-                                                    disabled={!isAdmin}
+                                                    disabled={!isAllowed}
                                                 >
                                                     {tutorial.is_published ? 'Published' : 'Draft'}
                                                 </button>
                                             </td>
-                                            {isAdmin && (
+                                            {isAllowed && (
                                                 <td>
                                                     <div className="actions-cell">
                                                         <button className="action-btn" onClick={() => navigate(`/admin/how-to-use/edit/${tutorial.id}`)} title="Edit">

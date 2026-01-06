@@ -234,7 +234,7 @@ const Profile = () => {
                                             <img
                                                 src={profile?.user?.avatar_url || user?.avatar_url}
                                                 alt="Profile"
-                                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                                style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '10px' }}
                                             />
                                         ) : (
                                             <i className="fas fa-user-circle"></i>
@@ -243,7 +243,7 @@ const Profile = () => {
                                             position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
                                             background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center',
                                             opacity: 0, transition: '0.3s opacity',
-                                            borderRadius: '50%'
+                                            borderRadius: '12px'
                                         }}
                                         >
                                             <i className="fas fa-camera" style={{ color: 'white', fontSize: '1.5rem' }}></i>

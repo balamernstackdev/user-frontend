@@ -59,20 +59,23 @@ const AdminAnnouncements = () => {
                             <h1>Manage Announcements</h1>
                             <p style={{ color: '#6c757d' }}>Broadcast messages to users via dashboard or email.</p>
                         </div>
-                        {isAdmin && (
+                        {(isAdmin || isSupport) && (
                             <button
-                                className="tj-btn tj-btn-primary"
+                                className="tj-primary-btn"
                                 onClick={() => navigate('/admin/announcements/create')}
                             >
-                                <i className="fas fa-plus"></i> Create New
+                                <span className="btn-text">Add Announcement</span>
+                                <span className="btn-icon">
+                                    <i className="fas fa-arrow-right"></i>
+                                </span>
                             </button>
                         )}
                     </div>
 
                     <div className="row">
                         <div className="col-12">
-                            {/* Admin View: Table */}
-                            {isAdmin && (
+                            {/* Staff View: Table */}
+                            {(isAdmin || isSupport) && (
                                 <div className="content-card animate-fade-up" style={{ animationDelay: '0.2s' }}>
                                     <h3 className="card-title">Recent Announcements</h3>
                                     {loading ? (
