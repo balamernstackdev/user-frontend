@@ -291,9 +291,11 @@ const Header = ({ notificationCount = 0 }) => {
                                         <div className="header-notification" style={{ position: 'relative', marginRight: '20px' }}>
                                             <Link to="/notifications" style={{ position: 'relative', display: 'inline-block', color: 'var(--tj-color-heading-primary)', fontSize: '20px' }}>
                                                 <i className="far fa-bell"></i>
-                                                <span className="notification-badge" style={{ position: 'absolute', top: '-8px', right: '-8px', backgroundColor: '#ff0000', color: '#ffffff', borderRadius: '50%', width: '18px', height: '18px', fontSize: '11px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '600' }}>
-                                                    {notificationCount}
-                                                </span>
+                                                {notificationCount > 0 && (
+                                                    <span className="notification-badge" style={{ position: 'absolute', top: '-8px', right: '-8px', backgroundColor: '#ff0000', color: '#ffffff', borderRadius: '50%', width: '18px', height: '18px', fontSize: '11px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '600' }}>
+                                                        {notificationCount}
+                                                    </span>
+                                                )}
                                             </Link>
                                         </div>
                                         <div className="header-profile-avatar" style={{ marginRight: '20px' }}>

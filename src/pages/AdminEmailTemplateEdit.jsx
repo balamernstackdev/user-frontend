@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import EmailTemplateService from '../services/emailTemplate.service';
 import { toast } from 'react-toastify';
+import './AdminListings.css';
 
 const AdminEmailTemplateEdit = () => {
     const { id } = useParams();
@@ -83,77 +84,107 @@ const AdminEmailTemplateEdit = () => {
 
     return (
         <DashboardLayout>
-            <section className="page-section">
+            <div className="admin-listing-page animate-fade-up">
                 <div className="container">
-                    <div className="page-header animate-fade-up">
-                        <Link to="/admin/email-templates" className="back-btn" style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', color: '#6c757d', textDecoration: 'none', marginBottom: '20px' }}>
-                            <i className="fas fa-arrow-left"></i> Back to Templates
-                        </Link>
-                        <h1>Edit Template: {template.name}</h1>
-                    </div>
-
-                    <div className="content-card animate-fade-up" style={{ animationDelay: '0.1s' }}>
-                        <div className="alert alert-info" style={{ marginBottom: '20px' }}>
-                            <strong>Available Variables:</strong>
-                            <div style={{ marginTop: '5px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-                                {template.variables && template.variables.map(v => (
-                                    <code key={v} style={{ background: '#e9ecef', padding: '2px 6px', borderRadius: '4px' }}>
-                                        {`{{${v}}}`}
-                                    </code>
-                                ))}
+                    <div className="admin-listing-header mb-4">
+                        <div>
+                            <Link to="/admin/email-templates" className="back-link mb-2 d-inline-flex align-items-center text-decoration-none text-muted">
+                                <i className="fas fa-arrow-left me-2"></i> Back to Templates
+                            </Link>
+                            <div className="header-title mt-2">
+                                <h1>Edit Template: {template.name}</h1>
+                                <p style={{ color: '#6c757d' }}>Customize the content and subject line for this email template.</p>
                             </div>
                         </div>
+                    </div>
 
-                        <form onSubmit={handleSubmit}>
-                            <div className="form-group">
-                                <label htmlFor="subject">Subject</label>
-                                <input
-                                    type="text"
-                                    id="subject"
-                                    name="subject"
-                                    className="form-control"
-                                    value={formData.subject}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </div>
+                    <div className="row justify-content-center">
+                        <div className="col-lg-10">
+                            <div className="listing-table-container p-4 animate-fade-up" style={{ animationDelay: '0.1s' }}>
 
-                            <div className="form-group">
-                                <label htmlFor="body">Body (HTML)</label>
-                                <textarea
-                                    id="body"
-                                    name="body"
-                                    className="form-control"
-                                    value={formData.body}
-                                    onChange={handleChange}
-                                    rows="15"
-                                    style={{ fontFamily: 'monospace', fontSize: '14px' }}
-                                    required
-                                />
-                                <small className="text-muted">You can use standard HTML tags.</small>
-                            </div>
+                                <div className="mb-4 p-3 bg-light rounded-3 border border-light">
+                                    <h6 className="d-flex align-items-center text-primary mb-3">
+                                        <i className="fas fa-code me-2"></i> Available Variables
+                                    </h6>
+                                    <div className="d-flex flex-wrap gap-2">
+                                        {template.variables && template.variables.map(v => (
+                                            <span key={v} className="badge bg-white text-dark border px-3 py-2 fw-normal font-monospace">
+                                                {`{{${v}}}`}
+                                            </span>
+                                        ))}
+                                    </div>
+                                    <small className="d-block mt-2 text-muted">
+                                        Click to copy variables to your clipboard (optional feature idea) or just reference them.
+                                    </small>
+                                </div>
 
-                            <div className="form-actions" style={{ marginTop: '30px', display: 'flex', gap: '15px' }}>
-                                <button
-                                    type="button"
-                                    className="btn btn-secondary"
-                                    onClick={() => navigate('/admin/email-templates')}
-                                    disabled={saving}
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    type="submit"
-                                    className="btn btn-primary"
-                                    disabled={saving}
-                                >
-                                    {saving ? 'Saving...' : 'Save Changes'}
-                                </button>
+                                <form onSubmit={handleSubmit}>
+                                    <div className="form-group mb-4">
+                                        <label htmlFor="subject" className="form-label fw-bold small text-uppercase text-muted">Subject Line</label>
+                                        <input
+                                            type="text"
+                                            id="subject"
+                                            name="subject"
+                                            className="form-control form-control-lg"
+                                            value={formData.subject}
+                                            onChange={handleChange}
+                                            required
+                                            placeholder="Enter email subject"
+                                        />
+                                    </div>
+
+                                    <div className="form-group mb-4">
+                                        <label htmlFor="body" className="form-label fw-bold small text-uppercase text-muted">Email Body (HTML)</label>
+                                        <div className="border rounded-3 overflow-hidden">
+                                            <textarea
+                                                id="body"
+                                                name="body"
+                                                className="form-control border-0"
+                                                value={formData.body}
+                                                onChange={handleChange}
+                                                rows="15"
+                                                style={{ fontFamily: 'monospace', fontSize: '14px', resize: 'vertical' }}
+                                                required
+                                            />
+                                        </div>
+                                        <div className="form-text mt-2">
+                                            <i className="fas fa-info-circle me-1"></i>
+                                            Supports standard HTML tags. Use inline styles for best compatibility.
+                                        </div>
+                                    </div>
+
+                                    <div className="d-flex gap-3 pt-3 border-top">
+                                        <button
+                                            type="button"
+                                            className="btn btn-light px-4"
+                                            onClick={() => navigate('/admin/email-templates')}
+                                            disabled={saving}
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button
+                                            type="submit"
+                                            className="btn btn-primary px-4"
+                                            disabled={saving}
+                                        >
+                                            {saving ? (
+                                                <>
+                                                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                                    Saving...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <i className="fas fa-save me-2"></i> Save Changes
+                                                </>
+                                            )}
+                                        </button>
+                                    </div>
+                                </form>
                             </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
-            </section>
+            </div>
         </DashboardLayout>
     );
 };
