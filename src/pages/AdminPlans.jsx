@@ -5,6 +5,7 @@ import planService from '../services/plan.service';
 import SEO from '../components/common/SEO';
 import './AdminListings.css';
 import { toast } from 'react-toastify';
+import { useSettings } from '../context/SettingsContext';
 
 const AdminPlans = () => {
     const { settings } = useSettings();

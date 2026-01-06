@@ -63,7 +63,7 @@ const PlanDistributionChart = ({ data, isLoading }) => {
         return (
             <div className="analytics-card h-100 chart-card">
                 <h4 className="mb-1"><SkeletonLoader width="120px" height="24px" /></h4>
-                <p className="mb-3"><SkeletonLoader width="180px" height="16px" /></p>
+                <div className="mb-3"><SkeletonLoader width="180px" height="16px" /></div>
                 <div style={{ height: '280px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <SkeletonLoader width="200px" height="200px" variant="circle" />
                 </div>
@@ -77,7 +77,7 @@ const PlanDistributionChart = ({ data, isLoading }) => {
             <p className="text-muted small mb-3">Current subscription distribution</p>
             <div className="chart-container" style={{ height: '280px' }}>
                 {data.length > 0 ? (
-                    <ResponsiveContainer width="100%" height="100%">
+                    <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                         <PieChart margin={{ top: 20, right: 100, left: 100, bottom: 20 }}>
                             <Pie
                                 activeIndex={activeIndex}
