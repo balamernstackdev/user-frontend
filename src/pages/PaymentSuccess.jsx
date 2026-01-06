@@ -40,16 +40,26 @@ const PaymentSuccess = () => {
                                 <span className="info-value">{transaction.id || transaction.transaction_id || 'N/A'}</span>
                             </div>
                             <div className="info-row">
-                                <span className="info-label">Amount Paid</span>
-                                <span className="info-value">₹{transaction.amount}</span>
+                                <span className="info-label">Plan</span>
+                                <span className="info-value">{transaction.plan_name || 'Subscribed Plan'}</span>
                             </div>
                             <div className="info-row">
                                 <span className="info-label">Payment Date</span>
                                 <span className="info-value">{formatDate(transaction.created_at)}</span>
                             </div>
-                            <div className="info-row">
-                                <span className="info-label">Plan</span>
-                                <span className="info-value">{transaction.plan_name || 'Subscribed Plan'}</span>
+                            <div style={{ borderTop: '1px solid #eee', margin: '15px 0', paddingTop: '15px' }}>
+                                <div className="info-row">
+                                    <span className="info-label">Plan Price</span>
+                                    <span className="info-value">₹{Number(transaction.base_amount || (transaction.amount / 1.18)).toFixed(2)}</span>
+                                </div>
+                                <div className="info-row">
+                                    <span className="info-label">GST ({transaction.tax_rate || 18}%)</span>
+                                    <span className="info-value">₹{Number(transaction.tax_amount || (transaction.amount - (transaction.amount / 1.18))).toFixed(2)}</span>
+                                </div>
+                                <div className="info-row" style={{ marginTop: '5px' }}>
+                                    <span className="info-label" style={{ fontWeight: '700', color: 'var(--tj-color-theme-primary)' }}>Total Paid</span>
+                                    <span className="info-value" style={{ fontWeight: '700', color: 'var(--tj-color-theme-primary)', fontSize: '1.2rem' }}>₹{Number(transaction.amount).toFixed(2)}</span>
+                                </div>
                             </div>
                         </div>
                     ) : (
@@ -67,6 +77,8 @@ const PaymentSuccess = () => {
                             onClick={async () => {
                                 try {
                                     if (!transaction?.id) return;
+
+                                    // Always use the real service now as simulated transactions are also saved to DB
                                     const blob = await import('../services/payment.service').then(m => m.default.downloadInvoice(transaction.id));
                                     const url = window.URL.createObjectURL(blob);
                                     const link = document.createElement('a');
@@ -77,7 +89,7 @@ const PaymentSuccess = () => {
                                     link.parentNode.removeChild(link);
                                 } catch (err) {
                                     console.error('Download failed', err);
-                                    // You might want to import toast globally or pass it
+                                    alert('Failed to download invoice. This might be a simulated transaction.');
                                 }
                             }}
                             className="tj-primary-btn transparent-btn"

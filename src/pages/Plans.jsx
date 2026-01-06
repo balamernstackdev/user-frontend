@@ -3,11 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import planService from '../services/plan.service';
 import { authService } from '../services/auth.service';
+import { useSettings } from '../context/SettingsContext';
 import SEO from '../components/common/SEO';
 import './Plans.css';
 import { toast } from 'react-toastify';
 
 const Plans = () => {
+    const { settings } = useSettings();
     const [plans, setPlans] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedType, setSelectedType] = useState('all');
@@ -20,17 +22,18 @@ const Plans = () => {
             return;
         }
         fetchPlans();
-    }, [selectedType, user, navigate]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedType, user?.role]);
 
     const fetchPlans = async () => {
         try {
             setLoading(true);
             const params = selectedType !== 'all' ? { planType: selectedType } : {};
             const response = await planService.getPlans(params);
-            setPlans(response.data);
+            setPlans(response.data || []);
         } catch (err) {
-            toast.error('Failed to load plans');
-            console.error(err);
+            console.error('Error fetching plans:', err);
+            toast.error(err.response?.data?.message || 'Failed to load plans');
         } finally {
             setLoading(false);
         }

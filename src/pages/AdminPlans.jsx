@@ -22,7 +22,7 @@ const AdminPlans = () => {
         try {
             setLoading(true);
             const response = await planService.getPlans();
-            setPlans(response.data);
+            setPlans(response.data.data || []);
         } catch (err) {
             toast.error('Failed to load plans');
         } finally {
