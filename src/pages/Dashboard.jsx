@@ -4,7 +4,7 @@ import RevenueChart from '../components/dashboard/RevenueChart';
 import RecentActivityList from '../components/dashboard/RecentActivityList';
 import AnnouncementWidget from '../components/dashboard/AnnouncementWidget';
 import { useSettings } from '../context/SettingsContext';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import { authService } from '../services/auth.service';
 import ReferralService from '../services/referral.service';
@@ -26,15 +26,17 @@ const Dashboard = () => {
     const [loading, setLoading] = useState(true);
     const [copySuccess, setCopySuccess] = useState(false);
 
+    const navigate = useNavigate();
+
     useEffect(() => {
         const currentUser = authService.getUser();
         if (currentUser) {
             if (['admin', 'finance_manager', 'support_agent'].includes(currentUser.role)) {
-                window.location.href = '/admin/dashboard';
+                navigate('/admin/dashboard');
                 return;
             }
             if (currentUser.role === 'business_associate') {
-                window.location.href = '/business-associate/dashboard';
+                navigate('/business-associate/dashboard');
                 return;
             }
             setUser(currentUser);

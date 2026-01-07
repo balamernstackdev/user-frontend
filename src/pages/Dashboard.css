@@ -26,7 +26,7 @@
 
 .dashboard-header h1,
 .section-title {
-    font-size: 24px;
+    font-size: 28px;
     font-weight: 700;
     margin-bottom: 5px;
     color: #1a1a1a;
@@ -75,6 +75,18 @@
 
 .stat-card.card-payouts {
     border-bottom: 4px solid #06b6d4;
+}
+
+.stat-card.card-revenue {
+    border-bottom: 4px solid #6f42c1;
+}
+
+.stat-card.card-active-subs {
+    border-bottom: 4px solid #20c997;
+}
+
+.stat-card.card-expiring {
+    border-bottom: 4px solid #dc3545;
 }
 
 .stat-label {

@@ -105,7 +105,7 @@
 
 /* Button style for "Mark all Read" when using transparent-btn class */
 /* Button style for "Mark all Read" when using transparent-btn class */
-.tj-primary-btn.transparent-btn {
+/* .tj-primary-btn.transparent-btn {
     background: transparent !important;
     border: 1px solid var(--tj-color-theme-primary, #13689e) !important;
     color: var(--tj-color-theme-primary, #13689e) !important;
@@ -116,7 +116,7 @@
 .tj-primary-btn.transparent-btn:hover {
     background: var(--tj-color-theme-primary, #13689e) !important;
     color: var(--tj-color-common-white, #ffffff) !important;
-}
+} */
 
 .empty-state {
     text-align: center;

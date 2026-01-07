@@ -3,8 +3,7 @@ import TokenService from './token.service';
 
 
 const api = axios.create({
-    // baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api',
-    baseURL: 'https://user-backend-api.onrender.com/api',
+    baseURL: import.meta.env.VITE_API_BASE_URL || (import.meta.env.MODE === 'production' ? 'https://user-backend-api.onrender.com/api' : 'http://localhost:5000/api'),
     headers: {
         'Content-Type': 'application/json',
     },

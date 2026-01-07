@@ -275,3 +275,19 @@
         width: 280px;
     }
 }
+
+/* Header Alignment Fix */
+@media (min-width: 992px) {
+    .header-area .header-wrapper {
+        position: relative;
+        justify-content: space-between;
+    }
+
+    .header-area .menu-area {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        white-space: nowrap;
+        justify-content: center;
+    }
+}

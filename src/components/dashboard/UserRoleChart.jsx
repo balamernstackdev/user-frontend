@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, LabelList
+    PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend
 } from 'recharts';
 import SkeletonLoader from './SkeletonLoader';
 
@@ -13,10 +13,7 @@ const UserRoleChart = ({ data, isLoading }) => {
             <div className="analytics-card h-100 mb-4 chart-card">
                 <h4 className="mb-3"><SkeletonLoader width="150px" height="24px" /></h4>
                 <div style={{ height: '220px' }}>
-                    <SkeletonLoader width="100%" height="40px" className="mb-2" />
-                    <SkeletonLoader width="100%" height="40px" className="mb-2" />
-                    <SkeletonLoader width="100%" height="40px" className="mb-2" />
-                    <SkeletonLoader width="100%" height="40px" />
+                    <SkeletonLoader width="100%" height="220px" style={{ borderRadius: '50%' }} />
                 </div>
             </div>
         );
@@ -30,43 +27,55 @@ const UserRoleChart = ({ data, isLoading }) => {
 
     return (
         <div className="analytics-card h-100 mb-4 chart-card">
-            <h4 className="mb-3">User Distribution</h4>
+            <h4 className="mb-4" style={{ fontWeight: 700, color: '#1e293b' }}>User Distribution</h4>
             <div className="chart-container" style={{ height: '320px' }}>
                 <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={data} layout="vertical" margin={{ left: 0, right: 30, top: 5, bottom: 5 }}>
-                        <CartesianGrid strokeDasharray="3 3" horizontal={false} vertical={false} stroke="#e5e7eb" />
-                        <XAxis type="number" hide />
-                        <YAxis
-                            dataKey="role"
-                            type="category"
-                            axisLine={false}
-                            tickLine={false}
-                            tick={{ fontSize: 13, fill: '#475569', fontWeight: 600 }}
-                            width={130}
-                            tickFormatter={formatRole}
-                        />
-                        <Tooltip
-                            cursor={{ fill: 'rgba(59, 130, 246, 0.05)' }}
-                            contentStyle={{
-                                backgroundColor: 'white',
-                                border: '1px solid #e5e7eb',
-                                borderRadius: '8px',
-                                boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)'
-                            }}
-                            formatter={(value, name) => [value, 'Users']}
-                            labelFormatter={formatRole}
-                        />
-                        <Bar dataKey="count" radius={[0, 6, 6, 0]} barSize={24}>
+                    <PieChart>
+                        <Pie
+                            data={data}
+                            cx="50%"
+                            cy="45%"
+                            innerRadius={60}
+                            outerRadius={80}
+                            paddingAngle={5}
+                            dataKey="count"
+                            nameKey="role"
+                            stroke="none"
+                        >
                             {data.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                <Cell
+                                    key={`cell-${index}`}
+                                    fill={COLORS[index % COLORS.length]}
+                                    style={{ filter: 'drop-shadow(0px 4px 6px rgba(0,0,0,0.1))' }}
+                                />
                             ))}
-                            <LabelList
-                                dataKey="count"
-                                position="right"
-                                style={{ fill: '#334155', fontSize: '13px', fontWeight: '700' }}
-                            />
-                        </Bar>
-                    </BarChart>
+                        </Pie>
+                        <Tooltip
+                            contentStyle={{
+                                backgroundColor: '#1e293b',
+                                border: 'none',
+                                borderRadius: '12px',
+                                padding: '12px',
+                                boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.2)',
+                                color: '#fff'
+                            }}
+                            itemStyle={{ color: '#fff', fontSize: '13px', fontWeight: 500 }}
+                            formatter={(value) => [value, 'Users']}
+                            labelFormatter={(label) => formatRole(label)}
+                        />
+                        <Legend
+                            layout="horizontal"
+                            verticalAlign="bottom"
+                            align="center"
+                            iconType="circle"
+                            formatter={(value, entry) => (
+                                <span style={{ color: '#64748b', fontSize: '13px', fontWeight: 500, marginRight: '10px' }}>
+                                    {formatRole(value)}
+                                </span>
+                            )}
+                            wrapperStyle={{ paddingTop: '20px' }}
+                        />
+                    </PieChart>
                 </ResponsiveContainer>
             </div>
         </div>
