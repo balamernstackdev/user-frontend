@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import ReCAPTCHA from 'react-google-recaptcha';
 import { authService } from '../services/auth.service';
@@ -27,6 +27,8 @@ const Register = () => {
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
     const [recaptchaToken, setRecaptchaToken] = useState(null);
+
+    const recaptchaRef = useRef(null);
 
     // Extract referral code from URL
     useEffect(() => {
@@ -101,6 +103,11 @@ const Register = () => {
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
             toast.error('Please fix the errors in the form');
+            // Reset captcha on validation error so user doesn't submit stale token
+            if (recaptchaRef.current) {
+                recaptchaRef.current.reset();
+            }
+            setRecaptchaToken(null);
             return;
         }
 
@@ -133,6 +140,12 @@ const Register = () => {
                 });
             }
         } catch (err) {
+            // Reset captcha on API error
+            if (recaptchaRef.current) {
+                recaptchaRef.current.reset();
+            }
+            setRecaptchaToken(null);
+
             const apiErrors = {};
             if (err.response?.data?.errors) {
                 err.response.data.errors.forEach((error) => {
@@ -253,6 +266,7 @@ const Register = () => {
                                     {errors.password}
                                 </span>
                             )}
+
                         </div>
 
                         {/* Confirm Password with Toggle */}
@@ -294,6 +308,7 @@ const Register = () => {
                                 onChange={handleChange}
                                 required
                                 autoComplete="off"
+                                disabled={!!searchParams.get('ref')} // Disable if from URL
                             />
                             {errors.referralCode && (
                                 <span style={{ color: '#cf1322', fontSize: '12px', marginTop: '4px', display: 'block' }}>
@@ -326,6 +341,7 @@ const Register = () => {
                             {settings.security_method === 'recaptcha' && settings.recaptcha_site_key && (
                                 <div style={{ marginBottom: '20px', display: 'flex', justifyContent: 'center' }}>
                                     <ReCAPTCHA
+                                        ref={recaptchaRef}
                                         sitekey={settings.recaptcha_site_key}
                                         onChange={handleRecaptchaChange}
                                     />

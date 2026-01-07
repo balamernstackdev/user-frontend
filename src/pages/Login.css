@@ -107,6 +107,7 @@
     color: #333;
     transition: all 0.3s ease;
     box-sizing: border-box;
+    margin-bottom: 10px;
 }
 
 .password-input-wrapper {
