@@ -98,8 +98,7 @@
     border-top: 1px solid var(--tj-color-border-1);
 }
 
-.invoice-actions button,
-.invoice-actions .tj-primary-btn {
+.invoice-actions button {
     display: inline-flex;
     align-items: center;
     gap: 10px;

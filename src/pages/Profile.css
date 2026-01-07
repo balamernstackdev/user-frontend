@@ -45,6 +45,12 @@
     overflow: hidden;
 }
 
+.profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
 .profile-avatar i {
     font-size: 80px;
     color: #13689e;

@@ -119,6 +119,16 @@ const UserService = {
     },
 
     /**
+     * Get user by ID (Admin only)
+     * @param {string} id - User ID
+     * @returns {Promise<object>} Response data
+     */
+    getUserById: async (id) => {
+        const response = await api.get(`/users/${id}`);
+        return response.data;
+    },
+
+    /**
      * Update user (Admin only)
      * @param {string} id - User ID
      * @param {object} userData - User data to update

@@ -104,23 +104,18 @@
 }
 
 /* Button style for "Mark all Read" when using transparent-btn class */
+/* Button style for "Mark all Read" when using transparent-btn class */
 .tj-primary-btn.transparent-btn {
-    background: transparent;
-    border: 1px solid var(--tj-color-theme-primary, #13689e);
-    color: var(--tj-color-theme-primary, #13689e);
-    padding: 10px 20px;
-    border-radius: 30px;
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
-    transition: all 0.3s ease;
+    background: transparent !important;
+    border: 1px solid var(--tj-color-theme-primary, #13689e) !important;
+    color: var(--tj-color-theme-primary, #13689e) !important;
+    padding: 10px 20px !important;
     text-decoration: none;
 }
 
 .tj-primary-btn.transparent-btn:hover {
-    background: var(--tj-color-theme-primary, #13689e);
-    color: var(--tj-color-common-white, #ffffff);
+    background: var(--tj-color-theme-primary, #13689e) !important;
+    color: var(--tj-color-common-white, #ffffff) !important;
 }
 
 .empty-state {

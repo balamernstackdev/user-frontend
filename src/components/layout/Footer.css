@@ -137,27 +137,7 @@
     color: rgba(255, 255, 255, 0.5);
 }
 
-.subscribe-form .tj-primary-btn {
-    position: absolute;
-    right: 5px;
-    top: 5px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 20px;
-    background-color: #13689e;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
 
-.subscribe-form .tj-primary-btn:hover {
-    background-color: #0e4f7a;
-}
 
 .subscribe-form label {
     font-size: 13px;

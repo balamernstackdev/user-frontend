@@ -262,31 +262,17 @@
 }
 
 /* Primary Button Fallback */
-.tj-primary-btn {
-    background-color: var(--tj-color-theme-primary, #13689e);
-    color: #ffffff;
-    border: none;
-    padding: 0 30px;
-    height: 50px;
-    border-radius: 10px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 140px;
-}
+
 
 .tj-primary-btn:hover {
-    background-color: var(--tj-color-theme-primary-hover, #176c6c);
+    background-color: var(--tj-color-theme-primary-hover, #176c6c) !important;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(19, 104, 158, 0.2);
 }
 
 .tj-primary-btn:disabled {
     opacity: 0.7;
-    cursor: not-allowed;
+    cursor: not-allowed !important;
     transform: none;
     box-shadow: none;
 }

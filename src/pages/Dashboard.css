@@ -110,7 +110,7 @@
     display: grid;
     grid-template-columns: 1fr 340px;
     gap: 30px;
-    align-items: start;
+    align-items: end;
 }
 
 .section-title-sm {
@@ -331,5 +331,121 @@
 
     to {
         transform: rotate(360deg);
+    }
+}
+
+/* Subscription CTA Card for Empty State */
+.empty-state-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 50vh;
+    padding: 20px 0;
+}
+
+.subscription-cta-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    /* Premium shadow */
+    overflow: hidden;
+    max-width: 800px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    border: 1px solid var(--tj-color-border-1);
+    position: relative;
+}
+
+.subscription-cta-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, #13689e, #28a745);
+}
+
+.cta-content {
+    padding: 50px 40px;
+    background: linear-gradient(135deg, #ffffff 0%, #f9fbfd 100%);
+}
+
+.cta-icon-wrapper {
+    width: 80px;
+    height: 80px;
+    background: rgba(19, 104, 158, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 25px;
+}
+
+.subscription-cta-card h2 {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--tj-color-heading-primary);
+    margin-bottom: 15px;
+}
+
+.subscription-cta-card p {
+    font-size: 16px;
+    color: var(--tj-color-text-body);
+    margin-bottom: 30px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+}
+
+.cta-actions {
+    display: flex;
+    justify-content: center;
+}
+
+.cta-features {
+    display: flex;
+    justify-content: space-around;
+    padding: 25px 40px;
+    background-color: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #475569;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.feature-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #13689e;
+    font-size: 14px;
+}
+
+.display-inline-flex {
+    display: inline-flex !important;
+}
+
+/* Responsive CTA */
+@media (max-width: 768px) {
+    .cta-features {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
     }
 }

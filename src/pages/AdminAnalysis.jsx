@@ -48,102 +48,109 @@ const AdminAnalysis = () => {
     return (
         <DashboardLayout>
             <SEO title="Analysis Management" description="Manage market analysis content" />
-            <section className="admin-listing-page animate-fade-up">
+            <div className="admin-listing-page animate-fade-up">
                 <div className="container">
-                    <div className="page-header d-flex justify-content-between align-items-center mb-4">
-                        <div>
-                            <h2 className="tj-section-title">Manage Analysis</h2>
-                            <p className="text-muted">Create and manage market reports for users</p>
+                    <div className="admin-listing-header">
+                        <div className="header-title">
+                            <h1>Manage Analysis</h1>
+                            <p style={{ color: '#6c757d' }}>Create and manage market reports for users</p>
                         </div>
-                        <Link
-                            to="/admin/analysis/create"
-                            className="tj-primary-btn"
-                        >
-                            <span className="btn-text">Add Analysis</span>
-                            <span className="btn-icon">
-                                <i className="fas fa-arrow-right"></i>
-                            </span>
-                        </Link>
+                        <div className="header-actions">
+                            <Link
+                                to="/admin/analysis/create"
+                                className="tj-primary-btn"
+                            >
+                                <span className="btn-text">Add Analysis</span>
+                                <span className="btn-icon">
+                                    <i className="fas fa-arrow-right"></i>
+                                </span>
+                            </Link>
+                        </div>
                     </div>
 
-                    <div className="admin-card">
-                        <div className="table-responsive">
-                            <table className="table tj-table">
-                                <thead>
-                                    <tr>
-                                        <th>Title</th>
-                                        <th>Category</th>
-                                        <th>Status</th>
-                                        <th>Access</th>
-                                        <th>Created</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {loading ? (
-                                        <tr><td colSpan="6" className="text-center py-5">Loading...</td></tr>
-                                    ) : analyses.length > 0 ? (
-                                        analyses.map((item) => (
-                                            <tr key={item.id}>
-                                                <td>
-                                                    <div className="d-flex align-items-center">
-                                                        {item.image_url ? (
-                                                            <img src={item.image_url} alt="" style={{ width: '40px', height: '40px', borderRadius: '4px', objectFit: 'cover', marginRight: '10px' }} />
-                                                        ) : (
-                                                            <div style={{ width: '40px', height: '40px', borderRadius: '4px', bgcolor: '#eee', marginRight: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><i className="fas fa-chart-bar text-muted"></i></div>
-                                                        )}
-                                                        <span className="font-weight-600">{item.title}</span>
-                                                    </div>
-                                                </td>
-                                                <td><span className="badge bg-light text-dark">{item.category}</span></td>
-                                                <td>
-                                                    <span className={`badge ${item.is_published ? 'bg-success' : 'bg-warning'}`}>
-                                                        {item.is_published ? 'Published' : 'Draft'}
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    <span className={`badge ${item.is_premium ? 'bg-info' : 'bg-secondary'}`}>
-                                                        {item.is_premium ? 'Premium' : 'Free'}
-                                                    </span>
-                                                </td>
-                                                <td>{formatDate(item.created_at)}</td>
-                                                <td>
-                                                    <div className="d-flex gap-2">
-                                                        <button
-                                                            className="tj-btn tj-btn-sm tj-btn-outline-primary"
-                                                            onClick={() => navigate(`/admin/analysis/edit/${item.id}`)}
-                                                            title="Edit"
-                                                        >
-                                                            <i className="fas fa-edit"></i>
-                                                        </button>
-                                                        <button
-                                                            className="tj-btn tj-btn-sm tj-btn-outline-danger"
-                                                            onClick={() => handleDelete(item.id)}
-                                                            title="Delete"
-                                                        >
-                                                            <i className="fas fa-trash"></i>
-                                                        </button>
-                                                        <Link
-                                                            className="tj-btn tj-btn-sm tj-btn-outline-info"
-                                                            to={`/curated-analysis/${item.id}`}
-                                                            target="_blank"
-                                                            title="View"
-                                                        >
-                                                            <i className="fas fa-eye"></i>
-                                                        </Link>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        ))
-                                    ) : (
-                                        <tr><td colSpan="6" className="text-center py-5">No analyses found.</td></tr>
-                                    )}
-                                </tbody>
-                            </table>
-                        </div>
+                    <div className="listing-table-container">
+                        <table className="listing-table">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Category</th>
+                                    <th>Status</th>
+                                    <th>Access</th>
+                                    <th>Created</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {loading ? (
+                                    <tr><td colSpan="6" className="text-center">Loading...</td></tr>
+                                ) : analyses.length > 0 ? (
+                                    analyses.map((item) => (
+                                        <tr key={item.id}>
+                                            <td>
+                                                <div className="d-flex align-items-center">
+                                                    {item.image_url ? (
+                                                        <img src={item.image_url} alt="" style={{ width: '40px', height: '40px', borderRadius: '4px', objectFit: 'cover', marginRight: '10px' }} />
+                                                    ) : (
+                                                        <div style={{ width: '40px', height: '40px', borderRadius: '4px', backgroundColor: '#eee', marginRight: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><i className="fas fa-chart-bar text-muted"></i></div>
+                                                    )}
+                                                    <span className="plan-name-text">{item.title}</span>
+                                                </div>
+                                            </td>
+                                            <td><span className="plan-slug-text" style={{ fontSize: '14px' }}>{item.category}</span></td>
+                                            <td>
+                                                <span className="plan-type-badge" style={{
+                                                    background: item.is_published ? '#e8f5e9' : '#fff3e0',
+                                                    color: item.is_published ? '#2e7d32' : '#ff9800'
+                                                }}>
+                                                    {item.is_published ? 'Published' : 'Draft'}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span className="plan-type-badge" style={{
+                                                    background: item.is_premium ? '#e3f2fd' : '#f5f5f5',
+                                                    color: item.is_premium ? '#1565c0' : '#616161'
+                                                }}>
+                                                    {item.is_premium ? 'Premium' : 'Free'}
+                                                </span>
+                                            </td>
+                                            <td>{formatDate(item.created_at)}</td>
+                                            <td>
+                                                <div className="actions-cell">
+                                                    <button
+                                                        className="action-btn"
+                                                        onClick={() => navigate(`/admin/analysis/edit/${item.id}`)}
+                                                        title="Edit"
+                                                    >
+                                                        <i className="fas fa-edit"></i>
+                                                    </button>
+                                                    <button
+                                                        className="action-btn delete"
+                                                        onClick={() => handleDelete(item.id)}
+                                                        title="Delete"
+                                                    >
+                                                        <i className="fas fa-trash"></i>
+                                                    </button>
+                                                    <Link
+                                                        className="action-btn"
+                                                        to={`/curated-analysis/${item.id}`}
+                                                        target="_blank"
+                                                        title="View"
+                                                        style={{ color: '#17a2b8' }}
+                                                    >
+                                                        <i className="fas fa-eye"></i>
+                                                    </Link>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr><td colSpan="6" className="text-center" style={{ padding: '50px' }}>No analyses found.</td></tr>
+                                )}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-            </section>
+            </div>
         </DashboardLayout>
     );
 };

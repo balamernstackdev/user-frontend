@@ -305,17 +305,16 @@ const Header = ({ notificationCount = 0 }) => {
                                             style={{ marginRight: '20px' }}
                                         >
                                             <Link to="/profile">
-                                                {user?.avatar_url ? (
-                                                    <img
-                                                        src={user.avatar_url}
-                                                        alt="Profile"
-                                                        style={{ width: '40px', height: '40px', borderRadius: '15px', objectFit: 'contain', border: '1px solid #e5e5e5', background: '#fff' }}
-                                                    />
-                                                ) : (
-                                                    <div style={{ width: '40px', height: '40px', borderRadius: '15px', background: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#666' }}>
-                                                        <i className="fas fa-user"></i>
-                                                    </div>
-                                                )}
+                                                <div className="avatar-circle">
+                                                    {user?.avatar_url ? (
+                                                        <img
+                                                            src={user.avatar_url}
+                                                            alt="Profile"
+                                                        />
+                                                    ) : (
+                                                        <i className="fas fa-user" style={{ color: '#666' }}></i>
+                                                    )}
+                                                </div>
                                             </Link>
                                         </div>
                                         <div className="header-button">

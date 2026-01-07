@@ -204,19 +204,6 @@
 
 .register-btn-wrapper .tj-primary-btn {
     width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    padding: 14px 30px;
-    background-color: #13689e;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
 }
 
 .register-btn-wrapper .tj-primary-btn:hover:not(:disabled) {

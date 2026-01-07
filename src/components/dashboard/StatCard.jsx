@@ -10,7 +10,8 @@ const StatCard = ({
     iconBgColor,
     link,
     isLoading,
-    className = ''
+    className = '',
+    ...rest
 }) => {
 
     // Helper to render the Inner content
@@ -53,14 +54,14 @@ const StatCard = ({
 
     if (link) {
         return (
-            <Link to={link} className={cardClasses} style={linkStyles}>
+            <Link to={link} className={cardClasses} style={linkStyles} {...rest}>
                 <CardContent />
             </Link>
         );
     }
 
     return (
-        <div className={cardClasses}>
+        <div className={cardClasses} {...rest}>
             {/* Mimic the flex behavior of the link for consistency if not a link */}
             <div style={{ display: 'flex', width: '100%', alignItems: 'center', gap: '20px' }}>
                 <CardContent />

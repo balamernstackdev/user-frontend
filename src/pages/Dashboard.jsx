@@ -106,7 +106,7 @@ const Dashboard = () => {
         );
     }
 
-    const daysRemaining = subscription?.end_date ? Math.max(0, Math.ceil((new Date(subscription.end_date) - new Date()) / (1000 * 60 * 60 * 24))) : 0;
+    const daysRemaining = subscription?.end_date ? Math.max(0, Math.floor((new Date(subscription.end_date) - new Date()) / (1000 * 60 * 60 * 24))) : 0;
 
     return (
         <DashboardLayout>
@@ -116,125 +116,157 @@ const Dashboard = () => {
                 {/* Header Section */}
                 <header className="dashboard-header mb-4">
                     <div className="welcome-text">
-                        <h1>Welcome Back, {user?.name?.split(' ')[0] || 'User'}! 👋</h1>
+                        <h1>Welcome Back, {user?.name?.split(' ')[0] || 'User'}!</h1>
                         <p className="text-muted">Here's a quick overview of your account status.</p>
                     </div>
                 </header>
 
-                {/* Stats Grid - Admin Like */}
-                <div className="user-stats-grid mb-4">
-                    <StatCard
-                        label="Active Plan"
-                        value={subscription?.plan_name || 'No Plan'}
-                        icon={Box}
-                        className="card-users"
-                        isLoading={loading}
-                    />
-                    <StatCard
-                        label="Days Remaining"
-                        value={daysRemaining}
-                        icon={Clock}
-                        iconColor="#ffc107"
-                        iconBgColor="rgba(255, 193, 7, 0.1)"
-                        isLoading={loading}
-                        className="card-pending"
-                    />
-                    <StatCard
-                        label="My Payments"
-                        value={stats.paymentCount}
-                        icon={CreditCard}
-                        iconColor="#28a745"
-                        iconBgColor="rgba(40, 167, 69, 0.1)"
-                        isLoading={loading}
-                        className="card-active-marketers"
-                    />
-                    <StatCard
-                        label="Support Tickets"
-                        value={stats.ticketCount}
-                        icon={LifeBuoy}
-                        iconColor="#17a2b8"
-                        iconBgColor="rgba(23, 162, 184, 0.1)"
-                        isLoading={loading}
-                        className="card-payouts"
-                    />
-                </div>
-
-                <div className="dashboard-grid">
-                    {/* Main Content */}
-                    <div className="main-content">
-                        {/* Subscription Expired Alert */}
-                        {subscription?.status === 'expired' && (
-                            <div className="alert-card mb-4" style={{ backgroundColor: '#fff3cd', border: '1px solid #ffeeba', borderRadius: '16px', padding: '20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                <div className="d-flex align-items-center">
-                                    <div style={{ background: '#85640420', padding: '10px', borderRadius: '12px', marginRight: '15px' }}>
-                                        <Clock color="#856404" size={24} />
+                {subscription && subscription.status === 'active' ? (
+                    <>
+                        {/* Stats Grid - Admin Like */}
+                        <div className="user-stats-grid mb-4">
+                            <StatCard
+                                label="Active Plan"
+                                value={subscription?.plan_name || 'No Plan'}
+                                icon={Box}
+                                className="card-users"
+                                isLoading={loading}
+                            />
+                            <StatCard
+                                label="Days Remaining"
+                                value={
+                                    <div className="d-flex flex-column">
+                                        <span>{daysRemaining === 0 ? 'Today' : daysRemaining}</span>
+                                        {subscription?.end_date && (
+                                            <span style={{ fontSize: '0.75rem', color: '#6c757d', fontWeight: 'normal', marginTop: '2px' }}>
+                                                Expires {new Date(subscription.end_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
+                                            </span>
+                                        )}
                                     </div>
-                                    <div>
-                                        <h4 style={{ color: '#856404', fontSize: '16px', marginBottom: '2px', fontWeight: '700' }}>Subscription Expired</h4>
-                                        <p style={{ color: '#856404', fontSize: '14px', marginBottom: '0' }}>Renew your <strong>{subscription.plan_name}</strong> to regain access.</p>
-                                    </div>
-                                </div>
-                                <Link to="/plans" className="tj-primary-btn btn-sm">Renew Now</Link>
-                            </div>
-                        )}
-
-                        <div className="mb-4">
-                            <AnnouncementWidget />
+                                }
+                                icon={Clock}
+                                iconColor="#ffc107"
+                                iconBgColor="rgba(255, 193, 7, 0.1)"
+                                isLoading={loading}
+                                className="card-pending"
+                            />
+                            <StatCard
+                                label="My Payments"
+                                value={stats.paymentCount}
+                                icon={CreditCard}
+                                iconColor="#28a745"
+                                iconBgColor="rgba(40, 167, 69, 0.1)"
+                                isLoading={loading}
+                                className="card-active-marketers"
+                            />
+                            <StatCard
+                                label="Support Tickets"
+                                value={stats.ticketCount}
+                                icon={LifeBuoy}
+                                iconColor="#17a2b8"
+                                iconBgColor="rgba(23, 162, 184, 0.1)"
+                                isLoading={loading}
+                                className="card-payouts"
+                            />
                         </div>
 
-                        {/* New Quick Actions Grid - Fills big empty space */}
-                        <div className="main-quick-actions mb-4">
-                            <h3 className="section-title-sm mb-3">Quick Actions</h3>
-                            <div className="quick-actions-grid">
-                                {quickLinks.map((item, idx) => (
-                                    <Link to={item.link} key={idx} className="quick-action-card">
-                                        <div className="q-icon-wrapper" style={{ backgroundColor: `${item.color}15`, color: item.color }}>
-                                            <item.icon size={24} />
+                        <div className="dashboard-grid">
+                            {/* Main Content */}
+                            <div className="main-content">
+                                <div className="mb-4">
+                                    <AnnouncementWidget />
+                                </div>
+
+                                {/* New Quick Actions Grid - Fills big empty space */}
+                                <div className="main-quick-actions mb-4">
+                                    <h3 className="section-title-sm mb-3">Quick Actions</h3>
+                                    <div className="quick-actions-grid">
+                                        {quickLinks.map((item, idx) => (
+                                            <Link to={item.link} key={idx} className="quick-action-card">
+                                                <div className="q-icon-wrapper" style={{ backgroundColor: `${item.color}15`, color: item.color }}>
+                                                    <item.icon size={24} />
+                                                </div>
+                                                <div className="q-info">
+                                                    <span className="q-title">{item.title}</span>
+                                                    <span className="q-desc">Access your {item.title.toLowerCase()}</span>
+                                                </div>
+                                                <ChevronRight size={16} className="q-arrow" />
+                                            </Link>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div >
+
+                            {/* Sidebar */}
+                            <aside className="dashboard-sidebar">
+                                {
+                                    user?.role === 'business_associate' && (
+                                        <div className="sidebar-card mb-4">
+                                            <h3>Referral Program</h3>
+                                            <div className="premium-referral-card">
+                                                <div className="ref-header">
+                                                    <i className="fas fa-gift"></i>
+                                                    <span>Your Link</span>
+                                                </div>
+                                                <div className="ref-body">
+                                                    <input readOnly value={`${window.location.origin}/register?ref=${businessAssociateStats?.referral_code}`} />
+                                                    <button onClick={handleCopyCode} className={copySuccess ? 'success' : ''}>
+                                                        {copySuccess ? <i className="fas fa-check"></i> : <i className="far fa-copy"></i>}
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div className="q-info">
-                                            <span className="q-title">{item.title}</span>
-                                            <span className="q-desc">Access your {item.title.toLowerCase()}</span>
-                                        </div>
-                                        <ChevronRight size={16} className="q-arrow" />
+                                    )
+                                }
+
+                                <div className="sidebar-card help-gradient">
+                                    <LifeBuoy size={40} className="help-icon-main" />
+                                    <h3>Direct Support</h3>
+                                    <p>Stuck somewhere? Reach out to our technical team.</p>
+                                    <Link to="/tickets" className="tj-primary-btn btn-sm w-100">Open Ticket</Link>
+                                </div>
+                            </aside>
+                        </div>
+                    </>
+                ) : (
+                    <div className="empty-state-container animate-fade-up">
+                        <div className="subscription-cta-card">
+                            <div className="cta-content">
+                                <div className="cta-icon-wrapper">
+                                    <Rocket size={48} color="#13689e" />
+                                </div>
+                                <h2>Unlock Your Trading Potential!</h2>
+                                <p>
+                                    {subscription && subscription.status === 'expired'
+                                        ? "Your subscription has expired. Renew now to regain access to premium analysis and features."
+                                        : "You don't have an active subscription. Subscribe to one of our premium plans to access exclusive market analysis, tutorials, and support."}
+                                </p>
+                                <div className="cta-actions">
+                                    <Link to="/plans" className="tj-primary-btn display-inline-flex gap-2">
+                                        {subscription && subscription.status === 'expired' ? 'Renew Subscription' : 'View Subscription Plans'}
+                                        <ChevronRight size={18} />
                                     </Link>
-                                ))}
+                                </div>
+                            </div>
+                            <div className="cta-features">
+                                <div className="feature-item">
+                                    <div className="feature-icon"><i className="fas fa-chart-line"></i></div>
+                                    <span>Premium Analysis</span>
+                                </div>
+                                <div className="feature-item">
+                                    <div className="feature-icon"><i className="fas fa-video"></i></div>
+                                    <span>Exclusive Tutorials</span>
+                                </div>
+                                <div className="feature-item">
+                                    <div className="feature-icon"><i className="fas fa-headset"></i></div>
+                                    <span>Priority Support</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-
-                    {/* Sidebar */}
-                    <aside className="dashboard-sidebar">
-                        {/* Referral Support if BA */}
-
-                        {/* Referral Support if BA */}
-                        {user?.role === 'business_associate' && (
-                            <div className="sidebar-card mb-4">
-                                <h3>Referral Program</h3>
-                                <div className="premium-referral-card">
-                                    <div className="ref-header">
-                                        <i className="fas fa-gift"></i>
-                                        <span>Your Link</span>
-                                    </div>
-                                    <div className="ref-body">
-                                        <input readOnly value={`${window.location.origin}/register?ref=${businessAssociateStats?.referral_code}`} />
-                                        <button onClick={handleCopyCode} className={copySuccess ? 'success' : ''}>
-                                            {copySuccess ? <i className="fas fa-check"></i> : <i className="far fa-copy"></i>}
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
-                        <div className="sidebar-card help-gradient">
-                            <LifeBuoy size={40} className="help-icon-main" />
-                            <h3>Direct Support</h3>
-                            <p>Stuck somewhere? Reach out to our technical team.</p>
-                            <Link to="/tickets" className="tj-primary-btn btn-sm w-100">Open Ticket</Link>
-                        </div>
-                    </aside>
-                </div>
+                )}
             </div>
-        </DashboardLayout>
+        </DashboardLayout >
     );
 };
 
