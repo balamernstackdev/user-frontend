@@ -8,6 +8,7 @@ import './Register.css';
 import bgImage from '../assets/images/bg.png';
 import { toast } from 'react-toastify';
 
+// Force deploy trigger
 const Register = () => {
     const { settings } = useSettings();
     const navigate = useNavigate();
