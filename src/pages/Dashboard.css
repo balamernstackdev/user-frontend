@@ -20,6 +20,10 @@
     width: 100%;
 }
 
+.dashboard-header {
+    text-align: center;
+}
+
 .dashboard-header h1,
 .section-title {
     font-size: 24px;

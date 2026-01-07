@@ -1,6 +1,5 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import ReCAPTCHA from 'react-google-recaptcha';
 import { authService } from '../services/auth.service';
 import { useSettings } from '../context/SettingsContext';
 import SEO from '../components/common/SEO';
@@ -26,9 +25,6 @@ const Register = () => {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
-    const [recaptchaToken, setRecaptchaToken] = useState(null);
-
-    const recaptchaRef = useRef(null);
 
     // Extract referral code from URL
     useEffect(() => {
@@ -48,10 +44,6 @@ const Register = () => {
         if (errors[name]) {
             setErrors({ ...errors, [name]: '' });
         }
-    };
-
-    const handleRecaptchaChange = (token) => {
-        setRecaptchaToken(token);
     };
 
     const validateForm = () => {
@@ -103,11 +95,6 @@ const Register = () => {
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
             toast.error('Please fix the errors in the form');
-            // Reset captcha on validation error so user doesn't submit stale token
-            if (recaptchaRef.current) {
-                recaptchaRef.current.reset();
-            }
-            setRecaptchaToken(null);
             return;
         }
 
@@ -122,16 +109,6 @@ const Register = () => {
                 role: 'user' // Default role
             };
 
-            // Check reCAPTCHA if enabled
-            if (settings.security_method === 'recaptcha') {
-                if (!recaptchaToken) {
-                    toast.error('Please complete the security check.');
-                    setLoading(false);
-                    return;
-                }
-                registrationData.recaptchaToken = recaptchaToken;
-            }
-
             const response = await authService.register(registrationData);
 
             if (response.success) {
@@ -140,12 +117,6 @@ const Register = () => {
                 });
             }
         } catch (err) {
-            // Reset captcha on API error
-            if (recaptchaRef.current) {
-                recaptchaRef.current.reset();
-            }
-            setRecaptchaToken(null);
-
             const apiErrors = {};
             if (err.response?.data?.errors) {
                 err.response.data.errors.forEach((error) => {
@@ -338,15 +309,6 @@ const Register = () => {
 
                         {/* Submit Button */}
                         <div className="register-btn-wrapper">
-                            {settings.security_method === 'recaptcha' && settings.recaptcha_site_key && (
-                                <div style={{ marginBottom: '20px', display: 'flex', justifyContent: 'center' }}>
-                                    <ReCAPTCHA
-                                        ref={recaptchaRef}
-                                        sitekey={settings.recaptcha_site_key}
-                                        onChange={handleRecaptchaChange}
-                                    />
-                                </div>
-                            )}
                             <button type="submit" className="tj-primary-btn" disabled={loading}>
                                 <span className="btn-text">
                                     <span>{loading ? 'Creating Account...' : 'Create Account'}</span>
