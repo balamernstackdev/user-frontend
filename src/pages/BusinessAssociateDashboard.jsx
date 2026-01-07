@@ -84,7 +84,7 @@ const BusinessAssociateDashboard = () => {
                         {/* Header Section */}
                         <div className="welcome-header animate-fade-up mb-4">
                             <div>
-                                <h1 className="section-title fw-bold mb-2" style={{ fontSize: '2.5rem', letterSpacing: '-0.02em', color: '#1a1a1a' }}>Welcome back, {user?.name?.split(' ')[0] || 'Partner'}! 🚀</h1>
+                                <h1 className="section-title fw-bold mb-2" style={{ fontSize: '2.5rem', letterSpacing: '-0.02em', color: '#1a1a1a' }}>Welcome back, {user?.name?.split(' ')[0] || 'Partner'}! 👋</h1>
                                 <p className="section-subtitle text-muted mb-0" style={{ fontSize: '1.15rem' }}>Here's how your referral campaigns are performing.</p>
                             </div>
                             <div className="last-updated text-muted small d-none d-md-block">
