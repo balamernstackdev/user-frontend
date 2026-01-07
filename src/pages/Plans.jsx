@@ -66,8 +66,8 @@ const Plans = () => {
     if (loading) {
         return (
             <DashboardLayout>
-                <div className="container" style={{ paddingTop: '100px', textAlign: 'center' }}>
-                    <div className="spinner-border text-primary" role="status">
+                <div className="container d-flex justify-content-center align-items-center" style={{ minHeight: '60vh' }}>
+                    <div className="spinner-border text-primary" role="status" style={{ width: '3rem', height: '3rem' }}>
                         <span className="visually-hidden">Loading...</span>
                     </div>
                 </div>
