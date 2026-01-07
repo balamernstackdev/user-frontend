@@ -65,11 +65,13 @@ const Plans = () => {
 
     if (loading) {
         return (
-            <div className="container" style={{ paddingTop: '100px', textAlign: 'center' }}>
-                <div className="spinner-border text-primary" role="status">
-                    <span className="visually-hidden">Loading...</span>
+            <DashboardLayout>
+                <div className="container" style={{ paddingTop: '100px', textAlign: 'center' }}>
+                    <div className="spinner-border text-primary" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                    </div>
                 </div>
-            </div>
+            </DashboardLayout>
         );
     }
 
