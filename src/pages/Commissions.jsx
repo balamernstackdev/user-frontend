@@ -2,7 +2,10 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import CommissionService from '../services/commission.service';
 import SEO from '../components/common/SEO';
+import './Dashboard.css';
 import './Commissions.css';
+import StatCard from '../components/dashboard/StatCard';
+import { DollarSign, Clock, CheckCircle, CreditCard } from 'lucide-react';
 import { toast } from 'react-toastify';
 
 import DashboardLayout from '../components/layout/DashboardLayout';
@@ -75,35 +78,39 @@ const Commissions = () => {
                     </div>
 
                     {summary && (
-                        <div className="summary-grid">
-                            <div className="summary-card total">
-                                <div className="card-icon">💰</div>
-                                <div className="card-info">
-                                    <span className="label">Total Earned</span>
-                                    <span className="value">₹{summary.total_commissions ? summary.total_commissions.toLocaleString() : '0'}</span>
-                                </div>
-                            </div>
-                            <div className="summary-card pending">
-                                <div className="card-icon">⏳</div>
-                                <div className="card-info">
-                                    <span className="label">Pending Approval</span>
-                                    <span className="value">₹{summary.pending_commissions ? summary.pending_commissions.toLocaleString() : '0'}</span>
-                                </div>
-                            </div>
-                            <div className="summary-card approved">
-                                <div className="card-icon">✅</div>
-                                <div className="card-info">
-                                    <span className="label">Approved</span>
-                                    <span className="value">₹{summary.approved_commissions ? summary.approved_commissions.toLocaleString() : '0'}</span>
-                                </div>
-                            </div>
-                            <div className="summary-card paid">
-                                <div className="card-icon">💸</div>
-                                <div className="card-info">
-                                    <span className="label">Paid Out</span>
-                                    <span className="value">₹{summary.paid_commissions ? summary.paid_commissions.toLocaleString() : '0'}</span>
-                                </div>
-                            </div>
+                        <div className="admin-stats-grid stats-grid">
+                            <StatCard
+                                label="Total Earned"
+                                value={`₹${summary.total_commissions ? summary.total_commissions.toLocaleString() : '0'}`}
+                                icon={DollarSign}
+                                iconColor="#ffc107"
+                                iconBgColor="rgba(255, 193, 7, 0.1)"
+                                isLoading={loading}
+                            />
+                            <StatCard
+                                label="Pending Approval"
+                                value={`₹${summary.pending_commissions ? summary.pending_commissions.toLocaleString() : '0'}`}
+                                icon={Clock}
+                                iconColor="#fd7e14"
+                                iconBgColor="rgba(253, 126, 20, 0.1)"
+                                isLoading={loading}
+                            />
+                            <StatCard
+                                label="Approved"
+                                value={`₹${summary.approved_commissions ? summary.approved_commissions.toLocaleString() : '0'}`}
+                                icon={CheckCircle}
+                                iconColor="#28a745"
+                                iconBgColor="rgba(40, 167, 69, 0.1)"
+                                isLoading={loading}
+                            />
+                            <StatCard
+                                label="Paid Out"
+                                value={`₹${summary.paid_commissions ? summary.paid_commissions.toLocaleString() : '0'}`}
+                                icon={CreditCard}
+                                iconColor="#17a2b8"
+                                iconBgColor="rgba(23, 162, 184, 0.1)"
+                                isLoading={loading}
+                            />
                         </div>
                     )}
 
