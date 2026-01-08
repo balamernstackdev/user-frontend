@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import fileService from '../services/file.service';
 import SEO from '../components/common/SEO';
 import DashboardLayout from '../components/layout/DashboardLayout';
-import { FileText, Database, Tag } from 'lucide-react';
+import { Files, FileText, Video, Headphones, Music, MoreHorizontal } from 'lucide-react';
 import StatCard from '../components/dashboard/StatCard';
 import './styles/AdminFiles.css';
 import { toast } from 'react-toastify';
@@ -17,8 +17,11 @@ const AdminFiles = () => {
     const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0 });
     const [stats, setStats] = useState({
         total_files: 0,
-        total_size: 0,
-        total_categories: 0
+        video_count: 0,
+        audio_count: 0,
+        music_count: 0,
+        pdf_count: 0,
+        other_count: 0
     });
     const navigate = useNavigate();
 
@@ -114,29 +117,66 @@ const AdminFiles = () => {
                         <StatCard
                             label="Total Files"
                             value={stats.total_files}
-                            icon={FileText}
+                            icon={Files}
                             isLoading={loading}
                             active={categoryFilter === ''}
                             onClick={() => setCategoryFilter('')}
                             className="card-users stat-card-hover"
                         />
                         <StatCard
-                            label="Total Storage"
-                            value={formatFileSize(stats.total_size)}
-                            icon={Database}
+                            label="PDFs"
+                            value={stats.pdf_count}
+                            icon={FileText}
+                            iconColor="#ef4444"
+                            iconBgColor="rgba(239, 68, 68, 0.1)"
+                            isLoading={loading}
+                            active={categoryFilter === 'pdf'}
+                            onClick={() => setCategoryFilter('pdf')}
+                            className="card-expiring stat-card-hover"
+                        />
+                        <StatCard
+                            label="Videos"
+                            value={stats.video_count}
+                            icon={Video}
                             iconColor="#10b981"
                             iconBgColor="rgba(16, 185, 129, 0.1)"
                             isLoading={loading}
+                            active={categoryFilter === 'video'}
+                            onClick={() => setCategoryFilter('video')}
                             className="card-active-marketers stat-card-hover"
                         />
                         <StatCard
-                            label="Categories"
-                            value={stats.total_categories}
-                            icon={Tag}
+                            label="Audios"
+                            value={stats.audio_count}
+                            icon={Headphones}
                             iconColor="#f59e0b"
                             iconBgColor="rgba(245, 158, 11, 0.1)"
                             isLoading={loading}
+                            active={categoryFilter === 'audio'}
+                            onClick={() => setCategoryFilter('audio')}
                             className="card-plans stat-card-hover"
+                        />
+                        <StatCard
+                            label="Musics"
+                            value={stats.music_count}
+                            icon={Music}
+                            iconColor="#6366f1"
+                            iconBgColor="rgba(99, 102, 241, 0.1)"
+                            isLoading={loading}
+                            active={categoryFilter === 'music'}
+                            onClick={() => setCategoryFilter('music')}
+                            className="card-revenue stat-card-hover"
+                        />
+                        <StatCard
+                            label="Others"
+                            value={stats.other_count}
+                            icon={MoreHorizontal}
+                            iconColor="#6c757d"
+                            iconBgColor="rgba(108, 117, 125, 0.1)"
+                            isLoading={loading}
+                            active={categoryFilter === 'other'}
+                            onClick={() => setCategoryFilter('other')}
+                            className="card-payouts stat-card-hover"
                         />
                     </div>
 

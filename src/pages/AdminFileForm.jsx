@@ -187,6 +187,7 @@ const AdminFileForm = () => {
                                                 <option value="pdf">PDF</option>
                                                 <option value="video">Video</option>
                                                 <option value="audio">Audio</option>
+                                                <option value="music">Music</option>
                                                 <option value="doc">Document</option>
                                                 <option value="image">Image</option>
                                                 <option value="other">Other</option>
