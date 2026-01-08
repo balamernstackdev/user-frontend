@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import ReferralService from '../services/referral.service';
-import './ReferredUsers.css';
+import './styles/ReferredUsers.css';
 import { toast } from 'react-toastify';
 
 const ReferredUsers = () => {

@@ -4,7 +4,7 @@ import DashboardLayout from '../components/layout/DashboardLayout';
 import { notificationService } from '../services/notification.service';
 import Pagination from '../components/common/Pagination';
 import SEO from '../components/common/SEO';
-import './Notifications.css';
+import './styles/Notifications.css';
 
 const Notifications = () => {
     const [notifications, setNotifications] = useState([]);

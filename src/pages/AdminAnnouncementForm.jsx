@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import announcementService from '../services/announcement.service';
 import { toast } from 'react-toastify';
-import './AdminForms.css';
+import './styles/AdminForms.css';
 
 const AdminAnnouncementForm = () => {
     const navigate = useNavigate();

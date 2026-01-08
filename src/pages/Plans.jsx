@@ -5,7 +5,7 @@ import planService from '../services/plan.service';
 import { authService } from '../services/auth.service';
 import { useSettings } from '../context/SettingsContext';
 import SEO from '../components/common/SEO';
-import './Plans.css';
+import './styles/Plans.css';
 import { toast } from 'react-toastify';
 
 const Plans = () => {

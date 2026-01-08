@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import tutorialService from '../services/tutorial.service';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import Pagination from '../components/common/Pagination';
-import './AdminListings.css'; // Reusing existing styles
+import './styles/AdminListings.css'; // Reusing existing styles
 import { toast } from 'react-toastify';
 import { authService } from '../services/auth.service';
 

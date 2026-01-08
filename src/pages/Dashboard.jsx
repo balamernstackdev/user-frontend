@@ -12,7 +12,7 @@ import SubscriptionService from '../services/subscription.service';
 import PaymentService from '../services/payment.service';
 import ticketService from '../services/ticket.service';
 import SEO from '../components/common/SEO';
-import './Dashboard.css';
+import './styles/Dashboard.css';
 import { Box, Clock, CreditCard, LifeBuoy, Rocket, User, ChevronRight, Activity, Bell } from 'lucide-react';
 
 const Dashboard = () => {

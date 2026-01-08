@@ -56,9 +56,16 @@
     min-height: 140px;
 }
 
-.stat-card:hover {
+.stat-card:hover,
+.stat-card.active {
     transform: translateY(-5px);
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.06);
+    background-color: #f8fafc;
+    border-color: #cbd5e1;
+}
+
+.stat-card.active {
+    border-width: 2px;
 }
 
 .stat-card.card-users {
@@ -69,7 +76,7 @@
     border-bottom: 4px solid #10b981;
 }
 
-.stat-card.card-pending {
+.stat-card.card-plans {
     border-bottom: 4px solid #f59e0b;
 }
 

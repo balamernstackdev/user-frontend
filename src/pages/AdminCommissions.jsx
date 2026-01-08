@@ -4,7 +4,7 @@ import commissionService from '../services/commission.service';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import Pagination from '../components/common/Pagination';
 import SEO from '../components/common/SEO';
-import './AdminListings.css';
+import './styles/AdminListings.css';
 import { toast } from 'react-toastify';
 import { adminService } from '../services/admin.service';
 
@@ -16,6 +16,7 @@ const AdminCommissions = () => {
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0 });
+    const [stats, setStats] = useState({ total_commissions: 0, total_amount: 0, pending_amount: 0, paid_amount: 0 });
     const [showExportDropdown, setShowExportDropdown] = useState(false);
     const exportDropdownRef = useRef(null);
 
@@ -47,6 +48,9 @@ const AdminCommissions = () => {
             if (response.data && response.data.pagination) {
                 setCommissions(response.data.commissions);
                 setPagination(prev => ({ ...prev, total: response.data.pagination.total }));
+                if (response.data.stats) {
+                    setStats(response.data.stats);
+                }
             } else if (Array.isArray(response.data)) {
                 // Fallback for stale backend
                 const allData = response.data;
@@ -138,6 +142,54 @@ const AdminCommissions = () => {
                         <div className="header-title">
                             <h1>Commission Payouts</h1>
                             <p style={{ color: '#6c757d' }}>Manage and process business associate commissions</p>
+                        </div>
+                    </div>
+
+                    {/* Summary Cards */}
+                    <div className="row mb-4">
+                        <div className="col-md-3">
+                            <div style={{ background: 'white', padding: '20px', borderRadius: '12px', boxShadow: '0 2px 6px rgba(0,0,0,0.02)', border: '1px solid rgba(0,0,0,0.05)', height: '100%', display: 'flex', alignItems: 'center' }}>
+                                <div style={{ width: '48px', height: '48px', borderRadius: '10px', background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', marginRight: '15px' }}>
+                                    <i className="fas fa-list-ul"></i>
+                                </div>
+                                <div>
+                                    <div style={{ color: '#6c757d', fontSize: '13px', marginBottom: '4px' }}>Total Payouts</div>
+                                    <div style={{ fontSize: '24px', fontWeight: '700', color: '#2c3e50' }}>{stats.total_count || 0}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-md-3">
+                            <div style={{ background: 'white', padding: '20px', borderRadius: '12px', boxShadow: '0 2px 6px rgba(0,0,0,0.02)', border: '1px solid rgba(0,0,0,0.05)', height: '100%', display: 'flex', alignItems: 'center' }}>
+                                <div style={{ width: '48px', height: '48px', borderRadius: '10px', background: 'rgba(57, 199, 131, 0.1)', color: '#39c783', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', marginRight: '15px' }}>
+                                    <i className="fas fa-money-bill-wave"></i>
+                                </div>
+                                <div>
+                                    <div style={{ color: '#6c757d', fontSize: '13px', marginBottom: '4px' }}>Total Amount</div>
+                                    <div style={{ fontSize: '24px', fontWeight: '700', color: '#2c3e50' }}>₹{(parseFloat(stats.total_amount) || 0).toFixed(2)}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-md-3">
+                            <div style={{ background: 'white', padding: '20px', borderRadius: '12px', boxShadow: '0 2px 6px rgba(0,0,0,0.02)', border: '1px solid rgba(0,0,0,0.05)', height: '100%', display: 'flex', alignItems: 'center' }}>
+                                <div style={{ width: '48px', height: '48px', borderRadius: '10px', background: 'rgba(57, 199, 131, 0.1)', color: '#39c783', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', marginRight: '15px' }}>
+                                    <i className="fas fa-check-circle"></i>
+                                </div>
+                                <div>
+                                    <div style={{ color: '#6c757d', fontSize: '13px', marginBottom: '4px' }}>Paid Amount</div>
+                                    <div style={{ fontSize: '24px', fontWeight: '700', color: '#2c3e50' }}>₹{(parseFloat(stats.paid_amount) || 0).toFixed(2)}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-md-3">
+                            <div style={{ background: 'white', padding: '20px', borderRadius: '12px', boxShadow: '0 2px 6px rgba(0,0,0,0.02)', border: '1px solid rgba(0,0,0,0.05)', height: '100%', display: 'flex', alignItems: 'center' }}>
+                                <div style={{ width: '48px', height: '48px', borderRadius: '10px', background: 'rgba(255, 193, 7, 0.1)', color: '#ffc107', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', marginRight: '15px' }}>
+                                    <i className="fas fa-clock"></i>
+                                </div>
+                                <div>
+                                    <div style={{ color: '#6c757d', fontSize: '13px', marginBottom: '4px' }}>Pending Amount</div>
+                                    <div style={{ fontSize: '24px', fontWeight: '700', color: '#2c3e50' }}>₹{(parseFloat(stats.pending_amount) || 0).toFixed(2)}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -300,7 +352,7 @@ const AdminCommissions = () => {
                                                     <span style={{ fontSize: '12px', color: '#6c757d' }}>{comm.plan_name}</span>
                                                 </div>
                                             </td>
-                                            <td>{new Date(comm.created_at).toLocaleDateString()}</td>
+                                            <td>{new Date(comm.created_at).toLocaleDateString('en-GB')}</td>
                                             <td>
                                                 <span className={`plan-type-badge`} style={{
                                                     background: comm.status === 'paid' ? '#e8f5e9' : comm.status === 'approved' ? '#e3f2fd' : comm.status === 'pending' ? '#fff3e0' : '#ffebee',

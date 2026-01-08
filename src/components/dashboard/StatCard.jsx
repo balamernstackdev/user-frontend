@@ -10,6 +10,7 @@ const StatCard = ({
     iconBgColor,
     link,
     isLoading,
+    active,
     className = '',
     ...rest
 }) => {
@@ -41,7 +42,7 @@ const StatCard = ({
         </>
     );
 
-    const cardClasses = `stat-card ${className}`;
+    const cardClasses = `stat-card ${active ? 'active' : ''} ${className}`;
     // Common styles for the link wrapper to match the div structure
     const linkStyles = {
         textDecoration: 'none',

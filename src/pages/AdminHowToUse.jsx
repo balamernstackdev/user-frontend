@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import tutorialService from '../services/tutorial.service';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import Pagination from '../components/common/Pagination';
-import './AdminListings.css';
+import './styles/AdminListings.css';
 import { toast } from 'react-toastify';
 import { authService } from '../services/auth.service';
 

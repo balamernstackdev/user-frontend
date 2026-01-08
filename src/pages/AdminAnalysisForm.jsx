@@ -4,7 +4,7 @@ import DashboardLayout from '../components/layout/DashboardLayout';
 import AnalysisService from '../services/analysis.service';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
-import './AdminForms.css';
+import './styles/AdminForms.css';
 import { toast } from 'react-toastify';
 
 const quillModules = {

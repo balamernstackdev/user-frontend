@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useSettings } from '../context/SettingsContext';
 import DashboardLayout from '../components/layout/DashboardLayout'; // Optional wrapping
-import './PaymentFailed.css';
+import './styles/PaymentFailed.css';
 import StoxzoLogo from '../assets/images/Stoxzo_Logo.svg';
 
 const PaymentFailed = () => {

@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import ticketService from '../services/ticket.service';
-import './CreateTicket.css';
+import './styles/CreateTicket.css';
 import { toast } from 'react-toastify';
 
 const CreateTicket = () => {

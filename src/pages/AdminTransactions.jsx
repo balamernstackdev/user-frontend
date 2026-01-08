@@ -1,17 +1,23 @@
 
 import { useState, useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import paymentService from '../services/payment.service';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import Pagination from '../components/common/Pagination';
 import SEO from '../components/common/SEO';
-import './AdminListings.css';
+import { List, Clock, CheckCircle, XCircle } from 'lucide-react';
+import StatCard from '../components/dashboard/StatCard';
+import './styles/AdminListings.css';
 import { toast } from 'react-toastify';
 import { adminService } from '../services/admin.service';
 
 const AdminTransactions = () => {
     const [transactions, setTransactions] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [statusFilter, setStatusFilter] = useState('success'); // success, pending, failed
+    const location = useLocation();
+    const [statusFilter, setStatusFilter] = useState(''); // Changed default to empty for all
+    const [search, setSearch] = useState('');
+    const [stats, setStats] = useState({ total_transactions: 0, total_amount: 0, total_revenue: 0 });
     const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0 });
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
@@ -32,11 +38,21 @@ const AdminTransactions = () => {
         };
     }, []);
 
+    // Effect to handle URL query parameters
+    useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
+        const status = queryParams.get('status');
+        if (status) {
+            setStatusFilter(status);
+        }
+    }, [location.search]);
+
     const fetchTransactions = async () => {
         setLoading(true);
         try {
             const params = {
                 status: statusFilter,
+                search,
                 limit: pagination.limit,
                 offset: (pagination.page - 1) * pagination.limit,
                 startDate,
@@ -48,6 +64,9 @@ const AdminTransactions = () => {
                 if (response.data.pagination) {
                     setTransactions(response.data.transactions);
                     setPagination(prev => ({ ...prev, total: response.data.pagination.total }));
+                    if (response.data.stats) {
+                        setStats(response.data.stats);
+                    }
                 } else if (Array.isArray(response.data)) {
                     // Fallback for stale backend
                     const allData = response.data;
@@ -68,7 +87,7 @@ const AdminTransactions = () => {
 
     useEffect(() => {
         fetchTransactions();
-    }, [pagination.page, statusFilter, startDate, endDate]);
+    }, [pagination.page, statusFilter, search, startDate, endDate]);
 
     const handleExport = async (format) => {
         try {
@@ -100,6 +119,52 @@ const AdminTransactions = () => {
                             <h1>Customer Payments</h1>
                             <p style={{ color: '#6c757d' }}>View and manage all customer transactions</p>
                         </div>
+                    </div>
+
+                    {/* Summary Cards */}
+                    <div className="admin-stats-grid mb-4">
+                        <StatCard
+                            label="Total Transactions"
+                            value={stats.total || 0}
+                            icon={List}
+                            isLoading={loading}
+                            active={statusFilter === ''}
+                            onClick={() => setStatusFilter('')}
+                            className="card-users stat-card-hover"
+                        />
+                        <StatCard
+                            label="Pending Amount"
+                            value={`₹${(parseFloat(stats.total_pending) || 0).toLocaleString()}`}
+                            icon={Clock}
+                            iconColor="#ffc107"
+                            iconBgColor="rgba(255, 193, 7, 0.1)"
+                            isLoading={loading}
+                            active={statusFilter === 'pending'}
+                            onClick={() => setStatusFilter('pending')}
+                            className="card-plans stat-card-hover"
+                        />
+                        <StatCard
+                            label="Paid Amount"
+                            value={`₹${(parseFloat(stats.total_revenue) || 0).toLocaleString()}`}
+                            icon={CheckCircle}
+                            iconColor="#10b981"
+                            iconBgColor="rgba(16, 185, 129, 0.1)"
+                            isLoading={loading}
+                            active={statusFilter === 'success'}
+                            onClick={() => setStatusFilter('success')}
+                            className="card-active-marketers stat-card-hover"
+                        />
+                        <StatCard
+                            label="Failed Amount"
+                            value={`₹${(parseFloat(stats.total_failed) || 0).toLocaleString()}`}
+                            icon={XCircle}
+                            iconColor="#ef4444"
+                            iconBgColor="rgba(239, 68, 68, 0.1)"
+                            isLoading={loading}
+                            active={statusFilter === 'failed'}
+                            onClick={() => setStatusFilter('failed')}
+                            className="card-expiring stat-card-hover"
+                        />
                     </div>
 
                     <div className="admin-listing-toolbar mb-4" style={{
@@ -154,6 +219,19 @@ const AdminTransactions = () => {
 
                             {/* Right Side: Filters & Actions */}
                             <div className="d-flex align-items-center gap-3">
+                                <div className="input-group input-group-sm" style={{ minWidth: '250px' }}>
+                                    <span className="input-group-text bg-white border-end-0 text-muted ps-2">
+                                        <i className="fas fa-search"></i>
+                                    </span>
+                                    <input
+                                        type="text"
+                                        className="form-control border-start-0"
+                                        placeholder="Search by name, email or ID..."
+                                        value={search}
+                                        onChange={(e) => setSearch(e.target.value)}
+                                        style={{ borderColor: '#e2e8f0', boxShadow: 'none' }}
+                                    />
+                                </div>
                                 <select
                                     className="form-select form-select-sm"
                                     value={statusFilter}
@@ -161,9 +239,9 @@ const AdminTransactions = () => {
                                     style={{ borderRadius: '6px', borderColor: '#e2e8f0', minWidth: '130px', height: '38px' }}
                                 >
                                     <option value="">All Status</option>
-                                    <option value="captured">Success</option>
+                                    <option value="success">Success</option>
+                                    <option value="pending">Pending</option>
                                     <option value="failed">Failed</option>
-                                    <option value="created">Created</option>
                                 </select>
 
                                 <div className="vr mx-1" style={{ color: '#e2e8f0' }}></div>
@@ -259,7 +337,7 @@ const AdminTransactions = () => {
                                             <td title={txn.id}>
                                                 <span style={{ fontFamily: 'monospace' }}>{txn.id.substring(0, 8)}...</span>
                                             </td>
-                                            <td>{new Date(txn.created_at).toLocaleDateString()} {new Date(txn.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
+                                            <td>{new Date(txn.created_at).toLocaleDateString('en-GB')} {new Date(txn.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
                                             <td>
                                                 <span className={`plan-type-badge`} style={{
                                                     background: txn.status === 'success' ? '#e8f5e9' : txn.status === 'pending' ? '#fff3e0' : '#ffebee',

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import { userService } from '../services/user.service';
-import './AdminForms.css'; // Shared styles
+import './styles/AdminForms.css'; // Shared styles
 
 import { toast } from 'react-toastify';
 

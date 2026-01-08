@@ -4,7 +4,7 @@ import DashboardLayout from '../components/layout/DashboardLayout';
 import Pagination from '../components/common/Pagination';
 import SEO from '../components/common/SEO';
 import ticketService from '../services/ticket.service';
-import './SupportTickets.css';
+import './styles/SupportTickets.css';
 import { toast } from 'react-toastify';
 
 const SupportTickets = () => {

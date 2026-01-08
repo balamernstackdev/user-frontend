@@ -3,7 +3,7 @@ import { activityService } from '../services/activity.service';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import Pagination from '../components/common/Pagination';
 import SEO from '../components/common/SEO';
-import './AdminListings.css';
+import './styles/AdminListings.css';
 
 const AdminLogs = () => {
     const [logs, setLogs] = useState([]);

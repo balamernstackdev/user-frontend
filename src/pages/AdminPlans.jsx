@@ -3,7 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import planService from '../services/plan.service';
 import SEO from '../components/common/SEO';
-import './AdminListings.css';
+import { Package, CheckCircle, XCircle } from 'lucide-react';
+import StatCard from '../components/dashboard/StatCard';
+import './styles/AdminListings.css';
 import { toast } from 'react-toastify';
 import { useSettings } from '../context/SettingsContext';
 
@@ -17,6 +19,11 @@ const AdminPlans = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
     const [typeFilter, setTypeFilter] = useState('all');
+    const [stats, setStats] = useState({
+        total: 0,
+        active: 0,
+        inactive: 0
+    });
 
     // Debounce search and refetch on filter changes
     useEffect(() => {
@@ -36,6 +43,9 @@ const AdminPlans = () => {
             };
             const response = await planService.getPlans(params);
             setPlans(response.data || []);
+            if (response.summary) {
+                setStats(response.summary);
+            }
         } catch (err) {
             toast.error('Failed to load plans');
         } finally {
@@ -86,6 +96,41 @@ const AdminPlans = () => {
                             <h1>Subscription Plans</h1>
                             <p style={{ color: '#6c757d' }}>Manage your product pricing and features</p>
                         </div>
+                    </div>
+
+                    {/* Summary Cards */}
+                    <div className="admin-stats-grid mb-4">
+                        <StatCard
+                            label="Total Plans"
+                            value={stats.total}
+                            icon={Package}
+                            isLoading={loading}
+                            active={statusFilter === 'all' || statusFilter === ''}
+                            onClick={() => setStatusFilter('all')}
+                            className="card-plans stat-card-hover"
+                        />
+                        <StatCard
+                            label="Active Plans"
+                            value={stats.active}
+                            icon={CheckCircle}
+                            iconColor="#10b981"
+                            iconBgColor="rgba(16, 185, 129, 0.1)"
+                            isLoading={loading}
+                            active={statusFilter === 'active'}
+                            onClick={() => setStatusFilter('active')}
+                            className="card-active-marketers stat-card-hover"
+                        />
+                        <StatCard
+                            label="Inactive Plans"
+                            value={stats.inactive}
+                            icon={XCircle}
+                            iconColor="#f59e0b"
+                            iconBgColor="rgba(245, 158, 11, 0.1)"
+                            isLoading={loading}
+                            active={statusFilter === 'inactive'}
+                            onClick={() => setStatusFilter('inactive')}
+                            className="card-pending stat-card-hover"
+                        />
                     </div>
 
                     <div className="admin-listing-toolbar mb-4" style={{

@@ -4,7 +4,7 @@ import { authService } from '../services/auth.service';
 import { useSettings } from '../context/SettingsContext';
 import SEO from '../components/common/SEO';
 import StoxzoLogo from '../assets/images/Stoxzo_Logo.svg';
-import './Register.css';
+import './styles/Register.css';
 import bgImage from '../assets/images/bg.png';
 import { toast } from 'react-toastify';
 

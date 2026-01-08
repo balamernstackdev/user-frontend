@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import tutorialService from '../services/tutorial.service';
 import DashboardLayout from '../components/layout/DashboardLayout';
-import './AdminForms.css'; // Assuming this exists or using generic styles
+import './styles/AdminForms.css'; // Assuming this exists or using generic styles
 import { toast } from 'react-toastify';
 
 const AdminFAQForm = () => {

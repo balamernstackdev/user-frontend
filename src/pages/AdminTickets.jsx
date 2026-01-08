@@ -5,7 +5,7 @@ import DashboardLayout from '../components/layout/DashboardLayout';
 import Pagination from '../components/common/Pagination';
 import SEO from '../components/common/SEO';
 import { useSocket } from '../context/SocketContext';
-import './AdminListings.css';
+import './styles/AdminListings.css';
 
 const AdminTickets = () => {
     const { socket } = useSocket();

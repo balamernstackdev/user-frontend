@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import planService from '../services/plan.service';
 import fileService from '../services/file.service';
-import './AdminForms.css';
+import './styles/AdminForms.css';
 import { toast } from 'react-toastify';
 
 const AdminPlanForm = () => {

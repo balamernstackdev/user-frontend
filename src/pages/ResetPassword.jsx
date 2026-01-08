@@ -3,7 +3,7 @@ import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { authService } from '../services/auth.service';
 import SEO from '../components/common/SEO';
-import './ResetPassword.css';
+import './styles/ResetPassword.css';
 import Logo from '../assets/images/Stoxzo_Logo.svg';
 
 const ResetPassword = () => {

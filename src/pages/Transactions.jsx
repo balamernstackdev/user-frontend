@@ -3,7 +3,7 @@ import paymentService from '../services/payment.service';
 import CommissionService from '../services/commission.service';
 import { authService } from '../services/auth.service';
 import SEO from '../components/common/SEO';
-import './Transactions.css';
+import './styles/Transactions.css';
 import { toast } from 'react-toastify';
 
 import DashboardLayout from '../components/layout/DashboardLayout';

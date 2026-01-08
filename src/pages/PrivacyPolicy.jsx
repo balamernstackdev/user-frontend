@@ -1,7 +1,7 @@
 import { useSettings } from '../context/SettingsContext';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import SEO from '../components/common/SEO';
-import './LegalPages.css';
+import './styles/LegalPages.css';
 
 const PrivacyPolicy = () => {
     const { settings } = useSettings();

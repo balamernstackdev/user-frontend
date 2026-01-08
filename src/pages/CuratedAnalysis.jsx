@@ -4,7 +4,7 @@ import DashboardLayout from '../components/layout/DashboardLayout';
 import AnalysisService from '../services/analysis.service';
 import SubscriptionService from '../services/subscription.service';
 import SEO from '../components/common/SEO';
-import './CuratedAnalysis.css';
+import './styles/CuratedAnalysis.css';
 import { toast } from 'react-toastify';
 import { authService } from '../services/auth.service';
 

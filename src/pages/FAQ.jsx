@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import tutorialService from '../services/tutorial.service';
-import './FAQ.css';
+import './styles/FAQ.css';
 
 const FAQ = () => {
     const [searchTerm, setSearchTerm] = useState('');

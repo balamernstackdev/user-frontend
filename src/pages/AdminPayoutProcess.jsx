@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import commissionService from '../services/commission.service';
 import DashboardLayout from '../components/layout/DashboardLayout';
-import './AdminListings.css';
+import './styles/AdminListings.css';
 import { toast } from 'react-toastify';
 
 const AdminPayoutProcess = () => {

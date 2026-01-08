@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import AnalysisService from '../services/analysis.service';
 import SEO from '../components/common/SEO';
-import './AdminListings.css'; // Reuse common admin listing styles
+import './styles/AdminListings.css'; // Reuse common admin listing styles
 import { toast } from 'react-toastify';
 
 const AdminAnalysis = () => {

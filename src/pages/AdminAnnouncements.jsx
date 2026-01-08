@@ -6,7 +6,7 @@ import { authService } from '../services/auth.service';
 import { toast } from 'react-toastify';
 import SkeletonLoader from '../components/dashboard/SkeletonLoader';
 import SEO from '../components/common/SEO';
-import './AdminListings.css';
+import './styles/AdminListings.css';
 
 const AdminAnnouncements = () => {
     const navigate = useNavigate();

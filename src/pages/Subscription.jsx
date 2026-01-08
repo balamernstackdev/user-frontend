@@ -4,7 +4,7 @@ import DashboardLayout from '../components/layout/DashboardLayout';
 import subscriptionService from '../services/subscription.service';
 import { authService } from '../services/auth.service';
 import { toast } from 'react-toastify';
-import './Subscription.css';
+import './styles/Subscription.css';
 
 const Subscription = () => {
     const [subscription, setSubscription] = useState(null);

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import tutorialService from '../services/tutorial.service';
-import './HowToUse.css';
+import './styles/HowToUse.css';
 
 const HowToUse = () => {
     const [guides, setGuides] = useState([]);

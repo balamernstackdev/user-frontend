@@ -3,7 +3,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import fileService from '../services/file.service';
 import SEO from '../components/common/SEO';
 import DashboardLayout from '../components/layout/DashboardLayout';
-import './AdminFiles.css';
+import { FileText, Database, Tag } from 'lucide-react';
+import StatCard from '../components/dashboard/StatCard';
+import './styles/AdminFiles.css';
 import { toast } from 'react-toastify';
 import Pagination from '../components/common/Pagination';
 
@@ -13,6 +15,11 @@ const AdminFiles = () => {
     const [categoryFilter, setCategoryFilter] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
     const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0 });
+    const [stats, setStats] = useState({
+        total_files: 0,
+        total_size: 0,
+        total_categories: 0
+    });
     const navigate = useNavigate();
 
     const fetchFiles = async () => {
@@ -30,6 +37,9 @@ const AdminFiles = () => {
                 if (response.data && response.data.pagination) {
                     setFiles(response.data.files);
                     setPagination(prev => ({ ...prev, total: response.data.pagination.total }));
+                    if (response.data.summary) {
+                        setStats(response.data.summary);
+                    }
                 } else if (Array.isArray(response.data)) {
                     // Fallback for backward compatibility or direct array
                     setFiles(response.data);
@@ -97,6 +107,37 @@ const AdminFiles = () => {
                             <h1>Downloads & Resources</h1>
                             <p style={{ color: '#6c757d' }}>Manage files available for subscription plans</p>
                         </div>
+                    </div>
+
+                    {/* Summary Cards */}
+                    <div className="admin-stats-grid mb-4">
+                        <StatCard
+                            label="Total Files"
+                            value={stats.total_files}
+                            icon={FileText}
+                            isLoading={loading}
+                            active={categoryFilter === ''}
+                            onClick={() => setCategoryFilter('')}
+                            className="card-users stat-card-hover"
+                        />
+                        <StatCard
+                            label="Total Storage"
+                            value={formatFileSize(stats.total_size)}
+                            icon={Database}
+                            iconColor="#10b981"
+                            iconBgColor="rgba(16, 185, 129, 0.1)"
+                            isLoading={loading}
+                            className="card-active-marketers stat-card-hover"
+                        />
+                        <StatCard
+                            label="Categories"
+                            value={stats.total_categories}
+                            icon={Tag}
+                            iconColor="#f59e0b"
+                            iconBgColor="rgba(245, 158, 11, 0.1)"
+                            isLoading={loading}
+                            className="card-plans stat-card-hover"
+                        />
                     </div>
 
                     <div className="admin-listing-toolbar mb-4" style={{

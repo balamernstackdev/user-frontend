@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import DashboardLayout from '../components/layout/DashboardLayout'; // Optional wrapping
-import './PaymentSuccess.css';
+import './styles/PaymentSuccess.css';
 import StoxzoLogo from '../assets/images/Stoxzo_Logo.svg';
 
 const PaymentSuccess = () => {

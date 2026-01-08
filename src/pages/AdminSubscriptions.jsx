@@ -6,7 +6,7 @@ import planService from '../services/plan.service';
 import Pagination from '../components/common/Pagination';
 import SEO from '../components/common/SEO';
 import { toast } from 'react-toastify';
-import './AdminListings.css';
+import './styles/AdminListings.css';
 
 const AdminSubscriptions = () => {
     const navigate = useNavigate();
@@ -15,7 +15,6 @@ const AdminSubscriptions = () => {
     const [statusFilter, setStatusFilter] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
     const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0 });
-
     // Delete Confirmation State
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [subToDelete, setSubToDelete] = useState(null);
@@ -205,11 +204,11 @@ const AdminSubscriptions = () => {
                                             </td>
                                             <td>
                                                 <div style={{ fontSize: '13px' }}>
-                                                    <div>From: {sub.start_date ? new Date(sub.start_date).toLocaleDateString() : 'N/A'}</div>
-                                                    <div>To: {sub.end_date ? new Date(sub.end_date).toLocaleDateString() : 'N/A'}</div>
+                                                    <div>From: {sub.start_date ? new Date(sub.start_date).toLocaleDateString('en-GB') : 'N/A'}</div>
+                                                    <div>To: {sub.end_date ? new Date(sub.end_date).toLocaleDateString('en-GB') : 'N/A'}</div>
                                                 </div>
                                             </td>
-                                            <td>{new Date(sub.created_at).toLocaleDateString()}</td>
+                                            <td>{new Date(sub.created_at).toLocaleDateString('en-GB')}</td>
                                             <td>
                                                 <div className="actions-cell">
                                                     <button

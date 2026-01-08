@@ -4,7 +4,9 @@ import { userService } from '../services/user.service';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import Pagination from '../components/common/Pagination';
 import SEO from '../components/common/SEO';
-import './AdminListings.css';
+import { Users, UserCheck, UserX, UserPlus } from 'lucide-react';
+import StatCard from '../components/dashboard/StatCard';
+import './styles/AdminListings.css';
 import { toast } from 'react-toastify';
 import { adminService } from '../services/admin.service';
 
@@ -16,6 +18,12 @@ const AdminUsers = () => {
     const [filter, setFilter] = useState(searchParams.get('filter') || 'all');
     const [statusFilter, setStatusFilter] = useState(searchParams.get('status') || '');
     const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0 });
+    const [stats, setStats] = useState({
+        total: 0,
+        active: 0,
+        inactive: 0,
+        pending: 0
+    });
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [showExportDropdown, setShowExportDropdown] = useState(false);
@@ -60,6 +68,9 @@ const AdminUsers = () => {
             if (responseData.success && responseData.data && responseData.data.pagination) {
                 setUsers(responseData.data.users);
                 setPagination(prev => ({ ...prev, total: responseData.data.pagination.total }));
+                if (responseData.data.summary) {
+                    setStats(responseData.data.summary);
+                }
             } else if (responseData && responseData.pagination) {
                 // Formatting fallback 1
                 setUsers(responseData.users);
@@ -162,6 +173,52 @@ const AdminUsers = () => {
                             <h1>User Management</h1>
                             <p style={{ color: '#6c757d' }}>Manage users, marketers, and admins</p>
                         </div>
+                    </div>
+
+                    {/* Summary Cards */}
+                    <div className="admin-stats-grid mb-4">
+                        <StatCard
+                            label="Total Users"
+                            value={stats.total}
+                            icon={Users}
+                            isLoading={loading}
+                            active={statusFilter === ''}
+                            onClick={() => setStatusFilter('')}
+                            className="card-users stat-card-hover"
+                        />
+                        <StatCard
+                            label="Active Users"
+                            value={stats.active}
+                            icon={UserCheck}
+                            iconColor="#10b981"
+                            iconBgColor="rgba(16, 185, 129, 0.1)"
+                            isLoading={loading}
+                            active={statusFilter === 'active'}
+                            onClick={() => setStatusFilter('active')}
+                            className="card-active-marketers stat-card-hover"
+                        />
+                        <StatCard
+                            label="Inactive Users"
+                            value={stats.inactive}
+                            icon={UserX}
+                            iconColor="#ffc107"
+                            iconBgColor="rgba(255, 193, 7, 0.1)"
+                            isLoading={loading}
+                            active={statusFilter === 'inactive'}
+                            onClick={() => setStatusFilter('inactive')}
+                            className="card-plans stat-card-hover"
+                        />
+                        <StatCard
+                            label="Pending Approvals"
+                            value={stats.pending}
+                            icon={UserPlus}
+                            iconColor="#dc3545"
+                            iconBgColor="rgba(220, 53, 69, 0.1)"
+                            isLoading={loading}
+                            active={statusFilter === 'pending'}
+                            onClick={() => setStatusFilter('pending')}
+                            className="card-expiring stat-card-hover"
+                        />
                     </div>
 
                     <div className="admin-listing-toolbar mb-4" style={{
@@ -349,7 +406,7 @@ const AdminUsers = () => {
                                                     {user.status}
                                                 </span>
                                             </td>
-                                            <td>{new Date(user.created_at).toLocaleDateString()}</td>
+                                            <td>{new Date(user.created_at).toLocaleDateString('en-GB')}</td>
                                             <td>
                                                 <div className="actions-cell">
                                                     <button className="action-btn" onClick={() => navigate(`/admin/users/edit/${user.id}`)} title="Edit">

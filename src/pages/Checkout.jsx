@@ -5,7 +5,7 @@ import planService from '../services/plan.service';
 import paymentService from '../services/payment.service';
 import { authService } from '../services/auth.service';
 import SecurePaymentCard from '../components/checkout/SecurePaymentCard';
-import './Checkout.css';
+import './styles/Checkout.css';
 import { toast } from 'react-toastify';
 import { useSettings } from '../context/SettingsContext';
 

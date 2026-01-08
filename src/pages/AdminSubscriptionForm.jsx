@@ -6,7 +6,7 @@ import planService from '../services/plan.service';
 import { userService } from '../services/user.service';
 import SEO from '../components/common/SEO';
 import { toast } from 'react-toastify';
-import './AdminForms.css';
+import './styles/AdminForms.css';
 
 const AdminSubscriptionForm = () => {
     const { id } = useParams();

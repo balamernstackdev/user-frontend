@@ -41,6 +41,10 @@ const UserRoleChart = ({ data, isLoading }) => {
                             dataKey="count"
                             nameKey="role"
                             stroke="none"
+                            isAnimationActive={true}
+                            animationBegin={0}
+                            animationDuration={1500}
+                            animationEasing="ease-out"
                         >
                             {data.map((entry, index) => (
                                 <Cell

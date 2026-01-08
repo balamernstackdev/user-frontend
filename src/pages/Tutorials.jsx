@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import TutorialService from '../services/tutorial.service';
 import Pagination from '../components/common/Pagination';
-import './Tutorials.css';
+import './styles/Tutorials.css';
 import { toast } from 'react-toastify';
 
 const Tutorials = () => {

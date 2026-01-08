@@ -4,7 +4,7 @@ import { useSettings } from '../context/SettingsContext';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import ticketService from '../services/ticket.service';
 import { authService } from '../services/auth.service';
-// import './TicketDetail.css';
+// import './styles/TicketDetail.css';
 import { toast } from 'react-toastify';
 
 import { useSocket } from '../context/SocketContext';

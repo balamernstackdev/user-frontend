@@ -4,7 +4,7 @@ import DashboardLayout from '../components/layout/DashboardLayout';
 import SEO from '../components/common/SEO';
 import { authService } from '../services/auth.service';
 import { userService } from '../services/user.service';
-import './Profile.css';
+import './styles/Profile.css';
 import { toast } from 'react-toastify';
 
 const Profile = () => {

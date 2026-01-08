@@ -4,7 +4,7 @@ import DashboardLayout from '../components/layout/DashboardLayout';
 import settingsService from '../services/settings.service';
 import { useSettings } from '../context/SettingsContext';
 import SEO from '../components/common/SEO';
-import './AdminListings.css';
+import './styles/AdminListings.css';
 
 const AdminSettings = () => {
     const [settings, setSettings] = useState([]);

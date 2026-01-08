@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import CommissionService from '../services/commission.service';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import { authService } from '../services/auth.service';
-import './CommissionDetail.css';
+import './styles/CommissionDetail.css';
 import { toast } from 'react-toastify';
 
 const CommissionDetail = () => {

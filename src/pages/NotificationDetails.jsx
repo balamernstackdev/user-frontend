@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import { notificationService } from '../services/notification.service';
-import './NotificationDetails.css';
+import './styles/NotificationDetails.css';
 import { toast } from 'react-toastify';
 
 const NotificationDetails = () => {

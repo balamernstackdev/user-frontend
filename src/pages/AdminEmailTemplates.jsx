@@ -4,7 +4,7 @@ import DashboardLayout from '../components/layout/DashboardLayout';
 import EmailTemplateService from '../services/emailTemplate.service';
 import { toast } from 'react-toastify';
 import SkeletonLoader from '../components/dashboard/SkeletonLoader';
-import './AdminListings.css';
+import './styles/AdminListings.css';
 
 const AdminEmailTemplates = () => {
     const [templates, setTemplates] = useState([]);

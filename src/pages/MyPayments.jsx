@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import paymentService from '../services/payment.service';
-import './MyPayments.css';
+import './styles/MyPayments.css';
 import { toast } from 'react-toastify';
 
 const MyPayments = () => {

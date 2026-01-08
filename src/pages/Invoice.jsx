@@ -4,7 +4,7 @@ import DashboardLayout from '../components/layout/DashboardLayout';
 import paymentService from '../services/payment.service';
 import { authService } from '../services/auth.service';
 import { useSettings } from '../context/SettingsContext';
-import './Invoice.css';
+import './styles/Invoice.css';
 import { toast } from 'react-toastify';
 
 // Import logo directly if needed, or use the path

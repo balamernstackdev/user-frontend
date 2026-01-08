@@ -5,7 +5,7 @@ import EmailTemplateService from '../services/emailTemplate.service';
 import { toast } from 'react-toastify';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import './AdminListings.css';
+import './styles/AdminListings.css';
 
 const AdminEmailTemplateEdit = () => {
     const { id } = useParams();

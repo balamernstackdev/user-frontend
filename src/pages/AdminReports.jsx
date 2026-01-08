@@ -4,7 +4,7 @@ import SEO from '../components/common/SEO';
 import { FileText, Download, Calendar, Users, Briefcase, CreditCard, DollarSign } from 'lucide-react';
 import adminService from '../services/admin.service';
 import { toast } from 'react-toastify';
-import './AdminListings.css';
+import './styles/AdminListings.css';
 
 const AdminReports = () => {
     const [loading, setLoading] = useState(false);

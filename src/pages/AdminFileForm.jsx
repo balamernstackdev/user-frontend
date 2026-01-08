@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import fileService from '../services/file.service';
 import DashboardLayout from '../components/layout/DashboardLayout';
-import './AdminForms.css'; // Reusing common form styles
+import './styles/AdminForms.css'; // Reusing common form styles
 import { toast } from 'react-toastify';
 
 const AdminFileForm = () => {

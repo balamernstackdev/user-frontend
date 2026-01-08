@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { authService } from '../services/auth.service';
 import SEO from '../components/common/SEO';
 import StoxzoLogo from '../assets/images/Stoxzo_Logo.svg';
-import './ForgotPassword.css';
+import './styles/ForgotPassword.css';
 import bgImage from '../assets/images/bg.png';
 import { toast } from 'react-toastify';
 

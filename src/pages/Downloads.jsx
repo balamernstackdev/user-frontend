@@ -5,7 +5,7 @@ import FileService from '../services/file.service';
 import SubscriptionService from '../services/subscription.service';
 import SEO from '../components/common/SEO';
 import Pagination from '../components/common/Pagination';
-import './Downloads.css';
+import './styles/Downloads.css';
 import { toast } from 'react-toastify';
 
 const Downloads = () => {

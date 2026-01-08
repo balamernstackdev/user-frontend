@@ -5,10 +5,11 @@ import { activityService } from '../services/activity.service';
 import { authService } from '../services/auth.service';
 import adminService from '../services/admin.service';
 import SEO from '../components/common/SEO';
-import { Users, UserCheck, Clock, CreditCard, TrendingUp, AlertCircle, CheckCircle } from 'lucide-react';
-import './Dashboard.css';
-import './AdminListings.css';
+import { Users, UserCheck, Clock, CreditCard, TrendingUp, AlertCircle, CheckCircle, Package } from 'lucide-react';
+import './styles/Dashboard.css';
+import './styles/AdminListings.css';
 import { Settings as SettingsIcon } from 'lucide-react';
+
 
 // New Components
 import StatCard from '../components/dashboard/StatCard';
@@ -27,6 +28,7 @@ const AdminDashboard = () => {
         totalRevenue: 0,
         activeSubscriptions: 0,
         expiringSubscriptions: 0,
+        totalPlans: 0,
         analytics: {
             revenueTrend: [],
             planDistribution: [],
@@ -63,7 +65,7 @@ const AdminDashboard = () => {
                 const {
                     totalUsers, activeMarketers, pendingMarketers, pendingCommissions,
                     pendingPayouts, totalRevenue, activeSubscriptions, expiringSubscriptions,
-                    analytics
+                    totalPlans, analytics
                 } = statsResponse.data;
 
                 // Process Revenue Trend to ensure smooth line chart
@@ -107,6 +109,7 @@ const AdminDashboard = () => {
                     totalRevenue,
                     activeSubscriptions: activeSubscriptions || 0,
                     expiringSubscriptions: expiringSubscriptions || 0,
+                    totalPlans: totalPlans || 0,
                     analytics: {
                         revenueTrend: processedRevenue,
                         planDistribution: analytics?.planDistribution?.map(item => ({
@@ -170,6 +173,7 @@ const AdminDashboard = () => {
                                 icon={Users}
                                 className="card-users"
                                 isLoading={loading}
+                                link="/admin/users"
                             />
                             <StatCard
                                 label="Active Business Associates"
@@ -177,19 +181,19 @@ const AdminDashboard = () => {
                                 icon={UserCheck}
                                 iconColor="#28a745"
                                 iconBgColor="rgba(40, 167, 69, 0.1)"
-                                link="/admin/users"
+                                link="/admin/users?role=business_associate&status=active"
                                 isLoading={loading}
                                 className="card-active-marketers"
                             />
                             <StatCard
-                                label="Pending Approvals"
-                                value={stats.pendingApprovals}
-                                icon={Clock}
+                                label="Total Plans"
+                                value={stats.totalPlans || 0}
+                                icon={Package}
                                 iconColor="#ffc107"
                                 iconBgColor="rgba(255, 193, 7, 0.1)"
-                                link={getPendingLink()}
+                                link="/admin/plans"
                                 isLoading={loading}
-                                className="card-pending"
+                                className="card-plans"
                             />
                             <StatCard
                                 label="Pending Payouts"
@@ -208,10 +212,11 @@ const AdminDashboard = () => {
                                 iconColor="#6f42c1"
                                 iconBgColor="rgba(111, 66, 193, 0.1)"
                                 isLoading={loading}
+                                link="/admin/transactions?status=success"
                                 className="card-revenue"
                             />
                             <StatCard
-                                label="Active Subs"
+                                label="Active Subscriptions"
                                 value={stats.activeSubscriptions}
                                 icon={CheckCircle}
                                 iconColor="#20c997"

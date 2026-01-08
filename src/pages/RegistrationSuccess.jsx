@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { authService } from '../services/auth.service';
 import StoxzoLogo from '../assets/images/Stoxzo_Logo.svg';
-import './RegistrationSuccess.css';
+import './styles/RegistrationSuccess.css';
 
 const RegistrationSuccess = () => {
     const location = useLocation();

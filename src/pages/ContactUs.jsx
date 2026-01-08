@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useSettings } from '../context/SettingsContext';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import SEO from '../components/common/SEO';
-import './ContactUs.css';
+import './styles/ContactUs.css';
 
 const ContactUs = () => {
     const { settings } = useSettings();
