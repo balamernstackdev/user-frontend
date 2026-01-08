@@ -11,6 +11,7 @@ import React from 'react';
  */
 const Pagination = ({ currentPage, totalPages, onPageChange, disabled = false }) => {
     if (totalPages <= 1) return null;
+    
 
     const scrollToTop = () => {
         // Use a small timeout to ensure DOM updates (if any) don't override the scroll

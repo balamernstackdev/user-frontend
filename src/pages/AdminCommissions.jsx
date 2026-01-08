@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import commissionService from '../services/commission.service';
 import DashboardLayout from '../components/layout/DashboardLayout';
@@ -17,6 +17,21 @@ const AdminCommissions = () => {
     const [endDate, setEndDate] = useState('');
     const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0 });
     const [showExportDropdown, setShowExportDropdown] = useState(false);
+    const exportDropdownRef = useRef(null);
+
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (exportDropdownRef.current && !exportDropdownRef.current.contains(event.target)) {
+                setShowExportDropdown(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
 
     const fetchCommissions = async () => {
         setLoading(true);
@@ -124,103 +139,128 @@ const AdminCommissions = () => {
                             <h1>Commission Payouts</h1>
                             <p style={{ color: '#6c757d' }}>Manage and process business associate commissions</p>
                         </div>
-                        <div className="header-actions" style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-                            <div className="btn-group" style={{ position: 'relative' }}>
-                                <button
-                                    className="tj-btn tj-btn-primary"
-                                    onClick={() => setShowExportDropdown(!showExportDropdown)}
-                                    style={{ backgroundColor: '#13689e', color: 'white', display: 'flex', alignItems: 'center', gap: '8px', height: '38px', borderRadius: '50px', padding: '0 20px' }}
-                                >
-                                    <i className="fas fa-file-export"></i>
-                                    <span className="btn-text">Export Options</span>
-                                </button>
-                                {showExportDropdown && (
-                                    <ul className="dropdown-menu show" style={{
-                                        display: 'block',
-                                        position: 'absolute',
-                                        top: '100%',
-                                        right: 0,
-                                        zIndex: 1000,
-                                        minWidth: '200px',
-                                        padding: '8px 0',
-                                        margin: '5px 0 0',
-                                        fontSize: '14px',
-                                        backgroundColor: '#fff',
-                                        border: '1px solid rgba(0,0,0,.1)',
-                                        borderRadius: '8px',
-                                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
-                                    }}>
+                    </div>
 
-                                        <div style={{ height: '1px', backgroundColor: '#edf2f7', margin: '4px 0' }}></div>
-                                        <li>
-                                            <button
-                                                className="dropdown-item"
-                                                onClick={() => { handleGeneralExport('csv'); setShowExportDropdown(false); }}
-                                                style={{ display: 'flex', alignItems: 'center', gap: '10px', width: '100%', padding: '10px 20px', fontWeight: 400, color: '#475569', backgroundColor: 'transparent', border: 0, cursor: 'pointer', textAlign: 'left', transition: 'all 0.2s' }}
-                                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f8fafc'}
-                                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                                            >
-                                                <i className="fas fa-file-csv" style={{ fontSize: '14px' }}></i>
-                                                <span>Download All (CSV)</span>
-                                            </button>
-                                        </li>
-                                        <li>
-                                            <button
-                                                className="dropdown-item"
-                                                onClick={() => { handleGeneralExport('pdf'); setShowExportDropdown(false); }}
-                                                style={{ display: 'flex', alignItems: 'center', gap: '10px', width: '100%', padding: '10px 20px', fontWeight: 400, color: '#475569', backgroundColor: 'transparent', border: 0, cursor: 'pointer', textAlign: 'left', transition: 'all 0.2s' }}
-                                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f8fafc'}
-                                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                                            >
-                                                <i className="fas fa-file-pdf" style={{ fontSize: '14px' }}></i>
-                                                <span>Download All (PDF)</span>
-                                            </button>
-                                        </li>
-                                    </ul>
-                                )}
-                            </div>
-                            <div className="d-flex align-items-center gap-2">
-                                <input
-                                    type="date"
-                                    className="form-control form-control-sm"
-                                    value={startDate}
-                                    onChange={(e) => setStartDate(e.target.value)}
-                                    title="From Date"
-                                    style={{ width: '120px', height: '38px', padding: '0 12px', fontSize: '13px', borderRadius: '50px', border: '1px solid #e2e8f0' }}
-                                />
-                                <span className="text-muted small">to</span>
-                                <input
-                                    type="date"
-                                    className="form-control form-control-sm"
-                                    value={endDate}
-                                    onChange={(e) => setEndDate(e.target.value)}
-                                    title="To Date"
-                                    style={{ width: '120px', height: '38px', padding: '0 12px', fontSize: '13px', borderRadius: '50px', border: '1px solid #e2e8f0' }}
-                                />
-                                {(startDate || endDate) && (
-                                    <button
-                                        className="btn btn-sm btn-link text-danger p-0 ms-1"
-                                        onClick={() => { setStartDate(''); setEndDate(''); }}
-                                        title="Clear Dates"
-                                    >
-                                        <i className="fas fa-times-circle"></i>
-                                    </button>
-                                )}
+                    <div className="admin-listing-toolbar mb-4" style={{
+                        backgroundColor: 'white',
+                        padding: '15px 20px',
+                        borderRadius: '12px',
+                        boxShadow: '0 2px 6px rgba(0,0,0,0.02)',
+                        border: '1px solid rgba(0,0,0,0.05)'
+                    }}>
+                        <div className="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                            {/* Left Side: Date Filters */}
+                            <div className="d-flex align-items-center gap-3">
+                                <span className="text-muted small fw-bold text-uppercase" style={{ fontSize: '12px', letterSpacing: '0.5px' }}>Filter Date:</span>
+                                <div className="d-flex align-items-center gap-2">
+                                    <div className="input-group input-group-sm" style={{ width: '160px' }}>
+                                        <span className="input-group-text bg-white border-end-0 text-muted pe-1">
+                                            <i className="far fa-calendar-alt"></i>
+                                        </span>
+                                        <input
+                                            type="date"
+                                            className="form-control border-start-0 ps-2"
+                                            value={startDate}
+                                            onChange={(e) => setStartDate(e.target.value)}
+                                            style={{ borderColor: '#dee2e6', color: '#6c757d' }}
+                                        />
+                                    </div>
+                                    <span className="text-muted small">to</span>
+                                    <div className="input-group input-group-sm" style={{ width: '160px' }}>
+                                        <span className="input-group-text bg-white border-end-0 text-muted pe-1">
+                                            <i className="far fa-calendar-alt"></i>
+                                        </span>
+                                        <input
+                                            type="date"
+                                            className="form-control border-start-0 ps-2"
+                                            value={endDate}
+                                            onChange={(e) => setEndDate(e.target.value)}
+                                            style={{ borderColor: '#dee2e6', color: '#6c757d' }}
+                                        />
+                                    </div>
+                                    {(startDate || endDate) && (
+                                        <button
+                                            className="btn btn-sm text-danger ms-1"
+                                            onClick={() => { setStartDate(''); setEndDate(''); }}
+                                            title="Clear Dates"
+                                            style={{ background: 'none', border: 'none' }}
+                                        >
+                                            <i className="fas fa-times"></i>
+                                        </button>
+                                    )}
+                                </div>
                             </div>
 
-                            <div className="filter-group">
+                            {/* Right Side: Filters & Actions */}
+                            <div className="d-flex align-items-center gap-3">
                                 <select
-                                    className="custom-select"
+                                    className="form-select form-select-sm"
                                     value={statusFilter}
                                     onChange={(e) => setStatusFilter(e.target.value)}
-                                    style={{ width: '160px', borderRadius: '50px' }}
+                                    style={{ borderRadius: '6px', borderColor: '#e2e8f0', minWidth: '130px', height: '38px' }}
                                 >
-                                    <option value="">All Status</option>
+                                    <option value="all">All Status</option>
                                     <option value="pending">Pending</option>
-                                    <option value="approved">Approved</option>
                                     <option value="paid">Paid</option>
-                                    <option value="rejected">Rejected</option>
+                                    <option value="processing">Processing</option>
                                 </select>
+
+                                <div className="vr mx-1" style={{ color: '#e2e8f0' }}></div>
+
+                                <div className="position-relative" ref={exportDropdownRef}>
+                                    <button
+                                        className="tj-primary-btn"
+                                        onClick={() => setShowExportDropdown(!showExportDropdown)}
+                                        style={{
+                                            height: '38px',
+                                            borderRadius: '6px',
+                                            padding: '0 20px',
+                                            display: 'inline-flex',
+                                            alignItems: 'center',
+                                            fontSize: '14px',
+                                            fontWeight: 500
+                                        }}
+                                    >
+                                        <i className="fas fa-file-export me-2"></i>
+                                        <span className="btn-text">Export Options</span>
+                                    </button>
+
+                                    {showExportDropdown && (
+                                        <ul className="dropdown-menu show shadow" style={{
+                                            display: 'block',
+                                            position: 'absolute',
+                                            top: '100%',
+                                            right: 0,
+                                            zIndex: 1000,
+                                            minWidth: '200px',
+                                            padding: '8px',
+                                            border: '1px solid #eef2f6',
+                                            borderRadius: '12px',
+                                            marginTop: '8px'
+                                        }}>
+                                            <li>
+                                                <button
+                                                    className="dropdown-item rounded-2"
+                                                    onClick={() => { handleGeneralExport('csv'); setShowExportDropdown(false); }}
+                                                    style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 15px', transition: 'all 0.2s' }}
+                                                >
+                                                    <i className="fas fa-file-csv text-primary" style={{ fontSize: '18px' }}></i>
+                                                    <span>Download CSV</span>
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <button
+                                                    className="dropdown-item rounded-2"
+                                                    onClick={() => { handleGeneralExport('pdf'); setShowExportDropdown(false); }}
+                                                    style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 15px', transition: 'all 0.2s' }}
+                                                >
+                                                    <i className="fas fa-file-pdf text-danger" style={{ fontSize: '18px' }}></i>
+                                                    <span>Download PDF</span>
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>

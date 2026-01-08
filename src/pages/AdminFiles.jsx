@@ -5,37 +5,60 @@ import SEO from '../components/common/SEO';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import './AdminFiles.css';
 import { toast } from 'react-toastify';
+import Pagination from '../components/common/Pagination';
 
 const AdminFiles = () => {
     const [files, setFiles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [categoryFilter, setCategoryFilter] = useState('');
+    const [searchQuery, setSearchQuery] = useState('');
+    const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0 });
     const navigate = useNavigate();
 
     const fetchFiles = async () => {
         setLoading(true);
         try {
-            const params = { category: categoryFilter };
+            const params = {
+                category: categoryFilter,
+                search: searchQuery,
+                limit: pagination.limit,
+                offset: (pagination.page - 1) * pagination.limit
+            };
             const response = await fileService.getAllFiles(params);
+
             if (response.success) {
-                setFiles(response.data);
+                if (response.data && response.data.pagination) {
+                    setFiles(response.data.files);
+                    setPagination(prev => ({ ...prev, total: response.data.pagination.total }));
+                } else if (Array.isArray(response.data)) {
+                    // Fallback for backward compatibility or direct array
+                    setFiles(response.data);
+                } else if (response.data && response.data.files) {
+                    setFiles(response.data.files);
+                }
             }
         } catch (error) {
             console.error('Error fetching files:', error);
+            toast.error('Failed to load files');
         } finally {
             setLoading(false);
         }
     };
 
+    // Debounce search
     useEffect(() => {
-        fetchFiles();
-    }, [categoryFilter]);
+        const timer = setTimeout(() => {
+            fetchFiles();
+        }, 500);
+        return () => clearTimeout(timer);
+    }, [searchQuery, categoryFilter, pagination.page]);
 
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this file? This action cannot be undone.')) {
             try {
                 await fileService.deleteFile(id);
                 fetchFiles();
+                toast.success('File deleted successfully');
             } catch (error) {
                 console.error('Delete failed:', error);
                 toast.error('Failed to delete file');
@@ -52,91 +75,186 @@ const AdminFiles = () => {
     };
 
     const getFileIcon = (mimeType) => {
-        if (mimeType.includes('pdf')) return <i className="fa-solid fa-file-pdf"></i>;
-        if (mimeType.includes('image')) return <i className="fa-solid fa-file-image"></i>;
-        if (mimeType.includes('video')) return <i className="fa-solid fa-file-video"></i>;
-        if (mimeType.includes('zip') || mimeType.includes('compressed')) return <i className="fa-solid fa-file-zipper"></i>;
-        return <i className="fa-solid fa-file"></i>;
+        if (!mimeType) return <i className="fas fa-file text-secondary"></i>;
+
+        if (mimeType.includes('pdf')) return <i className="fas fa-file-pdf text-danger"></i>;
+        if (mimeType.includes('image')) return <i className="fas fa-file-image text-primary"></i>;
+        if (mimeType.includes('video')) return <i className="fas fa-file-video text-info"></i>;
+        if (mimeType.includes('zip') || mimeType.includes('compressed')) return <i className="fas fa-file-archive text-warning"></i>;
+        if (mimeType.includes('word') || mimeType.includes('doc')) return <i className="fas fa-file-word text-primary"></i>;
+        if (mimeType.includes('excel') || mimeType.includes('sheet')) return <i className="fas fa-file-excel text-success"></i>;
+
+        return <i className="fas fa-file text-secondary"></i>;
     };
 
     return (
         <DashboardLayout>
             <SEO title="File Management" description="Manage downloadable files" />
-            <div className="admin-files-page animate-fade-up">
+            <div className="admin-listing-page animate-fade-up">
                 <div className="container">
-                    <div className="files-header">
+                    <div className="admin-listing-header">
                         <div className="header-title">
                             <h1>Downloads & Resources</h1>
                             <p style={{ color: '#6c757d' }}>Manage files available for subscription plans</p>
                         </div>
-                        <div className="header-actions">
-                            <div className="file-filters">
-                                <div className="filter-group">
-                                    <select className="custom-select" value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)} style={{ width: '180px' }}>
-                                        <option value="">All Categories</option>
-                                        <option value="e-book">E-Books</option>
-                                        <option value="software">Software</option>
-                                        <option value="template">Templates</option>
-                                        <option value="video">Videos</option>
-                                    </select>
+                    </div>
+
+                    <div className="admin-listing-toolbar mb-4" style={{
+                        backgroundColor: 'white',
+                        padding: '15px 20px',
+                        borderRadius: '12px',
+                        boxShadow: '0 2px 6px rgba(0,0,0,0.02)',
+                        border: '1px solid rgba(0,0,0,0.05)'
+                    }}>
+                        <div className="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                            {/* Left Side: Search */}
+                            <div className="flex-grow-1" style={{ maxWidth: '400px' }}>
+                                <div className="position-relative">
+                                    <input
+                                        type="text"
+                                        className="form-control form-control-sm ps-4"
+                                        placeholder="Search files..."
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        style={{ borderRadius: '6px', borderColor: '#e2e8f0', height: '38px' }}
+                                    />
+                                    <i className="fas fa-search position-absolute text-muted" style={{ left: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '14px' }}></i>
                                 </div>
-                                <Link
-                                    to="/admin/files/create"
+                            </div>
+
+                            {/* Right Side: Filters & Actions */}
+                            <div className="d-flex align-items-center gap-3">
+                                <select
+                                    className="form-select form-select-sm"
+                                    value={categoryFilter}
+                                    onChange={(e) => setCategoryFilter(e.target.value)}
+                                    style={{ borderRadius: '6px', borderColor: '#e2e8f0', minWidth: '150px', height: '38px' }}
+                                >
+                                    <option value="">All Categories</option>
+                                    <option value="pdf">PDF</option>
+                                    <option value="video">Video</option>
+                                    <option value="audio">Audio</option>
+                                    <option value="doc">Document</option>
+                                    <option value="image">Image</option>
+                                    <option value="other">Other</option>
+                                </select>
+
+                                <button
                                     className="tj-primary-btn"
+                                    onClick={() => navigate('/admin/files/create')}
+                                    style={{
+                                        height: '38px',
+                                        borderRadius: '6px',
+                                        padding: '0 20px',
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        fontSize: '14px',
+                                        fontWeight: 500
+                                    }}
                                 >
                                     <span className="btn-text">Add File</span>
                                     <span className="btn-icon">
                                         <i className="fas fa-arrow-right"></i>
                                     </span>
-                                </Link>
+                                </button>
                             </div>
                         </div>
                     </div>
 
-                    {loading ? (
-                        <div className="loader-container"><div className="spinner-border text-primary"></div></div>
-                    ) : files.length === 0 ? (
-                        <div className="text-center py-5">
-                            <i className="far fa-folder-open" style={{ fontSize: '48px', color: '#ccc', marginBottom: '20px' }}></i>
-                            <h3>No files found</h3>
-                            <p>Upload your first file to get started.</p>
-                        </div>
-                    ) : (
-                        <div className="file-grid">
-                            {files.map(file => (
-                                <div className="file-card" key={file.id}>
-                                    <div className="file-icon">
-                                        {getFileIcon(file.mime_type)}
-                                    </div>
-                                    <div className="file-info">
-                                        <h3>{file.title}</h3>
-                                        <div className="file-meta">
-                                            <span>{formatFileSize(file.file_size)}</span>
-                                            <span>{new Date(file.created_at).toLocaleDateString()}</span>
-                                        </div>
-                                        <p style={{ fontSize: '12px', color: '#666', lineHeight: '1.4', height: '34px', overflow: 'hidden' }}>
-                                            {file.description || 'No description provided.'}
-                                        </p>
-                                    </div>
-                                    <div className="file-actions">
-                                        <button className="btn-icon" onClick={() => window.open(file.file_path.replace('uploads', `${import.meta.env.VITE_API_URL}/uploads`), '_blank')} title="Download">
-                                            <i className="fas fa-download"></i>
-                                        </button>
+                    <div className="listing-table-container">
+                        <table className="listing-table">
+                            <thead>
+                                <tr>
+                                    <th>File Name</th>
+                                    <th>Category</th>
+                                    <th>Size</th>
+                                    <th>Type</th>
+                                    <th>Date Added</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {loading ? (
+                                    <tr><td colSpan="6" className="text-center">Loading...</td></tr>
+                                ) : files.length === 0 ? (
+                                    <tr>
+                                        <td colSpan="6" className="text-center" style={{ padding: '80px' }}>
+                                            <i className="far fa-folder-open" style={{ fontSize: '40px', display: 'block', marginBottom: '15px', color: '#ccc' }}></i>
+                                            No files found matching your filters.
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    files.map(file => (
+                                        <tr key={file.id}>
+                                            <td>
+                                                <div className="d-flex align-items-center gap-3">
+                                                    <div style={{
+                                                        width: '40px',
+                                                        height: '40px',
+                                                        borderRadius: '8px',
+                                                        backgroundColor: '#f8f9fa',
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        justifyContent: 'center',
+                                                        fontSize: '20px'
+                                                    }}>
+                                                        {getFileIcon(file.mime_type)}
+                                                    </div>
+                                                    <div>
+                                                        <div className="fw-bold text-dark">{file.title}</div>
+                                                        <div className="text-muted small text-truncate" style={{ maxWidth: '250px' }}>{file.description || 'No description'}</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span className="badge bg-light text-secondary border text-capitalize">
+                                                    {file.category}
+                                                </span>
+                                            </td>
+                                            <td>{formatFileSize(file.file_size)}</td>
+                                            <td>
+                                                <span className="text-uppercase small fw-bold text-muted">{file.file_type || 'Unknown'}</span>
+                                            </td>
+                                            <td>{new Date(file.created_at).toLocaleDateString()}</td>
+                                            <td>
+                                                <div className="actions-cell">
+                                                    <button
+                                                        className="action-btn"
+                                                        onClick={() => window.open(file.file_path.replace('uploads', `${import.meta.env.VITE_API_URL}/uploads`), '_blank')}
+                                                        title="Download"
+                                                    >
+                                                        <i className="fas fa-download"></i>
+                                                    </button>
 
-                                        {/* 
-                                        <Link to={`/admin/files/edit/${file.id}`} className="btn-icon">
-                                            <i className="fas fa-pen"></i>
-                                        </Link>
-                                        */}
+                                                    {/* Edit button placeholder if needed later */}
+                                                    {/* 
+                                                    <button className="action-btn" onClick={() => navigate(`/admin/files/edit/${file.id}`)}>
+                                                        <i className="far fa-edit"></i>
+                                                    </button> 
+                                                    */}
 
-                                        <button className="btn-icon delete" onClick={() => handleDelete(file.id)} title="Delete">
-                                            <i className="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    )}
+                                                    <button className="action-btn delete" onClick={() => handleDelete(file.id)} title="Delete">
+                                                        <i className="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+                        </table>
+
+                        {files.length > 0 && (
+                            <Pagination
+                                currentPage={pagination.page}
+                                totalPages={Math.ceil(pagination.total / pagination.limit)}
+                                onPageChange={(newPage) => {
+                                    setPagination(prev => ({ ...prev, page: newPage }));
+                                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                                }}
+                            />
+                        )}
+                    </div>
                 </div>
             </div>
         </DashboardLayout>

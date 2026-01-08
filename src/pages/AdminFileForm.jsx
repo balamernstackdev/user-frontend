@@ -14,7 +14,7 @@ const AdminFileForm = () => {
     const [formData, setFormData] = useState({
         title: '',
         description: '',
-        category: 'e-book'
+        category: 'doc'
     });
     const [selectedFile, setSelectedFile] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -184,10 +184,11 @@ const AdminFileForm = () => {
                                                 value={formData.category}
                                                 onChange={handleChange}
                                             >
-                                                <option value="e-book">E-Book</option>
-                                                <option value="software">Software</option>
-                                                <option value="template">Template</option>
+                                                <option value="pdf">PDF</option>
                                                 <option value="video">Video</option>
+                                                <option value="audio">Audio</option>
+                                                <option value="doc">Document</option>
+                                                <option value="image">Image</option>
                                                 <option value="other">Other</option>
                                             </select>
                                         </div>

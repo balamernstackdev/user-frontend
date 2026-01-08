@@ -12,13 +12,19 @@ const AdminTickets = () => {
     const [tickets, setTickets] = useState([]);
     const [loading, setLoading] = useState(true);
     const [statusFilter, setStatusFilter] = useState('');
-    const [pagination, setPagination] = useState({ page: 1, limit: 5, total: 0 });
+    const [priorityFilter, setPriorityFilter] = useState('');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0 });
 
     const fetchTickets = async () => {
         setLoading(true);
         try {
             const params = {
                 status: statusFilter,
+                priority: priorityFilter,
+                startDate,
+                endDate,
                 limit: pagination.limit,
                 offset: (pagination.page - 1) * pagination.limit
             };
@@ -64,7 +70,7 @@ const AdminTickets = () => {
 
             return () => socket.off('new_notification');
         }
-    }, [pagination.page, statusFilter, socket]);
+    }, [pagination.page, statusFilter, priorityFilter, startDate, endDate, socket]);
 
     const formatDate = (dateString) => {
         if (!dateString) return 'N/A';
@@ -88,13 +94,77 @@ const AdminTickets = () => {
                             <h1>Support Tickets</h1>
                             <p style={{ color: '#6c757d' }}>Manage user support requests</p>
                         </div>
-                        <div className="header-actions">
-                            <div className="filter-group">
+                    </div>
+
+                    <div className="admin-listing-toolbar mb-4" style={{
+                        backgroundColor: 'white',
+                        padding: '15px 20px',
+                        borderRadius: '12px',
+                        boxShadow: '0 2px 6px rgba(0,0,0,0.02)',
+                        border: '1px solid rgba(0,0,0,0.05)'
+                    }}>
+                        <div className="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                            {/* Left Side: Date Filters */}
+                            <div className="d-flex align-items-center gap-3">
+                                <span className="text-muted small fw-bold text-uppercase" style={{ fontSize: '12px', letterSpacing: '0.5px' }}>Filter Date:</span>
+                                <div className="d-flex align-items-center gap-2">
+                                    <div className="input-group input-group-sm" style={{ width: '160px' }}>
+                                        <span className="input-group-text bg-white border-end-0 text-muted pe-1">
+                                            <i className="far fa-calendar-alt"></i>
+                                        </span>
+                                        <input
+                                            type="date"
+                                            className="form-control border-start-0 ps-2"
+                                            value={startDate}
+                                            onChange={(e) => setStartDate(e.target.value)}
+                                            style={{ borderColor: '#dee2e6', color: '#6c757d' }}
+                                        />
+                                    </div>
+                                    <span className="text-muted small">to</span>
+                                    <div className="input-group input-group-sm" style={{ width: '160px' }}>
+                                        <span className="input-group-text bg-white border-end-0 text-muted pe-1">
+                                            <i className="far fa-calendar-alt"></i>
+                                        </span>
+                                        <input
+                                            type="date"
+                                            className="form-control border-start-0 ps-2"
+                                            value={endDate}
+                                            onChange={(e) => setEndDate(e.target.value)}
+                                            style={{ borderColor: '#dee2e6', color: '#6c757d' }}
+                                        />
+                                    </div>
+                                    {(startDate || endDate) && (
+                                        <button
+                                            className="btn btn-sm text-danger ms-1"
+                                            onClick={() => { setStartDate(''); setEndDate(''); }}
+                                            title="Clear Dates"
+                                            style={{ background: 'none', border: 'none' }}
+                                        >
+                                            <i className="fas fa-times"></i>
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Right Side: Filters */}
+                            <div className="d-flex align-items-center gap-3">
                                 <select
-                                    className="custom-select"
+                                    className="form-select form-select-sm"
+                                    value={priorityFilter}
+                                    onChange={(e) => setPriorityFilter(e.target.value)}
+                                    style={{ borderRadius: '6px', borderColor: '#e2e8f0', minWidth: '130px', height: '38px' }}
+                                >
+                                    <option value="">All Priorities</option>
+                                    <option value="high">High</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="low">Low</option>
+                                </select>
+
+                                <select
+                                    className="form-select form-select-sm"
                                     value={statusFilter}
                                     onChange={(e) => setStatusFilter(e.target.value)}
-                                    style={{ width: '200px' }}
+                                    style={{ borderRadius: '6px', borderColor: '#e2e8f0', minWidth: '130px', height: '38px' }}
                                 >
                                     <option value="">All Status</option>
                                     <option value="open">Open</option>

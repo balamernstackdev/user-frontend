@@ -101,24 +101,38 @@ const AdminSubscriptions = () => {
                             <h1>User Subscriptions</h1>
                             <p style={{ color: '#6c757d' }}>Monitor and manage active user plans</p>
                         </div>
-                        <div className="header-actions">
-                            <form onSubmit={handleSearch} className="search-box">
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    placeholder="Search by name or email..."
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                />
-                                <button type="submit" className="search-btn">
-                                    <i className="fas fa-search"></i>
-                                </button>
-                            </form>
-                            <div className="filter-group">
+                    </div>
+
+                    <div className="admin-listing-toolbar mb-4" style={{
+                        backgroundColor: 'white',
+                        padding: '15px 20px',
+                        borderRadius: '12px',
+                        boxShadow: '0 2px 6px rgba(0,0,0,0.02)',
+                        border: '1px solid rgba(0,0,0,0.05)'
+                    }}>
+                        <div className="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                            {/* Left Side: Search */}
+                            <div className="flex-grow-1" style={{ maxWidth: '400px' }}>
+                                <div className="position-relative">
+                                    <input
+                                        type="text"
+                                        className="form-control form-control-sm ps-4"
+                                        placeholder="Search by name or email..."
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        style={{ borderRadius: '6px', borderColor: '#e2e8f0', height: '38px' }}
+                                    />
+                                    <i className="fas fa-search position-absolute text-muted" style={{ left: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '14px' }}></i>
+                                </div>
+                            </div>
+
+                            {/* Right Side: Filters & Actions */}
+                            <div className="d-flex align-items-center gap-3">
                                 <select
-                                    className="custom-select"
+                                    className="form-select form-select-sm"
                                     value={statusFilter}
                                     onChange={(e) => setStatusFilter(e.target.value)}
+                                    style={{ borderRadius: '6px', borderColor: '#e2e8f0', minWidth: '150px', height: '38px' }}
                                 >
                                     <option value="">All Status</option>
                                     <option value="active">Active</option>
@@ -126,13 +140,26 @@ const AdminSubscriptions = () => {
                                     <option value="expired">Expired</option>
                                     <option value="cancelled">Cancelled</option>
                                 </select>
+
+                                <button
+                                    className="tj-primary-btn"
+                                    onClick={() => navigate('/admin/subscriptions/create')}
+                                    style={{
+                                        height: '38px',
+                                        borderRadius: '6px',
+                                        padding: '0 20px',
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        fontSize: '14px',
+                                        fontWeight: 500
+                                    }}
+                                >
+                                    <span className="btn-text">Add Subscription</span>
+                                    <span className="btn-icon">
+                                        <i className="fas fa-arrow-right"></i>
+                                    </span>
+                                </button>
                             </div>
-                            <button
-                                className="tj-primary-btn"
-                                onClick={() => navigate('/admin/subscriptions/create')}
-                            >
-                                <span className="btn-text"><span>+ Add Subscription</span></span>
-                            </button>
                         </div>
                     </div>
 

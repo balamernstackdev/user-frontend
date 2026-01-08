@@ -13,15 +13,28 @@ const AdminPlans = () => {
     const navigate = useNavigate();
     const [plans, setPlans] = useState([]);
     const [loading, setLoading] = useState(true);
+    // State for filters
+    const [searchQuery, setSearchQuery] = useState('');
+    const [statusFilter, setStatusFilter] = useState('all');
+    const [typeFilter, setTypeFilter] = useState('all');
 
+    // Debounce search and refetch on filter changes
     useEffect(() => {
-        fetchPlans();
-    }, []);
+        const timer = setTimeout(() => {
+            fetchPlans();
+        }, 500);
+        return () => clearTimeout(timer);
+    }, [searchQuery, statusFilter, typeFilter]);
 
     const fetchPlans = async () => {
         try {
             setLoading(true);
-            const response = await planService.getPlans();
+            const params = {
+                search: searchQuery,
+                status: statusFilter,
+                planType: typeFilter
+            };
+            const response = await planService.getPlans(params);
             setPlans(response.data || []);
         } catch (err) {
             toast.error('Failed to load plans');
@@ -33,6 +46,7 @@ const AdminPlans = () => {
     const handleToggleStatus = async (id) => {
         try {
             await planService.togglePlanStatus(id);
+            // Refresh current view
             fetchPlans();
             toast.success('Plan status updated');
         } catch (err) {
@@ -59,6 +73,9 @@ const AdminPlans = () => {
         return 'Free/Contact';
     };
 
+    // No client-side filtering needed anymore
+    const filteredPlans = plans;
+
     return (
         <DashboardLayout>
             <SEO title="Plan Management" description="Manage subscription plans" />
@@ -69,15 +86,76 @@ const AdminPlans = () => {
                             <h1>Subscription Plans</h1>
                             <p style={{ color: '#6c757d' }}>Manage your product pricing and features</p>
                         </div>
-                        <button
-                            className="tj-primary-btn"
-                            onClick={() => navigate('/admin/plans/create')}
-                        >
-                            <span className="btn-text">Add Plan</span>
-                            <span className="btn-icon">
-                                <i className="fas fa-arrow-right"></i>
-                            </span>
-                        </button>
+                    </div>
+
+                    <div className="admin-listing-toolbar mb-4" style={{
+                        backgroundColor: 'white',
+                        padding: '15px 20px',
+                        borderRadius: '12px',
+                        boxShadow: '0 2px 6px rgba(0,0,0,0.02)',
+                        border: '1px solid rgba(0,0,0,0.05)'
+                    }}>
+                        <div className="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                            {/* Left Side: Search */}
+                            <div className="flex-grow-1" style={{ maxWidth: '400px' }}>
+                                <div className="position-relative">
+                                    <input
+                                        type="text"
+                                        className="form-control form-control-sm ps-4"
+                                        placeholder="Search plans..."
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        style={{ borderRadius: '6px', borderColor: '#e2e8f0', height: '38px' }}
+                                    />
+                                    <i className="fas fa-search position-absolute text-muted" style={{ left: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '14px' }}></i>
+                                </div>
+                            </div>
+
+                            {/* Right Side: Filters & Actions */}
+                            <div className="d-flex align-items-center gap-3">
+                                <select
+                                    className="form-select form-select-sm"
+                                    value={typeFilter}
+                                    onChange={(e) => setTypeFilter(e.target.value)}
+                                    style={{ borderRadius: '6px', borderColor: '#e2e8f0', minWidth: '130px', height: '38px' }}
+                                >
+                                    <option value="all">All Types</option>
+                                    <option value="MONTHLY">Monthly</option>
+                                    <option value="YEARLY">Yearly</option>
+                                    <option value="LIFETIME">Lifetime</option>
+                                </select>
+
+                                <select
+                                    className="form-select form-select-sm"
+                                    value={statusFilter}
+                                    onChange={(e) => setStatusFilter(e.target.value)}
+                                    style={{ borderRadius: '6px', borderColor: '#e2e8f0', minWidth: '130px', height: '38px' }}
+                                >
+                                    <option value="all">All Status</option>
+                                    <option value="active">Active</option>
+                                    <option value="inactive">Inactive</option>
+                                </select>
+
+                                <button
+                                    className="tj-primary-btn"
+                                    onClick={() => navigate('/admin/plans/create')}
+                                    style={{
+                                        height: '38px',
+                                        borderRadius: '6px',
+                                        padding: '0 20px',
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        fontSize: '14px',
+                                        fontWeight: 500
+                                    }}
+                                >
+                                    <span className="btn-text">Add Plan</span>
+                                    <span className="btn-icon">
+                                        <i className="fas fa-arrow-right"></i>
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
                     </div>
 
                     <div className="listing-table-container">
@@ -93,7 +171,7 @@ const AdminPlans = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {plans.map((plan) => (
+                                {filteredPlans.map((plan) => (
                                     <tr key={plan.id}>
                                         <td>
                                             <div className="plan-info-cell">
@@ -134,11 +212,11 @@ const AdminPlans = () => {
                                         </td>
                                     </tr>
                                 ))}
-                                {plans.length === 0 && !loading && (
+                                {filteredPlans.length === 0 && !loading && (
                                     <tr>
                                         <td colSpan="6" className="text-center" style={{ padding: '80px' }}>
                                             <i className="fas fa-box-open" style={{ fontSize: '40px', display: 'block', marginBottom: '15px' }}></i>
-                                            No plans found. Create your first plan to get started.
+                                            No plans found matching your filters.
                                         </td>
                                     </tr>
                                 )}

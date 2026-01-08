@@ -65,21 +65,79 @@ const AdminLogs = () => {
                             <h1>System Logs</h1>
                             <p style={{ color: '#6c757d' }}>Monitor system activities and security events</p>
                         </div>
-                        <div className="header-actions">
-                            <div className="filter-group" style={{ display: 'flex', gap: '10px' }}>
-                                <input
-                                    type="text"
-                                    placeholder="Search by User ID..."
-                                    className="form-control"
-                                    style={{ width: '180px' }}
-                                    value={filters.userId}
-                                    onChange={(e) => handleFilterChange('userId', e.target.value)}
-                                />
+                    </div>
+
+                    <div className="admin-listing-toolbar mb-4" style={{
+                        backgroundColor: 'white',
+                        padding: '15px 20px',
+                        borderRadius: '12px',
+                        boxShadow: '0 2px 6px rgba(0,0,0,0.02)',
+                        border: '1px solid rgba(0,0,0,0.05)'
+                    }}>
+                        <div className="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                            {/* Left Side: Date Filters */}
+                            <div className="d-flex align-items-center gap-3">
+                                <span className="text-muted small fw-bold text-uppercase" style={{ fontSize: '12px', letterSpacing: '0.5px' }}>Filter Date:</span>
+                                <div className="d-flex align-items-center gap-2">
+                                    <div className="input-group input-group-sm" style={{ width: '160px' }}>
+                                        <span className="input-group-text bg-white border-end-0 text-muted pe-1">
+                                            <i className="far fa-calendar-alt"></i>
+                                        </span>
+                                        <input
+                                            type="date"
+                                            className="form-control border-start-0 ps-2"
+                                            value={filters.startDate}
+                                            onChange={(e) => handleFilterChange('startDate', e.target.value)}
+                                            style={{ borderColor: '#dee2e6', color: '#6c757d' }}
+                                        />
+                                    </div>
+                                    <span className="text-muted small">to</span>
+                                    <div className="input-group input-group-sm" style={{ width: '160px' }}>
+                                        <span className="input-group-text bg-white border-end-0 text-muted pe-1">
+                                            <i className="far fa-calendar-alt"></i>
+                                        </span>
+                                        <input
+                                            type="date"
+                                            className="form-control border-start-0 ps-2"
+                                            value={filters.endDate}
+                                            onChange={(e) => handleFilterChange('endDate', e.target.value)}
+                                            style={{ borderColor: '#dee2e6', color: '#6c757d' }}
+                                        />
+                                    </div>
+                                    {(filters.startDate || filters.endDate) && (
+                                        <button
+                                            className="btn btn-sm text-danger ms-1"
+                                            onClick={() => { handleFilterChange('startDate', ''); handleFilterChange('endDate', ''); }}
+                                            title="Clear Dates"
+                                            style={{ background: 'none', border: 'none' }}
+                                        >
+                                            <i className="fas fa-times"></i>
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Right Side: Filters & Search */}
+                            <div className="d-flex align-items-center gap-3">
+                                <div className="position-relative">
+                                    <input
+                                        type="text"
+                                        className="form-control form-control-sm ps-4"
+                                        placeholder="Search by User ID..."
+                                        value={filters.userId}
+                                        onChange={(e) => handleFilterChange('userId', e.target.value)}
+                                        style={{ borderRadius: '6px', borderColor: '#e2e8f0', width: '200px' }}
+                                    />
+                                    <i className="fas fa-search position-absolute text-muted" style={{ left: '10px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px' }}></i>
+                                </div>
+
+                                <div className="vr mx-1" style={{ color: '#e2e8f0' }}></div>
+
                                 <select
-                                    className="custom-select"
+                                    className="form-select form-select-sm"
                                     value={filters.actionType}
                                     onChange={(e) => handleFilterChange('actionType', e.target.value)}
-                                    style={{ width: '150px' }}
+                                    style={{ borderRadius: '6px', borderColor: '#e2e8f0', minWidth: '150px' }}
                                 >
                                     <option value="">All Actions</option>
                                     <option value="auth">Auth</option>
@@ -87,24 +145,9 @@ const AdminLogs = () => {
                                     <option value="new_commission">Commission</option>
                                     <option value="admin_action">Admin Action</option>
                                 </select>
-                                <input
-                                    type="date"
-                                    className="form-control"
-                                    style={{ width: '140px' }}
-                                    value={filters.startDate}
-                                    onChange={(e) => handleFilterChange('startDate', e.target.value)}
-                                />
-                                <input
-                                    type="date"
-                                    className="form-control"
-                                    style={{ width: '140px' }}
-                                    value={filters.endDate}
-                                    onChange={(e) => handleFilterChange('endDate', e.target.value)}
-                                />
                             </div>
                         </div>
                     </div>
-
                     <div className="listing-table-container">
                         <table className="listing-table">
                             <thead>

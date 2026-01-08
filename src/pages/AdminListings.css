@@ -10,7 +10,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
 }
 
 .admin-listing-header h1 {
@@ -667,7 +667,8 @@
 /* Responsive Adjusments */
 @media (max-width: 768px) {
     .admin-listing-page {
-        padding-top: 140px;
+        /* Padding handled by wrapper */
+        padding-top: 0;
     }
 
     .form-grid {

@@ -8,8 +8,10 @@ import './AdminListings.css';
 const AdminBATransactions = () => {
     const [transactions, setTransactions] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [statusFilter, setStatusFilter] = useState('success');
+    const [statusFilter, setStatusFilter] = useState('');
     const [baFilter, setBAFilter] = useState('');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
     const [businessAssociates, setBusinessAssociates] = useState([]);
     const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0 });
     const [stats, setStats] = useState({ totalAmount: 0, totalTransactions: 0 });
@@ -31,6 +33,8 @@ const AdminBATransactions = () => {
             const params = {
                 status: statusFilter,
                 businessAssociateId: baFilter,
+                startDate,
+                endDate,
                 limit: pagination.limit,
                 offset: (pagination.page - 1) * pagination.limit
             };
@@ -56,7 +60,15 @@ const AdminBATransactions = () => {
 
     useEffect(() => {
         fetchTransactions();
-    }, [pagination.page, statusFilter, baFilter]);
+    }, [pagination.page, statusFilter, baFilter, startDate, endDate]);
+
+    const clearFilters = () => {
+        setStatusFilter('');
+        setBAFilter('');
+        setStartDate('');
+        setEndDate('');
+        setPagination(prev => ({ ...prev, page: 1 }));
+    };
 
     return (
         <DashboardLayout>
@@ -68,13 +80,83 @@ const AdminBATransactions = () => {
                             <h1>Business Associate Transactions</h1>
                             <p style={{ color: '#6c757d' }}>Track referral-based customer transactions and commissions</p>
                         </div>
-                        <div className="header-actions">
-                            <div className="filter-group" style={{ display: 'flex', gap: '10px' }}>
+                    </div>
+
+                    {/* Summary Cards */}
+                    <div className="row mb-4">
+                        <div className="col-md-4">
+                            <div style={{ background: 'white', padding: '20px', borderRadius: '12px', boxShadow: '0 2px 6px rgba(0,0,0,0.02)', border: '1px solid rgba(0,0,0,0.05)', height: '100%', display: 'flex', alignItems: 'center' }}>
+                                <div style={{ width: '48px', height: '48px', borderRadius: '10px', background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', marginRight: '15px' }}>
+                                    <i className="fas fa-list-ul"></i>
+                                </div>
+                                <div>
+                                    <div style={{ color: '#6c757d', fontSize: '14px', marginBottom: '4px' }}>Total Transactions</div>
+                                    <div style={{ fontSize: '24px', fontWeight: '700', color: '#2c3e50' }}>{stats.totalTransactions}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-md-4">
+                            <div style={{ background: 'white', padding: '20px', borderRadius: '12px', boxShadow: '0 2px 6px rgba(0,0,0,0.02)', border: '1px solid rgba(0,0,0,0.05)', height: '100%', display: 'flex', alignItems: 'center' }}>
+                                <div style={{ width: '48px', height: '48px', borderRadius: '10px', background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', marginRight: '15px' }}>
+                                    <i className="fas fa-indian-rupee-sign"></i>
+                                </div>
+                                <div>
+                                    <div style={{ color: '#6c757d', fontSize: '14px', marginBottom: '4px' }}>Total Revenue</div>
+                                    <div style={{ fontSize: '24px', fontWeight: '700', color: '#10b981' }}>₹{stats.totalAmount?.toLocaleString() || '0'}</div>
+                                    <small className="text-muted" style={{ fontSize: '11px' }}>Successful transactions</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-md-4">
+                            <div style={{ background: 'white', padding: '20px', borderRadius: '12px', boxShadow: '0 2px 6px rgba(0,0,0,0.02)', border: '1px solid rgba(0,0,0,0.05)', height: '100%', display: 'flex', alignItems: 'center' }}>
+                                <div style={{ width: '48px', height: '48px', borderRadius: '10px', background: 'rgba(139, 92, 246, 0.1)', color: '#8b5cf6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', marginRight: '15px' }}>
+                                    <i className="fas fa-hand-holding-dollar"></i>
+                                </div>
+                                <div>
+                                    <div style={{ color: '#6c757d', fontSize: '14px', marginBottom: '4px' }}>Total Commission</div>
+                                    <div style={{ fontSize: '24px', fontWeight: '700', color: '#8b5cf6' }}>₹{stats.totalCommission?.toLocaleString() || '0'}</div>
+                                    <small className="text-muted" style={{ fontSize: '11px' }}>Paid & Pending</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Standardized Toolbar */}
+                    <div className="admin-listing-toolbar mb-4" style={{
+                        backgroundColor: 'white',
+                        padding: '15px 20px',
+                        borderRadius: '12px',
+                        boxShadow: '0 2px 6px rgba(0,0,0,0.02)',
+                        border: '1px solid rgba(0,0,0,0.05)'
+                    }}>
+                        <div className="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                            <div className="d-flex flex-wrap align-items-center gap-3 flex-grow-1">
+                                <div className="d-flex align-items-center gap-2">
+                                    <label className="text-muted fw-medium mb-0">From:</label>
+                                    <input
+                                        type="date"
+                                        className="form-control"
+                                        value={startDate}
+                                        onChange={(e) => setStartDate(e.target.value)}
+                                        style={{ borderRadius: '6px', borderColor: '#e2e8f0', maxWidth: '160px' }}
+                                    />
+                                </div>
+                                <div className="d-flex align-items-center gap-2">
+                                    <label className="text-muted fw-medium mb-0">To:</label>
+                                    <input
+                                        type="date"
+                                        className="form-control"
+                                        value={endDate}
+                                        onChange={(e) => setEndDate(e.target.value)}
+                                        style={{ borderRadius: '6px', borderColor: '#e2e8f0', maxWidth: '160px' }}
+                                    />
+                                </div>
+
                                 <select
-                                    className="custom-select"
+                                    className="form-select"
                                     value={baFilter}
                                     onChange={(e) => setBAFilter(e.target.value)}
-                                    style={{ width: '250px' }}
+                                    style={{ borderRadius: '6px', borderColor: '#e2e8f0', maxWidth: '220px' }}
                                 >
                                     <option value="">All Business Associates</option>
                                     {businessAssociates.map(ba => (
@@ -83,30 +165,30 @@ const AdminBATransactions = () => {
                                         </option>
                                     ))}
                                 </select>
+
                                 <select
-                                    className="custom-select"
+                                    className="form-select"
                                     value={statusFilter}
                                     onChange={(e) => setStatusFilter(e.target.value)}
-                                    style={{ width: '150px' }}
+                                    style={{ borderRadius: '6px', borderColor: '#e2e8f0', maxWidth: '160px' }}
                                 >
                                     <option value="">All Status</option>
                                     <option value="success">Success</option>
                                     <option value="pending">Pending</option>
                                     <option value="failed">Failed</option>
                                 </select>
-                            </div>
-                        </div>
-                    </div>
 
-                    {/* Summary Cards */}
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px', marginBottom: '30px' }}>
-                        <div style={{ background: 'white', padding: '20px', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-                            <div style={{ color: '#6c757d', fontSize: '14px', marginBottom: '8px' }}>Total Transactions</div>
-                            <div style={{ fontSize: '28px', fontWeight: '600', color: '#2c3e50' }}>{stats.totalTransactions}</div>
-                        </div>
-                        <div style={{ background: 'white', padding: '20px', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-                            <div style={{ color: '#6c757d', fontSize: '14px', marginBottom: '8px' }}>Total Amount</div>
-                            <div style={{ fontSize: '28px', fontWeight: '600', color: '#27ae60' }}>₹{stats.totalAmount.toLocaleString()}</div>
+
+
+                                {(startDate || endDate || baFilter || statusFilter) && (
+                                    <button
+                                        className="btn btn-sm btn-link text-decoration-none text-muted"
+                                        onClick={clearFilters}
+                                    >
+                                        <i className="fas fa-times me-1"></i> Clear
+                                    </button>
+                                )}
+                            </div>
                         </div>
                     </div>
 

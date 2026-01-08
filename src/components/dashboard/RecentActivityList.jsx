@@ -10,14 +10,14 @@ const RecentActivityList = ({ logs, isLoading }) => {
     if (isLoading) {
         return (
             <div className="analytics-card h-100 chart-card">
-                <div className="card-header d-flex justify-content-between align-items-center mb-4">
-                    <h4 className="mb-0"><SkeletonLoader width="140px" height="24px" /></h4>
+                <div className="card-header d-flex justify-content-between align-items-center mb-4 border-0 pb-0">
+                    <h5 className="mb-0 fw-bold"><SkeletonLoader width="140px" height="24px" /></h5>
                     <SkeletonLoader width="60px" height="20px" />
                 </div>
-                <div className="activity-timeline px-2">
+                <div className="activity-timeline px-2 pt-2">
                     {[1, 2, 3, 4, 5].map((i) => (
                         <div className="activity-item d-flex gap-3 mb-4" key={i}>
-                            <SkeletonLoader width="36px" height="36px" style={{ borderRadius: '50%' }} />
+                            <SkeletonLoader width="40px" height="40px" style={{ borderRadius: '50%' }} />
                             <div className="activity-content w-100">
                                 <div className="d-flex justify-content-between mb-2">
                                     <SkeletonLoader width="120px" height="16px" />
@@ -43,98 +43,115 @@ const RecentActivityList = ({ logs, isLoading }) => {
     const getActivityIcon = (log) => {
         const text = (log.description || log.action || '').toLowerCase();
 
-        if (text.includes('setting')) return { icon: Settings, color: '#64748b', bg: '#f1f5f9' };
-        if (text.includes('commission') || text.includes('pay')) return { icon: CreditCard, color: '#0ea5e9', bg: '#e0f2fe' };
-        if (text.includes('user') || text.includes('profile')) return { icon: User, color: '#3b82f6', bg: '#eff6ff' };
-        if (text.includes('plan') || text.includes('sub')) return { icon: FileText, color: '#8b5cf6', bg: '#f5f3ff' };
-        if (text.includes('login')) return { icon: LogIn, color: '#10b981', bg: '#ecfdf5' };
-        if (text.includes('delete') || text.includes('remove')) return { icon: Trash2, color: '#ef4444', bg: '#fef2f2' };
-        if (text.includes('update') || text.includes('edit')) return { icon: Edit, color: '#f59e0b', bg: '#fffbeb' };
+        // More vibrant and distinct color palette
+        if (text.includes('setting')) return { icon: Settings, color: '#475569', bg: '#f1f5f9', border: '#cbd5e1' };
+        if (text.includes('commission') || text.includes('pay')) return { icon: CreditCard, color: '#0284c7', bg: '#e0f2fe', border: '#bae6fd' };
+        if (text.includes('user') || text.includes('profile')) return { icon: User, color: '#2563eb', bg: '#eff6ff', border: '#bfdbfe' };
+        if (text.includes('plan') || text.includes('sub')) return { icon: FileText, color: '#7c3aed', bg: '#f5f3ff', border: '#ddd6fe' };
+        if (text.includes('login')) return { icon: LogIn, color: '#059669', bg: '#ecfdf5', border: '#a7f3d0' };
+        if (text.includes('delete') || text.includes('remove')) return { icon: Trash2, color: '#dc2626', bg: '#fef2f2', border: '#fecaca' };
+        if (text.includes('update') || text.includes('edit')) return { icon: Edit, color: '#d97706', bg: '#fffbeb', border: '#fde68a' };
 
         // Default
-        return { icon: Activity, color: '#94a3b8', bg: '#f8fafc' };
+        return { icon: Activity, color: '#64748b', bg: '#f8fafc', border: '#e2e8f0' };
     };
 
     return (
-        <div className="analytics-card h-100 chart-card">
-            <div className="card-header d-flex justify-content-between align-items-center mb-4 border-0 p-0">
-                <h4 className="mb-0" style={{ fontWeight: 700, color: '#1e293b' }}>Recent Activity</h4>
-                <Link to="/admin/logs" className="text-primary fw-bold text-decoration-none" style={{ fontSize: '13px' }}>View All</Link>
+        <div className="analytics-card h-100 chart-card bg-white rounded-4 shadow-sm border-0">
+            <div className="card-header d-flex justify-content-between align-items-center mb-4 border-0 pb-0 pt-4 px-4 bg-transparent">
+                <h5 className="mb-0 fw-bold text-dark d-flex align-items-center gap-2">
+                    <Activity size={20} className="text-primary" />
+                    Recent Activity
+                </h5>
+                <Link
+                    to="/admin/logs"
+                    className="btn btn-light btn-sm rounded-pill px-3 fw-semibold text-primary bg-primary-subtle border-0"
+                    style={{ fontSize: '12px' }}
+                >
+                    View All
+                </Link>
             </div>
 
-            <div className="activity-timeline position-relative px-2">
-                {/* Vertical Line */}
-                <div
-                    style={{
-                        position: 'absolute',
-                        left: '26px',
-                        top: '10px',
-                        bottom: '20px',
-                        width: '2px',
-                        backgroundColor: '#f1f5f9',
-                        zIndex: 0
-                    }}
-                />
+            <div className="card-body px-4 pt-0 pb-4">
+                <div className="activity-timeline position-relative">
+                    {/* Vertical Timeline Line */}
+                    <div
+                        style={{
+                            position: 'absolute',
+                            left: '19px',
+                            top: '10px',
+                            bottom: '30px',
+                            width: '2px',
+                            backgroundColor: '#e2e8f0',
+                            zIndex: 0
+                        }}
+                    />
 
-                {logs.length === 0 ? (
-                    <div className="text-center py-5">
-                        <div className="text-muted mb-3">
-                            <Activity size={40} className="opacity-25" />
+                    {logs.length === 0 ? (
+                        <div className="text-center py-5">
+                            <div className="mb-3 d-inline-flex align-items-center justify-content-center bg-light rounded-circle" style={{ width: '64px', height: '64px' }}>
+                                <Activity size={32} className="text-muted opacity-50" />
+                            </div>
+                            <h6 className="text-dark fw-semibold mb-1">No recent activity</h6>
+                            <p className="text-muted small mb-0">Activities will appear here as they happen.</p>
                         </div>
-                        <p className="text-muted small mb-0 fw-medium">No recent activity found</p>
-                    </div>
-                ) : (
-                    logs.map((log, index) => {
-                        const { icon: Icon, color, bg } = getActivityIcon(log);
-                        return (
-                            <div className="activity-item d-flex gap-3 mb-4 position-relative" key={log.id} style={{ zIndex: 1, alignItems: 'flex-start' }}>
-                                {/* Icon Bubble */}
-                                <div
-                                    className="d-flex align-items-center justify-content-center shadow-sm"
-                                    style={{
-                                        width: '36px',
-                                        height: '36px',
-                                        borderRadius: '50%',
-                                        backgroundColor: 'white',
-                                        border: `2px solid ${bg}`,
-                                        color: color,
-                                        flexShrink: 0
-                                    }}
-                                >
-                                    <Icon size={16} strokeWidth={2.5} />
-                                </div>
+                    ) : (
+                        logs.map((log, index) => {
+                            const { icon: Icon, color, bg, border } = getActivityIcon(log);
+                            return (
+                                <div className="activity-item d-flex gap-3 mb-4 position-relative group" key={log.id} style={{ zIndex: 1 }}>
+                                    {/* Icon Bubble */}
+                                    <div
+                                        className="d-flex align-items-center justify-content-center flex-shrink-0 transition-all"
+                                        style={{
+                                            width: '40px',
+                                            height: '40px',
+                                            borderRadius: '50%',
+                                            backgroundColor: bg,
+                                            border: `1px solid ${border}`,
+                                            color: color,
+                                            boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
+                                        }}
+                                    >
+                                        <Icon size={18} strokeWidth={2} />
+                                    </div>
 
-                                {/* Content */}
-                                <div className="activity-content flex-grow-1 pt-1">
-                                    <div className="d-flex justify-content-between align-items-start mb-1">
-                                        <div>
-                                            <span className="d-block fw-bold text-dark" style={{ fontSize: '14px', lineHeight: '1.4' }}>
+                                    {/* Content */}
+                                    <div className="activity-content flex-grow-1 pt-1">
+                                        <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-1 mb-1">
+                                            <span className="fw-semibold text-dark text-truncate" style={{ fontSize: '14px', maxWidth: '100%' }}>
                                                 {log.description || formatAction(log.action)}
                                             </span>
+                                            <span
+                                                className="text-muted small fw-medium text-nowrap"
+                                                style={{ fontSize: '11px' }}
+                                            >
+                                                {new Date(log.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                            </span>
                                         </div>
-                                        <span
-                                            className="text-muted small fw-medium"
-                                            style={{ fontSize: '11px', whiteSpace: 'nowrap', marginLeft: '10px' }}
-                                        >
-                                            {new Date(log.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                        </span>
-                                    </div>
-                                    <div className="d-flex align-items-center gap-2">
-                                        <div
-                                            className="d-flex align-items-center justify-content-center bg-light text-secondary rounded-circle"
-                                            style={{ width: '20px', height: '20px', fontSize: '10px', fontWeight: 'bold' }}
-                                        >
-                                            {(log.user_name || 'S').charAt(0).toUpperCase()}
+
+                                        <div className="d-flex align-items-center gap-2 mt-1">
+                                            <div
+                                                className="d-flex align-items-center justify-content-center rounded-circle flex-shrink-0 text-white fw-bold"
+                                                style={{
+                                                    width: '20px',
+                                                    height: '20px',
+                                                    fontSize: '10px',
+                                                    background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)'
+                                                }}
+                                            >
+                                                {(log.user_name || 'S').charAt(0).toUpperCase()}
+                                            </div>
+                                            <span className="text-muted small" style={{ fontSize: '12px' }}>
+                                                <span className="fw-medium text-dark">{log.user_name || 'System'}</span> performed this action
+                                            </span>
                                         </div>
-                                        <span className="text-muted small" style={{ fontSize: '13px' }}>
-                                            {log.user_name || 'System'}
-                                        </span>
                                     </div>
                                 </div>
-                            </div>
-                        );
-                    })
-                )}
+                            );
+                        })
+                    )}
+                </div>
             </div>
         </div>
     );
