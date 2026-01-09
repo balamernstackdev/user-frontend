@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import fileService from '../services/file.service';
 import SEO from '../components/common/SEO';
 import DashboardLayout from '../components/layout/DashboardLayout';
-import { Files, FileText, Video, Headphones, Music, MoreHorizontal } from 'lucide-react';
+import { Files, FileText, Video, Headphones, ImageIcon, MoreHorizontal } from 'lucide-react';
 import StatCard from '../components/dashboard/StatCard';
 import './styles/AdminFiles.css';
 import { toast } from 'react-toastify';
@@ -19,7 +19,7 @@ const AdminFiles = () => {
         total_files: 0,
         video_count: 0,
         audio_count: 0,
-        music_count: 0,
+        image_count: 0,
         pdf_count: 0,
         other_count: 0
     });
@@ -157,14 +157,14 @@ const AdminFiles = () => {
                             className="card-plans stat-card-hover"
                         />
                         <StatCard
-                            label="Musics"
-                            value={stats.music_count}
-                            icon={Music}
+                            label="Images"
+                            value={stats.image_count}
+                            icon={ImageIcon}
                             iconColor="#6366f1"
                             iconBgColor="rgba(99, 102, 241, 0.1)"
                             isLoading={loading}
-                            active={categoryFilter === 'music'}
-                            onClick={() => setCategoryFilter('music')}
+                            active={categoryFilter === 'image'}
+                            onClick={() => setCategoryFilter('image')}
                             className="card-revenue stat-card-hover"
                         />
                         <StatCard
