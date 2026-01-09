@@ -102,17 +102,20 @@ const Invoice = () => {
         }
     };
 
-    // Calculate tax/total (Exclusive: Add tax to base amount)
-    const baseAmount = Number(transaction.amount);
+    // Calculate tax/total (Amount INCLUDES tax - extract base and tax)
+    const totalAmount = Number(transaction.amount); // This is the final total WITH tax
     const taxRate = Number(settings.tax_rate) || 0;
 
+    let baseAmount = totalAmount;
     let tax = 0;
-    let finalTotal = baseAmount;
 
     if (taxRate > 0) {
-        tax = baseAmount * (taxRate / 100);
-        finalTotal = baseAmount + tax;
+        // Extract base amount from total (reverse calculation)
+        baseAmount = totalAmount / (1 + (taxRate / 100));
+        tax = totalAmount - baseAmount;
     }
+
+    const finalTotal = totalAmount; // Use the actual transaction amount as total
 
     return (
         <DashboardLayout>

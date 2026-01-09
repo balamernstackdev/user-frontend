@@ -89,10 +89,13 @@ const AdminPlanForm = () => {
         try {
             const response = await fileService.getAllFiles({ limit: 100 }); // Increase limit or implement pagination dropdown
             if (response.success) {
-                setAvailableFiles(response.data);
+                // Handle different response structures
+                const files = response.data?.files || response.data || [];
+                setAvailableFiles(Array.isArray(files) ? files : []);
             }
         } catch (e) {
             console.error('Failed to fetch files', e);
+            setAvailableFiles([]); // Set empty array on error
         }
     };
 
