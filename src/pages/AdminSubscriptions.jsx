@@ -85,6 +85,7 @@ const AdminSubscriptions = () => {
             case 'active': return { bg: '#e8f5e9', color: '#2e7d32' };
             case 'expired': return { bg: '#ffebee', color: '#c62828' };
             case 'pending': return { bg: '#fff3e0', color: '#ff9800' };
+            case 'upgraded': return { bg: '#e3f2fd', color: '#1565c0' }; // Blue for upgraded
             case 'cancelled': return { bg: '#eceff1', color: '#455a64' };
             default: return { bg: '#f5f5f5', color: '#616161' };
         }
@@ -137,6 +138,7 @@ const AdminSubscriptions = () => {
                                     <option value="active">Active</option>
                                     <option value="pending">Pending</option>
                                     <option value="expired">Expired</option>
+                                    <option value="upgraded">Upgraded</option>
                                     <option value="cancelled">Cancelled</option>
                                 </select>
 

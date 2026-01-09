@@ -3,10 +3,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import subscriptionService from '../services/subscription.service';
 import { authService } from '../services/auth.service';
+import { useSettings } from '../context/SettingsContext';
 import { toast } from 'react-toastify';
 import './styles/Subscription.css';
 
 const Subscription = () => {
+    const { settings } = useSettings();
     const [subscription, setSubscription] = useState(null);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
@@ -90,13 +92,18 @@ const Subscription = () => {
     // Determine plan price/cycle from API data
     const getPriceDisplay = () => {
         const plan = subscription.plan || {};
-        if (plan.monthly_price && subscription.plan_id === plan.id) return `$${plan.monthly_price}/month`; // fallback logic if needed
+        const symbol = settings?.currency_symbol || '₹';
+        const formatPrice = (price) => {
+            return `${symbol}${parseFloat(price).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+        };
 
-        // Ideally backend active subscription endpoint returns the specific price paid or current plan price
-        // Since the endpoint is getActiveSubscription, let's assume it returns a combined object or nested plan
-        if (plan.plan_type === 'monthly') return `₹${plan.monthly_price}/month`;
-        if (plan.plan_type === 'yearly') return `₹${plan.yearly_price}/year`;
-        if (plan.plan_type === 'lifetime') return `₹${plan.lifetime_price} One-time`;
+        if (plan.plan_type === 'monthly') return `${formatPrice(plan.monthly_price)}/month`;
+        if (plan.plan_type === 'yearly') return `${formatPrice(plan.yearly_price)}/year`;
+        if (plan.plan_type === 'lifetime') return `${formatPrice(plan.lifetime_price)} One-time`;
+
+        // Final fallback if plan_type is missing but monthly_price is there
+        if (plan.monthly_price) return `${formatPrice(plan.monthly_price)}/month`;
+
         return 'N/A';
     };
 

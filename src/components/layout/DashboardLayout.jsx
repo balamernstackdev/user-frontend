@@ -4,10 +4,11 @@ import './DashboardLayout.css';
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useSocket } from '../../context/SocketContext';
+import { authService } from '../../services/auth.service';
 import bgImage from '../../assets/images/bg.png';
 
 const DashboardLayout = ({ children }) => {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const user = authService.getUser();
     const [notificationCount, setNotificationCount] = useState(0);
 
     const { socket } = useSocket();
@@ -17,7 +18,7 @@ const DashboardLayout = ({ children }) => {
         if (user && user.id) {
             fetchNotificationCount();
         }
-    }, [user.id, location.pathname]);
+    }, [user?.id, location.pathname]);
 
     useEffect(() => {
         if (socket) {

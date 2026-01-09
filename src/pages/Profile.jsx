@@ -240,12 +240,13 @@ const Profile = () => {
                                         )}
                                         <div className="avatar-overlay avatar-hover-overlay" style={{
                                             position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-                                            background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                            opacity: 0, transition: '0.3s opacity',
+                                            background: 'rgba(0,0,0,0.6)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                                            transition: '0.3s opacity',
                                             borderRadius: '12px'
                                         }}
                                         >
-                                            <i className="fas fa-camera" style={{ color: 'white', fontSize: '1.5rem' }}></i>
+                                            <i className="fas fa-camera" style={{ color: 'white', fontSize: '1.5rem', marginBottom: '5px' }}></i>
+                                            <span style={{ color: 'white', fontSize: '0.9rem', fontWeight: 500 }}>Update Photo</span>
                                         </div>
                                     </div>
                                     <input
