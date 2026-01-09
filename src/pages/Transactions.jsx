@@ -45,7 +45,7 @@ const Transactions = () => {
             } else {
                 // For regular users, fetch actual transactions
                 const response = await paymentService.getTransactions(params);
-                setTransactions(response.data);
+                setTransactions(response.data.transactions || response.data || []);
             }
         } catch (err) {
             toast.error(isBusinessAssociate ? 'Failed to load commission history' : 'Failed to load transactions');

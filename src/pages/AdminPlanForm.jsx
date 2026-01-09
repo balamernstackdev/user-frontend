@@ -138,6 +138,14 @@ const AdminPlanForm = () => {
         setFormData(prev => ({ ...prev, features: newFeatures }));
     };
 
+    const generateSlug = () => {
+        const slug = formData.name
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '');
+        setFormData(prev => ({ ...prev, slug }));
+    };
+
     const handleFileToggle = (fileId) => {
         setSelectedFiles(prev => {
             if (prev.includes(fileId)) {
@@ -157,9 +165,9 @@ const AdminPlanForm = () => {
             const payload = {
                 ...formData,
                 planType: formData.plan_type, // Required for backend validation middleware
-                monthly_price: formData.monthly_price ? Number(formData.monthly_price) : null,
-                yearly_price: formData.yearly_price ? Number(formData.yearly_price) : null,
-                lifetime_price: formData.lifetime_price ? Number(formData.lifetime_price) : null,
+                monthly_price: formData.plan_type === 'monthly' && formData.monthly_price ? Number(formData.monthly_price) : null,
+                yearly_price: formData.plan_type === 'yearly' && formData.yearly_price ? Number(formData.yearly_price) : null,
+                lifetime_price: formData.plan_type === 'lifetime' && formData.lifetime_price ? Number(formData.lifetime_price) : null,
                 max_downloads: formData.max_downloads ? Number(formData.max_downloads) : null,
                 features: formData.features.filter(f => f.trim() !== '') // Remove empty features
             };
@@ -273,15 +281,25 @@ const AdminPlanForm = () => {
                                             </div>
                                             <div className="col-md-6 mb-3">
                                                 <label className="form-label">Slug (URL Identifier)</label>
-                                                <input
-                                                    type="text"
-                                                    className="form-control"
-                                                    name="slug"
-                                                    placeholder="e.g. pro-monthly"
-                                                    value={formData.slug}
-                                                    onChange={handleChange}
-                                                    required
-                                                />
+                                                <div className="input-group">
+                                                    <input
+                                                        type="text"
+                                                        className="form-control"
+                                                        name="slug"
+                                                        placeholder="e.g. pro-monthly"
+                                                        value={formData.slug}
+                                                        onChange={handleChange}
+                                                        required
+                                                    />
+                                                    <button
+                                                        className="btn btn-outline-secondary"
+                                                        type="button"
+                                                        onClick={generateSlug}
+                                                        title="Generate from Name"
+                                                    >
+                                                        <i className="fas fa-sync"></i>
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -324,36 +342,45 @@ const AdminPlanForm = () => {
                                         </div>
 
                                         <div className="row">
-                                            <div className="col-md-4 mb-3">
-                                                <label className="form-label">Monthly Price (₹)</label>
-                                                <input
-                                                    type="number"
-                                                    className="form-control"
-                                                    name="monthly_price"
-                                                    value={formData.monthly_price}
-                                                    onChange={handleChange}
-                                                />
-                                            </div>
-                                            <div className="col-md-4 mb-3">
-                                                <label className="form-label">Yearly Price (₹)</label>
-                                                <input
-                                                    type="number"
-                                                    className="form-control"
-                                                    name="yearly_price"
-                                                    value={formData.yearly_price}
-                                                    onChange={handleChange}
-                                                />
-                                            </div>
-                                            <div className="col-md-4 mb-3">
-                                                <label className="form-label">Lifetime Price (₹)</label>
-                                                <input
-                                                    type="number"
-                                                    className="form-control"
-                                                    name="lifetime_price"
-                                                    value={formData.lifetime_price}
-                                                    onChange={handleChange}
-                                                />
-                                            </div>
+                                            {formData.plan_type === 'monthly' && (
+                                                <div className="col-md-6 mb-3">
+                                                    <label className="form-label">Monthly Price (₹)</label>
+                                                    <input
+                                                        type="number"
+                                                        className="form-control"
+                                                        name="monthly_price"
+                                                        value={formData.monthly_price}
+                                                        onChange={handleChange}
+                                                        required
+                                                    />
+                                                </div>
+                                            )}
+                                            {formData.plan_type === 'yearly' && (
+                                                <div className="col-md-6 mb-3">
+                                                    <label className="form-label">Yearly Price (₹)</label>
+                                                    <input
+                                                        type="number"
+                                                        className="form-control"
+                                                        name="yearly_price"
+                                                        value={formData.yearly_price}
+                                                        onChange={handleChange}
+                                                        required
+                                                    />
+                                                </div>
+                                            )}
+                                            {formData.plan_type === 'lifetime' && (
+                                                <div className="col-md-6 mb-3">
+                                                    <label className="form-label">Lifetime Price (₹)</label>
+                                                    <input
+                                                        type="number"
+                                                        className="form-control"
+                                                        name="lifetime_price"
+                                                        value={formData.lifetime_price}
+                                                        onChange={handleChange}
+                                                        required
+                                                    />
+                                                </div>
+                                            )}
                                         </div>
 
                                         <div className="mb-3">

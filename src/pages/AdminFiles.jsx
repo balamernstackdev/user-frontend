@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import fileService from '../services/file.service';
 import SEO from '../components/common/SEO';
 import DashboardLayout from '../components/layout/DashboardLayout';
-import { Files, FileText, Video, Headphones, ImageIcon, MoreHorizontal } from 'lucide-react';
+import { Files, FileText, Video, Headphones, ImageIcon, MoreHorizontal, Box } from 'lucide-react';
 import StatCard from '../components/dashboard/StatCard';
 import './styles/AdminFiles.css';
 import { toast } from 'react-toastify';
@@ -21,6 +21,7 @@ const AdminFiles = () => {
         audio_count: 0,
         image_count: 0,
         pdf_count: 0,
+        exe_count: 0,
         other_count: 0
     });
     const navigate = useNavigate();
@@ -96,6 +97,7 @@ const AdminFiles = () => {
         if (mimeType.includes('zip') || mimeType.includes('compressed')) return <i className="fas fa-file-archive text-warning"></i>;
         if (mimeType.includes('word') || mimeType.includes('doc')) return <i className="fas fa-file-word text-primary"></i>;
         if (mimeType.includes('excel') || mimeType.includes('sheet')) return <i className="fas fa-file-excel text-success"></i>;
+        if (mimeType.includes('exe') || mimeType.includes('msdownload') || mimeType.includes('application/x-msdos-program')) return <i className="fab fa-windows text-primary"></i>;
 
         return <i className="fas fa-file text-secondary"></i>;
     };
@@ -168,6 +170,17 @@ const AdminFiles = () => {
                             className="card-revenue stat-card-hover"
                         />
                         <StatCard
+                            label="Software / EXE"
+                            value={stats.exe_count}
+                            icon={Box}
+                            iconColor="#0ea5e9"
+                            iconBgColor="rgba(14, 165, 233, 0.1)"
+                            isLoading={loading}
+                            active={categoryFilter === 'exe'}
+                            onClick={() => setCategoryFilter('exe')}
+                            className="card-payouts stat-card-hover"
+                        />
+                        <StatCard
                             label="Others"
                             value={stats.other_count}
                             icon={MoreHorizontal}
@@ -217,6 +230,7 @@ const AdminFiles = () => {
                                     <option value="audio">Audio</option>
                                     <option value="doc">Document</option>
                                     <option value="image">Image</option>
+                                    <option value="exe">Software / EXE</option>
                                     <option value="other">Other</option>
                                 </select>
 

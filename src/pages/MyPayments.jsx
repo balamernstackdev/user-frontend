@@ -17,9 +17,9 @@ const MyPayments = () => {
         try {
             setLoading(true);
             const response = await paymentService.getTransactions();
-            const data = response.data || [];
-            // Handle case where API returns object with data property or array directly
-            setTransactions(Array.isArray(data) ? data : (data.data || []));
+            const data = response.data || {};
+            // Backend now returns { transactions, pagination }
+            setTransactions(data.transactions || (Array.isArray(data) ? data : []));
         } catch (err) {
             toast.error('Failed to load transaction history');
             console.error(err);
@@ -35,6 +35,14 @@ const MyPayments = () => {
             month: 'short',
             day: 'numeric'
         });
+    };
+
+    const formatCurrency = (amount, currency = 'INR') => {
+        return new Intl.NumberFormat('en-IN', {
+            style: 'currency',
+            currency: currency,
+            minimumFractionDigits: 2
+        }).format(amount);
     };
 
     return (
@@ -74,7 +82,7 @@ const MyPayments = () => {
                                                         <td>#{txn.id ? txn.id.slice(0, 8).toUpperCase() : 'N/A'}...</td>
                                                         <td>{formatDate(txn.created_at)}</td>
                                                         <td>{txn.plan_name || txn.description || 'Subscription Plan'}</td>
-                                                        <td>{txn.currency || '₹'}{txn.amount}</td>
+                                                        <td>{formatCurrency(txn.amount, txn.currency)}</td>
                                                         <td>
                                                             <span className={`payment-status ${txn.status || 'pending'}`}>
                                                                 {txn.status || 'Pending'}

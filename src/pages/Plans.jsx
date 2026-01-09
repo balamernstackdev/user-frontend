@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import planService from '../services/plan.service';
+import subscriptionService from '../services/subscription.service';
 import { authService } from '../services/auth.service';
 import { useSettings } from '../context/SettingsContext';
 import SEO from '../components/common/SEO';
@@ -16,14 +17,30 @@ const Plans = () => {
     const navigate = useNavigate();
     const user = authService.getUser();
 
+    const [activeSubscription, setActiveSubscription] = useState(null);
+
     useEffect(() => {
         if (user?.role === 'business_associate') {
             navigate('/dashboard');
             return;
         }
         fetchPlans();
+        if (user) {
+            fetchActiveSubscription();
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedType, user?.role]);
+
+    const fetchActiveSubscription = async () => {
+        try {
+            const response = await subscriptionService.getActiveSubscription();
+            if (response && response.success && response.data) {
+                setActiveSubscription(response.data);
+            }
+        } catch (error) {
+            console.error('Failed to fetch active subscription', error);
+        }
+    };
 
     const fetchPlans = async () => {
         try {
@@ -57,9 +74,9 @@ const Plans = () => {
 
     const formatPrice = (plan) => {
         const symbol = settings.currency_symbol || '₹';
+        if (plan.plan_type === 'lifetime' && (plan.lifetime_price || plan.monthly_price)) return { amount: `${symbol}${plan.lifetime_price || plan.monthly_price}`, period: ' (Lifetime)' };
+        if (plan.plan_type === 'yearly' && (plan.yearly_price || plan.monthly_price)) return { amount: `${symbol}${plan.yearly_price || plan.monthly_price}`, period: '/year' };
         if (plan.monthly_price) return { amount: `${symbol}${plan.monthly_price}`, period: '/month' };
-        if (plan.yearly_price) return { amount: `${symbol}${plan.yearly_price}`, period: '/year' };
-        if (plan.lifetime_price) return { amount: `${symbol}${plan.lifetime_price}`, period: '(Lifetime)' };
         return { amount: 'Contact Us', period: '' };
     };
 
@@ -103,6 +120,7 @@ const Plans = () => {
                             const { amount, period } = formatPrice(plan);
                             const icon = getPlanIcon(plan.name);
                             const isPopular = plan.is_popular || plan.name.toLowerCase().includes('premium'); // Fallback logic if DB flag missing
+                            const isCurrentPlan = activeSubscription && activeSubscription.plan_id === plan.id && activeSubscription.status === 'active';
                             const animationDelay = 0.2 + (index * 0.1) + 's';
 
                             return (
@@ -111,11 +129,15 @@ const Plans = () => {
                                     className="product-card animate-fade-up"
                                     style={{
                                         animationDelay,
-                                        border: isPopular ? '2px solid var(--tj-color-theme-primary)' : 'none',
+                                        border: isCurrentPlan ? '2px solid #28a745' : (isPopular ? '2px solid var(--tj-color-theme-primary)' : 'none'),
+                                        background: isCurrentPlan ? '#f0fff4' : 'var(--tj-color-common-white)',
                                         position: 'relative'
                                     }}
                                 >
-                                    {isPopular && (
+                                    {isCurrentPlan && (
+                                        <span className="product-badge" style={{ background: '#28a745' }}>Current Plan</span>
+                                    )}
+                                    {!isCurrentPlan && isPopular && (
                                         <span className="product-badge popular">Most Popular</span>
                                     )}
 
@@ -135,18 +157,25 @@ const Plans = () => {
                                         ))}
                                         {plan.max_downloads !== undefined && (
                                             <li>
-                                                <i className="fas fa-check"></i> {plan.max_downloads ? `${plan.max_downloads} Downloads/mo` : 'Unlimited Downloads'}
+                                                <i className="fas fa-check"></i> {(plan.max_downloads > 0) ? `${plan.max_downloads} Downloads/mo` : 'Unlimited Downloads'}
                                             </li>
                                         )}
                                     </ul>
 
                                     <button
-                                        className="tj-primary-btn"
-                                        style={{ width: '100%', justifyContent: 'center' }}
-                                        onClick={() => handlePurchase(plan.id)}
+                                        className={`tj-primary-btn ${isCurrentPlan ? 'disabled-btn' : ''}`}
+                                        style={{
+                                            width: '100%',
+                                            justifyContent: 'center',
+                                            opacity: isCurrentPlan ? 0.7 : 1,
+                                            cursor: isCurrentPlan ? 'not-allowed' : 'pointer',
+                                            backgroundColor: isCurrentPlan ? '#28a745' : ''
+                                        }}
+                                        onClick={() => !isCurrentPlan && handlePurchase(plan.id)}
+                                        disabled={isCurrentPlan}
                                     >
-                                        <span className="btn-text"><span>{user ? 'Choose Plan' : 'Get Started'}</span></span>
-                                        <span className="btn-icon"><i className="fas fa-arrow-right"></i></span>
+                                        <span className="btn-text"><span>{isCurrentPlan ? 'Current Plan' : (user ? 'Choose Plan' : 'Get Started')}</span></span>
+                                        {!isCurrentPlan && <span className="btn-icon"><i className="fas fa-arrow-right"></i></span>}
                                     </button>
                                 </div>
                             );

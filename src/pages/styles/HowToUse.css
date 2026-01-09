@@ -60,12 +60,17 @@
 }
 
 .step-content ul {
-    padding-left: 20px;
+    padding-left: 25px;
     margin-top: 15px;
+    margin-bottom: 15px;
+    list-style-type: disc;
+    list-style-position: outside;
 }
 
 .step-content li {
     margin-bottom: 10px;
+    display: list-item;
+    line-height: 1.6;
 }
 
 .video-container {

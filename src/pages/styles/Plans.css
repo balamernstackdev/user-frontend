@@ -11,11 +11,12 @@
 }
 
 .product-grid {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 30px;
     margin-bottom: 50px;
+    padding-top: 20px;
+    /* Prevent badge clipping */
 }
 
 .product-card {
@@ -29,9 +30,11 @@
     border: none;
     display: flex;
     flex-direction: column;
-    width: 350px;
-    /* Fixed width for consistent card size */
-    max-width: 100%;
+    width: 100%;
+    max-width: 400px;
+    /* Prevent excessive stretching */
+    margin: 0 auto;
+    /* Center in grid cell */
 }
 
 .product-card:hover {

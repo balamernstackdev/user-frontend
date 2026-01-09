@@ -55,22 +55,46 @@ const HowToUse = () => {
                                             dangerouslySetInnerHTML={{ __html: guide.content }}
                                         />
 
-                                        {guide.video_url && (
+                                        {guide.video_url ? (
                                             <div className="video-container">
-                                                {(guide.video_url.match(/\.(mp4|webm|ogg|mov)$/i) || guide.video_url.includes('cloudinary')) ? (
-                                                    <video controls>
-                                                        <source src={guide.video_url} />
+                                                {(guide.video_url.match(/\.(mp4|webm|ogg|mov|avi)$/i) || guide.video_url.includes('cloudinary')) ? (
+                                                    <video controls poster={guide.thumbnail_url}>
+                                                        {/* Force mp4 extension for Cloudinary to ensure auto-transcoding of AVI/MOV files */}
+                                                        <source src={guide.video_url.includes('cloudinary') ? guide.video_url.replace(/\.[^/.]+$/, ".mp4") : guide.video_url} />
                                                         Your browser does not support the video tag.
                                                     </video>
                                                 ) : (
                                                     <div className="video-placeholder">
-                                                        <i className="fas fa-video"></i>
-                                                        <p>Video: {guide.title}</p>
-                                                        <a href={guide.video_url} target="_blank" rel="noopener noreferrer" className="btn btn-sm btn-primary mt-2">Watch Video</a>
+                                                        {/* If it's an external link (youtube) and we have a thumbnail, maybe show it? 
+                                                            Standard YouTube embeds handle their own thumbnails usually, but here we just have a link button.
+                                                            Let's show the thumbnail if available behind the button or above it? 
+                                                            For now, let's keep it simple or maybe render an img above the button.
+                                                        */}
+                                                        {guide.thumbnail_url && (
+                                                            <img
+                                                                src={guide.thumbnail_url}
+                                                                alt={guide.title}
+                                                                style={{ maxWidth: '100%', maxHeight: '300px', borderRadius: '8px', marginBottom: '1rem' }}
+                                                            />
+                                                        )}
+                                                        <div className={guide.thumbnail_url ? "mt-2" : ""}>
+                                                            <i className="fas fa-video mb-2"></i>
+                                                            <p>Watch: {guide.title}</p>
+                                                            <a href={guide.video_url} target="_blank" rel="noopener noreferrer" className="btn btn-sm btn-primary">Watch on External Site</a>
+                                                        </div>
                                                     </div>
                                                 )}
                                             </div>
-                                        )}
+                                        ) : guide.thumbnail_url ? (
+                                            <div className="image-container mt-3">
+                                                <img
+                                                    src={guide.thumbnail_url}
+                                                    alt={guide.title}
+                                                    className="img-fluid rounded"
+                                                    style={{ maxHeight: '400px', width: 'auto' }}
+                                                />
+                                            </div>
+                                        ) : null}
                                     </div>
                                 ))
                             ) : (
