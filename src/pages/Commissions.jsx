@@ -141,9 +141,9 @@ const Commissions = () => {
                         </button>
                     </div>
 
-                    <div className="commissions-container">
-                        <h2>Commission History</h2>
-                        {commissions.length > 0 ? (
+                    {commissions.length > 0 ? (
+                        <div className="commissions-container">
+                            <h2>Commission History</h2>
                             <div className="table-responsive">
                                 <table className="commissions-table">
                                     <thead>
@@ -190,14 +190,16 @@ const Commissions = () => {
                                     </tbody>
                                 </table>
                             </div>
-                        ) : (
-                            <div className="no-data">
-                                <div className="icon">💰</div>
-                                <h3>No commissions yet</h3>
-                                <p>Start referring users to earn commission!</p>
+                        </div>
+                    ) : (
+                        <div className="no-content-state mb-4">
+                            <div className="no-content-icon">
+                                <i className="fas fa-coins"></i>
                             </div>
-                        )}
-                    </div>
+                            <h3>No commissions yet</h3>
+                            <p>Start referring users to earn commission! Your earnings will appear here once your referrals make successful payments.</p>
+                        </div>
+                    )}
                 </div>
             </section>
         </DashboardLayout>

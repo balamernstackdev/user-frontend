@@ -56,14 +56,16 @@ const MyPayments = () => {
 
                     <div className="row">
                         <div className="col-lg-12">
-                            <div className="payment-card animate-fade-up">
-                                {loading ? (
+                            {loading ? (
+                                <div className="payment-card animate-fade-up">
                                     <div className="text-center p-5">
                                         <div className="spinner-border text-primary" role="status">
                                             <span className="visually-hidden">Loading...</span>
                                         </div>
                                     </div>
-                                ) : transactions.length > 0 ? (
+                                </div>
+                            ) : transactions.length > 0 ? (
+                                <div className="payment-card animate-fade-up">
                                     <div className="table-responsive" style={{ overflowX: 'auto' }}>
                                         <table>
                                             <thead>
@@ -96,17 +98,20 @@ const MyPayments = () => {
                                             </tbody>
                                         </table>
                                     </div>
-                                ) : (
-                                    <div className="text-center p-5">
-                                        <div style={{ fontSize: '48px', marginBottom: '15px' }}>💳</div>
-                                        <h3>No transactions found</h3>
-                                        <p style={{ color: '#6c757d' }}>You haven't made any transactions yet.</p>
-                                        <Link to="/plans" className="tj-primary-btn" style={{ display: 'inline-flex', marginTop: '20px' }}>
-                                            <span className="btn-text"><span>Browse Plans</span></span>
-                                        </Link>
+                                </div>
+                            ) : (
+                                <div className="no-content-state mb-4">
+                                    <div className="no-content-icon">
+                                        <i className="fas fa-credit-card"></i>
                                     </div>
-                                )}
-                            </div>
+                                    <h3>No transactions found</h3>
+                                    <p>You haven't made any transactions yet. Your payment history will appear here once you purchase a plan.</p>
+                                    <Link to="/plans" className="tj-primary-btn" style={{ display: 'inline-flex' }}>
+                                        <span className="btn-text"><span>Browse Plans</span></span>
+                                        <span className="btn-icon"><i className="fas fa-arrow-right"></i></span>
+                                    </Link>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

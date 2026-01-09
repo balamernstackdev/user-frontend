@@ -67,8 +67,10 @@ const Plans = () => {
     const getPlanIcon = (planName) => {
         const name = planName.toLowerCase();
         if (name.includes('basic') || name.includes('starter')) return 'fa-rocket';
-        if (name.includes('premium') || name.includes('pro')) return 'fa-star';
-        if (name.includes('enterprise') || name.includes('business')) return 'fa-building';
+        if (name.includes('advanced')) return 'fa-bolt';
+        if (name.includes('premium') || name.includes('pro')) return 'fa-crown';
+        if (name.includes('enterprise') || name.includes('business')) return 'fa-gem';
+        if (name.includes('life time') || name.includes('lifetime')) return 'fa-infinity';
         return 'fa-box'; // default
     };
 

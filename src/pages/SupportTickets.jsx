@@ -79,10 +79,10 @@ const SupportTickets = () => {
             <SEO title="Support Tickets" description="View and manage your support tickets." />
             <section className="page-section">
                 <div className="container">
-                    <div className="page-header">
-                        <div>
+                    <div className="tickets-header-area">
+                        <div className="header-left">
                             <h2>My Tickets</h2>
-                            <p style={{ color: '#6c757d' }}>Manage your support tickets</p>
+                            <p>Manage your support tickets</p>
                         </div>
                         <Link to="/tickets/create" className="tj-primary-btn">
                             <span className="btn-text"><span>Create Ticket</span></span>
@@ -151,12 +151,15 @@ const SupportTickets = () => {
                                     })}
                                 </div>
                             ) : (
-                                <div className="text-center p-5" style={{ backgroundColor: '#fff', borderRadius: '12px' }}>
-                                    <div style={{ fontSize: '48px', marginBottom: '15px' }}>🎫</div>
+                                <div className="no-content-state mb-4">
+                                    <div className="no-content-icon">
+                                        <i className="fas fa-ticket-alt"></i>
+                                    </div>
                                     <h3>No support tickets</h3>
-                                    <p style={{ color: '#6c757d' }}>You haven't created any support tickets yet.</p>
-                                    <Link to="/tickets/create" className="tj-primary-btn" style={{ display: 'inline-flex', marginTop: '20px' }}>
+                                    <p>You haven't created any support tickets yet. If you need assistance, please create a ticket and our team will get back to you.</p>
+                                    <Link to="/tickets/create" className="tj-primary-btn" style={{ display: 'inline-flex' }}>
                                         <span className="btn-text"><span>Create Your First Ticket</span></span>
+                                        <span className="btn-icon"><i className="fas fa-arrow-right"></i></span>
                                     </Link>
                                 </div>
                             )}

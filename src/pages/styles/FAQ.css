@@ -1,12 +1,19 @@
-/* FAQ Page Styles */
+/* Page Styles */
 .page-section {
-    /* Padding handled by DashboardLayout */
-    background-color: var(--tj-color-grey-1, #f5f5f5);
+    background-color: #f8fbfd;
     min-height: 80vh;
 }
 
+.page-content-900 {
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* No Content State */
+
 .page-header {
-    margin-bottom: 40px;
+    margin-bottom: 25px;
     text-align: center;
 }
 
@@ -19,8 +26,9 @@
 
 .search-box {
     width: 100%;
-    margin: 0 auto 40px;
+    margin-bottom: 40px;
     position: relative;
+    display: block;
 }
 
 .search-box input {
@@ -48,6 +56,10 @@
     outline: none;
     border-color: var(--tj-color-theme-primary, #13689e);
     box-shadow: 0 0 0 3px rgba(19, 104, 158, 0.1);
+}
+
+.faq-list {
+    width: 100%;
 }
 
 .faq-item {

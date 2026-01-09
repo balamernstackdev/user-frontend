@@ -15,6 +15,7 @@ const CuratedAnalysis = () => {
     const [analysis, setAnalysis] = useState(null);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('all');
+    const [categories, setCategories] = useState(['all']);
     const [hasAccess, setHasAccess] = useState(false);
     const user = authService.getUser();
     const userRole = (user?.role || '').toLowerCase().trim();
@@ -25,9 +26,22 @@ const CuratedAnalysis = () => {
             fetchAnalysisDetail();
         } else {
             fetchAnalyses();
+            fetchCategories();
         }
         checkSubscription();
     }, [id, filter]);
+
+    const fetchCategories = async () => {
+        try {
+            const response = await AnalysisService.getCategories();
+            if (response.status === 'success') {
+                const dynamicCats = response.data.map(c => c.category);
+                setCategories(['all', ...dynamicCats]);
+            }
+        } catch (err) {
+            console.error('Failed to fetch categories', err);
+        }
+    };
 
     const checkSubscription = async () => {
         if (isStaff) {
@@ -186,7 +200,7 @@ const CuratedAnalysis = () => {
                     </div>
 
                     <div className="category-filter">
-                        {['all', 'Technical', 'Fundamental', 'Crypto', 'Stocks'].map(cat => (
+                        {categories.map(cat => (
                             <button
                                 key={cat}
                                 className={`filter-btn ${filter === cat ? 'active' : ''}`}

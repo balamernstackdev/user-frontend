@@ -52,58 +52,58 @@ const FAQ = () => {
         <DashboardLayout>
             <section className="page-section">
                 <div className="container">
-                    <div className="row justify-content-center">
-                        <div className="col-lg-8">
-                            <div className="page-header text-center mb-5 animate-fade-up">
-                                <h2>Frequently Asked Questions</h2>
-                                <p style={{ color: 'var(--tj-color-text-body-3)' }}>Find answers to common questions</p>
-                            </div>
-
-                            <div className="search-box animate-fade-up mb-5" style={{ animationDelay: '0.1s' }}>
-                                <i className="fas fa-search"></i>
-                                <input
-                                    type="text"
-                                    placeholder="Search for questions..."
-                                    value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                />
-                            </div>
-
-                            {loading ? (
-                                <div className="text-center py-5">
-                                    <div className="spinner-border text-primary" role="status">
-                                        <span className="visually-hidden">Loading...</span>
-                                    </div>
-                                </div>
-                            ) : filteredFAQs.length > 0 ? (
-                                <div className="faq-list">
-                                    {filteredFAQs.map((item, index) => (
-                                        <div
-                                            key={item.id || index}
-                                            className={`faq-item animate-fade-up ${activeIndex === index ? 'active' : ''}`}
-                                            style={{ animationDelay: `${0.2 + (index * 0.05)}s` }}
-                                        >
-                                            <div
-                                                className="faq-question"
-                                                onClick={() => toggleAccordion(index)}
-                                            >
-                                                <span>{item.question}</span>
-                                                <i className="fas fa-chevron-down"></i>
-                                            </div>
-                                            <div className="faq-answer">
-                                                {item.answer}
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            ) : (
-                                <div className="no-results animate-fade-up text-center">
-                                    <i className="fas fa-question-circle"></i>
-                                    <h3>No questions found</h3>
-                                    <p>Try searching for something else or contact support.</p>
-                                </div>
-                            )}
+                    <div className="page-content-900">
+                        <div className="page-header text-center mb-5 animate-fade-up">
+                            <h2>Frequently Asked Questions</h2>
+                            <p style={{ color: 'var(--tj-color-text-body-3)' }}>Find answers to common questions</p>
                         </div>
+
+                        <div className="search-box animate-fade-up mb-5" style={{ animationDelay: '0.1s' }}>
+                            <i className="fas fa-search"></i>
+                            <input
+                                type="text"
+                                placeholder="Search for questions..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                        </div>
+
+                        {loading ? (
+                            <div className="text-center py-5">
+                                <div className="spinner-border text-primary" role="status">
+                                    <span className="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
+                        ) : filteredFAQs.length > 0 ? (
+                            <div className="faq-list">
+                                {filteredFAQs.map((item, index) => (
+                                    <div
+                                        key={item.id || index}
+                                        className={`faq-item animate-fade-up ${activeIndex === index ? 'active' : ''}`}
+                                        style={{ animationDelay: `${0.2 + (index * 0.05)}s` }}
+                                    >
+                                        <div
+                                            className="faq-question"
+                                            onClick={() => toggleAccordion(index)}
+                                        >
+                                            <span>{item.question}</span>
+                                            <i className="fas fa-chevron-down"></i>
+                                        </div>
+                                        <div className="faq-answer">
+                                            {item.answer}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="no-content-state mb-4">
+                                <div className="no-content-icon">
+                                    <i className="fas fa-question-circle"></i>
+                                </div>
+                                <h3>No questions found</h3>
+                                <p>We couldn't find any answers matching your search. Try different keywords or contact our support team.</p>
+                            </div>
+                        )}
                     </div>
                 </div>
             </section>

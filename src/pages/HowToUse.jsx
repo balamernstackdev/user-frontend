@@ -33,7 +33,7 @@ const HowToUse = () => {
                         <p style={{ color: '#6c757d' }}>Step-by-step guide to get started</p>
                     </div>
 
-                    <div className="row">
+                    <div className="row justify-content-center">
                         <div className="col-lg-10 mx-auto">
                             {loading ? (
                                 <div className="text-center py-5">
@@ -98,8 +98,12 @@ const HowToUse = () => {
                                     </div>
                                 ))
                             ) : (
-                                <div className="text-center py-5">
-                                    <p>No guides available at the moment.</p>
+                                <div className="no-content-state mb-4">
+                                    <div className="no-content-icon">
+                                        <i className="fas fa-book-open"></i>
+                                    </div>
+                                    <h3>No instructions found</h3>
+                                    <p>Our team is currently preparing the user guides for this section. Please check back later.</p>
                                 </div>
                             )}
                         </div>

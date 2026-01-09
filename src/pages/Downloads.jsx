@@ -138,14 +138,20 @@ const Downloads = () => {
                     </div>
 
                     {!subscription && !loading && (
-                        <div className="no-content-state mb-4">
-                            <div className="no-content-icon"><i className="fas fa-lock"></i></div>
-                            <h3>No Active Subscription</h3>
-                            <p>You need an active subscription to access downloadable files.</p>
-                            <Link to="/plans" className="tj-primary-btn" style={{ display: 'inline-flex' }}>
-                                <span className="btn-text"><span>View Plans</span></span>
-                                <span className="btn-icon"><i className="fas fa-arrow-right"></i></span>
-                            </Link>
+                        <div className="row justify-content-center mt-5">
+                            <div className="col-lg-12">
+                                <div className="no-content-state">
+                                    <div className="no-content-icon">
+                                        <i className="fas fa-lock"></i>
+                                    </div>
+                                    <h3>No Active Subscription</h3>
+                                    <p>Unlock premium resources and downloadable files by subscribing to one of our plans.</p>
+                                    <Link to="/plans" className="tj-primary-btn" style={{ display: 'inline-flex' }}>
+                                        <span className="btn-text"><span>Explore Plans</span></span>
+                                        <span className="btn-icon"><i className="fas fa-arrow-right"></i></span>
+                                    </Link>
+                                </div>
+                            </div>
                         </div>
                     )}
 

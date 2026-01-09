@@ -80,8 +80,20 @@ const Subscription = () => {
                             <h2>My Subscription</h2>
                             <p style={{ color: '#6c757d' }}>Manage your subscription plan and billing</p>
                         </div>
-                        <div className="alert alert-info">
-                            You do not have an active subscription. <Link to="/plans">Browse Plans</Link>
+                        <div className="row justify-content-center">
+                            <div className="col-lg-12">
+                                <div className="no-content-state">
+                                    <div className="no-content-icon">
+                                        <i className="fas fa-crown"></i>
+                                    </div>
+                                    <h3>No Active Subscription</h3>
+                                    <p>Experience the full power of our platform with a premium plan. Unlock exclusive tools, reports, and priority support today.</p>
+                                    <Link to="/plans" className="tj-primary-btn" style={{ display: 'inline-flex' }}>
+                                        <span className="btn-text"><span>Explore Premium Plans</span></span>
+                                        <span className="btn-icon"><i className="fas fa-arrow-right"></i></span>
+                                    </Link>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </section>
