@@ -6,6 +6,7 @@ import planService from '../services/plan.service';
 import Pagination from '../components/common/Pagination';
 import SEO from '../components/common/SEO';
 import { toast } from 'react-toastify';
+import { Plus, Search, Filter, Mail, Package, Calendar, Clock, Edit, Trash, AlertCircle, User, CreditCard } from 'lucide-react';
 import './styles/AdminListings.css';
 
 const AdminSubscriptions = () => {
@@ -94,175 +95,183 @@ const AdminSubscriptions = () => {
     return (
         <DashboardLayout>
             <SEO title="User Subscriptions" description="Manage user subscriptions" />
+
             <div className="admin-listing-page animate-fade-up">
-                <div className="container">
+                <div className="admin-container">
                     <div className="admin-listing-header">
                         <div className="header-title">
                             <h1>User Subscriptions</h1>
-                            <p style={{ color: '#6c757d' }}>Monitor and manage active user plans</p>
+                            <p className="text-muted mb-0">Monitor and manage active user plans and access</p>
+                        </div>
+                        <div className="header-actions">
+                            <button
+                                className="tj-btn tj-btn-primary"
+                                onClick={() => navigate('/admin/subscriptions/create')}
+                            >
+                                <Plus size={18} className="me-2" /> Add Subscription
+                            </button>
                         </div>
                     </div>
 
-                    <div className="admin-listing-toolbar mb-4" style={{
-                        backgroundColor: 'white',
-                        padding: '15px 20px',
-                        borderRadius: '12px',
-                        boxShadow: '0 2px 6px rgba(0,0,0,0.02)',
-                        border: '1px solid rgba(0,0,0,0.05)'
-                    }}>
+                    <div className="admin-listing-toolbar">
                         <div className="d-flex flex-wrap align-items-center justify-content-between gap-3">
-                            {/* Left Side: Search */}
-                            <div className="flex-grow-1" style={{ maxWidth: '400px' }}>
-                                <div className="position-relative">
-                                    <input
-                                        type="text"
-                                        className="form-control form-control-sm ps-4"
-                                        placeholder="Search by name or email..."
-                                        value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
-                                        style={{ borderRadius: '6px', borderColor: '#e2e8f0', height: '38px' }}
-                                    />
-                                    <i className="fas fa-search position-absolute text-muted" style={{ left: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '14px' }}></i>
-                                </div>
+                            <div className="search-box flex-grow-1" style={{ maxWidth: '400px' }}>
+                                <Search size={18} className="search-icon" />
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="Search by name or email..."
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                />
                             </div>
 
-                            {/* Right Side: Filters & Actions */}
-                            <div className="d-flex align-items-center gap-3">
-                                <select
-                                    className="form-select form-select-sm"
-                                    value={statusFilter}
-                                    onChange={(e) => setStatusFilter(e.target.value)}
-                                    style={{ borderRadius: '6px', borderColor: '#e2e8f0', minWidth: '150px', height: '38px' }}
-                                >
-                                    <option value="">All Status</option>
-                                    <option value="active">Active</option>
-                                    <option value="pending">Pending</option>
-                                    <option value="expired">Expired</option>
-                                    <option value="upgraded">Upgraded</option>
-                                    <option value="cancelled">Cancelled</option>
-                                </select>
-
-                                <button
-                                    className="tj-primary-btn"
-                                    onClick={() => navigate('/admin/subscriptions/create')}
-                                    style={{
-                                        height: '38px',
-                                        borderRadius: '6px',
-                                        padding: '0 20px',
-                                        display: 'inline-flex',
-                                        alignItems: 'center',
-                                        fontSize: '14px',
-                                        fontWeight: 500
-                                    }}
-                                >
-                                    <span className="btn-text">Add Subscription</span>
-                                    <span className="btn-icon">
-                                        <i className="fas fa-arrow-right"></i>
-                                    </span>
-                                </button>
+                            <div className="d-flex gap-2">
+                                <div className="d-flex align-items-center gap-2">
+                                    <Filter size={14} className="text-muted" />
+                                    <select
+                                        className="custom-select"
+                                        value={statusFilter}
+                                        onChange={(e) => setStatusFilter(e.target.value)}
+                                        style={{ height: '42px', minWidth: '150px' }}
+                                    >
+                                        <option value="">All Status</option>
+                                        <option value="active">Active Memberships</option>
+                                        <option value="pending">Pending Payment</option>
+                                        <option value="expired">Expired Access</option>
+                                        <option value="upgraded">Upgraded Plans</option>
+                                        <option value="cancelled">Terminated</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <div className="listing-table-container">
-                        <table className="listing-table">
-                            <thead>
-                                <tr>
-                                    <th>User</th>
-                                    <th>Plan</th>
-                                    <th>Status</th>
-                                    <th>Period</th>
-                                    <th>Created At</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {loading ? (
-                                    <tr><td colSpan="6" className="text-center">Loading...</td></tr>
-                                ) : subscriptions.length === 0 ? (
-                                    <tr><td colSpan="6" className="text-center" style={{ padding: '50px' }}>No subscriptions found</td></tr>
-                                ) : (
-                                    subscriptions.map(sub => (
-                                        <tr key={sub.id}>
-                                            <td>
-                                                <div className="plan-info-cell">
-                                                    <span className="plan-name-text">{sub.user_name}</span>
-                                                    <span className="plan-slug-text">{sub.user_email}</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div className="plan-info-cell">
-                                                    <span className="plan-name-text">{sub.plan_name}</span>
-                                                    <span className="plan-slug-text">{sub.plan_type}</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <span className="plan-type-badge" style={{
-                                                    background: getStatusColor(sub.status).bg,
-                                                    color: getStatusColor(sub.status).color
-                                                }}>
-                                                    {sub.status.charAt(0).toUpperCase() + sub.status.slice(1)}
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <div style={{ fontSize: '13px' }}>
-                                                    <div>From: {sub.start_date ? new Date(sub.start_date).toLocaleDateString('en-GB') : 'N/A'}</div>
-                                                    <div>To: {sub.end_date ? new Date(sub.end_date).toLocaleDateString('en-GB') : 'N/A'}</div>
-                                                </div>
-                                            </td>
-                                            <td>{new Date(sub.created_at).toLocaleDateString('en-GB')}</td>
-                                            <td>
-                                                <div className="actions-cell">
-                                                    <button
-                                                        className="action-btn"
-                                                        onClick={() => navigate(`/admin/subscriptions/edit/${sub.id}`)}
-                                                        title="Edit Subscription"
-                                                    >
-                                                        <i className="fas fa-edit"></i>
-                                                    </button>
-                                                    <button
-                                                        className="action-btn delete"
-                                                        onClick={() => handleDeleteClick(sub)}
-                                                        title="Delete Subscription"
-                                                    >
-                                                        <i className="fas fa-trash"></i>
-                                                    </button>
-                                                </div>
+                        <div className="table-responsive">
+                            <table className="listing-table">
+                                <thead>
+                                    <tr>
+                                        <th>User Details</th>
+                                        <th>Plan Info</th>
+                                        <th>Status</th>
+                                        <th>Period</th>
+                                        <th>Created At</th>
+                                        <th className="text-end">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {loading ? (
+                                        <tr><td colSpan="6" className="text-center py-5 text-muted">Refreshing subscriptions...</td></tr>
+                                    ) : subscriptions.length === 0 ? (
+                                        <tr>
+                                            <td colSpan="6" className="text-center py-5">
+                                                <div className="text-muted mb-2"><CreditCard size={40} className="opacity-20" /></div>
+                                                <p className="text-muted mb-0">No subscriptions found matching your filters</p>
                                             </td>
                                         </tr>
-                                    ))
-                                )}
-                            </tbody>
-                        </table>
+                                    ) : (
+                                        subscriptions.map(sub => (
+                                            <tr key={sub.id}>
+                                                <td>
+                                                    <div className="d-flex flex-column">
+                                                        <span className="fw-semibold text-dark d-flex align-items-center gap-1">
+                                                            <User size={12} className="text-muted" /> {sub.user_name}
+                                                        </span>
+                                                        <span className="text-muted small d-flex align-items-center gap-1">
+                                                            <Mail size={10} /> {sub.user_email}
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div className="d-flex flex-column">
+                                                        <span className="fw-semibold text-dark d-flex align-items-center gap-1">
+                                                            <Package size={12} className="text-muted" /> {sub.plan_name}
+                                                        </span>
+                                                        <span className="text-muted small text-capitalize">{sub.plan_type} Tier</span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span className={`premium-badge ${sub.status === 'active' ? 'premium-badge-success' :
+                                                        sub.status === 'expired' ? 'premium-badge-danger' :
+                                                            sub.status === 'pending' ? 'premium-badge-warning' :
+                                                                'premium-badge-info'
+                                                        }`}>
+                                                        {sub.status.toUpperCase()}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <div className="text-muted small">
+                                                        <div className="d-flex align-items-center gap-1">
+                                                            <Clock size={10} /> <span className="fw-medium text-dark">Start:</span> {sub.start_date ? new Date(sub.start_date).toLocaleDateString('en-GB') : 'N/A'}
+                                                        </div>
+                                                        <div className="d-flex align-items-center gap-1">
+                                                            <Calendar size={10} /> <span className="fw-medium text-dark">End:</span> {sub.end_date ? new Date(sub.end_date).toLocaleDateString('en-GB') : 'N/A'}
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div className="text-muted small d-flex align-items-center gap-1">
+                                                        <Calendar size={12} />
+                                                        {new Date(sub.created_at).toLocaleDateString('en-GB')}
+                                                    </div>
+                                                </td>
+                                                <td className="text-end">
+                                                    <div className="actions-cell justify-content-end">
+                                                        <button
+                                                            className="action-btn"
+                                                            onClick={() => navigate(`/admin/subscriptions/edit/${sub.id}`)}
+                                                            title="Edit Subscription"
+                                                        >
+                                                            <Edit size={16} />
+                                                        </button>
+                                                        <button
+                                                            className="action-btn delete"
+                                                            onClick={() => handleDeleteClick(sub)}
+                                                            title="Terminate Subscription"
+                                                        >
+                                                            <Trash size={16} />
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
 
                         {subscriptions.length > 0 && (
-                            <Pagination
-                                currentPage={pagination.page}
-                                totalPages={Math.ceil(pagination.total / pagination.limit)}
-                                onPageChange={(newPage) => {
-                                    setPagination(prev => ({ ...prev, page: newPage }));
-                                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                                }}
-                            />
+                            <div className="p-4 border-top">
+                                <Pagination
+                                    currentPage={pagination.page}
+                                    totalPages={Math.ceil(pagination.total / pagination.limit)}
+                                    onPageChange={(newPage) => {
+                                        setPagination(prev => ({ ...prev, page: newPage }));
+                                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                                    }}
+                                />
+                            </div>
                         )}
                     </div>
                 </div>
             </div>
+
             {/* Delete Confirmation Modal */}
             {showDeleteModal && (
                 <div className="modal-overlay">
-                    <div className="modal-content" style={{ maxWidth: '400px' }}>
-                        <div className="modal-header">
-                            <h2>Confirm Delete</h2>
-                            <button className="close-btn" onClick={() => setShowDeleteModal(false)}>&times;</button>
+                    <div className="modal-content animate-scale-up" style={{ maxWidth: '450px' }}>
+                        <div className="modal-header border-0 pb-0">
+                            <h5 className="fw-bold mb-0">Confirm Delete</h5>
+                            <button className="btn-close" onClick={() => setShowDeleteModal(false)}></button>
                         </div>
-                        <div className="modal-body">
-                            <p>Are you sure you want to delete this subscription for <strong>{subToDelete?.user_name}</strong>?</p>
-                            <p className="text-muted small">This action cannot be undone.</p>
+                        <div className="modal-body py-4">
+                            <p className="mb-2">Are you sure you want to delete this subscription for <strong>{subToDelete?.user_name}</strong>?</p>
+                            <p className="text-muted small mb-0">This action will remove the plan access for the user and cannot be undone.</p>
                         </div>
-                        <div className="modal-footer">
-                            <button className="btn-secondary" onClick={() => setShowDeleteModal(false)}>Cancel</button>
-                            <button className="tj-btn tj-btn-danger" onClick={confirmDelete}>Delete</button>
+                        <div className="modal-footer border-0 pt-0">
+                            <button className="tj-btn tj-btn-sm tj-btn-outline-primary" onClick={() => setShowDeleteModal(false)}>Cancel</button>
+                            <button className="tj-btn tj-btn-sm tj-btn-danger" onClick={confirmDelete}>Confirm Delete</button>
                         </div>
                     </div>
                 </div>

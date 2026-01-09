@@ -2,6 +2,21 @@
 .page-section {
     background-color: #f8fbfd;
     min-height: 80vh;
+    padding: 80px 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.page-header h2 {
+    font-size: 36px;
+    font-weight: 700;
+    color: #0d233e;
+    margin-bottom: 10px;
 }
 
 /* No Content State */
@@ -58,48 +73,51 @@
     background-color: #ffffff;
     border-radius: 12px;
     padding: 40px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
     margin-bottom: 30px;
+    border: 1px solid #f0f0f0;
 }
 
 .subscription-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 30px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid #e5e5e5;
+    margin-bottom: 40px;
+    padding-bottom: 10px;
 }
 
 .subscription-title {
     font-size: 24px;
-    font-weight: 600;
-    color: #000000;
+    font-weight: 700;
+    color: #0d233e;
     margin: 0;
 }
 
 .subscription-status {
-    padding: 8px 16px;
+    padding: 6px 16px;
     border-radius: 20px;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
+    text-transform: lowercase;
 }
 
 .subscription-status.active {
-    background-color: #d4edda;
-    color: #155724;
+    background-color: #e6f7ef;
+    color: #00b67a;
 }
 
 .subscription-status.inactive {
-    background-color: #f8d7da;
-    color: #721c24;
+    background-color: #fff1f0;
+    color: #f5222d;
 }
 
 .subscription-info {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 25px;
-    margin-bottom: 30px;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 30px;
+    margin-bottom: 40px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid #f0f0f0;
 }
 
 .info-item {
@@ -108,31 +126,35 @@
 }
 
 .info-label {
-    font-size: 13px;
-    color: #6c757d;
-    margin-bottom: 5px;
+    font-size: 12px;
+    color: #8c98a4;
+    margin-bottom: 8px;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.8px;
     font-weight: 600;
 }
 
 .info-value {
-    font-size: 18px;
-    font-weight: 600;
-    color: #000000;
+    font-size: 15px;
+    font-weight: 700;
+    color: #0d233e;
+}
+
+/* Specific styling for 'On' value in Auto Renew */
+.info-value.text-success {
+    color: #00b67a !important;
 }
 
 .subscription-features {
-    margin-top: 30px;
-    padding-top: 30px;
-    border-top: 1px solid #e5e5e5;
+    margin-top: 0;
+    padding-top: 0;
 }
 
 .subscription-features h4 {
     font-size: 18px;
-    margin-bottom: 20px;
-    color: #000000;
-    font-weight: 600;
+    margin-bottom: 25px;
+    color: #0d233e;
+    font-weight: 700;
 }
 
 .features-list {
@@ -140,44 +162,64 @@
     padding: 0;
     margin: 0;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 15px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px 30px;
 }
 
 .features-list li {
-    padding: 10px 0;
-    color: #000000;
+    padding: 0;
+    color: #4a5568;
     display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 15px;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 14px;
+    line-height: 1.4;
 }
 
 .features-list li i {
     color: #13689e;
-    font-size: 16px;
+    font-size: 14px;
     flex-shrink: 0;
+    margin-top: 2px;
 }
 
 .subscription-actions {
-    margin-top: 30px;
+    margin-top: 40px;
     display: flex;
     gap: 15px;
     flex-wrap: wrap;
 }
 
+@media (max-width: 1199px) {
+    .subscription-info {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .features-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
 @media (max-width: 767px) {
     .subscription-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 15px;
+        flex-direction: row;
+        justify-content: space-between;
     }
 
     .subscription-card {
         padding: 30px 20px;
     }
 
+    .subscription-info {
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
     .features-list {
         grid-template-columns: 1fr;
+    }
+
+    .page-header h2 {
+        font-size: 28px;
     }
 }

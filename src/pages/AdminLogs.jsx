@@ -3,6 +3,7 @@ import { activityService } from '../services/activity.service';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import Pagination from '../components/common/Pagination';
 import SEO from '../components/common/SEO';
+import { ShieldCheck, Search, Filter, Calendar, Terminal, User, Globe, Activity, CheckCircle, XCircle } from 'lucide-react';
 import './styles/AdminListings.css';
 
 const AdminLogs = () => {
@@ -58,153 +59,158 @@ const AdminLogs = () => {
     return (
         <DashboardLayout>
             <SEO title="System Logs" description="View system activity logs" />
+
             <div className="admin-listing-page animate-fade-up">
-                <div className="container">
+                <div className="admin-container">
                     <div className="admin-listing-header">
                         <div className="header-title">
                             <h1>System Logs</h1>
-                            <p style={{ color: '#6c757d' }}>Monitor system activities and security events</p>
+                            <p className="text-muted mb-0">Monitor system activities and security events</p>
                         </div>
                     </div>
 
-                    <div className="admin-listing-toolbar mb-4" style={{
-                        backgroundColor: 'white',
-                        padding: '15px 20px',
-                        borderRadius: '12px',
-                        boxShadow: '0 2px 6px rgba(0,0,0,0.02)',
-                        border: '1px solid rgba(0,0,0,0.05)'
-                    }}>
+                    <div className="admin-listing-toolbar">
                         <div className="d-flex flex-wrap align-items-center justify-content-between gap-3">
-                            {/* Left Side: Date Filters */}
+                            {/* Date Filters */}
                             <div className="d-flex align-items-center gap-3">
-                                <span className="text-muted small fw-bold text-uppercase" style={{ fontSize: '12px', letterSpacing: '0.5px' }}>Filter Date:</span>
                                 <div className="d-flex align-items-center gap-2">
-                                    <div className="input-group input-group-sm" style={{ width: '160px' }}>
-                                        <span className="input-group-text bg-white border-end-0 text-muted pe-1">
-                                            <i className="far fa-calendar-alt"></i>
-                                        </span>
-                                        <input
-                                            type="date"
-                                            className="form-control border-start-0 ps-2"
-                                            value={filters.startDate}
-                                            onChange={(e) => handleFilterChange('startDate', e.target.value)}
-                                            style={{ borderColor: '#dee2e6', color: '#6c757d' }}
-                                        />
-                                    </div>
-                                    <span className="text-muted small">to</span>
-                                    <div className="input-group input-group-sm" style={{ width: '160px' }}>
-                                        <span className="input-group-text bg-white border-end-0 text-muted pe-1">
-                                            <i className="far fa-calendar-alt"></i>
-                                        </span>
-                                        <input
-                                            type="date"
-                                            className="form-control border-start-0 ps-2"
-                                            value={filters.endDate}
-                                            onChange={(e) => handleFilterChange('endDate', e.target.value)}
-                                            style={{ borderColor: '#dee2e6', color: '#6c757d' }}
-                                        />
-                                    </div>
-                                    {(filters.startDate || filters.endDate) && (
+                                    <input
+                                        type="date"
+                                        className="custom-select"
+                                        style={{ height: '42px' }}
+                                        value={filters.startDate}
+                                        onChange={(e) => handleFilterChange('startDate', e.target.value)}
+                                    />
+                                    <span className="text-muted">to</span>
+                                    <input
+                                        type="date"
+                                        className="custom-select"
+                                        style={{ height: '42px' }}
+                                        value={filters.endDate}
+                                        onChange={(e) => handleFilterChange('endDate', e.target.value)}
+                                    />
+                                    {(filters.startDate || filters.endDate || filters.userId || filters.actionType) && (
                                         <button
-                                            className="btn btn-sm text-danger ms-1"
-                                            onClick={() => { handleFilterChange('startDate', ''); handleFilterChange('endDate', ''); }}
-                                            title="Clear Dates"
-                                            style={{ background: 'none', border: 'none' }}
+                                            className="tj-btn tj-btn-sm tj-btn-outline-danger"
+                                            onClick={() => {
+                                                setFilters({ actionType: '', userId: '', startDate: '', endDate: '' });
+                                                setPagination(prev => ({ ...prev, page: 1 }));
+                                            }}
                                         >
-                                            <i className="fas fa-times"></i>
+                                            Clear Filters
                                         </button>
                                     )}
                                 </div>
                             </div>
 
-                            {/* Right Side: Filters & Search */}
-                            <div className="d-flex align-items-center gap-3">
-                                <div className="position-relative">
+                            <div className="d-flex align-items-center gap-2 flex-grow-1" style={{ maxWidth: '600px' }}>
+                                <div className="search-box flex-grow-1">
+                                    <Search size={18} className="search-icon" />
                                     <input
                                         type="text"
-                                        className="form-control form-control-sm ps-4"
-                                        placeholder="Search by User ID..."
+                                        className="form-control"
+                                        placeholder="Search User ID or Email..."
                                         value={filters.userId}
                                         onChange={(e) => handleFilterChange('userId', e.target.value)}
-                                        style={{ borderRadius: '6px', borderColor: '#e2e8f0', width: '200px' }}
                                     />
-                                    <i className="fas fa-search position-absolute text-muted" style={{ left: '10px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px' }}></i>
                                 </div>
 
-                                <div className="vr mx-1" style={{ color: '#e2e8f0' }}></div>
-
                                 <select
-                                    className="form-select form-select-sm"
+                                    className="custom-select"
                                     value={filters.actionType}
                                     onChange={(e) => handleFilterChange('actionType', e.target.value)}
-                                    style={{ borderRadius: '6px', borderColor: '#e2e8f0', minWidth: '150px' }}
+                                    style={{ width: '180px' }}
                                 >
                                     <option value="">All Actions</option>
-                                    <option value="auth">Auth</option>
-                                    <option value="payment">Payment</option>
-                                    <option value="new_commission">Commission</option>
-                                    <option value="admin_action">Admin Action</option>
+                                    <option value="auth">Auth Events</option>
+                                    <option value="payment">Payment Activity</option>
+                                    <option value="new_commission">Commissions</option>
+                                    <option value="profile">Profile Updates</option>
+                                    <option value="system">System Events</option>
                                 </select>
                             </div>
                         </div>
                     </div>
-                    <div className="listing-table-container">
-                        <table className="listing-table">
-                            <thead>
-                                <tr>
-                                    <th>Timestamp</th>
-                                    <th>User</th>
-                                    <th>Action</th>
-                                    <th>Description</th>
-                                    <th>Status</th>
-                                    <th>IP</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {loading ? (
-                                    <tr><td colSpan="6" className="text-center">Loading...</td></tr>
-                                ) : logs.length === 0 ? (
-                                    <tr><td colSpan="6" className="text-center" style={{ padding: '50px' }}>No logs found</td></tr>
-                                ) : (
-                                    logs.map(log => (
-                                        <tr key={log.id}>
-                                            <td>{new Date(log.created_at).toLocaleString()}</td>
-                                            <td>
-                                                <div className="plan-info-cell">
-                                                    <span className="plan-name-text" style={{ fontSize: '14px' }}>{log.user_name || 'System'}</span>
-                                                    <span className="plan-slug-text">{log.user_email}</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <span className="plan-type-badge" style={{ background: '#f5f5f5', color: '#666' }}>{log.action_type}</span> <br />
-                                                <small style={{ marginTop: '5px', display: 'block' }}>{log.action}</small>
-                                            </td>
-                                            <td style={{ maxWidth: '300px' }}>{log.description}</td>
-                                            <td>
-                                                <span className={`plan-type-badge`} style={{
-                                                    background: log.status === 'success' ? '#e8f5e9' : '#ffebee',
-                                                    color: log.status === 'success' ? '#2e7d32' : '#c62828'
-                                                }}>
-                                                    {log.status}
-                                                </span>
-                                            </td>
-                                            <td style={{ fontFamily: 'monospace' }}>{log.ip_address}</td>
-                                        </tr>
-                                    ))
-                                )}
-                            </tbody>
-                        </table>
 
-                        {/* Pagination Buttons */}
-                        {logs.length > 0 && (
-                            <Pagination
-                                currentPage={pagination.page}
-                                totalPages={Math.ceil(pagination.total / pagination.limit)}
-                                onPageChange={(newPage) => {
-                                    setPagination(prev => ({ ...prev, page: newPage }));
-                                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                                }}
-                            />
+                    <div className="listing-table-container">
+                        <div className="table-responsive">
+                            <table className="listing-table">
+                                <thead>
+                                    <tr>
+                                        <th>Timestamp</th>
+                                        <th>User Details</th>
+                                        <th>Action & Type</th>
+                                        <th>Description</th>
+                                        <th>Status & IP</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {loading ? (
+                                        <tr><td colSpan="5" className="text-center py-5 text-muted">Loading activity logs...</td></tr>
+                                    ) : logs.length === 0 ? (
+                                        <tr>
+                                            <td colSpan="5" className="text-center py-5">
+                                                <div className="text-muted mb-2"><Terminal size={40} className="opacity-20" /></div>
+                                                <p className="text-muted mb-0">No logs found matching your filters</p>
+                                            </td>
+                                        </tr>
+                                    ) : (
+                                        logs.map(log => (
+                                            <tr key={log.id}>
+                                                <td>
+                                                    <div className="d-flex align-items-center gap-2 text-muted small">
+                                                        <Calendar size={12} />
+                                                        {new Date(log.created_at).toLocaleString('en-GB', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div className="d-flex align-items-center gap-2">
+                                                        <div className="avatar-circle-sm" style={{ background: '#f8fafc', border: '1px solid #e2e8f0', color: '#64748b' }}>
+                                                            <User size={12} />
+                                                        </div>
+                                                        <div className="d-flex flex-column">
+                                                            <span className="fw-semibold text-dark">{log.user_name || 'System'}</span>
+                                                            <span className="text-muted small">{log.user_email || 'automated_event'}</span>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span className="premium-badge mb-1" style={{ background: '#f1f5f9', color: '#475569' }}>
+                                                        <Terminal size={12} className="me-1" /> {log.action_type || 'SYSTEM'}
+                                                    </span>
+                                                    <div className="small fw-medium text-dark">{log.action || '-'}</div>
+                                                </td>
+                                                <td>
+                                                    <div className="small text-muted text-wrap" style={{ maxWidth: '350px' }}>
+                                                        {log.description}
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div className="d-flex flex-column gap-1">
+                                                        <span className={`premium-badge ${log.status === 'success' ? 'premium-badge-success' : 'premium-badge-danger'}`}>
+                                                            {log.status === 'success' ? <CheckCircle size={10} className="me-1" /> : <XCircle size={10} className="me-1" />}
+                                                            {log.status}
+                                                        </span>
+                                                        <div className="small text-muted font-monospace d-flex align-items-center gap-1">
+                                                            <Globe size={10} /> {log.ip_address || 'unknown'}
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                        {pagination.total > 0 && (
+                            <div className="mt-4 p-4 border-top d-flex justify-content-center">
+                                <Pagination
+                                    currentPage={pagination.page}
+                                    totalItems={pagination.total}
+                                    itemsPerPage={pagination.limit}
+                                    onPageChange={(page) => setPagination(prev => ({ ...prev, page }))}
+                                />
+                            </div>
                         )}
                     </div>
                 </div>

@@ -5,6 +5,17 @@ import EmailTemplateService from '../services/emailTemplate.service';
 import { toast } from 'react-toastify';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import {
+    ArrowLeft,
+    Save,
+    X,
+    Code,
+    Eye,
+    Info,
+    PlusCircle,
+    FileEdit,
+    Tag
+} from 'lucide-react';
 import './styles/AdminListings.css';
 
 const AdminEmailTemplateEdit = () => {
@@ -60,21 +71,20 @@ const AdminEmailTemplateEdit = () => {
         const variableTag = `{{${variable}}}`;
 
         if (viewMode === 'html') {
-            // Insert at cursor position in textarea
             const textarea = document.getElementById('body');
-            const start = textarea.selectionStart;
-            const end = textarea.selectionEnd;
-            const text = formData.body;
-            const newText = text.substring(0, start) + variableTag + text.substring(end);
-            setFormData(prev => ({ ...prev, body: newText }));
+            if (textarea) {
+                const start = textarea.selectionStart;
+                const end = textarea.selectionEnd;
+                const text = formData.body;
+                const newText = text.substring(0, start) + variableTag + text.substring(end);
+                setFormData(prev => ({ ...prev, body: newText }));
 
-            // Restore cursor position
-            setTimeout(() => {
-                textarea.selectionStart = textarea.selectionEnd = start + variableTag.length;
-                textarea.focus();
-            }, 0);
+                setTimeout(() => {
+                    textarea.selectionStart = textarea.selectionEnd = start + variableTag.length;
+                    textarea.focus();
+                }, 0);
+            }
         } else {
-            // Insert in visual editor
             setFormData(prev => ({
                 ...prev,
                 body: prev.body + ' ' + variableTag + ' '
@@ -86,6 +96,11 @@ const AdminEmailTemplateEdit = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!formData.subject.trim()) {
+            toast.error('Subject line is required');
+            return;
+        }
+
         setSaving(true);
         try {
             const response = await EmailTemplateService.updateTemplate(id, formData);
@@ -101,7 +116,6 @@ const AdminEmailTemplateEdit = () => {
         }
     };
 
-    // Quill modules configuration
     const modules = {
         toolbar: [
             [{ 'header': [1, 2, 3, false] }],
@@ -126,13 +140,11 @@ const AdminEmailTemplateEdit = () => {
     if (loading) {
         return (
             <DashboardLayout>
-                <section className="page-section">
-                    <div className="container">
-                        <div className="text-center py-5">
-                            <span className="spinner-small"></span> Loading...
-                        </div>
+                <div className="container py-5 text-center">
+                    <div className="spinner-border text-primary" role="status">
+                        <span className="visually-hidden">Loading...</span>
                     </div>
-                </section>
+                </div>
             </DashboardLayout>
         );
     }
@@ -142,162 +154,196 @@ const AdminEmailTemplateEdit = () => {
     return (
         <DashboardLayout>
             <div className="admin-listing-page animate-fade-up">
-                <div className="container">
+                <div className="admin-container">
                     <div className="admin-listing-header mb-4">
-                        <div>
-                            <Link to="/admin/email-templates" className="back-link mb-2 d-inline-flex align-items-center text-decoration-none text-muted">
-                                <i className="fas fa-arrow-left me-2"></i> Back to Templates
+                        <div className="header-title">
+                            <Link to="/admin/email-templates" className="text-decoration-none text-muted small mb-3 d-flex align-items-center gap-1 hover-primary-text">
+                                <ArrowLeft size={14} /> Back to Templates
                             </Link>
-                            <div className="header-title mt-2">
-                                <h1>Edit Template: {template.name}</h1>
-                                <p style={{ color: '#6c757d' }}>Customize the content and subject line for this email template.</p>
-                            </div>
+                            <h1>Edit Template</h1>
+                            <p className="text-muted mb-0">Customize content for system notification emails</p>
                         </div>
                     </div>
 
-                    <div className="row justify-content-center">
-                        <div className="col-lg-10">
-                            <div className="listing-table-container p-4 animate-fade-up" style={{ animationDelay: '0.1s' }}>
-
-                                {/* Variable Reference */}
-                                <div className="mb-4 p-3 bg-light rounded-3 border border-light">
-                                    <h6 className="d-flex align-items-center text-primary mb-3">
-                                        <i className="fas fa-code me-2"></i> Available Variables - Click to Insert
-                                    </h6>
-                                    <div className="d-flex flex-wrap gap-2">
-                                        {template.variables && template.variables.map(v => (
-                                            <button
-                                                key={v}
-                                                type="button"
-                                                onClick={() => insertVariable(v)}
-                                                className="badge bg-white text-dark border px-3 py-2 fw-normal font-monospace"
-                                                style={{ cursor: 'pointer', transition: 'all 0.2s' }}
-                                                onMouseOver={(e) => { e.target.style.background = '#13689e'; e.target.style.color = 'white'; }}
-                                                onMouseOut={(e) => { e.target.style.background = 'white'; e.target.style.color = '#000'; }}
-                                            >
-                                                <i className="fas fa-plus-circle me-1"></i>
-                                                {`{{${v}}}`}
-                                            </button>
-                                        ))}
+                    <div className="row g-4 justify-content-center">
+                        <div className="col-lg-12">
+                            <div className="listing-table-container p-4">
+                                <div className="d-flex align-items-center justify-content-between mb-4 pb-3 border-bottom">
+                                    <div className="d-flex align-items-center gap-2">
+                                        <FileEdit size={20} className="text-primary" />
+                                        <h4 className="fw-bold mb-0">{template.name}</h4>
+                                        <span className="badge bg-light text-muted border px-2 py-1 ms-2 font-monospace" style={{ fontSize: '11px' }}>
+                                            <Tag size={10} className="me-1" /> {template.slug}
+                                        </span>
                                     </div>
-                                    <small className="d-block mt-2 text-muted">
-                                        <i className="fas fa-info-circle me-1"></i>
-                                        Click any variable to insert it into your email content. Variables will be automatically replaced with actual data when emails are sent.
-                                    </small>
-                                </div>
-
-                                {/* Editor Mode Toggle */}
-                                <div className="mb-3 d-flex gap-2 border-bottom pb-3">
-                                    <button
-                                        type="button"
-                                        className={`btn btn-sm ${viewMode === 'visual' ? 'btn-primary' : 'btn-outline-secondary'}`}
-                                        onClick={() => setViewMode('visual')}
-                                    >
-                                        <i className="fas fa-eye me-1"></i> Visual Editor
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className={`btn btn-sm ${viewMode === 'html' ? 'btn-primary' : 'btn-outline-secondary'}`}
-                                        onClick={() => setViewMode('html')}
-                                    >
-                                        <i className="fas fa-code me-1"></i> HTML Editor
-                                    </button>
-                                    <small className="text-muted ms-auto align-self-center">
-                                        {viewMode === 'visual' ? 'User-friendly visual editor' : 'Advanced HTML editing'}
-                                    </small>
-                                </div>
-
-                                <form onSubmit={handleSubmit}>
-                                    {/* Subject Line */}
-                                    <div className="form-group mb-4">
-                                        <label htmlFor="subject" className="form-label fw-bold small text-uppercase text-muted">
-                                            Subject Line
-                                        </label>
-                                        <input
-                                            type="text"
-                                            id="subject"
-                                            name="subject"
-                                            className="form-control form-control-lg"
-                                            value={formData.subject}
-                                            onChange={handleChange}
-                                            required
-                                            placeholder="Enter email subject (you can use variables here too)"
-                                        />
-                                    </div>
-
-                                    {/* Email Body */}
-                                    <div className="form-group mb-4">
-                                        <label htmlFor="body" className="form-label fw-bold small text-uppercase text-muted">
-                                            Email Body
-                                        </label>
-
-                                        {viewMode === 'visual' ? (
-                                            <div className="border rounded-3 overflow-hidden" style={{ background: 'white' }}>
-                                                <ReactQuill
-                                                    theme="snow"
-                                                    value={formData.body}
-                                                    onChange={handleEditorChange}
-                                                    modules={modules}
-                                                    formats={formats}
-                                                    style={{ minHeight: '400px' }}
-                                                />
-                                            </div>
-                                        ) : (
-                                            <div className="border rounded-3 overflow-hidden">
-                                                <textarea
-                                                    id="body"
-                                                    name="body"
-                                                    className="form-control border-0"
-                                                    value={formData.body}
-                                                    onChange={handleChange}
-                                                    rows="20"
-                                                    style={{ fontFamily: 'monospace', fontSize: '14px', resize: 'vertical' }}
-                                                    required
-                                                />
-                                            </div>
-                                        )}
-
-                                        <div className="form-text mt-2">
-                                            <i className="fas fa-info-circle me-1"></i>
-                                            {viewMode === 'visual'
-                                                ? 'Use the toolbar above to format your email. Click variable badges to insert them.'
-                                                : 'Supports standard HTML tags. Use inline styles for best email compatibility.'}
-                                        </div>
-                                    </div>
-
-                                    {/* Action Buttons */}
-                                    <div className="d-flex gap-3 pt-3 border-top">
+                                    <div className="d-flex gap-2">
                                         <button
                                             type="button"
-                                            className="btn btn-light px-4"
-                                            onClick={() => navigate('/admin/email-templates')}
-                                            disabled={saving}
+                                            className={`tj-btn ${viewMode === 'visual' ? 'tj-btn-primary' : 'tj-btn-secondary'}`}
+                                            onClick={() => setViewMode('visual')}
+                                            style={{ height: '36px' }}
                                         >
-                                            Cancel
+                                            <Eye size={16} className="me-1" /> Visual
                                         </button>
                                         <button
-                                            type="submit"
-                                            className="btn btn-primary px-4"
-                                            disabled={saving}
+                                            type="button"
+                                            className={`tj-btn ${viewMode === 'html' ? 'tj-btn-primary' : 'tj-btn-secondary'}`}
+                                            onClick={() => setViewMode('html')}
+                                            style={{ height: '36px' }}
                                         >
-                                            {saving ? (
-                                                <>
-                                                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                                                    Saving...
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <i className="fas fa-save me-2"></i> Save Changes
-                                                </>
-                                            )}
+                                            <Code size={16} className="me-1" /> HTML
                                         </button>
                                     </div>
-                                </form>
+                                </div>
+
+                                <div className="row g-4">
+                                    <div className="col-lg-8">
+                                        <form onSubmit={handleSubmit}>
+                                            <div className="form-group mb-4">
+                                                <label className="form-label fw-bold small text-muted text-uppercase mb-2">Subject Line</label>
+                                                <input
+                                                    type="text"
+                                                    name="subject"
+                                                    className="form-control"
+                                                    style={{ height: '54px', borderRadius: '12px', fontSize: '1.1rem', fontWeight: '600' }}
+                                                    value={formData.subject}
+                                                    onChange={handleChange}
+                                                    required
+                                                    placeholder="Enter email subject..."
+                                                />
+                                            </div>
+
+                                            <div className="form-group mb-4">
+                                                <label className="form-label fw-bold small text-muted text-uppercase mb-2">Email Content</label>
+                                                {viewMode === 'visual' ? (
+                                                    <div className="border rounded-4 overflow-hidden shadow-sm" style={{ background: 'white' }}>
+                                                        <ReactQuill
+                                                            theme="snow"
+                                                            value={formData.body}
+                                                            onChange={handleEditorChange}
+                                                            modules={modules}
+                                                            formats={formats}
+                                                            style={{ minHeight: '450px' }}
+                                                        />
+                                                    </div>
+                                                ) : (
+                                                    <div className="border rounded-4 overflow-hidden shadow-sm">
+                                                        <textarea
+                                                            id="body"
+                                                            name="body"
+                                                            className="form-control border-0 font-monospace"
+                                                            value={formData.body}
+                                                            onChange={handleChange}
+                                                            rows="20"
+                                                            style={{ fontSize: '14px', resize: 'vertical', background: '#f8fafc', padding: '20px' }}
+                                                            required
+                                                        />
+                                                    </div>
+                                                )}
+                                                <div className="form-text small mt-3 d-flex align-items-center gap-2 text-muted">
+                                                    <Info size={14} />
+                                                    <span>{viewMode === 'visual' ? 'Visual preview of the email content.' : 'Direct HTML editing for precise control.'}</span>
+                                                </div>
+                                            </div>
+
+                                            <div className="d-flex gap-3 pt-4 border-top">
+                                                <button
+                                                    type="submit"
+                                                    className="tj-btn tj-btn-primary px-5 py-3 h-auto"
+                                                    disabled={saving}
+                                                    style={{ borderRadius: '12px', fontSize: '1rem' }}
+                                                >
+                                                    {saving ? (
+                                                        <><span className="spinner-border spinner-border-sm me-2"></span> Saving Changes...</>
+                                                    ) : (
+                                                        <><Save size={20} className="me-2" /> Save Template Changes</>
+                                                    )}
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    className="tj-btn tj-btn-secondary px-4 py-3 h-auto"
+                                                    onClick={() => navigate('/admin/email-templates')}
+                                                    style={{ borderRadius: '12px' }}
+                                                >
+                                                    <X size={20} className="me-2" /> Cancel
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+
+                                    <div className="col-lg-4">
+                                        <div className="p-4 rounded-4 bg-light border sticky-top" style={{ top: '20px' }}>
+                                            <h6 className="fw-bold mb-3 d-flex align-items-center gap-2">
+                                                <PlusCircle size={18} className="text-primary" /> Template Variables
+                                            </h6>
+                                            <p className="text-muted small mb-4">Click any variable below to insert it at your cursor position.</p>
+
+                                            <div className="d-flex flex-wrap gap-2">
+                                                {template.variables && template.variables.map(v => (
+                                                    <button
+                                                        key={v}
+                                                        type="button"
+                                                        onClick={() => insertVariable(v)}
+                                                        className="badge bg-white text-dark border px-3 py-2 fw-medium font-monospace hover-primary-btn"
+                                                        style={{ cursor: 'pointer', transition: 'all 0.2s', borderRadius: '8px' }}
+                                                    >
+                                                        {`{{${v}}}`}
+                                                    </button>
+                                                ))}
+                                            </div>
+
+                                            {(!template.variables || template.variables.length === 0) && (
+                                                <div className="text-center py-4 bg-white rounded-3 border-dashed">
+                                                    <span className="text-muted small italic">No variables available</span>
+                                                </div>
+                                            )}
+
+                                            <div className="mt-4 pt-4 border-top">
+                                                <div className="alert alert-info border-0 rounded-3 small mb-0 py-3">
+                                                    <div className="d-flex gap-2">
+                                                        <Info size={18} className="flex-shrink-0" />
+                                                        <span>These variables will be dynamically replaced with user-specific data at the time of sending.</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <style>{`
+                .hover-primary-btn:hover {
+                    border-color: #13689e !important;
+                    color: #13689e !important;
+                    background: rgba(19, 104, 158, 0.05) !important;
+                    transform: translateY(-1px);
+                    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+                }
+                .hover-primary-text:hover {
+                    color: #13689e !important;
+                }
+                .quill {
+                    border: none !important;
+                }
+                .ql-toolbar {
+                    border: none !important;
+                    border-bottom: 1px solid #e2e8f0 !important;
+                    background: #f8fafc;
+                }
+                .ql-container {
+                    border: none !important;
+                    font-family: 'Inter', sans-serif !important;
+                    font-size: 15px !important;
+                }
+                .ql-editor {
+                    min-height: 450px;
+                    padding: 20px !important;
+                }
+            `}</style>
         </DashboardLayout>
     );
 };

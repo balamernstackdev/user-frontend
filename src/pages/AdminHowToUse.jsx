@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import tutorialService from '../services/tutorial.service';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import Pagination from '../components/common/Pagination';
-import './styles/AdminListings.css';
+import SEO from '../components/common/SEO';
+import { BookOpen, Plus, Edit, Trash, Globe, Lock, Video, VideoOff, Hash } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { authService } from '../services/auth.service';
+import './styles/AdminListings.css';
 
 const AdminHowToUse = () => {
     const navigate = useNavigate();
@@ -89,112 +91,120 @@ const AdminHowToUse = () => {
 
     return (
         <DashboardLayout>
+            <SEO title="How To Use Guides" description="Manage instructional guides and videos" />
             <div className="admin-listing-page animate-fade-up">
-                <div className="container">
+                <div className="admin-container">
                     <div className="admin-listing-header">
                         <div className="header-title">
                             <h1>How To Use Guides</h1>
-                            <p style={{ color: '#6c757d' }}>Manage instructional guides and videos</p>
+                            <p className="text-muted mb-0">Manage instructional guides and videos for users</p>
                         </div>
-                        <div className="header-actions">
-                            {isAllowed && (
+                        {isAllowed && (
+                            <div className="header-actions">
                                 <button
-                                    className="tj-primary-btn"
+                                    className="tj-btn tj-btn-primary"
                                     onClick={() => navigate('/admin/how-to-use/create')}
                                 >
-                                    <span className="btn-text">Add Guide</span>
-                                    <span className="btn-icon">
-                                        <i className="fas fa-arrow-right"></i>
-                                    </span>
+                                    <Plus size={18} className="me-2" /> Add Guide
                                 </button>
-                            )}
-                        </div>
+                            </div>
+                        )}
                     </div>
 
                     <div className="listing-table-container">
-                        <table className="listing-table">
-                            <thead>
-                                <tr>
-                                    <th>Order</th>
-                                    <th>Title</th>
-                                    <th>Description</th>
-                                    <th>Video</th>
-                                    <th>Status</th>
-                                    {isAllowed && <th>Actions</th>}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {loading ? (
-                                    <tr><td colSpan={isAllowed ? "6" : "5"} className="text-center">Loading...</td></tr>
-                                ) : tutorials.length === 0 ? (
-                                    <tr><td colSpan={isAllowed ? "6" : "5"} className="text-center" style={{ padding: '50px' }}>No guides found</td></tr>
-                                ) : (
-                                    tutorials.map(tutorial => (
-                                        <tr key={tutorial.id}>
-                                            <td style={{ width: '60px', textAlign: 'center' }}>
-                                                {tutorial.order_index}
+                        <div className="table-responsive">
+                            <table className="listing-table">
+                                <thead>
+                                    <tr>
+                                        <th style={{ width: '80px' }}><Hash size={14} /></th>
+                                        <th>Title & Description</th>
+                                        <th>Video</th>
+                                        <th>Status</th>
+                                        {isAllowed && <th className="text-end">Actions</th>}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {loading ? (
+                                        <tr><td colSpan={isAllowed ? "5" : "4"} className="text-center py-5 text-muted">Loading guides...</td></tr>
+                                    ) : tutorials.length === 0 ? (
+                                        <tr>
+                                            <td colSpan={isAllowed ? "5" : "4"} className="text-center py-5">
+                                                <div className="text-muted mb-2"><BookOpen size={40} className="opacity-20" /></div>
+                                                <p className="text-muted mb-0">No guides found</p>
                                             </td>
-                                            <td>
-                                                <div style={{ fontWeight: 600 }}>{tutorial.title}</div>
-                                            </td>
-                                            <td style={{ maxWidth: '300px' }}>
-                                                <div className="text-truncate" style={{ color: '#6c757d' }}>
-                                                    {tutorial.description}
-                                                </div>
-                                            </td>
-                                            <td>
-                                                {tutorial.video_url ? (
-                                                    <span className="badge-success" style={{ padding: '2px 8px', borderRadius: '4px', fontSize: '11px' }}>Yes</span>
-                                                ) : (
-                                                    <span className="badge-warning" style={{ padding: '2px 8px', borderRadius: '4px', fontSize: '11px' }}>No</span>
-                                                )}
-                                            </td>
-                                            <td>
-                                                <button
-                                                    onClick={() => isAllowed && handleTogglePublish(tutorial.id, tutorial.is_published)}
-                                                    className={`plan-type-badge`}
-                                                    style={{
-                                                        background: tutorial.is_published ? 'rgba(40, 167, 69, 0.1)' : 'rgba(239, 68, 68, 0.1)',
-                                                        color: tutorial.is_published ? '#28a745' : '#ef4444',
-                                                        border: 'none',
-                                                        cursor: isAllowed ? 'pointer' : 'default',
-                                                        opacity: isAllowed ? 1 : 0.8
-                                                    }}
-                                                    disabled={!isAllowed}
-                                                >
-                                                    {tutorial.is_published ? 'Published' : 'Draft'}
-                                                </button>
-                                            </td>
-                                            {isAllowed && (
+                                        </tr>
+                                    ) : (
+                                        tutorials.map(tutorial => (
+                                            <tr key={tutorial.id}>
+                                                <td className="text-center fw-bold text-muted">
+                                                    #{tutorial.order_index}
+                                                </td>
                                                 <td>
-                                                    <div className="actions-cell">
-                                                        <button className="action-btn" onClick={() => navigate(`/admin/how-to-use/edit/${tutorial.id}`)} title="Edit">
-                                                            <i className="far fa-edit"></i>
-                                                        </button>
-                                                        <button className="action-btn delete" onClick={() => handleDelete(tutorial.id)} title="Delete">
-                                                            <i className="fas fa-trash"></i>
-                                                        </button>
+                                                    <div className="d-flex flex-column">
+                                                        <span className="fw-semibold text-dark">{tutorial.title}</span>
+                                                        <span className="text-muted small text-truncate" style={{ maxWidth: '500px' }}>
+                                                            {tutorial.description}
+                                                        </span>
                                                     </div>
                                                 </td>
-                                            )}
-                                        </tr>
-                                    ))
-                                )}
-                            </tbody>
-                        </table>
+                                                <td>
+                                                    {tutorial.video_url ? (
+                                                        <span className="premium-badge premium-badge-info">
+                                                            <Video size={12} className="me-1" /> Video
+                                                        </span>
+                                                    ) : (
+                                                        <span className="premium-badge" style={{ background: '#f1f5f9', color: '#64748b' }}>
+                                                            <VideoOff size={12} className="me-1" /> No Video
+                                                        </span>
+                                                    )}
+                                                </td>
+                                                <td>
+                                                    <span
+                                                        className={`premium-badge ${tutorial.is_published ? 'premium-badge-success' : 'premium-badge-warning'} ${isAllowed ? 'cursor-pointer' : ''}`}
+                                                        onClick={() => isAllowed && handleTogglePublish(tutorial.id, tutorial.is_published)}
+                                                        title={isAllowed ? "Click to toggle status" : ""}
+                                                    >
+                                                        {tutorial.is_published ? <Globe size={12} className="me-1" /> : <Lock size={12} className="me-1" />}
+                                                        {tutorial.is_published ? 'Published' : 'Draft'}
+                                                    </span>
+                                                </td>
+                                                {isAllowed && (
+                                                    <td className="text-end">
+                                                        <div className="actions-cell justify-content-end">
+                                                            <button
+                                                                className="action-btn"
+                                                                onClick={() => navigate(`/admin/how-to-use/edit/${tutorial.id}`)}
+                                                                title="Edit"
+                                                            >
+                                                                <Edit size={16} />
+                                                            </button>
+                                                            <button
+                                                                className="action-btn delete"
+                                                                onClick={() => handleDelete(tutorial.id)}
+                                                                title="Delete"
+                                                            >
+                                                                <Trash size={16} />
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                )}
+                                            </tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                        {tutorials.length > 0 && (
+                            <div className="mt-4 p-4 border-top d-flex justify-content-center">
+                                <Pagination
+                                    currentPage={pagination.page}
+                                    totalItems={pagination.total}
+                                    itemsPerPage={pagination.limit}
+                                    onPageChange={(newPage) => setPagination(prev => ({ ...prev, page: newPage }))}
+                                />
+                            </div>
+                        )}
                     </div>
-
-                    {/* Pagination */}
-                    {tutorials.length > 0 && (
-                        <Pagination
-                            currentPage={pagination.page}
-                            totalPages={Math.ceil(pagination.total / pagination.limit)}
-                            onPageChange={(newPage) => {
-                                setPagination(prev => ({ ...prev, page: newPage }));
-                                window.scrollTo({ top: 0, behavior: 'smooth' });
-                            }}
-                        />
-                    )}
                 </div>
             </div>
         </DashboardLayout>

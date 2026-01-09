@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import tutorialService from '../services/tutorial.service';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import Pagination from '../components/common/Pagination';
-import './styles/AdminListings.css'; // Reusing existing styles
 import { toast } from 'react-toastify';
 import { authService } from '../services/auth.service';
+import { HelpCircle, Plus, Edit, Trash, Globe, Lock, Search } from 'lucide-react';
+import SEO from '../components/common/SEO';
+import './styles/AdminListings.css';
 
 const AdminFAQs = () => {
     const navigate = useNavigate();
@@ -94,100 +96,104 @@ const AdminFAQs = () => {
 
     return (
         <DashboardLayout>
+            <SEO title="FAQ Management" description="Manage frequently asked questions" />
             <div className="admin-listing-page animate-fade-up">
-                <div className="container">
+                <div className="admin-container">
                     <div className="admin-listing-header">
                         <div className="header-title">
                             <h1>FAQ Management</h1>
-                            <p style={{ color: '#6c757d' }}>Manage Frequently Asked Questions</p>
+                            <p className="text-muted mb-0">Manage Frequently Asked Questions for users</p>
                         </div>
-                        <div className="header-actions">
-                            {isAllowed && (
+                        {isAllowed && (
+                            <div className="header-actions">
                                 <button
-                                    className="tj-primary-btn"
+                                    className="tj-btn tj-btn-primary"
                                     onClick={() => navigate('/admin/faqs/create')}
                                 >
-                                    <span className="btn-text">Add FAQ</span>
-                                    <span className="btn-icon">
-                                        <i className="fas fa-arrow-right"></i>
-                                    </span>
+                                    <Plus size={18} className="me-2" /> Add FAQ
                                 </button>
-                            )}
-                        </div>
+                            </div>
+                        )}
                     </div>
 
                     <div className="listing-table-container">
-                        <table className="listing-table">
-                            <thead>
-                                <tr>
-                                    <th>Question</th>
-                                    <th>Answer (Preview)</th>
-                                    <th>Status</th>
-                                    {isAllowed && <th>Actions</th>}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {loading ? (
-                                    <tr><td colSpan={isAllowed ? "4" : "3"} className="text-center">Loading...</td></tr>
-                                ) : faqs.length === 0 ? (
-                                    <tr><td colSpan={isAllowed ? "4" : "3"} className="text-center" style={{ padding: '50px' }}>No FAQs found</td></tr>
-                                ) : (
-                                    faqs.map(faq => (
-                                        <tr key={faq.id}>
-                                            <td style={{ maxWidth: '300px' }}>
-                                                <div style={{ fontWeight: 600 }}>{faq.title}</div>
+                        <div className="table-responsive">
+                            <table className="listing-table">
+                                <thead>
+                                    <tr>
+                                        <th>Question & Answer</th>
+                                        <th>Status</th>
+                                        {isAllowed && <th className="text-end">Actions</th>}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {loading ? (
+                                        <tr><td colSpan={isAllowed ? "3" : "2"} className="text-center py-5 text-muted">Loading FAQs...</td></tr>
+                                    ) : faqs.length === 0 ? (
+                                        <tr>
+                                            <td colSpan={isAllowed ? "3" : "2"} className="text-center py-5">
+                                                <div className="text-muted mb-2"><HelpCircle size={40} className="opacity-20" /></div>
+                                                <p className="text-muted mb-0">No FAQs found</p>
                                             </td>
-                                            <td style={{ maxWidth: '400px' }}>
-                                                <div className="text-truncate" style={{ color: '#6c757d' }}>
-                                                    {(faq.content || '').substring(0, 100)}...
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <button
-                                                    onClick={() => isAllowed && handleTogglePublish(faq.id, faq.is_published)}
-                                                    className={`plan-type-badge`}
-                                                    style={{
-                                                        background: faq.is_published ? 'rgba(40, 167, 69, 0.1)' : 'rgba(239, 68, 68, 0.1)',
-                                                        color: faq.is_published ? '#28a745' : '#ef4444',
-                                                        border: 'none',
-                                                        cursor: isAllowed ? 'pointer' : 'default',
-                                                        opacity: isAllowed ? 1 : 0.8
-                                                    }}
-                                                    disabled={!isAllowed}
-                                                >
-                                                    {faq.is_published ? 'Published' : 'Draft'}
-                                                </button>
-                                            </td>
-                                            {isAllowed && (
+                                        </tr>
+                                    ) : (
+                                        faqs.map(faq => (
+                                            <tr key={faq.id}>
                                                 <td>
-                                                    <div className="actions-cell">
-                                                        <button className="action-btn" onClick={() => navigate(`/admin/faqs/edit/${faq.id}`)} title="Edit">
-                                                            <i className="far fa-edit"></i>
-                                                        </button>
-                                                        <button className="action-btn delete" onClick={() => handleDelete(faq.id)} title="Delete">
-                                                            <i className="fas fa-trash"></i>
-                                                        </button>
+                                                    <div className="d-flex flex-column">
+                                                        <span className="fw-semibold text-dark">{faq.title}</span>
+                                                        <span className="text-muted small text-truncate" style={{ maxWidth: '600px' }}>
+                                                            {faq.content?.replace(/<[^>]*>?/gm, '').substring(0, 120)}...
+                                                        </span>
                                                     </div>
                                                 </td>
-                                            )}
-                                        </tr>
-                                    ))
-                                )}
-                            </tbody>
-                        </table>
+                                                <td>
+                                                    <span
+                                                        className={`premium-badge ${faq.is_published ? 'premium-badge-success' : 'premium-badge-warning'} ${isAllowed ? 'cursor-pointer' : ''}`}
+                                                        onClick={() => isAllowed && handleTogglePublish(faq.id, faq.is_published)}
+                                                        title={isAllowed ? "Click to toggle status" : ""}
+                                                    >
+                                                        {faq.is_published ? <Globe size={12} className="me-1" /> : <Lock size={12} className="me-1" />}
+                                                        {faq.is_published ? 'Published' : 'Draft'}
+                                                    </span>
+                                                </td>
+                                                {isAllowed && (
+                                                    <td className="text-end">
+                                                        <div className="actions-cell justify-content-end">
+                                                            <button
+                                                                className="action-btn"
+                                                                onClick={() => navigate(`/admin/faqs/edit/${faq.id}`)}
+                                                                title="Edit"
+                                                            >
+                                                                <Edit size={16} />
+                                                            </button>
+                                                            <button
+                                                                className="action-btn delete"
+                                                                onClick={() => handleDelete(faq.id)}
+                                                                title="Delete"
+                                                            >
+                                                                <Trash size={16} />
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                )}
+                                            </tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                        {faqs.length > 0 && (
+                            <div className="mt-4 p-4 border-top d-flex justify-content-center">
+                                <Pagination
+                                    currentPage={pagination.page}
+                                    totalItems={pagination.total}
+                                    itemsPerPage={pagination.limit}
+                                    onPageChange={(newPage) => setPagination(prev => ({ ...prev, page: newPage }))}
+                                />
+                            </div>
+                        )}
                     </div>
-
-                    {/* Pagination */}
-                    {faqs.length > 0 && (
-                        <Pagination
-                            currentPage={pagination.page}
-                            totalPages={Math.ceil(pagination.total / pagination.limit)}
-                            onPageChange={(newPage) => {
-                                setPagination(prev => ({ ...prev, page: newPage }));
-                                window.scrollTo({ top: 0, behavior: 'smooth' });
-                            }}
-                        />
-                    )}
                 </div>
             </div>
         </DashboardLayout>

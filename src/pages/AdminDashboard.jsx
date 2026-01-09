@@ -151,95 +151,103 @@ const AdminDashboard = () => {
     return (
         <DashboardLayout>
             <SEO title="Admin Dashboard" description="Advanced Analytics & System Overview" />
-            <section className="welcome-section">
-                <div className="admin-container">
-                    <div className="welcome-content">
-                        <div className="welcome-header animate-fade-up mb-4">
-                            <div>
-                                <h1 className="section-title" style={{ fontSize: '2.5rem', fontWeight: 'bold' }}>Welcome back, {user?.name || 'Admin'}! 👋</h1>
-                                <p className="section-subtitle" style={{ fontSize: '1.15rem' }}>Real-time system health and growth analytics.</p>
-                            </div>
-                            <div className="last-updated text-muted small">
-                                <Clock size={14} style={{ display: 'inline', marginRight: '5px' }} />
-                                Last updated: {new Date().toLocaleTimeString()}
-                            </div>
-                        </div>
 
-                        {/* Stats Grid */}
-                        <div className="admin-stats-grid stats-grid animate-fade-up">
+            <div className="admin-listing-page animate-fade-up">
+                <div className="admin-container">
+                    <div className="admin-listing-header mb-5">
+                        <div className="header-title">
+                            <h1 className="display-6 fw-bold text-dark mb-1">Welcome back, {user?.name || 'Admin'}! 👋</h1>
+                            <p className="text-muted fs-5 mb-0">Real-time system health and growth analytics</p>
+                        </div>
+                        <div className="d-none d-md-flex align-items-center gap-3 text-muted bg-white px-4 py-2 rounded-pill shadow-sm border">
+                            <Clock size={16} />
+                            <span className="small fw-medium">Last updated: {new Date().toLocaleTimeString()}</span>
+                        </div>
+                    </div>
+
+                    {/* Stats Grid - Using Row/Col for Better Control */}
+                    <div className="row g-4 mb-5">
+                        <div className="col-xl-3 col-md-6">
                             <StatCard
                                 label="Total Users"
                                 value={stats.totalUsers.toLocaleString()}
                                 icon={Users}
-                                className="card-users"
                                 isLoading={loading}
                                 link="/admin/users"
                             />
+                        </div>
+                        <div className="col-xl-3 col-md-6">
                             <StatCard
                                 label="Active Business Associates"
                                 value={stats.activeMarketers}
                                 icon={UserCheck}
-                                iconColor="#28a745"
-                                iconBgColor="rgba(40, 167, 69, 0.1)"
+                                iconColor="#10b981"
+                                iconBgColor="rgba(16, 185, 129, 0.1)"
                                 link="/admin/users?role=business_associate&status=active"
                                 isLoading={loading}
-                                className="card-active-marketers"
                             />
+                        </div>
+                        <div className="col-xl-3 col-md-6">
                             <StatCard
                                 label="Total Plans"
                                 value={stats.totalPlans || 0}
                                 icon={Package}
-                                iconColor="#ffc107"
-                                iconBgColor="rgba(255, 193, 7, 0.1)"
+                                iconColor="#f59e0b"
+                                iconBgColor="rgba(245, 158, 11, 0.1)"
                                 link="/admin/plans"
                                 isLoading={loading}
-                                className="card-plans"
                             />
+                        </div>
+                        <div className="col-xl-3 col-md-6">
                             <StatCard
                                 label="Pending Payouts"
                                 value={stats.pendingCommissionsCount || 0}
                                 icon={CreditCard}
-                                iconColor="#17a2b8"
-                                iconBgColor="rgba(23, 162, 184, 0.1)"
+                                iconColor="#0ea5e9"
+                                iconBgColor="rgba(14, 165, 233, 0.1)"
                                 link="/admin/commissions?status=pending"
                                 isLoading={loading}
-                                className="card-payouts"
                             />
+                        </div>
+                        <div className="col-xl-3 col-md-6">
                             <StatCard
                                 label="Total Revenue"
                                 value={`₹${stats.totalRevenue.toLocaleString()}`}
                                 icon={TrendingUp}
-                                iconColor="#6f42c1"
-                                iconBgColor="rgba(111, 66, 193, 0.1)"
+                                iconColor="#8b5cf6"
+                                iconBgColor="rgba(139, 92, 246, 0.1)"
                                 isLoading={loading}
                                 link="/admin/transactions?status=success"
-                                className="card-revenue"
                             />
+                        </div>
+                        <div className="col-xl-3 col-md-6">
                             <StatCard
                                 label="Active Subscriptions"
                                 value={stats.activeSubscriptions}
                                 icon={CheckCircle}
-                                iconColor="#20c997"
-                                iconBgColor="rgba(32, 201, 151, 0.1)"
+                                iconColor="#10b981"
+                                iconBgColor="rgba(16, 185, 129, 0.1)"
                                 link="/admin/subscriptions?status=active"
                                 isLoading={loading}
-                                className="card-active-subs"
                             />
+                        </div>
+                        <div className="col-xl-3 col-md-6">
                             <StatCard
                                 label="Expiring Soon"
                                 value={stats.expiringSubscriptions}
                                 icon={AlertCircle}
-                                iconColor="#dc3545"
-                                iconBgColor="rgba(220, 53, 69, 0.1)"
+                                iconColor="#ef4444"
+                                iconBgColor="rgba(239, 68, 68, 0.1)"
                                 link="/admin/subscriptions?status=active"
                                 isLoading={loading}
-                                className="card-expiring"
                             />
                         </div>
+                    </div>
 
-                        {/* Analytics Row 1 */}
-                        <div className="row mt-4 animate-fade-up" style={{ animationDelay: '0.1s' }}>
-                            <div className="col-lg-8 mb-4">
+                    {/* Analytics Row 1 */}
+                    <div className="row g-4 mb-5">
+                        <div className="col-lg-8">
+                            <div className="listing-table-container h-100 p-0 overflow-hidden border-0 bg-transparent">
                                 <RevenueChart
                                     data={stats.analytics.revenueTrend}
                                     dateRange={dateRange}
@@ -248,50 +256,61 @@ const AdminDashboard = () => {
                                     isLoading={loading}
                                 />
                             </div>
-                            <div className="col-lg-4 mb-4">
+                        </div>
+                        <div className="col-lg-4">
+                            <div className="listing-table-container h-100 p-0 overflow-hidden border-0 bg-transparent">
                                 <PlanDistributionChart
                                     data={stats.analytics.planDistribution}
                                     isLoading={loading}
                                 />
                             </div>
                         </div>
+                    </div>
 
-                        {/* Analytics Row 2 */}
-                        <div className="row animate-fade-up" style={{ animationDelay: '0.2s' }}>
-                            <div className="col-lg-5 mb-4">
-                                <UserRoleChart
-                                    data={stats.analytics.roleDistribution}
-                                    isLoading={loading}
-                                />
+                    {/* Analytics Row 2 */}
+                    <div className="row g-4">
+                        <div className="col-lg-5">
+                            <div className="d-flex flex-column gap-4">
+                                <div className="listing-table-container p-0 overflow-hidden border-0 bg-transparent">
+                                    <UserRoleChart
+                                        data={stats.analytics.roleDistribution}
+                                        isLoading={loading}
+                                    />
+                                </div>
 
                                 {stats.expiringSubscriptions > 0 && !loading && (
-                                    <div className="analytics-card bg-warning-soft border-0 mt-4">
-                                        <div className="d-flex align-items-center gap-3">
-                                            <div className="warning-icon-bg">
-                                                <AlertCircle size={24} className="text-warning-dark" />
+                                    <div className="card border-0 shadow-sm rounded-4 overflow-hidden bg-warning-subtle border-start border-4 border-warning">
+                                        <div className="card-body p-4">
+                                            <div className="d-flex align-items-center justify-content-between">
+                                                <div className="d-flex align-items-center gap-3">
+                                                    <div className="bg-warning text-white rounded-circle d-flex align-items-center justify-content-center" style={{ width: '45px', height: '45px' }}>
+                                                        <AlertCircle size={24} />
+                                                    </div>
+                                                    <div>
+                                                        <h5 className="fw-bold mb-1 text-warning-emphasis">{stats.expiringSubscriptions} Subscriptions Expiring</h5>
+                                                        <p className="mb-0 text-muted small">Action needed within 7 days.</p>
+                                                    </div>
+                                                </div>
+                                                <Link to="/admin/subscriptions?status=active" className="tj-btn tj-btn-sm tj-btn-primary">View All</Link>
                                             </div>
-                                            <div>
-                                                <h5 className="mb-1 text-warning-dark">{stats.expiringSubscriptions} Subscriptions Expiring</h5>
-                                                <p className="mb-0 text-muted small">Action needed within 7 days.</p>
-                                            </div>
-                                            <Link to="/admin/subscriptions?status=active" className="btn btn-sm btn-warning ms-auto">View</Link>
                                         </div>
                                     </div>
                                 )}
                             </div>
-                            <div className="col-lg-7 mb-4">
+                        </div>
+                        <div className="col-lg-7">
+                            <div className="listing-table-container h-100 p-0 overflow-hidden border-0 bg-transparent">
                                 <RecentActivityList
                                     logs={recentLogs}
                                     isLoading={loading}
                                 />
                             </div>
                         </div>
-
                     </div>
                 </div>
-            </section>
+            </div>
 
-            {/* Floating Settings Gear - From Screenshot */}
+            {/* Floating Settings Gear */}
             <Link
                 to="/admin/settings"
                 className="floating-settings-btn"
@@ -299,6 +318,30 @@ const AdminDashboard = () => {
             >
                 <SettingsIcon size={20} />
             </Link>
+
+            <style>{`
+                .floating-settings-btn {
+                    position: fixed;
+                    bottom: 30px;
+                    right: 30px;
+                    width: 50px;
+                    height: 50px;
+                    background: #1e293b;
+                    color: white;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+                    z-index: 1000;
+                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                }
+                .floating-settings-btn:hover {
+                    transform: rotate(90deg) scale(1.1);
+                    background: #0f172a;
+                    color: white;
+                }
+            `}</style>
         </DashboardLayout>
     );
 };

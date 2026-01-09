@@ -7,111 +7,103 @@
     min-height: 60vh;
 }
 
-.user-dashboard-container {
-    max-width: 1400px;
+.user-dashboard-container,
+.admin-container {
+    max-width: 1440px;
     margin: 0 auto;
-    padding: 20px 30px;
+    padding: 20px 40px;
+    width: 100%;
 }
 
-.admin-container {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 20px 30px;
-    width: 100%;
+@media (max-width: 768px) {
+
+    .user-dashboard-container,
+    .admin-container {
+        padding: 15px 20px;
+    }
 }
 
 .dashboard-header {
     text-align: center;
+    margin-bottom: 50px;
 }
 
-.dashboard-header h1,
-.section-title {
-    font-size: 28px;
-    font-weight: 700;
-    margin-bottom: 5px;
+.dashboard-header h1 {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 10px;
     color: #1a1a1a;
 }
 
-/* STATS GRID (Matching Admin Layout Exactly) */
+.dashboard-header p {
+    font-size: 16px;
+    color: #64748b;
+}
+
+/* STATS GRID */
 .user-stats-grid,
 .admin-stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 25px;
-    margin-bottom: 40px;
+    margin-bottom: 50px;
 }
 
 /* STAT CARD REFINEMENT */
 .stat-card {
     background: #ffffff;
-    border-radius: 20px;
-    padding: 30px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+    border-radius: 16px;
+    padding: 35px 30px;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.04);
     display: flex;
     align-items: center;
     gap: 20px !important;
     transition: all 0.3s ease;
-    border: 1px solid #eef2f6;
+    border: 1px solid #f1f5f9;
     text-decoration: none;
-    min-height: 140px;
+    min-height: 150px;
+    position: relative;
+    overflow: hidden;
 }
 
-.stat-card:hover,
-.stat-card.active {
+.stat-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.06);
-    background-color: #f8fafc;
-    border-color: #cbd5e1;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 }
 
-.stat-card.active {
-    border-width: 2px;
-}
-
-.stat-card.card-users {
+/* Bottom Borders */
+.stat-card.card-active-plan {
     border-bottom: 4px solid #3b82f6;
 }
 
-.stat-card.card-active-marketers {
+.stat-card.card-days-remaining {
+    border-bottom: 4px solid #ffc107;
+}
+
+.stat-card.card-payments {
     border-bottom: 4px solid #10b981;
 }
 
-.stat-card.card-plans {
-    border-bottom: 4px solid #f59e0b;
-}
-
-.stat-card.card-payouts {
+.stat-card.card-tickets {
     border-bottom: 4px solid #06b6d4;
-}
-
-.stat-card.card-revenue {
-    border-bottom: 4px solid #6f42c1;
-}
-
-.stat-card.card-active-subs {
-    border-bottom: 4px solid #20c997;
-}
-
-.stat-card.card-expiring {
-    border-bottom: 4px solid #dc3545;
 }
 
 .stat-label {
     display: block;
     font-size: 11px !important;
-    font-weight: 800 !important;
+    font-weight: 700 !important;
     color: #94a3b8 !important;
-    margin-bottom: 4px !important;
+    margin-bottom: 6px !important;
     text-transform: uppercase !important;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
 }
 
 .stat-value {
     display: block;
-    font-size: 26px !important;
+    font-size: 28px !important;
     font-weight: 800 !important;
-    color: #1a202c !important;
-    line-height: 1.2;
+    color: #0f172a !important;
+    line-height: 1.1;
 }
 
 .stat-icon-wrapper {
@@ -119,13 +111,12 @@
 }
 
 .stat-icon {
-    width: 48px !important;
-    height: 48px !important;
-    border-radius: 12px !important;
+    width: 52px !important;
+    height: 52px !important;
+    border-radius: 14px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    font-size: 20px !important;
 }
 
 /* MAIN GRID LAYOUT REFINEMENT */
@@ -137,10 +128,11 @@
 }
 
 .section-title-sm {
-    font-size: 14px;
-    font-weight: 700;
-    color: #334155;
-    margin-bottom: 20px;
+    font-size: 16px;
+    font-weight: 800;
+    color: #1e293b;
+    margin-bottom: 25px;
+    text-transform: capitalize;
 }
 
 /* QUICK ACTIONS GRID (Main Area) */

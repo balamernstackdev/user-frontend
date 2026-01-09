@@ -85,7 +85,7 @@ const SupportTickets = () => {
                             <p>Manage your support tickets</p>
                         </div>
                         <Link to="/tickets/create" className="tj-primary-btn">
-                            <span className="btn-text"><span>Create Ticket</span></span>
+                            <span className="btn-text">Create Ticket</span>
                             <span className="btn-icon"><i className="fas fa-arrow-right"></i></span>
                         </Link>
                     </div>
@@ -111,40 +111,33 @@ const SupportTickets = () => {
                                     </div>
                                 </div>
                             ) : tickets.length > 0 ? (
-                                <div className="bg-white rounded-4 shadow-sm overflow-hidden border-0">
-                                    {tickets.map((ticket, index) => {
-                                        const statusConfig = {
-                                            'open': { border: '#0d6efd', badge: 'bg-primary-subtle text-primary' },
-                                            'in_progress': { border: '#0dcaf0', badge: 'bg-info-subtle text-info-emphasis' },
-                                            'resolved': { border: '#198754', badge: 'bg-success-subtle text-success' },
-                                            'closed': { border: '#6c757d', badge: 'bg-secondary-subtle text-secondary' }
-                                        };
-                                        const config = statusConfig[ticket.status] || statusConfig['open'];
+                                <div className="ticket-list">
+                                    {tickets.map((ticket) => {
+                                        const statusNormalized = ticket.status.toLowerCase();
+                                        const statusClass = statusNormalized === 'in_progress' ? 'pending' : statusNormalized;
 
                                         return (
                                             <div
                                                 key={ticket.id}
-                                                className={`p-4 ${index !== tickets.length - 1 ? 'border-bottom' : ''}`}
+                                                className={`ticket-card ${statusClass}`}
                                                 onClick={() => navigate(`/tickets/${ticket.id}`)}
-                                                style={{ cursor: 'pointer', transition: 'all 0.2s ease', borderLeft: `4px solid ${config.border}` }}
-                                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f8f9fa'}
-                                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fff'}
                                             >
-                                                <div className="d-flex justify-content-between align-items-start mb-2">
+                                                <div className="ticket-header">
                                                     <div>
-                                                        <span className="badge bg-light text-secondary border mb-2 font-monospace">#{ticket.ticket_number || ticket.id.slice(0, 8).toUpperCase()}</span>
-                                                        <h5 className="mb-1 fw-bold text-dark">{ticket.subject}</h5>
+                                                        <span className="ticket-id-tag">#{ticket.ticket_number || ticket.id.slice(0, 8).toUpperCase()}</span>
+                                                        <h3 className="ticket-subject">{ticket.subject}</h3>
                                                     </div>
-                                                    <span className={`badge rounded-pill ${config.badge}`}>
+                                                    <span className={`ticket-status status-${statusClass}`}>
                                                         {ticket.status === 'in_progress' ? 'In Progress' : ticket.status.charAt(0).toUpperCase() + ticket.status.slice(1)}
                                                     </span>
                                                 </div>
-                                                <p className="text-muted mb-3 small text-truncate" style={{ maxWidth: '800px' }}>
+                                                <div className="ticket-message">
                                                     {ticket.message_preview || ticket.description || 'No description available.'}
-                                                </p>
-                                                <div className="d-flex flex-wrap gap-3 text-muted small">
-                                                    <span><i className="far fa-calendar-alt me-1"></i> {formatDate(ticket.created_at)}</span>
-                                                    <span><i className="fas fa-tag me-1"></i> {ticket.category || 'General'}</span>
+                                                </div>
+                                                <div className="ticket-meta">
+                                                    <span><i className="far fa-calendar-alt"></i> Created: {formatDate(ticket.created_at)}</span>
+                                                    <span><i className="fas fa-tag"></i> {ticket.category || 'General'}</span>
+                                                    <span><i className="fas fa-user"></i> Assigned to: Support Team</span>
                                                 </div>
                                             </div>
                                         );
@@ -158,7 +151,7 @@ const SupportTickets = () => {
                                     <h3>No support tickets</h3>
                                     <p>You haven't created any support tickets yet. If you need assistance, please create a ticket and our team will get back to you.</p>
                                     <Link to="/tickets/create" className="tj-primary-btn" style={{ display: 'inline-flex' }}>
-                                        <span className="btn-text"><span>Create Your First Ticket</span></span>
+                                        <span className="btn-text">Create Your First Ticket</span>
                                         <span className="btn-icon"><i className="fas fa-arrow-right"></i></span>
                                     </Link>
                                 </div>

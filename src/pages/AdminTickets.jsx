@@ -5,6 +5,7 @@ import DashboardLayout from '../components/layout/DashboardLayout';
 import Pagination from '../components/common/Pagination';
 import SEO from '../components/common/SEO';
 import { useSocket } from '../context/SocketContext';
+import { LifeBuoy, Calendar, X, Eye, Ticket, AlertCircle, Clock, CheckCircle, Lock } from 'lucide-react';
 import './styles/AdminListings.css';
 
 const AdminTickets = () => {
@@ -88,83 +89,64 @@ const AdminTickets = () => {
         <DashboardLayout>
             <SEO title="Support Management" description="Manage support tickets" />
             <div className="admin-listing-page animate-fade-up">
-                <div className="container">
+                <div className="admin-container">
                     <div className="admin-listing-header">
                         <div className="header-title">
                             <h1>Support Tickets</h1>
-                            <p style={{ color: '#6c757d' }}>Manage user support requests</p>
+                            <p className="text-muted mb-0">Manage user support requests and inquiries</p>
                         </div>
                     </div>
 
-                    <div className="admin-listing-toolbar mb-4" style={{
-                        backgroundColor: 'white',
-                        padding: '15px 20px',
-                        borderRadius: '12px',
-                        boxShadow: '0 2px 6px rgba(0,0,0,0.02)',
-                        border: '1px solid rgba(0,0,0,0.05)'
-                    }}>
-                        <div className="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                    <div className="admin-listing-toolbar">
+                        <div className="d-flex flex-wrap align-items-center justify-content-between gap-3 w-100">
                             {/* Left Side: Date Filters */}
                             <div className="d-flex align-items-center gap-3">
-                                <span className="text-muted small fw-bold text-uppercase" style={{ fontSize: '12px', letterSpacing: '0.5px' }}>Filter Date:</span>
+                                <span className="text-muted small fw-bold text-uppercase">Filter Date:</span>
                                 <div className="d-flex align-items-center gap-2">
-                                    <div className="input-group input-group-sm" style={{ width: '160px' }}>
-                                        <span className="input-group-text bg-white border-end-0 text-muted pe-1">
-                                            <i className="far fa-calendar-alt"></i>
-                                        </span>
-                                        <input
-                                            type="date"
-                                            className="form-control border-start-0 ps-2"
-                                            value={startDate}
-                                            onChange={(e) => setStartDate(e.target.value)}
-                                            style={{ borderColor: '#dee2e6', color: '#6c757d' }}
-                                        />
-                                    </div>
-                                    <span className="text-muted small">to</span>
-                                    <div className="input-group input-group-sm" style={{ width: '160px' }}>
-                                        <span className="input-group-text bg-white border-end-0 text-muted pe-1">
-                                            <i className="far fa-calendar-alt"></i>
-                                        </span>
-                                        <input
-                                            type="date"
-                                            className="form-control border-start-0 ps-2"
-                                            value={endDate}
-                                            onChange={(e) => setEndDate(e.target.value)}
-                                            style={{ borderColor: '#dee2e6', color: '#6c757d' }}
-                                        />
-                                    </div>
+                                    <input
+                                        type="date"
+                                        className="custom-select"
+                                        style={{ height: '42px' }}
+                                        value={startDate}
+                                        onChange={(e) => setStartDate(e.target.value)}
+                                    />
+                                    <span className="text-muted">to</span>
+                                    <input
+                                        type="date"
+                                        className="custom-select"
+                                        style={{ height: '42px' }}
+                                        value={endDate}
+                                        onChange={(e) => setEndDate(e.target.value)}
+                                    />
                                     {(startDate || endDate) && (
                                         <button
-                                            className="btn btn-sm text-danger ms-1"
+                                            className="tj-btn tj-btn-sm tj-btn-outline-danger"
                                             onClick={() => { setStartDate(''); setEndDate(''); }}
                                             title="Clear Dates"
-                                            style={{ background: 'none', border: 'none' }}
                                         >
-                                            <i className="fas fa-times"></i>
+                                            <X size={14} />
                                         </button>
                                     )}
                                 </div>
                             </div>
 
                             {/* Right Side: Filters */}
-                            <div className="d-flex align-items-center gap-3">
+                            <div className="d-flex align-items-center gap-2">
                                 <select
-                                    className="form-select form-select-sm"
+                                    className="custom-select"
                                     value={priorityFilter}
                                     onChange={(e) => setPriorityFilter(e.target.value)}
-                                    style={{ borderRadius: '6px', borderColor: '#e2e8f0', minWidth: '130px', height: '38px' }}
                                 >
                                     <option value="">All Priorities</option>
-                                    <option value="high">High</option>
-                                    <option value="medium">Medium</option>
-                                    <option value="low">Low</option>
+                                    <option value="high">High Priority</option>
+                                    <option value="medium">Medium Priority</option>
+                                    <option value="low">Low Priority</option>
                                 </select>
 
                                 <select
-                                    className="form-select form-select-sm"
+                                    className="custom-select"
                                     value={statusFilter}
                                     onChange={(e) => setStatusFilter(e.target.value)}
-                                    style={{ borderRadius: '6px', borderColor: '#e2e8f0', minWidth: '130px', height: '38px' }}
                                 >
                                     <option value="">All Status</option>
                                     <option value="open">Open</option>
@@ -177,74 +159,88 @@ const AdminTickets = () => {
                     </div>
 
                     <div className="listing-table-container">
-                        <table className="listing-table">
-                            <thead>
-                                <tr>
-                                    <th>Ticket ID</th>
-                                    <th>Subject</th>
-                                    <th>User</th>
-                                    <th>Priority</th>
-                                    <th>Status</th>
-                                    <th>Last Updated</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {loading ? (
-                                    <tr><td colSpan="7" className="text-center">Loading...</td></tr>
-                                ) : tickets.length === 0 ? (
-                                    <tr><td colSpan="7" className="text-center" style={{ padding: '50px' }}>No tickets found</td></tr>
-                                ) : (
-                                    tickets.map(ticket => (
-                                        <tr key={ticket.id}>
-                                            <td><span className="plan-name-text">#{ticket.ticket_number}</span></td>
-                                            <td>{ticket.subject}</td>
-                                            <td>
-                                                <div className="plan-info-cell">
-                                                    <span className="plan-name-text" style={{ fontSize: '14px' }}>{ticket.user_name}</span>
-                                                    <span className="plan-slug-text">{ticket.user_email}</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <span className={`plan-type-badge`} style={{
-                                                    background: ticket.priority === 'high' ? '#ffebee' : ticket.priority === 'medium' ? '#fff3e0' : '#e3f2fd',
-                                                    color: ticket.priority === 'high' ? '#c62828' : ticket.priority === 'medium' ? '#ef6c00' : '#1565c0'
-                                                }}>
-                                                    {ticket.priority}
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <span className="plan-type-badge" style={{
-                                                    background: ticket.status === 'open' ? '#e8f5e9' : ticket.status === 'closed' ? '#eceff1' : '#e3f2fd',
-                                                    color: ticket.status === 'open' ? '#2e7d32' : ticket.status === 'closed' ? '#546e7a' : '#1565c0'
-                                                }}>
-                                                    {ticket.status}
-                                                </span>
-                                            </td>
-                                            <td>{formatDate(ticket.updated_at)}</td>
-                                            <td>
-                                                <div className="actions-cell">
-                                                    <Link to={`/tickets/${ticket.id}`} className="action-btn" title="View Ticket">
-                                                        <i className="far fa-eye"></i>
-                                                    </Link>
+                        <div className="table-responsive">
+                            <table className="listing-table">
+                                <thead>
+                                    <tr>
+                                        <th>Ticket ID</th>
+                                        <th>Subject</th>
+                                        <th>User Details</th>
+                                        <th>Priority</th>
+                                        <th>Status</th>
+                                        <th>Last Updated</th>
+                                        <th className="text-end">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {loading ? (
+                                        <tr><td colSpan="7" className="text-center py-5 text-muted">Loading tickets...</td></tr>
+                                    ) : tickets.length === 0 ? (
+                                        <tr>
+                                            <td colSpan="7" className="text-center py-5">
+                                                <div className="d-flex flex-column align-items-center">
+                                                    <div className="mb-2"><LifeBuoy size={40} className="text-muted opacity-20" /></div>
+                                                    <p className="text-muted mb-0">No tickets found</p>
                                                 </div>
                                             </td>
                                         </tr>
-                                    ))
-                                )}
-                            </tbody>
-                        </table>
+                                    ) : (
+                                        tickets.map(ticket => (
+                                            <tr key={ticket.id}>
+                                                <td>
+                                                    <span className="fw-medium text-primary">#{ticket.ticket_number}</span>
+                                                </td>
+                                                <td>
+                                                    <span className="fw-medium text-dark">{ticket.subject}</span>
+                                                </td>
+                                                <td>
+                                                    <div className="fw-semibold text-dark">{ticket.user_name}</div>
+                                                    <div className="text-muted small">{ticket.user_email}</div>
+                                                </td>
+                                                <td>
+                                                    <span className={`premium-badge ${ticket.priority === 'high' ? 'premium-badge-danger' :
+                                                        ticket.priority === 'medium' ? 'premium-badge-warning' :
+                                                            'premium-badge-info'
+                                                        }`}>
+                                                        {ticket.priority === 'high' && <AlertCircle size={12} className="me-1" />}
+                                                        {ticket.priority}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span className={`premium-badge ${ticket.status === 'open' ? 'premium-badge-success' :
+                                                        ticket.status === 'closed' ? 'premium-badge-secondary' :
+                                                            ticket.status === 'resolved' ? 'premium-badge-info' : 'premium-badge-primary'
+                                                        }`}>
+                                                        {ticket.status === 'open' ? <CheckCircle size={12} className="me-1" /> :
+                                                            ticket.status === 'closed' ? <Lock size={12} className="me-1" /> :
+                                                                <Clock size={12} className="me-1" />}
+                                                        {ticket.status.replace('_', ' ')}
+                                                    </span>
+                                                </td>
+                                                <td className="text-muted small">{formatDate(ticket.updated_at)}</td>
+                                                <td className="text-end">
+                                                    <div className="actions-cell justify-content-end">
+                                                        <Link to={`/admin/tickets/${ticket.id}`} className="action-btn" title="View Ticket">
+                                                            <Eye size={16} />
+                                                        </Link>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
 
-                        {/* Pagination */}
-                        {tickets.length > 0 && (
-                            <Pagination
-                                currentPage={pagination.page}
-                                totalPages={Math.ceil(pagination.total / pagination.limit)}
-                                onPageChange={(newPage) => {
-                                    setPagination(prev => ({ ...prev, page: newPage }));
-                                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                                }}
-                            />
+                        {pagination.total > pagination.limit && (
+                            <div className="mt-4 p-4 border-top d-flex justify-content-center">
+                                <Pagination
+                                    currentPage={pagination.page}
+                                    totalItems={pagination.total}
+                                    itemsPerPage={pagination.limit}
+                                    onPageChange={(page) => setPagination(prev => ({ ...prev, page }))}
+                                />
+                            </div>
                         )}
                     </div>
                 </div>

@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import { Users, DollarSign, MousePointer, Copy, ExternalLink, ArrowRight, TrendingUp, UserCheck, Clock } from 'lucide-react';
 import SkeletonLoader from '../components/dashboard/SkeletonLoader';
 import AnnouncementWidget from '../components/dashboard/AnnouncementWidget';
+import './styles/Dashboard.css';
 
 const BusinessAssociateDashboard = () => {
     const [stats, setStats] = useState(null);
@@ -79,7 +80,7 @@ const BusinessAssociateDashboard = () => {
             <SEO title="Marketer Dashboard" description="Track your referrals and earnings" />
 
             <section className="welcome-section">
-                <div className="admin-container">
+                <div className="container">
                     <div className="welcome-content">
                         {/* Header Section */}
                         <div className="welcome-header animate-fade-up mb-4">

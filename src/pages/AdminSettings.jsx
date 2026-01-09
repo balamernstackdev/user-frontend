@@ -4,7 +4,7 @@ import DashboardLayout from '../components/layout/DashboardLayout';
 import settingsService from '../services/settings.service';
 import { useSettings } from '../context/SettingsContext';
 import SEO from '../components/common/SEO';
-import './styles/AdminListings.css';
+import { Settings, Wallet, Mail, Palette, Shield, CreditCard, Landmark, LineChart, TestTube, Send, Upload, Save, Check, Plug, UserSquare, Phone, MapPin, Globe, Clock, FileText } from 'lucide-react';
 
 const AdminSettings = () => {
     const [settings, setSettings] = useState([]);
@@ -172,11 +172,11 @@ const AdminSettings = () => {
             return (
                 <div className="d-flex flex-column gap-2">
                     {setting.value && (
-                        <div className="mb-2 p-2 border rounded bg-light d-inline-block shadow-sm" style={{ maxWidth: '200px' }}>
+                        <div className="mb-2 p-2 border rounded bg-light d-inline-block shadow-sm overflow-hidden" style={{ maxWidth: '200px' }}>
                             <img
                                 src={setting.value}
                                 alt={setting.key}
-                                style={{ maxHeight: '60px', maxWidth: '100%', display: 'block', margin: '0 auto' }}
+                                style={{ maxHeight: '60px', width: 'auto', display: 'block', margin: '0 auto' }}
                             />
                         </div>
                     )}
@@ -187,7 +187,7 @@ const AdminSettings = () => {
                                 className="form-control"
                                 value={setting.value || ''}
                                 onChange={(e) => handleChange(setting.key, e.target.value)}
-                                placeholder="Asset URL"
+                                placeholder="Enter asset URL..."
                                 style={{ backgroundColor: '#fff', border: '1px solid #e2e8f0', fontSize: '12px' }}
                             />
                         </div>
@@ -204,12 +204,12 @@ const AdminSettings = () => {
                                 htmlFor={`file-${setting.key}`}
                                 className="btn btn-outline-primary m-0 d-flex align-items-center justify-content-center"
                                 style={{ height: '38px', width: '38px', borderRadius: '8px', cursor: 'pointer', padding: 0 }}
-                                title="Upload Image"
+                                title="Upload File"
                             >
                                 {isUploading[setting.key] ? (
                                     <span className="spinner-border spinner-border-sm" role="status"></span>
                                 ) : (
-                                    <i className="fas fa-upload"></i>
+                                    <Upload size={16} />
                                 )}
                             </label>
                         </div>
@@ -254,12 +254,12 @@ const AdminSettings = () => {
     };
 
     const tabs = [
-        { id: 'general', label: 'General Settings', icon: 'fas fa-cog' },
-        { id: 'payments', label: 'Payments & Payouts', icon: 'fas fa-wallet' },
-        { id: 'email', label: 'Email (SMTP)', icon: 'fas fa-envelope' },
-        { id: 'branding', label: 'Branding & SEO', icon: 'fas fa-palette' },
-        { id: 'security', label: 'Security', icon: 'fas fa-shield-alt' },
-        { id: 'identity', label: 'Identity & Legal', icon: 'fas fa-address-card' }
+        { id: 'general', label: 'General Settings', icon: Settings },
+        { id: 'payments', label: 'Payments & Payouts', icon: Wallet },
+        { id: 'email', label: 'Email (SMTP)', icon: Mail },
+        { id: 'branding', label: 'Branding & SEO', icon: Palette },
+        { id: 'security', label: 'Security', icon: Shield },
+        { id: 'identity', label: 'Identity & Legal', icon: UserSquare }
     ];
 
     const filteredSettings = settings.filter(s => {
@@ -299,203 +299,197 @@ const AdminSettings = () => {
     return (
         <DashboardLayout>
             <SEO title="System Settings" description="Global platform configuration" />
+
             <div className="admin-listing-page animate-fade-up">
-                <div className="container">
-                    <div className="admin-listing-header mb-4">
+                <div className="admin-container">
+                    <div className="admin-listing-header">
                         <div className="header-title">
-                            <h1 style={{ color: '#000000', fontSize: '32px', fontWeight: 700 }}>System Settings</h1>
-                            <p style={{ color: '#000000', fontSize: '14px' }}>Global configuration & automation</p>
+                            <h1>System Settings</h1>
+                            <p className="text-muted mb-0">Global configuration & automation</p>
                         </div>
                     </div>
 
-                    <div className="row">
-                        <div className="col-12 mb-4">
-                            <div className="d-flex overflow-auto pb-2" style={{ gap: '10px' }}>
-                                {tabs.map(tab => (
+                    <div className="admin-listing-toolbar mb-4 overflow-hidden">
+                        <div className="d-flex flex-nowrap align-items-center gap-3 overflow-auto pb-2 scrollbar-none" style={{ scrollSnapType: 'x mandatory' }}>
+                            {tabs.map(tab => {
+                                const Icon = tab.icon;
+                                return (
                                     <button
                                         key={tab.id}
                                         onClick={() => setActiveTab(tab.id)}
-                                        className={`btn px-4 py-2 rounded-pill d-flex align-items-center justify-content-center transition-all ${activeTab === tab.id ? 'btn-primary' : 'btn-light'}`}
-                                        style={{ whiteSpace: 'nowrap', fontWeight: 600, fontSize: '14px', gap: '8px' }}
+                                        className={`tj-btn ${activeTab === tab.id ? 'tj-btn-primary' : 'tj-btn-outline-primary'}`}
+                                        style={{ whiteSpace: 'nowrap', minWidth: 'auto', padding: '0 24px', height: '44px', borderRadius: '50px', flex: '0 0 auto', scrollSnapAlign: 'start' }}
                                     >
-                                        <i className={`${tab.icon}`} style={{ fontSize: '1.1em', marginTop: '1px' }}></i>
-                                        <span>{tab.label}</span>
+                                        <Icon size={18} className="me-2" />
+                                        {tab.label}
                                     </button>
-                                ))}
-                            </div>
+                                );
+                            })}
                         </div>
+                    </div>
 
-                        <div className="col-12">
-                            <div className="listing-table-container shadow-sm border-0 p-4 bg-white rounded-3">
-                                <h5 className="mb-4 d-flex align-items-center" style={{ fontWeight: 700, color: '#000000' }}>
-                                    {tabs.find(t => t.id === activeTab)?.label}
-                                </h5>
+                    <div className="listing-table-container">
+                        <div className="p-4">
+                            <h4 className="fw-bold mb-4" style={{ color: '#1e293b' }}>
+                                {tabs.find(t => t.id === activeTab)?.label}
+                            </h4>
 
-                                {loading ? (
-                                    <div className="text-center py-5">
-                                        <div className="spinner-border text-primary" role="status"></div>
-                                        <p className="mt-2 text-muted">Loading settings...</p>
-                                    </div>
-                                ) : filteredSettings.length === 0 ? (
-                                    <div className="text-center py-5">
-                                        <p className="text-muted">No settings found for this category.</p>
-                                    </div>
-                                ) : (
-                                    <div className="settings-list">
-                                        {filteredSettings.map((setting, index) => {
-                                            const isRazorpayX = setting.key.startsWith('razorpay_x');
-                                            const prevIsRazorpayX = index > 0 ? filteredSettings[index - 1].key.startsWith('razorpay_x') : null;
+                            {loading ? (
+                                <div className="text-center py-5">
+                                    <div className="spinner-border text-primary" role="status"></div>
+                                    <p className="mt-2 text-muted">Loading settings...</p>
+                                </div>
+                            ) : filteredSettings.length === 0 ? (
+                                <div className="text-center py-5">
+                                    <p className="text-muted">No settings found for this category.</p>
+                                </div>
+                            ) : (
+                                <div className="settings-list">
+                                    {filteredSettings.map((setting, index) => {
+                                        const isRazorpayX = setting.key.startsWith('razorpay_x');
+                                        const prevIsRazorpayX = index > 0 ? filteredSettings[index - 1].key.startsWith('razorpay_x') : null;
 
-                                            const isSEO = ['meta_description', 'meta_keywords', 'google_analytics_id', 'facebook_pixel_id'].includes(setting.key);
-                                            const prevIsSEO = index > 0 ? ['meta_description', 'meta_keywords', 'google_analytics_id', 'facebook_pixel_id'].includes(filteredSettings[index - 1].key) : false;
+                                        const isSEO = ['meta_description', 'meta_keywords', 'google_analytics_id', 'facebook_pixel_id'].includes(setting.key);
+                                        const prevIsSEO = index > 0 ? ['meta_description', 'meta_keywords', 'google_analytics_id', 'facebook_pixel_id'].includes(filteredSettings[index - 1].key) : false;
 
-                                            return (
-                                                <React.Fragment key={setting.key}>
-                                                    {activeTab === 'payments' && index === 0 && !isRazorpayX && (
-                                                        <div className="mb-4 pb-2 border-bottom">
-                                                            <h6 className="mb-0 text-primary fw-bold" style={{ fontSize: '15px' }}>
-                                                                <i className="fas fa-credit-card me-2"></i>
-                                                                Payment Gateway (Customer Payments)
-                                                            </h6>
-                                                        </div>
-                                                    )}
+                                        return (
+                                            <React.Fragment key={setting.key}>
+                                                {activeTab === 'payments' && index === 0 && !isRazorpayX && (
+                                                    <div className="mb-4 pb-2 border-bottom d-flex align-items-center gap-2">
+                                                        <CreditCard size={18} className="text-primary" />
+                                                        <h6 className="mb-0 text-primary fw-bold text-uppercase small letter-spacing-1">
+                                                            Payment Gateway (Customer Payments)
+                                                        </h6>
+                                                    </div>
+                                                )}
 
-                                                    {activeTab === 'payments' && isRazorpayX && prevIsRazorpayX === false && (
-                                                        <div className="mt-5 mb-4 pb-2 border-bottom">
-                                                            <h6 className="mb-0 text-primary fw-bold" style={{ fontSize: '15px' }}>
-                                                                <i className="fas fa-university me-2"></i>
-                                                                RazorpayX Configuration (Vendor Payouts)
-                                                            </h6>
-                                                        </div>
-                                                    )}
+                                                {activeTab === 'payments' && isRazorpayX && prevIsRazorpayX === false && (
+                                                    <div className="mt-5 mb-4 pb-2 border-bottom d-flex align-items-center gap-2">
+                                                        <Landmark size={18} className="text-primary" />
+                                                        <h6 className="mb-0 text-primary fw-bold text-uppercase small letter-spacing-1">
+                                                            RazorpayX Configuration (Vendor Payouts)
+                                                        </h6>
+                                                    </div>
+                                                )}
 
-                                                    {activeTab === 'branding' && index === 0 && !isSEO && (
-                                                        <div className="mb-4 pb-2 border-bottom">
-                                                            <h6 className="mb-0 text-primary fw-bold" style={{ fontSize: '15px' }}>
-                                                                <i className="fas fa-paint-brush me-2"></i>
-                                                                Visual Branding
-                                                            </h6>
-                                                        </div>
-                                                    )}
+                                                {activeTab === 'branding' && index === 0 && !isSEO && (
+                                                    <div className="mb-4 pb-2 border-bottom d-flex align-items-center gap-2">
+                                                        <Palette size={18} className="text-primary" />
+                                                        <h6 className="mb-0 text-primary fw-bold text-uppercase small letter-spacing-1">
+                                                            Visual Branding
+                                                        </h6>
+                                                    </div>
+                                                )}
 
-                                                    {activeTab === 'branding' && isSEO && !prevIsSEO && (
-                                                        <div className="mt-5 mb-4 pb-2 border-bottom">
-                                                            <h6 className="mb-0 text-primary fw-bold" style={{ fontSize: '15px' }}>
-                                                                <i className="fas fa-chart-line me-2"></i>
-                                                                SEO & Analytics
-                                                            </h6>
-                                                        </div>
-                                                    )}
+                                                {activeTab === 'branding' && isSEO && !prevIsSEO && (
+                                                    <div className="mt-5 mb-4 pb-2 border-bottom d-flex align-items-center gap-2">
+                                                        <LineChart size={18} className="text-primary" />
+                                                        <h6 className="mb-0 text-primary fw-bold text-uppercase small letter-spacing-1">
+                                                            SEO & Analytics
+                                                        </h6>
+                                                    </div>
+                                                )}
 
-                                                    {activeTab === 'email' && index === 0 && (
-                                                        <div className="mb-4 p-3 bg-light rounded-3 d-flex justify-content-between align-items-center animate-fade-up shadow-sm border border-primary-subtle">
-                                                            <div>
-                                                                <h6 className="mb-1 fw-bold text-primary"><i className="fas fa-vial me-2"></i>Test SMTP Configuration</h6>
-                                                                <p className="small text-muted mb-0">Verify if your email settings are working correctly.</p>
+                                                {activeTab === 'email' && index === 0 && (
+                                                    <div className="mb-5 p-4 bg-light rounded-4 d-flex justify-content-between align-items-center border border-primary-subtle shadow-sm">
+                                                        <div>
+                                                            <div className="d-flex align-items-center gap-2 mb-1">
+                                                                <TestTube size={18} className="text-primary" />
+                                                                <h6 className="mb-0 fw-bold text-primary">Test SMTP Configuration</h6>
                                                             </div>
-                                                            <div className="d-flex align-items-center gap-2">
+                                                            <p className="small text-muted mb-0">Verify if your email settings are working correctly.</p>
+                                                        </div>
+                                                        <div className="d-flex align-items-center gap-3">
+                                                            <div className="position-relative">
                                                                 <input
                                                                     type="email"
-                                                                    className="form-control form-control-sm"
-                                                                    placeholder="Recipient email"
+                                                                    className="form-control"
+                                                                    placeholder="Enter recipient email..."
                                                                     value={testEmail}
                                                                     onChange={(e) => setTestEmail(e.target.value)}
-                                                                    style={{ width: '200px', backgroundColor: '#fff' }}
+                                                                    style={{ width: '280px', height: '44px', paddingLeft: '15px' }}
                                                                 />
-                                                                <button
-                                                                    className="btn btn-primary btn-sm px-3"
-                                                                    onClick={handleTestSMTP}
-                                                                    disabled={isTestingSMTP}
-                                                                    style={{ borderRadius: '6px' }}
-                                                                >
-                                                                    {isTestingSMTP ? (
-                                                                        <><span className="spinner-border spinner-border-sm me-1"></span>Testing...</>
-                                                                    ) : (
-                                                                        <><i className="fas fa-paper-plane me-1"></i> Send Test</>
-                                                                    )}
-                                                                </button>
                                                             </div>
-                                                        </div>
-                                                    )}
-
-                                                    <div className="mb-4 pb-4 border-bottom last-no-border">
-                                                        <div className="row align-items-center">
-                                                            <div className="col-lg-4 col-md-12 mb-2 mb-lg-0">
-                                                                <label className="form-label d-block fw-bold mb-1" style={{ fontSize: '13px', color: '#444', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                                                                    {setting.key.replace(/_/g, ' ').replace(/marketer/i, 'Business Associate')}
-                                                                </label>
-                                                                {setting.description && (
-                                                                    <div className="text-muted" style={{ fontSize: '11px', lineHeight: '1.4' }}>
-                                                                        {setting.description}
-                                                                    </div>
+                                                            <button
+                                                                className="tj-btn tj-btn-primary"
+                                                                onClick={handleTestSMTP}
+                                                                disabled={isTestingSMTP}
+                                                                style={{ height: '44px', padding: '0 25px' }}
+                                                            >
+                                                                {isTestingSMTP ? (
+                                                                    <><span className="spinner-border spinner-border-sm me-2"></span>Testing...</>
+                                                                ) : (
+                                                                    <><Send size={16} className="me-2" /> Send Test Email</>
                                                                 )}
-                                                            </div>
-                                                            <div className="col-lg-6 col-md-9 col-8">
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                )}
+
+                                                <div className="mb-4 pb-4 border-bottom last-no-border">
+                                                    <div className="row align-items-center">
+                                                        <div className="col-lg-4 col-md-12 mb-3 mb-lg-0">
+                                                            <label className="d-block fw-bold mb-1" style={{ fontSize: '14px', color: '#1e293b' }}>
+                                                                {setting.key.replace(/_/g, ' ').toUpperCase()}
+                                                            </label>
+                                                            {setting.description && (
+                                                                <div className="text-muted" style={{ fontSize: '11.5px', lineHeight: '1.5' }}>
+                                                                    {setting.description}
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                        <div className="col-lg-6 col-md-9 col-sm-8 col-12">
+                                                            <div className="setting-input-wrapper">
                                                                 {renderInput(setting)}
                                                             </div>
-                                                            <div className="col-lg-2 col-md-3 col-4 text-end">
-                                                                <button
-                                                                    className="tj-primary-btn w-100"
-                                                                    style={{ height: '40px', padding: '0 20px', fontSize: '14px', borderRadius: '50px' }}
-                                                                    onClick={() => handleSave(setting.key)}
-                                                                    disabled={saving[setting.key]}
-                                                                >
-                                                                    <span className="btn-text">
-                                                                        {saving[setting.key] ? (
-                                                                            <span className="spinner-border spinner-border-sm" role="status"></span>
-                                                                        ) : 'Save'}
-                                                                    </span>
-                                                                    {!saving[setting.key] && (
-                                                                        <span className="btn-icon">
-                                                                            <i className="fas fa-arrow-right"></i>
-                                                                        </span>
-                                                                    )}
-                                                                </button>
-                                                            </div>
+                                                        </div>
+                                                        <div className="col-lg-2 col-md-3 col-sm-4 col-12 text-end mt-3 mt-sm-0">
+                                                            <button
+                                                                className="tj-btn tj-btn-primary w-100"
+                                                                style={{ height: '42px', borderRadius: '10px' }}
+                                                                onClick={() => handleSave(setting.key)}
+                                                                disabled={saving[setting.key]}
+                                                            >
+                                                                {saving[setting.key] ? (
+                                                                    <span className="spinner-border spinner-border-sm" role="status"></span>
+                                                                ) : (
+                                                                    <><Save size={16} className="me-2" /> Save</>
+                                                                )}
+                                                            </button>
                                                         </div>
                                                     </div>
-                                                </React.Fragment>
-                                            );
-                                        })}
+                                                </div>
+                                            </React.Fragment>
+                                        );
+                                    })}
 
-                                        {activeTab === 'payments' && settings.some(s => s.key.startsWith('razorpay_x')) && (
-                                            <div className="mt-4 pt-4 border-top">
-                                                <div className="d-flex align-items-center justify-content-between p-3 rounded-3" style={{ backgroundColor: '#f8fafc', border: '1px dashed #cbd5e1' }}>
-                                                    <div>
-                                                        <h6 className="mb-1" style={{ fontWeight: 700, fontSize: '14px' }}>Verify Connection</h6>
-                                                        <p className="mb-0 text-muted" style={{ fontSize: '12px' }}>Test if the provided Key ID and Secret are valid and connected to Razorpay.</p>
-                                                    </div>
-                                                    <button
-                                                        className="tj-primary-btn px-4"
-                                                        style={{ fontWeight: 600, fontSize: '14px', borderRadius: '50px', height: '40px' }}
-                                                        onClick={handleValidateRazorpayX}
-                                                        disabled={isValidating}
-                                                    >
-                                                        <span className="btn-text">
-                                                            {isValidating ? (
-                                                                <>
-                                                                    <span className="spinner-border spinner-border-sm me-2" role="status"></span>
-                                                                    Validating...
-                                                                </>
-                                                            ) : (
-                                                                <>
-                                                                    <i className="fas fa-plug me-2"></i>
-                                                                    Test Connection
-                                                                </>
-                                                            )}
-                                                        </span>
-                                                        {!isValidating && (
-                                                            <span className="btn-icon">
-                                                                <i className="fas fa-arrow-right"></i>
-                                                            </span>
-                                                        )}
-                                                    </button>
+                                    <div className="mt-5 pt-4 border-top">
+                                        <div className="d-flex align-items-center justify-content-between p-4 rounded-4 bg-light border border-dashed">
+                                            <div className="d-flex align-items-start gap-3">
+                                                <div className="p-3 bg-white rounded-circle shadow-sm">
+                                                    <Plug size={24} className="text-primary" />
+                                                </div>
+                                                <div>
+                                                    <h6 className="fw-bold mb-1">Verify Connector Status</h6>
+                                                    <p className="mb-0 text-muted small" style={{ maxWidth: '400px' }}>Test if the provided RazorpayX Key ID and Secret are valid and can establish a secure connection.</p>
                                                 </div>
                                             </div>
-                                        )}
+                                            <button
+                                                className="tj-btn tj-btn-outline-primary"
+                                                style={{ height: '48px', padding: '0 30px', borderRadius: '12px' }}
+                                                onClick={handleValidateRazorpayX}
+                                                disabled={isValidating}
+                                            >
+                                                {isValidating ? (
+                                                    <><span className="spinner-border spinner-border-sm me-2"></span>Validating API...</>
+                                                ) : (
+                                                    <><Plug size={18} className="me-2" /> Test Gateway Connection</>
+                                                )}
+                                            </button>
+                                        </div>
                                     </div>
-                                )}
-                            </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -506,20 +500,6 @@ const AdminSettings = () => {
                     border-bottom: none !important;
                     margin-bottom: 0 !important;
                     padding-bottom: 0 !important;
-                }
-                .transition-all {
-                    transition: all 0.2s ease-in-out;
-                }
-                .btn-primary {
-                    background-color: #13689e !important;
-                    border-color: #13689e !important;
-                }
-                .btn-light {
-                    background-color: #f3f4f6;
-                    border: none;
-                }
-                .btn-light:hover {
-                    background-color: #e5e7eb;
                 }
             `}</style>
         </DashboardLayout>

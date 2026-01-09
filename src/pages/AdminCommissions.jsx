@@ -4,9 +4,11 @@ import commissionService from '../services/commission.service';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import Pagination from '../components/common/Pagination';
 import SEO from '../components/common/SEO';
-import './styles/AdminListings.css';
+import StatCard from '../components/dashboard/StatCard';
+import { List, IndianRupee, CheckCircle, Clock, Download, Calendar, Filter, Eye, Check, Banknote, User, Package, Mail } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { adminService } from '../services/admin.service';
+import './styles/AdminListings.css';
 
 const AdminCommissions = () => {
     const [searchParams] = useSearchParams();
@@ -137,264 +139,228 @@ const AdminCommissions = () => {
         <DashboardLayout>
             <SEO title="Commission Management" description="Manage business associate commissions" />
             <div className="admin-listing-page animate-fade-up">
-                <div className="container">
+                <div className="admin-container">
                     <div className="admin-listing-header">
                         <div className="header-title">
                             <h1>Commission Payouts</h1>
-                            <p style={{ color: '#6c757d' }}>Manage and process business associate commissions</p>
+                            <p className="text-muted mb-0">Manage and process Business Associate commissions</p>
+                        </div>
+                        <div className="header-actions">
+                            <div className="btn-group" ref={exportDropdownRef}>
+                                <button
+                                    className="tj-btn tj-btn-outline-primary"
+                                    onClick={() => setShowExportDropdown(!showExportDropdown)}
+                                >
+                                    <Download size={18} className="me-2" /> Export
+                                </button>
+                                {showExportDropdown && (
+                                    <ul className="dropdown-menu show shadow-sm border" style={{ display: 'block', position: 'absolute', top: '100%', right: 0, zIndex: 1000, minWidth: '140px' }}>
+                                        <li>
+                                            <button className="dropdown-item py-2" onClick={() => { handleGeneralExport('csv'); setShowExportDropdown(false); }}>
+                                                Export as CSV
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button className="dropdown-item py-2" onClick={() => { handleGeneralExport('pdf'); setShowExportDropdown(false); }}>
+                                                Export as PDF
+                                            </button>
+                                        </li>
+                                    </ul>
+                                )}
+                            </div>
                         </div>
                     </div>
 
                     {/* Summary Cards */}
-                    <div className="row mb-4">
+                    <div className="row g-4 mb-4">
                         <div className="col-md-3">
-                            <div style={{ background: 'white', padding: '20px', borderRadius: '12px', boxShadow: '0 2px 6px rgba(0,0,0,0.02)', border: '1px solid rgba(0,0,0,0.05)', height: '100%', display: 'flex', alignItems: 'center' }}>
-                                <div style={{ width: '48px', height: '48px', borderRadius: '10px', background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', marginRight: '15px' }}>
-                                    <i className="fas fa-list-ul"></i>
-                                </div>
-                                <div>
-                                    <div style={{ color: '#6c757d', fontSize: '13px', marginBottom: '4px' }}>Total Payouts</div>
-                                    <div style={{ fontSize: '24px', fontWeight: '700', color: '#2c3e50' }}>{stats.total_count || 0}</div>
-                                </div>
-                            </div>
+                            <StatCard
+                                label="Total Payouts"
+                                value={stats.total_count || 0}
+                                icon={List}
+                                isLoading={loading}
+                            />
                         </div>
                         <div className="col-md-3">
-                            <div style={{ background: 'white', padding: '20px', borderRadius: '12px', boxShadow: '0 2px 6px rgba(0,0,0,0.02)', border: '1px solid rgba(0,0,0,0.05)', height: '100%', display: 'flex', alignItems: 'center' }}>
-                                <div style={{ width: '48px', height: '48px', borderRadius: '10px', background: 'rgba(57, 199, 131, 0.1)', color: '#39c783', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', marginRight: '15px' }}>
-                                    <i className="fas fa-money-bill-wave"></i>
-                                </div>
-                                <div>
-                                    <div style={{ color: '#6c757d', fontSize: '13px', marginBottom: '4px' }}>Total Amount</div>
-                                    <div style={{ fontSize: '24px', fontWeight: '700', color: '#2c3e50' }}>₹{(parseFloat(stats.total_amount) || 0).toFixed(2)}</div>
-                                </div>
-                            </div>
+                            <StatCard
+                                label="Total Amount"
+                                value={`₹${(parseFloat(stats.total_amount) || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`}
+                                icon={IndianRupee}
+                                iconColor="#10b981"
+                                iconBgColor="rgba(16, 185, 129, 0.1)"
+                                isLoading={loading}
+                            />
                         </div>
                         <div className="col-md-3">
-                            <div style={{ background: 'white', padding: '20px', borderRadius: '12px', boxShadow: '0 2px 6px rgba(0,0,0,0.02)', border: '1px solid rgba(0,0,0,0.05)', height: '100%', display: 'flex', alignItems: 'center' }}>
-                                <div style={{ width: '48px', height: '48px', borderRadius: '10px', background: 'rgba(57, 199, 131, 0.1)', color: '#39c783', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', marginRight: '15px' }}>
-                                    <i className="fas fa-check-circle"></i>
-                                </div>
-                                <div>
-                                    <div style={{ color: '#6c757d', fontSize: '13px', marginBottom: '4px' }}>Paid Amount</div>
-                                    <div style={{ fontSize: '24px', fontWeight: '700', color: '#2c3e50' }}>₹{(parseFloat(stats.paid_amount) || 0).toFixed(2)}</div>
-                                </div>
-                            </div>
+                            <StatCard
+                                label="Paid Amount"
+                                value={`₹${(parseFloat(stats.paid_amount) || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`}
+                                icon={CheckCircle}
+                                iconColor="#6366f1"
+                                iconBgColor="rgba(99, 102, 241, 0.1)"
+                                isLoading={loading}
+                            />
                         </div>
                         <div className="col-md-3">
-                            <div style={{ background: 'white', padding: '20px', borderRadius: '12px', boxShadow: '0 2px 6px rgba(0,0,0,0.02)', border: '1px solid rgba(0,0,0,0.05)', height: '100%', display: 'flex', alignItems: 'center' }}>
-                                <div style={{ width: '48px', height: '48px', borderRadius: '10px', background: 'rgba(255, 193, 7, 0.1)', color: '#ffc107', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', marginRight: '15px' }}>
-                                    <i className="fas fa-clock"></i>
-                                </div>
-                                <div>
-                                    <div style={{ color: '#6c757d', fontSize: '13px', marginBottom: '4px' }}>Pending Amount</div>
-                                    <div style={{ fontSize: '24px', fontWeight: '700', color: '#2c3e50' }}>₹{(parseFloat(stats.pending_amount) || 0).toFixed(2)}</div>
-                                </div>
-                            </div>
+                            <StatCard
+                                label="Pending Amount"
+                                value={`₹${(parseFloat(stats.pending_amount) || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`}
+                                icon={Clock}
+                                iconColor="#f59e0b"
+                                iconBgColor="rgba(245, 158, 11, 0.1)"
+                                isLoading={loading}
+                            />
                         </div>
                     </div>
 
-                    <div className="admin-listing-toolbar mb-4" style={{
-                        backgroundColor: 'white',
-                        padding: '15px 20px',
-                        borderRadius: '12px',
-                        boxShadow: '0 2px 6px rgba(0,0,0,0.02)',
-                        border: '1px solid rgba(0,0,0,0.05)'
-                    }}>
-                        <div className="d-flex flex-wrap align-items-center justify-content-between gap-3">
-                            {/* Left Side: Date Filters */}
+                    <div className="admin-listing-toolbar">
+                        <div className="d-flex flex-wrap align-items-center justify-content-between gap-3 w-100">
                             <div className="d-flex align-items-center gap-3">
-                                <span className="text-muted small fw-bold text-uppercase" style={{ fontSize: '12px', letterSpacing: '0.5px' }}>Filter Date:</span>
+                                <div className="d-flex align-items-center gap-2 text-muted small fw-bold text-uppercase">
+                                    <Calendar size={14} /> <span>Filter Period:</span>
+                                </div>
                                 <div className="d-flex align-items-center gap-2">
-                                    <div className="input-group input-group-sm" style={{ width: '160px' }}>
-                                        <span className="input-group-text bg-white border-end-0 text-muted pe-1">
-                                            <i className="far fa-calendar-alt"></i>
-                                        </span>
-                                        <input
-                                            type="date"
-                                            className="form-control border-start-0 ps-2"
-                                            value={startDate}
-                                            onChange={(e) => setStartDate(e.target.value)}
-                                            style={{ borderColor: '#dee2e6', color: '#6c757d' }}
-                                        />
-                                    </div>
+                                    <input
+                                        type="date"
+                                        className="custom-select"
+                                        style={{ height: '42px' }}
+                                        value={startDate}
+                                        onChange={(e) => setStartDate(e.target.value)}
+                                    />
                                     <span className="text-muted small">to</span>
-                                    <div className="input-group input-group-sm" style={{ width: '160px' }}>
-                                        <span className="input-group-text bg-white border-end-0 text-muted pe-1">
-                                            <i className="far fa-calendar-alt"></i>
-                                        </span>
-                                        <input
-                                            type="date"
-                                            className="form-control border-start-0 ps-2"
-                                            value={endDate}
-                                            onChange={(e) => setEndDate(e.target.value)}
-                                            style={{ borderColor: '#dee2e6', color: '#6c757d' }}
-                                        />
-                                    </div>
+                                    <input
+                                        type="date"
+                                        className="custom-select"
+                                        style={{ height: '42px' }}
+                                        value={endDate}
+                                        onChange={(e) => setEndDate(e.target.value)}
+                                    />
                                     {(startDate || endDate) && (
-                                        <button
-                                            className="btn btn-sm text-danger ms-1"
-                                            onClick={() => { setStartDate(''); setEndDate(''); }}
-                                            title="Clear Dates"
-                                            style={{ background: 'none', border: 'none' }}
-                                        >
-                                            <i className="fas fa-times"></i>
+                                        <button className="tj-btn tj-btn-sm tj-btn-outline-danger ms-2" onClick={() => { setStartDate(''); setEndDate(''); }}>
+                                            Reset
                                         </button>
                                     )}
                                 </div>
                             </div>
 
-                            {/* Right Side: Filters & Actions */}
-                            <div className="d-flex align-items-center gap-3">
-                                <select
-                                    className="form-select form-select-sm"
-                                    value={statusFilter}
-                                    onChange={(e) => setStatusFilter(e.target.value)}
-                                    style={{ borderRadius: '6px', borderColor: '#e2e8f0', minWidth: '130px', height: '38px' }}
-                                >
-                                    <option value="all">All Status</option>
-                                    <option value="pending">Pending</option>
-                                    <option value="paid">Paid</option>
-                                    <option value="processing">Processing</option>
-                                </select>
-
-                                <div className="vr mx-1" style={{ color: '#e2e8f0' }}></div>
-
-                                <div className="position-relative" ref={exportDropdownRef}>
-                                    <button
-                                        className="tj-primary-btn"
-                                        onClick={() => setShowExportDropdown(!showExportDropdown)}
-                                        style={{
-                                            height: '38px',
-                                            borderRadius: '6px',
-                                            padding: '0 20px',
-                                            display: 'inline-flex',
-                                            alignItems: 'center',
-                                            fontSize: '14px',
-                                            fontWeight: 500
-                                        }}
-                                    >
-                                        <i className="fas fa-file-export me-2"></i>
-                                        <span className="btn-text">Export Options</span>
-                                    </button>
-
-                                    {showExportDropdown && (
-                                        <ul className="dropdown-menu show shadow" style={{
-                                            display: 'block',
-                                            position: 'absolute',
-                                            top: '100%',
-                                            right: 0,
-                                            zIndex: 1000,
-                                            minWidth: '200px',
-                                            padding: '8px',
-                                            border: '1px solid #eef2f6',
-                                            borderRadius: '12px',
-                                            marginTop: '8px'
-                                        }}>
-                                            <li>
-                                                <button
-                                                    className="dropdown-item rounded-2"
-                                                    onClick={() => { handleGeneralExport('csv'); setShowExportDropdown(false); }}
-                                                    style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 15px', transition: 'all 0.2s' }}
-                                                >
-                                                    <i className="fas fa-file-csv text-primary" style={{ fontSize: '18px' }}></i>
-                                                    <span>Download CSV</span>
-                                                </button>
-                                            </li>
-                                            <li>
-                                                <button
-                                                    className="dropdown-item rounded-2"
-                                                    onClick={() => { handleGeneralExport('pdf'); setShowExportDropdown(false); }}
-                                                    style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 15px', transition: 'all 0.2s' }}
-                                                >
-                                                    <i className="fas fa-file-pdf text-danger" style={{ fontSize: '18px' }}></i>
-                                                    <span>Download PDF</span>
-                                                </button>
-                                            </li>
-                                        </ul>
-                                    )}
+                            <div className="d-flex gap-2">
+                                <div className="d-flex align-items-center gap-2">
+                                    <Filter size={14} className="text-muted" />
+                                    <select className="custom-select" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} style={{ width: '160px' }}>
+                                        <option value="all">All Payout Status</option>
+                                        <option value="pending">Pending Approval</option>
+                                        <option value="approved">Approved / Ready</option>
+                                        <option value="paid">Settled / Paid</option>
+                                        <option value="processing">Processing</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <div className="listing-table-container">
-                        <table className="listing-table">
-                            <thead>
-                                <tr>
-                                    <th>Business Associate</th>
-                                    <th>Amount</th>
-                                    <th>Source</th>
-                                    <th>Date</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {loading ? (
-                                    <tr><td colSpan="6" className="text-center">Loading...</td></tr>
-                                ) : commissions.length === 0 ? (
-                                    <tr><td colSpan="6" className="text-center" style={{ padding: '50px' }}>No commissions found</td></tr>
-                                ) : (
-                                    commissions.map(comm => (
-                                        <tr key={comm.id}>
-                                            <td>
-                                                <div className="plan-info-cell">
-                                                    <span className="plan-name-text">{comm.marketer_name}</span>
-                                                    <span className="plan-slug-text">{comm.marketer_email}</span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <span className="plan-price-text">₹{comm.amount}</span>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex flex-column">
-                                                    <span style={{ fontWeight: 500 }}>{comm.user_name}</span>
-                                                    <span style={{ fontSize: '12px', color: '#6c757d' }}>{comm.plan_name}</span>
-                                                </div>
-                                            </td>
-                                            <td>{new Date(comm.created_at).toLocaleDateString('en-GB')}</td>
-                                            <td>
-                                                <span className={`plan-type-badge`} style={{
-                                                    background: comm.status === 'paid' ? '#e8f5e9' : comm.status === 'approved' ? '#e3f2fd' : comm.status === 'pending' ? '#fff3e0' : '#ffebee',
-                                                    color: comm.status === 'paid' ? '#2e7d32' : comm.status === 'approved' ? '#1565c0' : comm.status === 'pending' ? '#ff9800' : '#c62828'
-                                                }}>
-                                                    {comm.status}
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <div className="actions-cell">
-                                                    {comm.status === 'pending' && (
-                                                        <button className="action-btn" onClick={() => handleApprove(comm.id)} title="Approve" style={{ color: '#28a745', borderColor: '#28a745' }}>
-                                                            <i className="fas fa-check"></i>
-                                                        </button>
-                                                    )}
-                                                    {comm.status === 'approved' && (
-                                                        <Link to={`/admin/commissions/${comm.id}/pay`} className="action-btn" title="Mark Paid" style={{ color: '#28a745', borderColor: '#28a745' }}>
-                                                            <i className="fas fa-money-bill-wave"></i>
-                                                        </Link>
-                                                    )}
-                                                    {/* Always allow viewing details */}
-                                                    <Link to={`/admin/commissions/${comm.id}`} className="action-btn" title="View Details" style={{ color: '#007bff', borderColor: '#007bff' }}>
-                                                        <i className="fas fa-eye"></i>
-                                                    </Link>
-                                                </div>
+                        <div className="table-responsive">
+                            <table className="listing-table">
+                                <thead>
+                                    <tr>
+                                        <th>Business Associate</th>
+                                        <th>Amount</th>
+                                        <th>Source</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                        <th className="text-end">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {loading ? (
+                                        <tr><td colSpan="6" className="text-center py-5 text-muted">Synchronizing commission database...</td></tr>
+                                    ) : commissions.length === 0 ? (
+                                        <tr>
+                                            <td colSpan="6" className="text-center py-5">
+                                                <div className="text-muted mb-2"><Banknote size={40} className="opacity-20" /></div>
+                                                <p className="text-muted mb-0">No commission records found matching your filters</p>
                                             </td>
                                         </tr>
-                                    ))
-                                )}
-                            </tbody>
-                        </table>
+                                    ) : (
+                                        commissions.map(comm => (
+                                            <tr key={comm.id}>
+                                                <td>
+                                                    <div className="d-flex align-items-center gap-2">
+                                                        <div className="avatar-circle-sm" style={{ background: '#f8fafc', border: '1px solid #e2e8f0', color: '#64748b' }}>
+                                                            {comm.marketer_name.charAt(0)}
+                                                        </div>
+                                                        <div className="d-flex flex-column">
+                                                            <div className="fw-semibold text-dark">{comm.marketer_name}</div>
+                                                            <div className="text-muted small d-flex align-items-center gap-1">
+                                                                <Mail size={10} /> {comm.marketer_email}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div className="fw-bold text-dark d-flex align-items-center gap-1">
+                                                        <IndianRupee size={12} className="text-muted" />
+                                                        {parseFloat(comm.amount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div className="d-flex flex-column">
+                                                        <div className="fw-medium text-dark d-flex align-items-center gap-1">
+                                                            <User size={12} className="text-muted" /> {comm.user_name}
+                                                        </div>
+                                                        <div className="text-muted small d-flex align-items-center gap-1">
+                                                            <Package size={10} /> {comm.plan_name}
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div className="text-muted small d-flex align-items-center gap-1">
+                                                        <Calendar size={12} />
+                                                        {new Date(comm.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span className={`premium-badge ${comm.status === 'paid' ? 'premium-badge-success' :
+                                                        comm.status === 'approved' ? 'premium-badge-primary' :
+                                                            comm.status === 'pending' ? 'premium-badge-warning' :
+                                                                'premium-badge-danger'
+                                                        }`}>
+                                                        {comm.status.toUpperCase()}
+                                                    </span>
+                                                </td>
+                                                <td className="text-end">
+                                                    <div className="actions-cell justify-content-end">
+                                                        {comm.status === 'pending' && (
+                                                            <button className="action-btn" onClick={() => handleApprove(comm.id)} title="Approve Commission" style={{ color: '#10b981' }}>
+                                                                <Check size={16} />
+                                                            </button>
+                                                        )}
+                                                        {comm.status === 'approved' && (
+                                                            <Link to={`/admin/commissions/${comm.id}/pay`} className="action-btn" title="Process Payout" style={{ color: '#6366f1' }}>
+                                                                <Banknote size={16} />
+                                                            </Link>
+                                                        )}
+                                                        <Link to={`/admin/commissions/${comm.id}`} className="action-btn" title="View Commission Details">
+                                                            <Eye size={16} />
+                                                        </Link>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
 
-                        {/* Pagination */}
-                        {commissions.length > 0 && (
-                            <Pagination
-                                currentPage={pagination.page}
-                                totalPages={Math.ceil(pagination.total / pagination.limit)}
-                                onPageChange={(newPage) => {
-                                    setPagination(prev => ({ ...prev, page: newPage }));
-                                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                                }}
-                            />
+                        {pagination.total > pagination.limit && (
+                            <div className="mt-4 p-4 border-top d-flex justify-content-center">
+                                <Pagination
+                                    currentPage={pagination.page}
+                                    totalItems={pagination.total}
+                                    itemsPerPage={pagination.limit}
+                                    onPageChange={(page) => setPagination(prev => ({ ...prev, page }))}
+                                />
+                            </div>
                         )}
                     </div>
                 </div>

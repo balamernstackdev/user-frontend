@@ -6,6 +6,7 @@ import { authService } from '../services/auth.service';
 import { toast } from 'react-toastify';
 import SkeletonLoader from '../components/dashboard/SkeletonLoader';
 import SEO from '../components/common/SEO';
+import { Megaphone, Mail, Layout, Users } from 'lucide-react';
 import './styles/AdminListings.css';
 
 const AdminAnnouncements = () => {
@@ -58,22 +59,21 @@ const AdminAnnouncements = () => {
         <DashboardLayout>
             <SEO title="Manage Announcements" description="Broadcast messages to users" />
             <div className="admin-listing-page animate-fade-up">
-                <div className="container">
+                <div className="admin-container">
                     <div className="admin-listing-header">
                         <div className="header-title">
                             <h1>Manage Announcements</h1>
-                            <p style={{ color: '#6c757d' }}>Broadcast messages to users via dashboard or email.</p>
+                            <p className="text-muted mb-0">Broadcast messages to users via dashboard or email.</p>
                         </div>
                         {(isAdmin || isSupport) && (
-                            <button
-                                className="tj-primary-btn"
-                                onClick={() => navigate('/admin/announcements/create')}
-                            >
-                                <span className="btn-text">Add Announcement</span>
-                                <span className="btn-icon">
-                                    <i className="fas fa-arrow-right"></i>
-                                </span>
-                            </button>
+                            <div className="header-actions">
+                                <button
+                                    className="tj-btn tj-btn-primary"
+                                    onClick={() => navigate('/admin/announcements/create')}
+                                >
+                                    <i className="fas fa-plus me-2"></i> Add Announcement
+                                </button>
+                            </div>
                         )}
                     </div>
 
@@ -86,80 +86,86 @@ const AdminAnnouncements = () => {
                             <>
                                 {/* Staff View: Table */}
                                 {(isAdmin || isSupport) && (
-                                    <table className="listing-table">
-                                        <thead>
-                                            <tr>
-                                                <th>Title</th>
-                                                <th>Type</th>
-                                                <th>Audience</th>
-                                                <th>Date</th>
-                                                <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {announcements.length > 0 ? (
-                                                announcements.map((item) => (
-                                                    <tr key={item.id}>
-                                                        <td>
-                                                            <div className="fw-semibold text-dark">{item.title}</div>
-                                                            <div className="text-muted small text-truncate" style={{ maxWidth: '300px' }}>{item.content}</div>
-                                                        </td>
-                                                        <td>
-                                                            <span className={`badge rounded-pill fw-medium px-3 py-2 ${item.type === 'email' ? 'bg-warning-subtle text-warning-emphasis' : 'bg-info-subtle text-info-emphasis'}`}>
-                                                                {item.type === 'dashboard' ? 'In-App' : item.type === 'email' ? 'Email' : 'All Channels'}
-                                                            </span>
-                                                        </td>
-                                                        <td>
-                                                            <span className="badge bg-light text-secondary border fw-medium px-2 py-1 text-capitalize">
-                                                                {item.target_role.replace('_', ' ')}
-                                                            </span>
-                                                        </td>
-                                                        <td className="text-muted fw-medium fs-7">
-                                                            {new Date(item.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
-                                                        </td>
-                                                        <td>
-                                                            <div className="actions-cell">
-                                                                <button
-                                                                    className="action-btn"
-                                                                    onClick={() => navigate(`/admin/announcements/edit/${item.id}`)}
-                                                                    title="Edit"
-                                                                >
-                                                                    <i className="far fa-edit"></i>
-                                                                </button>
-                                                                <button
-                                                                    className="action-btn delete"
-                                                                    onClick={() => handleDelete(item.id)}
-                                                                    title="Delete"
-                                                                >
-                                                                    <i className="fas fa-trash"></i>
-                                                                </button>
-                                                            </div>
+                                    <div className="table-responsive">
+                                        <table className="listing-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Title & Content</th>
+                                                    <th>Type</th>
+                                                    <th>Audience</th>
+                                                    <th>Date</th>
+                                                    <th className="text-end">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {announcements.length > 0 ? (
+                                                    announcements.map((item) => (
+                                                        <tr key={item.id}>
+                                                            <td>
+                                                                <div className="fw-semibold text-dark">{item.title}</div>
+                                                                <div className="text-muted small text-truncate" style={{ maxWidth: '400px' }}>{item.content}</div>
+                                                            </td>
+                                                            <td>
+                                                                <span className={`premium-badge ${item.type === 'email' ? 'premium-badge-warning' : 'premium-badge-info'}`}>
+                                                                    {item.type === 'email' ? <Mail size={12} className="me-1" /> : <Layout size={12} className="me-1" />}
+                                                                    {item.type === 'dashboard' ? 'In-App' : item.type === 'email' ? 'Email' : 'All Channels'}
+                                                                </span>
+                                                            </td>
+                                                            <td>
+                                                                <span className="premium-badge" style={{ background: '#f1f5f9', color: '#475569' }}>
+                                                                    <Users size={12} className="me-1" />
+                                                                    {item.target_role.replace('_', ' ')}
+                                                                </span>
+                                                            </td>
+                                                            <td>
+                                                                <div className="text-muted small">
+                                                                    {new Date(item.created_at).toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' })}
+                                                                </div>
+                                                            </td>
+                                                            <td className="text-end">
+                                                                <div className="actions-cell justify-content-end">
+                                                                    <button
+                                                                        className="action-btn"
+                                                                        onClick={() => navigate(`/admin/announcements/edit/${item.id}`)}
+                                                                        title="Edit"
+                                                                    >
+                                                                        <i className="far fa-edit"></i>
+                                                                    </button>
+                                                                    <button
+                                                                        className="action-btn delete"
+                                                                        onClick={() => handleDelete(item.id)}
+                                                                        title="Delete"
+                                                                    >
+                                                                        <i className="fas fa-trash"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    ))
+                                                ) : (
+                                                    <tr>
+                                                        <td colSpan="5" className="text-center py-5">
+                                                            <div className="text-muted mb-2"><Megaphone size={40} className="opacity-20" /></div>
+                                                            <p className="text-muted mb-0">No announcements found</p>
                                                         </td>
                                                     </tr>
-                                                ))
-                                            ) : (
-                                                <tr>
-                                                    <td colSpan="5" className="text-center py-5 text-muted">
-                                                        <i className="fas fa-bullhorn mb-3 d-block opacity-25" style={{ fontSize: '24px' }}></i>
-                                                        No announcements found
-                                                    </td>
-                                                </tr>
-                                            )}
-                                        </tbody>
-                                    </table>
+                                                )}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 )}
 
-                                {/* Support View: Cards (if needed fallback, but admins usually see table) */}
+                                {/* Support View: Cards (Standard User View) */}
                                 {!isAdmin && !isSupport && (
-                                    <div className="row p-3">
+                                    <div className="row g-4 p-3">
                                         {announcements.length > 0 ? (
                                             announcements.map((item, index) => (
-                                                <div key={item.id} className="col-md-6 mb-4">
+                                                <div key={item.id} className="col-md-6">
                                                     <div className="card h-100 border-0 shadow-sm rounded-4 animate-fade-up" style={{ animationDelay: `${index * 0.1}s` }}>
                                                         <div className="card-body p-4">
                                                             <div className="d-flex justify-content-between align-items-start mb-3">
-                                                                <span className={`badge rounded-pill ${item.type === 'email' ? 'bg-warning-subtle text-warning-emphasis' : 'bg-info-subtle text-info-emphasis'}`}>
-                                                                    {item.type === 'dashboard' ? 'In-App' : item.type === 'email' ? 'Email' : 'All Channels'}
+                                                                <span className={`premium-badge ${item.type === 'email' ? 'premium-badge-warning' : 'premium-badge-info'}`}>
+                                                                    {item.type === 'email' ? 'Email' : 'In-App'}
                                                                 </span>
                                                                 <small className="text-muted">{new Date(item.created_at).toLocaleDateString()}</small>
                                                             </div>

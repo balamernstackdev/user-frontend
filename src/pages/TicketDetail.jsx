@@ -4,7 +4,7 @@ import { useSettings } from '../context/SettingsContext';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import ticketService from '../services/ticket.service';
 import { authService } from '../services/auth.service';
-// import './styles/TicketDetail.css';
+import './styles/TicketDetail.css';
 import { toast } from 'react-toastify';
 
 import { useSocket } from '../context/SocketContext';
@@ -31,12 +31,10 @@ const TicketDetail = () => {
 
             socket.on('new_message', (message) => {
                 setMessages(prev => {
-                    // Avoid duplicates if fetch and socket happen together
                     if (prev.some(m => m.id === message.id)) return prev;
                     return [...prev, message];
                 });
 
-                // Scroll to bottom
                 setTimeout(() => {
                     window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
                 }, 100);
@@ -107,13 +105,11 @@ const TicketDetail = () => {
 
         try {
             setSending(true);
-            // Assuming addMessage supports attachments, typically FormData.
-            // For now passing message text. If/when backend supports files, logic goes here.
-            await ticketService.addMessage(id, newMessage); // + files if supported
+            await ticketService.addMessage(id, newMessage);
 
             setNewMessage('');
             setReplyFiles([]);
-            await fetchTicketDetails(); // Refresh to show new message
+            await fetchTicketDetails();
             toast.success('Message reply sent');
         } catch (err) {
             toast.error('Failed to send message');
@@ -136,17 +132,15 @@ const TicketDetail = () => {
         }
     };
 
-    const formatDate = (dateString) => {
+    const formatDate = (dateString, withTime = true) => {
         if (!dateString) return 'N/A';
-        // Ensure date is treated as UTC if it lacks timezone info
         const dateStr = dateString.endsWith('Z') ? dateString : `${dateString}Z`;
         const date = new Date(dateStr);
         return date.toLocaleString('en-IN', {
             year: 'numeric',
             month: 'short',
             day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
+            ...(withTime && { hour: '2-digit', minute: '2-digit' })
         });
     };
 
@@ -156,14 +150,6 @@ const TicketDetail = () => {
         if (ext === 'pdf') return 'fa-file-pdf';
         if (['doc', 'docx'].includes(ext)) return 'fa-file-word';
         return 'fa-file';
-    };
-
-    const formatFileSize = (bytes) => {
-        if (bytes === 0) return '0 Bytes';
-        const k = 1024;
-        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     };
 
     if (loading) {
@@ -186,7 +172,9 @@ const TicketDetail = () => {
                 <div className="container">
                     <div style={{ textAlign: 'center', padding: '100px 0', color: '#dc3545' }}>
                         <h2>Ticket not found</h2>
-                        <Link to="/tickets" className="btn btn-primary mt-3">Back to Tickets</Link>
+                        <Link to="/tickets" className="tj-primary-btn" style={{ display: 'inline-flex' }}>
+                            <span className="btn-text">Back to Tickets</span>
+                        </Link>
                     </div>
                 </div>
             </DashboardLayout>
@@ -197,89 +185,60 @@ const TicketDetail = () => {
         <DashboardLayout>
             <section className="page-section">
                 <div className="container">
-                    <div className="card border-0 shadow-sm p-4 rounded-4 animate-fade-up">
-                        <div className="mb-4">
-                            <Link to="/tickets" className="text-decoration-none text-muted small fw-medium d-inline-flex align-items-center hover-opacity">
-                                <i className="fas fa-arrow-left me-2"></i>
-                                <span>Back to Tickets</span>
-                            </Link>
-                        </div>
+                    <Link to="/tickets" className="back-button">
+                        <i className="fas fa-arrow-left"></i>
+                        <span>Back to Tickets</span>
+                    </Link>
 
-                        <div className="d-flex flex-column flex-lg-row justify-content-between gap-4 mb-4 pb-4 border-bottom">
-                            <div className="ticket-header-left">
-                                <h1 className="h2 fw-bold text-dark mb-3">{ticket.subject}</h1>
-                                <div className="d-flex flex-wrap gap-3 text-muted small">
-                                    <span className="d-inline-flex align-items-center bg-light px-3 py-2 rounded-pill">
-                                        <i className="fas fa-hashtag me-2 text-primary"></i>
-                                        <span className="font-monospace">#{ticket.ticket_number || ticket._id?.substring(0, 8).toUpperCase()}</span>
-                                    </span>
-                                    <span className="d-inline-flex align-items-center bg-light px-3 py-2 rounded-pill">
-                                        <i className="far fa-calendar me-2 text-primary"></i>
-                                        <span>{formatDate(ticket.created_at)}</span>
-                                    </span>
-                                    {ticket.category && (
-                                        <span className="d-inline-flex align-items-center bg-light px-3 py-2 rounded-pill">
-                                            <i className="fas fa-tag me-2 text-primary"></i>
-                                            <span>{ticket.category}</span>
+                    <div className="ticket-detail-card">
+                        <div className="ticket-header">
+                            <div className="ticket-header-content w-100">
+                                <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                                    <h1 className="mb-0">{ticket.subject}</h1>
+                                    <div className="ticket-header-actions">
+                                        <span className={`ticket-status-badge ${ticket.status}`}>
+                                            {ticket.status.toUpperCase()}
                                         </span>
-                                    )}
-                                    <span className="d-inline-flex align-items-center bg-light px-3 py-2 rounded-pill">
-                                        <i className="fas fa-exclamation-circle me-2 text-primary"></i>
-                                        <span style={{ textTransform: 'capitalize' }}>Priority: {ticket.priority}</span>
+                                        {ticket.status !== 'closed' && (
+                                            <button className="close-ticket-btn" onClick={handleCloseTicket}>
+                                                Close Ticket
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+                                <div className="ticket-meta">
+                                    <span className="meta-item">
+                                        <i className="fas fa-hashtag"></i>
+                                        <span>#{ticket.ticket_number || ticket._id?.substring(0, 8).toUpperCase()}</span>
+                                    </span>
+                                    <span className="meta-item">
+                                        <i className="far fa-calendar"></i>
+                                        <span>Created: {formatDate(ticket.created_at, false)}</span>
+                                    </span>
+                                    <span className="meta-item">
+                                        <i className="fas fa-tag"></i>
+                                        <span>{ticket.category || 'General'}</span>
+                                    </span>
+                                    <span className="meta-item">
+                                        <i className="fas fa-user"></i>
+                                        <span>Assigned to: Support Team</span>
                                     </span>
                                 </div>
                             </div>
-                            <div className="ticket-header-actions d-flex align-items-start gap-3">
-                                {user?.role === 'admin' ? (
-                                    <div className="status-dropdown-container">
-                                        <select
-                                            className={`form-select form-select-sm fw-bold border-0 bg-${ticket.status === 'open' ? 'primary' : ticket.status === 'resolved' ? 'success' : 'secondary'}-subtle text-${ticket.status === 'open' ? 'primary' : ticket.status === 'resolved' ? 'success' : 'secondary'}`}
-                                            value={ticket.status}
-                                            onChange={async (e) => {
-                                                const newStatus = e.target.value;
-                                                try {
-                                                    await ticketService.updateStatus(id, newStatus);
-                                                    setTicket(prev => ({ ...prev, status: newStatus }));
-                                                    toast.success('Status updated');
-                                                } catch (err) {
-                                                    toast.error('Failed to update status');
-                                                }
-                                            }}
-                                            style={{ borderRadius: '20px', paddingRight: '2rem' }}
-                                        >
-                                            <option value="open">Open</option>
-                                            <option value="in_progress">In Progress</option>
-                                            <option value="resolved">Resolved</option>
-                                            <option value="closed">Closed</option>
-                                        </select>
-                                    </div>
-                                ) : (
-                                    <span className={`badge rounded-pill px-3 py-2 bg-${ticket.status === 'open' ? 'primary' : ticket.status === 'resolved' ? 'success' : 'secondary'}-subtle text-${ticket.status === 'open' ? 'primary' : ticket.status === 'resolved' ? 'success' : 'secondary'} text-uppercase`}>
-                                        {ticket.status.replace('_', ' ')}
-                                    </span>
-                                )}
-
-                                {ticket.status !== 'closed' && (
-                                    <button className="btn btn-outline-danger btn-sm rounded-pill px-3" onClick={handleCloseTicket}>
-                                        Close Ticket
-                                    </button>
-                                )}
-                            </div>
                         </div>
 
-                        <div className="ticket-content mb-5">
-                            <div className="ticket-content-body p-4 bg-light rounded-3 mb-3">
-                                <p className="mb-0 text-dark">{ticket.message || ticket.description}</p>
+                        <div className="ticket-content">
+                            <div className="ticket-content-body">
+                                <p>{ticket.message || ticket.description}</p>
                             </div>
 
-                            {/* Attachments if any */}
                             {ticket.attachments && ticket.attachments.length > 0 && (
                                 <div className="ticket-attachments">
-                                    <div className="fw-bold small text-muted mb-2 text-uppercase">Attachments</div>
-                                    <div className="d-flex flex-wrap gap-2">
+                                    <div className="attachments-title">Attachments</div>
+                                    <div className="attachment-pills">
                                         {ticket.attachments.map((att, idx) => (
-                                            <a key={idx} href={att.url} className="btn btn-white border btn-sm d-inline-flex align-items-center gap-2" target="_blank" rel="noopener noreferrer">
-                                                <i className={`far ${getFileIcon(att.name)} text-primary`}></i>
+                                            <a key={idx} href={att.url} className="attachment-pill" target="_blank" rel="noopener noreferrer">
+                                                <i className={`fas ${getFileIcon(att.name)}`}></i>
                                                 <span>{att.name}</span>
                                             </a>
                                         ))}
@@ -289,41 +248,36 @@ const TicketDetail = () => {
                         </div>
 
                         <div className="conversation-section">
-                            <h3 className="h5 fw-bold mb-4 d-flex align-items-center">
-                                <span className="bg-primary rounded-circle p-1 me-2" style={{ width: '8px', height: '8px' }}></span>
-                                Conversation
-                            </h3>
+                            <h3 className="conversation-title">Conversation</h3>
 
-                            <div className="d-flex flex-column gap-4 mb-5">
+                            <div className="conversation-list">
                                 {messages.map((message, index) => (
-                                    <div key={index} className={`d-flex gap-3 ${message.is_admin_reply ? 'flex-row-reverse' : ''}`}>
-                                        <div className={`flex-shrink-0 rounded-circle d-flex align-items-center justify-content-center text-white fw-bold ${message.is_admin_reply ? 'bg-primary' : 'bg-secondary'}`} style={{ width: '40px', height: '40px' }}>
-                                            {message.is_admin_reply ? 'ST' : (user?.firstname?.charAt(0) || 'U')}
-                                        </div>
-                                        <div className={`flex-grow-1 ${message.is_admin_reply ? 'text-end' : ''}`}>
-                                            <div className="mb-1">
-                                                <span className="fw-bold text-dark me-2">
-                                                    {message.is_admin_reply
-                                                        ? 'Support Team'
-                                                        : (user?.role === 'admin' ? (ticket.user_name || 'Customer') : 'You')}
-                                                </span>
-                                                <small className="text-muted">{formatDate(message.created_at)}</small>
-                                            </div>
-                                            <div className={`d-inline-block p-3 rounded-3 text-start ${message.is_admin_reply ? 'bg-primary-subtle text-dark' : 'bg-light text-dark'}`} style={{ maxWidth: '85%' }}>
-                                                <p className="mb-0">{message.message}</p>
-                                            </div>
-                                            {/* Message attachments if any (assuming structure) */}
-                                            {message.attachments && message.attachments.length > 0 && (
-                                                <div className={`mt-2 d-flex flex-wrap gap-2 ${message.is_admin_reply ? 'justify-content-end' : ''}`}>
-                                                    {message.attachments.map((att, idx) => (
-                                                        <a key={idx} href={att.url || '#'} className="btn btn-white border btn-sm d-inline-flex align-items-center gap-2 bg-white" target="_blank" rel="noopener noreferrer">
-                                                            <i className={`far ${getFileIcon(att.name || 'file')} text-primary`}></i>
-                                                            <span className="small">{att.name || 'Attachment'}</span>
-                                                        </a>
-                                                    ))}
+                                    <div key={index} className={`reply-item ${message.is_admin_reply ? 'admin-msg' : 'customer-msg'}`}>
+                                        <div className="reply-header">
+                                            <div className="reply-author">
+                                                <div className="reply-avatar">
+                                                    {message.is_admin_reply ? 'ST' : (user?.firstname?.charAt(0) || 'U')}
                                                 </div>
-                                            )}
+                                                <div className="reply-author-info">
+                                                    <h4>{message.is_admin_reply ? 'Support Team' : 'You'}</h4>
+                                                    <span>{message.is_admin_reply ? 'Staff' : 'Customer'}</span>
+                                                </div>
+                                            </div>
+                                            <div className="reply-time">{formatDate(message.created_at)}</div>
                                         </div>
+                                        <div className="reply-content">
+                                            {message.message}
+                                        </div>
+                                        {message.attachments && message.attachments.length > 0 && (
+                                            <div className="attachment-pills mt-3">
+                                                {message.attachments.map((att, idx) => (
+                                                    <a key={idx} href={att.url || '#'} className="attachment-pill" target="_blank" rel="noopener noreferrer">
+                                                        <i className={`fas ${getFileIcon(att.name || 'file')}`}></i>
+                                                        <span className="small">{att.name || 'Attachment'}</span>
+                                                    </a>
+                                                ))}
+                                            </div>
+                                        )}
                                     </div>
                                 ))}
 
@@ -331,38 +285,33 @@ const TicketDetail = () => {
                             </div>
 
                             {ticket.status !== 'closed' && (
-                                <div className="reply-form bg-light p-4 rounded-4">
-                                    <h4 className="h6 fw-bold mb-3">Add Reply</h4>
+                                <div className="reply-form">
+                                    <h4 className="reply-form-title">Add Reply</h4>
                                     <form onSubmit={handleSendMessage}>
-                                        <div className="mb-3">
-                                            <label htmlFor="replyMessage" className="form-label visually-hidden">Your Message</label>
+                                        <div className="mb-4">
+                                            <label className="form-label">Your Message</label>
                                             <textarea
-                                                id="replyMessage"
-                                                className="form-control border-0 shadow-sm"
-                                                rows="4"
+                                                className="form-control-reply"
                                                 value={newMessage}
                                                 onChange={(e) => setNewMessage(e.target.value)}
                                                 placeholder="Type your reply here..."
                                                 required={replyFiles.length === 0}
-                                                style={{ resize: 'none' }}
                                             />
                                         </div>
 
-                                        <div className="mb-3">
+                                        <div className="mb-4">
                                             <div
-                                                className="border-2 border-dashed rounded-3 p-4 text-center cursor-pointer bg-white"
+                                                className="file-upload-box"
                                                 onClick={() => fileInputRef.current.click()}
                                                 onDragOver={handleDragOver}
                                                 onDragLeave={handleDragLeave}
                                                 onDrop={handleDrop}
-                                                style={{ borderColor: '#dee2e6' }}
                                             >
-                                                <i className="fas fa-cloud-upload-alt text-primary mb-2 fs-4"></i>
-                                                <div className="small fw-medium text-dark">Click to upload or drag and drop</div>
-                                                <div className="small text-muted mt-1">PNG, JPG, PDF up to 10MB</div>
+                                                <i className="fas fa-cloud-upload-alt"></i>
+                                                <div className="file-upload-text">Click to upload or drag and drop</div>
+                                                <div className="file-upload-subtext">PNG, JPG, PDF up to 10MB</div>
                                                 <input
                                                     type="file"
-                                                    id="fileInput"
                                                     ref={fileInputRef}
                                                     className="d-none"
                                                     multiple
@@ -371,16 +320,12 @@ const TicketDetail = () => {
                                                 />
                                             </div>
                                             {replyFiles.length > 0 && (
-                                                <div className="mt-3 d-flex flex-column gap-2">
+                                                <div className="attachment-pills">
                                                     {replyFiles.map((file, idx) => (
-                                                        <div key={idx} className="d-flex align-items-center justify-content-between p-2 bg-white rounded border shadow-sm">
-                                                            <div className="d-flex align-items-center overflow-hidden">
-                                                                <i className={`far ${getFileIcon(file.name)} text-muted me-2`}></i>
-                                                                <span className="small text-truncate">{file.name}</span>
-                                                            </div>
-                                                            <button type="button" className="btn btn-link btn-sm text-danger p-0" onClick={() => handleRemoveFile(file.name)}>
-                                                                <i className="fas fa-times"></i>
-                                                            </button>
+                                                        <div key={idx} className="attachment-pill">
+                                                            <i className={`fas ${getFileIcon(file.name)}`}></i>
+                                                            <span className="small text-truncate" style={{ maxWidth: '150px' }}>{file.name}</span>
+                                                            <i className="fas fa-times remove-attachment" onClick={() => handleRemoveFile(file.name)}></i>
                                                         </div>
                                                     ))}
                                                 </div>
@@ -389,7 +334,7 @@ const TicketDetail = () => {
 
                                         <div className="text-end">
                                             <button type="submit" className="tj-primary-btn" disabled={sending}>
-                                                <span className="btn-text"><span>{sending ? 'Sending...' : 'Send Reply'}</span></span>
+                                                <span className="btn-text">{sending ? 'Sending...' : 'Send Reply'}</span>
                                                 {!sending && <span className="btn-icon"><i className="fas fa-paper-plane"></i></span>}
                                             </button>
                                         </div>
@@ -398,7 +343,7 @@ const TicketDetail = () => {
                             )}
 
                             {ticket.status === 'closed' && (
-                                <div className="alert alert-secondary d-flex align-items-center rounded-3 border-0 bg-secondary-subtle" role="alert">
+                                <div className="alert alert-secondary d-flex align-items-center rounded-3 border-0 bg-secondary-subtle mt-4" role="alert">
                                     <i className="fas fa-lock me-2"></i>
                                     <div>This ticket has been closed. Please create a new ticket if you need further assistance.</div>
                                 </div>

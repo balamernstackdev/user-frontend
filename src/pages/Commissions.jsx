@@ -5,7 +5,7 @@ import SEO from '../components/common/SEO';
 import './styles/Dashboard.css';
 import './styles/Commissions.css';
 import StatCard from '../components/dashboard/StatCard';
-import { DollarSign, Clock, CheckCircle, CreditCard } from 'lucide-react';
+import { DollarSign, Clock, CheckCircle, CreditCard, Coins } from 'lucide-react';
 import { toast } from 'react-toastify';
 
 import DashboardLayout from '../components/layout/DashboardLayout';
@@ -72,13 +72,15 @@ const Commissions = () => {
             <SEO title="My Commissions" description="Track your affiliate earnings and payouts." />
             <section className="page-section">
                 <div className="container">
-                    <div className="page-header">
-                        <h2>My Commissions</h2>
-                        <p style={{ color: '#6c757d' }}>Track your earnings from referrals</p>
+                    <div className="welcome-header animate-fade-up mb-4">
+                        <div>
+                            <h2 className="section-title fw-bold mb-2">My Commissions</h2>
+                            <p className="section-subtitle text-muted mb-0">Track your earnings from referrals</p>
+                        </div>
                     </div>
 
                     {summary && (
-                        <div className="admin-stats-grid stats-grid">
+                        <div className="admin-stats-grid stats-grid animate-fade-up">
                             <StatCard
                                 label="Total Earned"
                                 value={`₹${summary.total_commissions ? summary.total_commissions.toLocaleString() : '0'}`}
@@ -114,92 +116,90 @@ const Commissions = () => {
                         </div>
                     )}
 
-                    <div className="filter-bar">
-                        <button
-                            className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
-                            onClick={() => setFilter('all')}
-                        >
-                            All
-                        </button>
-                        <button
-                            className={`filter-btn ${filter === 'pending' ? 'active' : ''}`}
-                            onClick={() => setFilter('pending')}
-                        >
-                            Pending
-                        </button>
-                        <button
-                            className={`filter-btn ${filter === 'approved' ? 'active' : ''}`}
-                            onClick={() => setFilter('approved')}
-                        >
-                            Approved
-                        </button>
-                        <button
-                            className={`filter-btn ${filter === 'paid' ? 'active' : ''}`}
-                            onClick={() => setFilter('paid')}
-                        >
-                            Paid
-                        </button>
-                    </div>
+                    <div className="card border-0 shadow-sm animate-fade-up" style={{ animationDelay: '0.1s' }}>
+                        <div className="card-header bg-white border-0 py-3 px-4">
+                            <div className="d-flex overflow-auto">
+                                {['all', 'pending', 'approved', 'paid'].map((status) => (
+                                    <button
+                                        key={status}
+                                        className={`btn btn-sm rounded-pill fw-medium me-2 px-3 ${filter === status ? 'btn-primary' : 'btn-light text-muted'}`}
+                                        onClick={() => setFilter(status)}
+                                        style={{ whiteSpace: 'nowrap' }}
+                                    >
+                                        {status.charAt(0).toUpperCase() + status.slice(1)}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
 
-                    {commissions.length > 0 ? (
-                        <div className="commissions-container">
-                            <h2>Commission History</h2>
-                            <div className="table-responsive">
-                                <table className="commissions-table">
-                                    <thead>
-                                        <tr>
-                                            <th>User</th>
-                                            <th>Amount</th>
-                                            <th>Date Earned</th>
-                                            <th>Status</th>
-                                            <th>Paid Date</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {commissions.map((commission) => {
-                                            const statusBadge = getStatusBadge(commission.status);
-                                            return (
-                                                <tr key={commission.id}>
-                                                    <td>
-                                                        <div className="user-info">
-                                                            <span className="name">{commission.user_name}</span>
-                                                            <span className="email">{commission.user_email}</span>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <span className="amount">₹{commission.amount.toLocaleString()}</span>
-                                                    </td>
-                                                    <td>{formatDate(commission.created_at)}</td>
-                                                    <td>
-                                                        <span className={`badge ${statusBadge.class}`}>
-                                                            {statusBadge.label}
-                                                        </span>
-                                                    </td>
-                                                    <td>
-                                                        {commission.paid_at ? formatDate(commission.paid_at) : '-'}
-                                                    </td>
-                                                    <td>
-                                                        <Link to={`/business-associate/commissions/${commission.id}`} className="view-btn">
-                                                            View
-                                                        </Link>
-                                                    </td>
-                                                </tr>
-                                            );
-                                        })}
-                                    </tbody>
-                                </table>
-                            </div>
+                        <div className="card-body p-0">
+                            {commissions.length > 0 ? (
+                                <div className="table-responsive">
+                                    <table className="table table-hover align-middle mb-0">
+                                        <thead className="bg-light">
+                                            <tr>
+                                                <th className="px-4 py-3 text-muted fw-semibold small text-uppercase">User</th>
+                                                <th className="px-4 py-3 text-muted fw-semibold small text-uppercase">Amount</th>
+                                                <th className="px-4 py-3 text-muted fw-semibold small text-uppercase">Date Earned</th>
+                                                <th className="px-4 py-3 text-muted fw-semibold small text-uppercase">Status</th>
+                                                <th className="px-4 py-3 text-muted fw-semibold small text-uppercase">Paid Date</th>
+                                                <th className="px-4 py-3 text-muted fw-semibold small text-uppercase text-end">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {commissions.map((commission) => {
+                                                const statusBadge = getStatusBadge(commission.status);
+                                                return (
+                                                    <tr key={commission.id}>
+                                                        <td className="px-4 py-3">
+                                                            <div>
+                                                                <div className="fw-semibold text-dark">{commission.user_name}</div>
+                                                                <div className="text-muted small">{commission.user_email}</div>
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-4 py-3">
+                                                            <span className="fw-bold text-dark">₹{commission.amount.toLocaleString()}</span>
+                                                        </td>
+                                                        <td className="px-4 py-3 text-muted small">{formatDate(commission.created_at)}</td>
+                                                        <td className="px-4 py-3">
+                                                            <span className={`badge rounded-pill fw-medium ${commission.status === 'approved' ? 'bg-success-subtle text-success' :
+                                                                commission.status === 'paid' ? 'bg-info-subtle text-info-emphasis' :
+                                                                    commission.status === 'rejected' ? 'bg-danger-subtle text-danger' :
+                                                                        'bg-warning-subtle text-warning-emphasis'
+                                                                }`}>
+                                                                {statusBadge.label}
+                                                            </span>
+                                                        </td>
+                                                        <td className="px-4 py-3 text-muted small">
+                                                            {commission.paid_at ? formatDate(commission.paid_at) : '-'}
+                                                        </td>
+                                                        <td className="px-4 py-3 text-end">
+                                                            <Link to={`/business-associate/commissions/${commission.id}`} className="btn btn-sm btn-outline-primary rounded-pill px-3">
+                                                                View
+                                                            </Link>
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            ) : (
+                                <div className="text-center py-5">
+                                    <div className="mb-3 bg-light rounded-circle d-inline-flex align-items-center justify-content-center" style={{ width: '64px', height: '64px' }}>
+                                        <Coins size={32} className="text-muted opacity-50" />
+                                    </div>
+                                    <h5 className="text-dark fw-bold mb-1">No commissions found</h5>
+                                    <p className="text-muted mb-0">
+                                        {filter === 'all'
+                                            ? "Start referring users to earn commission!"
+                                            : `No ${filter} commissions found.`
+                                        }
+                                    </p>
+                                </div>
+                            )}
                         </div>
-                    ) : (
-                        <div className="no-content-state mb-4">
-                            <div className="no-content-icon">
-                                <i className="fas fa-coins"></i>
-                            </div>
-                            <h3>No commissions yet</h3>
-                            <p>Start referring users to earn commission! Your earnings will appear here once your referrals make successful payments.</p>
-                        </div>
-                    )}
+                    </div>
                 </div>
             </section>
         </DashboardLayout>

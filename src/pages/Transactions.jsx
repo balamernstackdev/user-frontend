@@ -4,7 +4,9 @@ import CommissionService from '../services/commission.service';
 import { authService } from '../services/auth.service';
 import SEO from '../components/common/SEO';
 import './styles/Transactions.css';
+import './styles/Dashboard.css';
 import { toast } from 'react-toastify';
+import { Coins, CreditCard } from 'lucide-react';
 
 import DashboardLayout from '../components/layout/DashboardLayout';
 
@@ -103,95 +105,129 @@ const Transactions = () => {
             <SEO title="Transaction History" description="View your payment history and commission earnings." />
             <section className="page-section">
                 <div className="container">
-                    <div className="page-header">
-                        <h2>{isBusinessAssociate ? 'Earnings History' : 'Transaction History'}</h2>
-                        <p style={{ color: '#6c757d' }}>
-                            {isBusinessAssociate ? 'View all your commission earnings' : 'View all your payment transactions'}
-                        </p>
+                    <div className="welcome-header animate-fade-up mb-4">
+                        <div>
+                            <h2 className="section-title fw-bold mb-2">{isBusinessAssociate ? 'Earnings History' : 'Transaction History'}</h2>
+                            <p className="section-subtitle text-muted mb-0">
+                                {isBusinessAssociate ? 'View all your commission earnings' : 'View all your payment transactions'}
+                            </p>
+                        </div>
                     </div>
 
-                    <div className="filter-bar">
-                        <button
-                            className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
-                            onClick={() => setFilter('all')}
-                        >
-                            All
-                        </button>
-                        <button
-                            className={`filter-btn ${filter === 'success' ? 'active' : ''}`}
-                            onClick={() => setFilter(isBusinessAssociate ? 'paid' : 'success')}
-                        >
-                            {isBusinessAssociate ? 'Paid' : 'Success'}
-                        </button>
-                        <button
-                            className={`filter-btn ${filter === 'pending' ? 'active' : ''}`}
-                            onClick={() => setFilter(isBusinessAssociate ? 'pending' : 'pending')}
-                        >
-                            Pending
-                        </button>
-                        <button
-                            className={`filter-btn ${filter === 'failed' ? 'active' : ''}`}
-                            onClick={() => setFilter(isBusinessAssociate ? 'rejected' : 'failed')}
-                        >
-                            Failed
-                        </button>
-                    </div>
+                    <div className="card border-0 shadow-sm animate-fade-up" style={{ animationDelay: '0.1s' }}>
+                        <div className="card-header bg-white border-0 py-3 px-4">
+                            <div className="d-flex overflow-auto">
+                                <button
+                                    className={`btn btn-sm rounded-pill fw-medium me-2 px-3 ${filter === 'all' ? 'btn-primary' : 'btn-light text-muted'}`}
+                                    onClick={() => setFilter('all')}
+                                >
+                                    All
+                                </button>
+                                <button
+                                    className={`btn btn-sm rounded-pill fw-medium me-2 px-3 ${filter === (isBusinessAssociate ? 'paid' : 'success') ? 'btn-primary' : 'btn-light text-muted'}`}
+                                    onClick={() => setFilter(isBusinessAssociate ? 'paid' : 'success')}
+                                >
+                                    {isBusinessAssociate ? 'Paid' : 'Success'}
+                                </button>
+                                <button
+                                    className={`btn btn-sm rounded-pill fw-medium me-2 px-3 ${filter === 'pending' ? 'btn-primary' : 'btn-light text-muted'}`}
+                                    onClick={() => setFilter('pending')}
+                                >
+                                    Pending
+                                </button>
+                                <button
+                                    className={`btn btn-sm rounded-pill fw-medium me-2 px-3 ${filter === (isBusinessAssociate ? 'rejected' : 'failed') ? 'btn-primary' : 'btn-light text-muted'}`}
+                                    onClick={() => setFilter(isBusinessAssociate ? 'rejected' : 'failed')}
+                                >
+                                    {isBusinessAssociate ? 'Rejected' : 'Failed'}
+                                </button>
+                            </div>
+                        </div>
 
-                    <div className="transactions-list">
-                        {transactions.length > 0 ? (
-                            transactions.map((transaction) => (
-                                <div key={transaction.id} className="transaction-card">
-                                    <div className="transaction-header">
-                                        <div className="transaction-info">
-                                            <h3>{transaction.plan_name || 'Plan Purchase'}</h3>
-                                            <p className="transaction-id">ID: {transaction.id.slice(0, 8)}...</p>
-                                        </div>
-                                        <div className="transaction-amount">
-                                            <span className="amount">₹{transaction.amount.toLocaleString()}</span>
-                                            <span className={`badge ${getStatusBadge(transaction.status)}`}>
-                                                {transaction.status}
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    <div className="transaction-details">
-                                        <div className="detail-item">
-                                            <span className="label">Date:</span>
-                                            <span className="value">{formatDate(transaction.created_at)}</span>
-                                        </div>
-                                        {transaction.razorpay_payment_id && (
-                                            <div className="detail-item">
-                                                <span className="label">Payment ID:</span>
-                                                <span className="value">{transaction.razorpay_payment_id}</span>
-                                            </div>
+                        <div className="card-body p-0">
+                            {transactions.length > 0 ? (
+                                <div className="table-responsive">
+                                    <table className="table table-hover align-middle mb-0">
+                                        <thead className="bg-light">
+                                            <tr>
+                                                <th className="px-4 py-3 text-muted fw-semibold small text-uppercase">Description</th>
+                                                <th className="px-4 py-3 text-muted fw-semibold small text-uppercase">Amount</th>
+                                                <th className="px-4 py-3 text-muted fw-semibold small text-uppercase">Date</th>
+                                                <th className="px-4 py-3 text-muted fw-semibold small text-uppercase">Status</th>
+                                                <th className="px-4 py-3 text-muted fw-semibold small text-uppercase text-end">Details</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {transactions.map((transaction) => (
+                                                <tr key={transaction.id}>
+                                                    <td className="px-4 py-3">
+                                                        <div>
+                                                            <div className="fw-semibold text-dark">{transaction.plan_name || 'Plan Purchase'}</div>
+                                                            <div className="text-muted small font-monospace">ID: {transaction.id.slice(0, 8)}...</div>
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-4 py-3">
+                                                        <span className="fw-bold text-dark">₹{transaction.amount.toLocaleString()}</span>
+                                                    </td>
+                                                    <td className="px-4 py-3 text-muted small">
+                                                        {formatDate(transaction.created_at)}
+                                                    </td>
+                                                    <td className="px-4 py-3">
+                                                        <span className={`badge rounded-pill fw-medium ${transaction.status === 'success' || transaction.status === 'paid' ? 'bg-success-subtle text-success' :
+                                                            transaction.status === 'pending' ? 'bg-warning-subtle text-warning-emphasis' :
+                                                                'bg-danger-subtle text-danger'
+                                                            }`}>
+                                                            {transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1)}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-4 py-3 text-end">
+                                                        {transaction.razorpay_payment_id && (
+                                                            <div className="small text-muted">
+                                                                Pay ID: {transaction.razorpay_payment_id}
+                                                            </div>
+                                                        )}
+                                                        {transaction.payment_date && (
+                                                            <div className="small text-muted">
+                                                                Paid: {formatDate(transaction.payment_date)}
+                                                            </div>
+                                                        )}
+                                                        {transaction.error_message && (
+                                                            <div className="small text-danger" title={transaction.error_message}>
+                                                                Error details
+                                                            </div>
+                                                        )}
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            ) : (
+                                <div className="text-center py-5">
+                                    <div className="mb-3 bg-light rounded-circle d-inline-flex align-items-center justify-content-center" style={{ width: '64px', height: '64px' }}>
+                                        {isBusinessAssociate ? (
+                                            <Coins size={32} className="text-muted opacity-50" />
+                                        ) : (
+                                            <CreditCard size={32} className="text-muted opacity-50" />
                                         )}
-                                        {transaction.payment_date && (
-                                            <div className="detail-item">
-                                                <span className="label">Paid on:</span>
-                                                <span className="value">{formatDate(transaction.payment_date)}</span>
-                                            </div>
-                                        )}
                                     </div>
-
-                                    {transaction.error_message && (
-                                        <div className="error-message">
-                                            <strong>Error:</strong> {transaction.error_message}
-                                        </div>
+                                    <h5 className="text-dark fw-bold mb-1">
+                                        {isBusinessAssociate ? 'No earnings found' : 'No transactions found'}
+                                    </h5>
+                                    <p className="text-muted mb-3">
+                                        {filter === 'all'
+                                            ? (isBusinessAssociate ? "You haven't earned any commissions yet." : "You haven't made any transactions yet.")
+                                            : `No ${filter} records found.`
+                                        }
+                                    </p>
+                                    {!isBusinessAssociate && filter === 'all' && (
+                                        <button className="btn btn-primary rounded-pill px-4" onClick={() => window.location.href = '/plans'}>
+                                            Browse Plans
+                                        </button>
                                     )}
                                 </div>
-                            ))
-                        ) : (
-                            <div className="no-transactions">
-                                <div className="empty-icon">💳</div>
-                                <h3>{isBusinessAssociate ? 'No earnings found' : 'No transactions found'}</h3>
-                                <p>{isBusinessAssociate ? "You haven't earned any commissions yet." : "You haven't made any transactions yet."}</p>
-                                {!isBusinessAssociate && (
-                                    <button className="btn btn-primary" onClick={() => window.location.href = '/plans'}>
-                                        Browse Plans
-                                    </button>
-                                )}
-                            </div>
-                        )}
+                            )}
+                        </div>
                     </div>
                 </div>
             </section>

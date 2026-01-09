@@ -71,6 +71,7 @@ const AdminEmailTemplateEdit = lazy(() => import('./pages/AdminEmailTemplateEdit
 const AdminAnnouncements = lazy(() => import('./pages/AdminAnnouncements'));
 const AdminAnnouncementForm = lazy(() => import('./pages/AdminAnnouncementForm'));
 const AdminSettings = lazy(() => import('./pages/AdminSettings'));
+const AdminTicketDetail = lazy(() => import('./pages/AdminTicketDetail'));
 
 // Legal & Misc
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
@@ -154,6 +155,7 @@ function App() {
                     <Route path="/admin/transactions" element={<ProtectedRoute allowedRoles={['admin', 'finance_manager']}><AdminTransactions /></ProtectedRoute>} />
                     <Route path="/admin/ba-transactions" element={<ProtectedRoute allowedRoles={['admin', 'finance_manager']}><AdminBATransactions /></ProtectedRoute>} />
                     <Route path="/admin/tickets" element={<ProtectedRoute allowedRoles={['admin', 'support_agent']}><AdminTickets /></ProtectedRoute>} />
+                    <Route path="/admin/tickets/:id" element={<ProtectedRoute allowedRoles={['admin', 'support_agent']}><AdminTicketDetail /></ProtectedRoute>} />
                     <Route path="/admin/logs" element={<ProtectedRoute allowedRoles={['admin']}><AdminLogs /></ProtectedRoute>} />
                     <Route path="/admin/files" element={<ProtectedRoute allowedRoles={['admin']}><AdminFiles /></ProtectedRoute>} />
                     <Route path="/admin/files/create" element={<ProtectedRoute allowedRoles={['admin']}><AdminFileForm /></ProtectedRoute>} />

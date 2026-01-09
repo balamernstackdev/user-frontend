@@ -141,7 +141,7 @@ const Subscription = () => {
                 <div className="container">
                     <div className="page-header">
                         <h2>My Subscription</h2>
-                        <p style={{ color: 'var(--tj-color-text-body-3)' }}>Manage your subscription plan and billing</p>
+                        <p>Manage your subscription plan and billing</p>
                     </div>
                     <div className="row">
                         <div className="col-lg-12">
@@ -188,13 +188,13 @@ const Subscription = () => {
                                         )}
                                     </ul>
                                 </div>
-                                <div style={{ marginTop: '30px', display: 'flex', gap: '15px', flexWrap: 'wrap' }}>
+                                <div className="subscription-actions">
                                     <Link to="/plans" className="tj-primary-btn">
-                                        <span className="btn-text"><span>Renew / Upgrade Plan</span></span>
+                                        <span className="btn-text">Renew / Upgrade Plan</span>
                                         <span className="btn-icon"><i className="fas fa-arrow-right"></i></span>
                                     </Link>
                                     <Link to="/payments" className="tj-primary-btn transparent-btn">
-                                        <span className="btn-text"><span>View Payment History</span></span>
+                                        <span className="btn-text">View Payment History</span>
                                         <span className="btn-icon"><i className="fas fa-arrow-right"></i></span>
                                     </Link>
                                     {subscription.auto_renew && (
@@ -213,9 +213,9 @@ const Subscription = () => {
                                                 }
                                             }}
                                             className="tj-primary-btn danger-btn"
-                                            style={{ backgroundColor: '#dc3545', borderColor: '#dc3545' }}
+                                            style={{ backgroundColor: '#13689e', borderColor: '#13689e' }}
                                         >
-                                            <span className="btn-text"><span>Cancel Auto-renew</span></span>
+                                            <span className="btn-text">Cancel Auto-renew</span>
                                         </button>
                                     )}
                                 </div>

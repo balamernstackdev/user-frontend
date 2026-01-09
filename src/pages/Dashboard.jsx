@@ -131,7 +131,8 @@ const Dashboard = () => {
                                 label="Active Plan"
                                 value={subscription?.plan_name || 'No Plan'}
                                 icon={Box}
-                                className="card-users"
+                                iconColor="#3b82f6"
+                                iconBgColor="rgba(59, 130, 246, 0.1)"
                                 isLoading={loading}
                             />
                             <StatCard
@@ -147,28 +148,27 @@ const Dashboard = () => {
                                     </div>
                                 }
                                 icon={Clock}
-                                iconColor="#ffc107"
-                                iconBgColor="rgba(255, 193, 7, 0.1)"
+                                iconColor="#f59e0b"
+                                iconBgColor="rgba(245, 158, 11, 0.1)"
                                 isLoading={loading}
-                                className="card-pending"
                             />
                             <StatCard
-                                label="My Payments"
+                                label="Total Payments"
                                 value={stats.paymentCount}
                                 icon={CreditCard}
-                                iconColor="#28a745"
-                                iconBgColor="rgba(40, 167, 69, 0.1)"
+                                iconColor="#10b981"
+                                iconBgColor="rgba(16, 185, 129, 0.1)"
                                 isLoading={loading}
-                                className="card-active-marketers"
+                                link="/payments"
                             />
                             <StatCard
                                 label="Support Tickets"
                                 value={stats.ticketCount}
                                 icon={LifeBuoy}
-                                iconColor="#17a2b8"
-                                iconBgColor="rgba(23, 162, 184, 0.1)"
+                                iconColor="#6366f1"
+                                iconBgColor="rgba(99, 102, 241, 0.1)"
                                 isLoading={loading}
-                                className="card-payouts"
+                                link="/tickets"
                             />
                         </div>
 

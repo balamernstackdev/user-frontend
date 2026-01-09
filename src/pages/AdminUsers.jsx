@@ -4,11 +4,11 @@ import { userService } from '../services/user.service';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import Pagination from '../components/common/Pagination';
 import SEO from '../components/common/SEO';
-import { Users, UserCheck, UserX, UserPlus } from 'lucide-react';
+import { Users, UserCheck, UserX, UserPlus, Download, Plus, Edit, Trash, Check, Crown, Search, Calendar, Filter, Mail } from 'lucide-react';
 import StatCard from '../components/dashboard/StatCard';
-import './styles/AdminListings.css';
 import { toast } from 'react-toastify';
 import { adminService } from '../services/admin.service';
+import './styles/AdminListings.css';
 
 const AdminUsers = () => {
     const navigate = useNavigate();
@@ -166,304 +166,252 @@ const AdminUsers = () => {
     return (
         <DashboardLayout>
             <SEO title="User Management" description="Manage platform users and roles" />
+
             <div className="admin-listing-page animate-fade-up">
-                <div className="container">
+                <div className="admin-container">
                     <div className="admin-listing-header">
                         <div className="header-title">
                             <h1>User Management</h1>
-                            <p style={{ color: '#6c757d' }}>Manage users, marketers, and admins</p>
+                            <p className="text-muted mb-0">Manage platform users, marketers, and administrators</p>
+                        </div>
+                        <div className="header-actions">
+                            <div className="btn-group" ref={exportDropdownRef}>
+                                <button
+                                    className="tj-btn tj-btn-outline-primary"
+                                    onClick={() => setShowExportDropdown(!showExportDropdown)}
+                                >
+                                    <Download size={18} className="me-2" /> Export
+                                </button>
+                                {showExportDropdown && (
+                                    <ul className="dropdown-menu show shadow-sm border" style={{ display: 'block', position: 'absolute', top: '100%', right: 0, zIndex: 1000, minWidth: '140px' }}>
+                                        <li>
+                                            <button className="dropdown-item py-2" onClick={() => { handleExport('csv'); setShowExportDropdown(false); }}>
+                                                Export as CSV
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button className="dropdown-item py-2" onClick={() => { handleExport('pdf'); setShowExportDropdown(false); }}>
+                                                Export as PDF
+                                            </button>
+                                        </li>
+                                    </ul>
+                                )}
+                            </div>
+                            <button
+                                className="tj-btn tj-btn-primary"
+                                onClick={() => navigate('/admin/users/create')}
+                            >
+                                <Plus size={18} className="me-2" /> Add User
+                            </button>
                         </div>
                     </div>
 
                     {/* Summary Cards */}
-                    <div className="admin-stats-grid mb-4">
-                        <StatCard
-                            label="Total Users"
-                            value={stats.total}
-                            icon={Users}
-                            isLoading={loading}
-                            active={statusFilter === ''}
-                            onClick={() => setStatusFilter('')}
-                            className="card-users stat-card-hover"
-                        />
-                        <StatCard
-                            label="Active Users"
-                            value={stats.active}
-                            icon={UserCheck}
-                            iconColor="#10b981"
-                            iconBgColor="rgba(16, 185, 129, 0.1)"
-                            isLoading={loading}
-                            active={statusFilter === 'active'}
-                            onClick={() => setStatusFilter('active')}
-                            className="card-active-marketers stat-card-hover"
-                        />
-                        <StatCard
-                            label="Inactive Users"
-                            value={stats.inactive}
-                            icon={UserX}
-                            iconColor="#ffc107"
-                            iconBgColor="rgba(255, 193, 7, 0.1)"
-                            isLoading={loading}
-                            active={statusFilter === 'inactive'}
-                            onClick={() => setStatusFilter('inactive')}
-                            className="card-plans stat-card-hover"
-                        />
-                        <StatCard
-                            label="Pending Approvals"
-                            value={stats.pending}
-                            icon={UserPlus}
-                            iconColor="#dc3545"
-                            iconBgColor="rgba(220, 53, 69, 0.1)"
-                            isLoading={loading}
-                            active={statusFilter === 'pending'}
-                            onClick={() => setStatusFilter('pending')}
-                            className="card-expiring stat-card-hover"
-                        />
+                    <div className="row g-4 mb-4">
+                        <div className="col-md-3">
+                            <StatCard
+                                label="Total Users"
+                                value={stats.total}
+                                icon={Users}
+                                isLoading={loading}
+                                active={statusFilter === ''}
+                                onClick={() => setStatusFilter('')}
+                            />
+                        </div>
+                        <div className="col-md-3">
+                            <StatCard
+                                label="Active Users"
+                                value={stats.active}
+                                icon={UserCheck}
+                                iconColor="#10b981"
+                                iconBgColor="rgba(16, 185, 129, 0.1)"
+                                isLoading={loading}
+                                active={statusFilter === 'active'}
+                                onClick={() => setStatusFilter('active')}
+                            />
+                        </div>
+                        <div className="col-md-3">
+                            <StatCard
+                                label="Inactive"
+                                value={stats.inactive}
+                                icon={UserX}
+                                iconColor="#ffc107"
+                                iconBgColor="rgba(255, 193, 7, 0.1)"
+                                isLoading={loading}
+                                active={statusFilter === 'inactive'}
+                                onClick={() => setStatusFilter('inactive')}
+                            />
+                        </div>
+                        <div className="col-md-3">
+                            <StatCard
+                                label="Pending"
+                                value={stats.pending}
+                                icon={UserPlus}
+                                iconColor="#dc3545"
+                                iconBgColor="rgba(220, 53, 69, 0.1)"
+                                isLoading={loading}
+                                active={statusFilter === 'pending'}
+                                onClick={() => setStatusFilter('pending')}
+                            />
+                        </div>
                     </div>
 
-                    <div className="admin-listing-toolbar mb-4" style={{
-                        backgroundColor: 'white',
-                        padding: '15px 20px',
-                        borderRadius: '12px',
-                        boxShadow: '0 2px 6px rgba(0,0,0,0.02)',
-                        border: '1px solid rgba(0,0,0,0.05)'
-                    }}>
+                    <div className="admin-listing-toolbar">
                         <div className="d-flex flex-wrap align-items-center justify-content-between gap-3">
-                            {/* Left Side: Date Filters */}
-                            {/* Left Side: Date Filters */}
                             <div className="d-flex align-items-center gap-3">
-                                <span className="text-muted small fw-bold text-uppercase" style={{ fontSize: '12px', letterSpacing: '0.5px' }}>Filter Date:</span>
                                 <div className="d-flex align-items-center gap-2">
-                                    <div className="input-group input-group-sm" style={{ width: '160px' }}>
-                                        <span className="input-group-text bg-white border-end-0 text-muted pe-1">
-                                            <i className="far fa-calendar-alt"></i>
-                                        </span>
-                                        <input
-                                            type="date"
-                                            className="form-control border-start-0 ps-2"
-                                            value={startDate}
-                                            onChange={(e) => setStartDate(e.target.value)}
-                                            style={{ borderColor: '#dee2e6', color: '#6c757d' }}
-                                        />
-                                    </div>
-                                    <span className="text-muted small">to</span>
-                                    <div className="input-group input-group-sm" style={{ width: '160px' }}>
-                                        <span className="input-group-text bg-white border-end-0 text-muted pe-1">
-                                            <i className="far fa-calendar-alt"></i>
-                                        </span>
-                                        <input
-                                            type="date"
-                                            className="form-control border-start-0 ps-2"
-                                            value={endDate}
-                                            onChange={(e) => setEndDate(e.target.value)}
-                                            style={{ borderColor: '#dee2e6', color: '#6c757d' }}
-                                        />
-                                    </div>
+                                    <Calendar size={14} className="text-muted" />
+                                    <span className="text-muted small fw-bold text-uppercase">Joined:</span>
+                                </div>
+                                <div className="d-flex align-items-center gap-2">
+                                    <input
+                                        type="date"
+                                        className="custom-select"
+                                        style={{ height: '42px' }}
+                                        value={startDate}
+                                        onChange={(e) => setStartDate(e.target.value)}
+                                    />
+                                    <span className="text-muted px-1">to</span>
+                                    <input
+                                        type="date"
+                                        className="custom-select"
+                                        style={{ height: '42px' }}
+                                        value={endDate}
+                                        onChange={(e) => setEndDate(e.target.value)}
+                                    />
                                     {(startDate || endDate) && (
-                                        <button
-                                            className="btn btn-sm text-danger ms-1"
-                                            onClick={() => { setStartDate(''); setEndDate(''); }}
-                                            title="Clear Dates"
-                                            style={{ background: 'none', border: 'none' }}
-                                        >
-                                            <i className="fas fa-times"></i>
+                                        <button className="tj-btn tj-btn-sm tj-btn-outline-danger ms-2" onClick={() => { setStartDate(''); setEndDate(''); }}>
+                                            Reset
                                         </button>
                                     )}
                                 </div>
                             </div>
 
-                            {/* Right Side: Filters & Actions */}
-                            <div className="d-flex align-items-center gap-3">
-                                <div className="d-flex gap-2">
-                                    <select
-                                        className="form-select form-select-sm"
-                                        value={filter}
-                                        onChange={(e) => setFilter(e.target.value)}
-                                        style={{ borderRadius: '6px', borderColor: '#e2e8f0', minWidth: '130px' }}
-                                    >
+                            <div className="d-flex gap-2 flex-grow-1 justify-content-end" style={{ maxWidth: '500px' }}>
+                                <div className="d-flex align-items-center gap-2">
+                                    <Filter size={14} className="text-muted" />
+                                    <select className="custom-select" value={filter} onChange={(e) => setFilter(e.target.value)} style={{ width: '160px' }}>
                                         <option value="all">All Roles</option>
-                                        <option value="user">Users</option>
-                                        <option value="business_associate">Business Associates</option>
-                                        <option value="admin">Admins</option>
-                                    </select>
-                                    <select
-                                        className="form-select form-select-sm"
-                                        value={statusFilter}
-                                        onChange={(e) => setStatusFilter(e.target.value)}
-                                        style={{ borderRadius: '6px', borderColor: '#e2e8f0', minWidth: '130px' }}
-                                    >
-                                        <option value="">All Status</option>
-                                        <option value="active">Active</option>
-                                        <option value="inactive">Inactive</option>
-                                        <option value="pending">Pending</option>
+                                        <option value="user">Users Only</option>
+                                        <option value="business_associate">Associates</option>
+                                        <option value="admin">Administrators</option>
                                     </select>
                                 </div>
-
-                                <div className="vr mx-1" style={{ color: '#e2e8f0' }}></div>
-
-                                <div className="btn-group" style={{ position: 'relative' }} ref={exportDropdownRef}>
-                                    <button
-                                        className="tj-primary-btn"
-                                        type="button"
-                                        onClick={() => setShowExportDropdown(!showExportDropdown)}
-                                        style={{
-                                            height: '38px',
-                                            borderRadius: '6px',
-                                            padding: '0 20px',
-                                            display: 'inline-flex',
-                                            alignItems: 'center',
-                                            fontSize: '14px',
-                                            fontWeight: 500
-                                        }}
-                                    >
-                                        <i className="fas fa-download me-2"></i>
-                                        <span className="btn-text">Export</span>
-                                    </button>
-                                    {showExportDropdown && (
-                                        <ul className="dropdown-menu show shadow-sm" style={{ display: 'block', position: 'absolute', top: '100%', right: 0, zIndex: 1000, border: '1px solid #f1f5f9', borderRadius: '8px' }}>
-                                            <li>
-                                                <button
-                                                    className="dropdown-item d-flex align-items-center gap-2"
-                                                    onClick={() => { handleExport('csv'); setShowExportDropdown(false); }}
-                                                >
-                                                    <i className="fas fa-file-csv text-success"></i> CSV
-                                                </button>
-                                            </li>
-                                            <li>
-                                                <button
-                                                    className="dropdown-item d-flex align-items-center gap-2"
-                                                    onClick={() => { handleExport('pdf'); setShowExportDropdown(false); }}
-                                                >
-                                                    <i className="fas fa-file-pdf text-danger"></i> PDF
-                                                </button>
-                                            </li>
-                                        </ul>
-                                    )}
-                                </div>
-
-                                <button
-                                    className="tj-primary-btn"
-                                    onClick={() => navigate('/admin/users/create')}
-                                    style={{
-                                        height: '38px',
-                                        borderRadius: '6px',
-                                        padding: '0 20px',
-                                        display: 'inline-flex',
-                                        alignItems: 'center',
-                                        fontSize: '14px',
-                                        fontWeight: 500
-                                    }}
-                                >
-                                    <span className="btn-text">Add User</span>
-                                    <span className="btn-icon">
-                                        <i className="fas fa-arrow-right"></i>
-                                    </span>
-                                </button>
+                                <select className="custom-select" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} style={{ width: '130px' }}>
+                                    <option value="">All Status</option>
+                                    <option value="active">Active</option>
+                                    <option value="inactive">Inactive</option>
+                                    <option value="pending">Pending</option>
+                                </select>
                             </div>
                         </div>
                     </div>
 
                     <div className="listing-table-container">
-                        <table className="listing-table">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Role</th>
-                                    <th>Status</th>
-                                    <th>Joined Date</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {loading ? (
-                                    <tr><td colSpan="6" className="text-center">Loading...</td></tr>
-                                ) : users.length === 0 ? (
-                                    <tr><td colSpan="6" className="text-center" style={{ padding: '50px' }}>No users found</td></tr>
-                                ) : (
-                                    users.map(user => (
-                                        <tr key={user.id}>
-                                            <td><span className="plan-name-text">{user.name}</span></td>
-                                            <td>{user.email}</td>
-                                            <td>
-                                                <span className={`plan-type-badge`} style={{
-                                                    background: user.role === 'admin' ? '#ffebee' : user.role === 'business_associate' ? '#e3f2fd' : '#e8f5e9',
-                                                    color: user.role === 'admin' ? '#c62828' : user.role === 'business_associate' ? '#1565c0' : '#2e7d32'
-                                                }}>
-                                                    {user.role}
-                                                </span>
-                                                {user.is_vip && (
-                                                    <span className="ms-2 badge rounded-pill bg-warning text-dark" style={{ fontSize: '11px', verticalAlign: 'middle' }}>
-                                                        <i className="fas fa-crown me-1"></i>VIP
-                                                    </span>
-                                                )}
-                                            </td>
-                                            <td>
-                                                <span className={`plan-type-badge`} style={{
-                                                    background: (user.status === 'active' || user.status === 'approved') ? 'rgba(40, 167, 69, 0.1)' : 'rgba(239, 68, 68, 0.1)',
-                                                    color: (user.status === 'active' || user.status === 'approved') ? '#28a745' : '#ef4444'
-                                                }}>
-                                                    {user.status}
-                                                </span>
-                                            </td>
-                                            <td>{new Date(user.created_at).toLocaleDateString('en-GB')}</td>
-                                            <td>
-                                                <div className="actions-cell">
-                                                    <button className="action-btn" onClick={() => navigate(`/admin/users/edit/${user.id}`)} title="Edit">
-                                                        <i className="far fa-edit"></i>
-                                                    </button>
-
-                                                    {user.role === 'business_associate' && user.status === 'pending' && (
-                                                        <button className="action-btn" onClick={() => handleStatusToggle(user, 'approved')} title="Approve" style={{ color: '#28a745', borderColor: '#28a745' }}>
-                                                            <i className="fas fa-check"></i>
-                                                        </button>
-                                                    )}
-
-                                                    {user.role === 'business_associate' && user.status === 'active' && (
-                                                        <button
-                                                            className="action-btn"
-                                                            onClick={async () => {
-                                                                try {
-                                                                    await userService.updateVipStatus(user.id, !user.is_vip);
-                                                                    toast.success(`User marked as ${!user.is_vip ? 'VIP' : 'Standard'}`);
-                                                                    fetchUsers();
-                                                                } catch (err) {
-                                                                    console.error('VIP Update Error:', err);
-                                                                    toast.error('Failed to update VIP status');
-                                                                }
-                                                            }}
-                                                            title={user.is_vip ? "Remove VIP Status" : "Make VIP"}
-                                                            style={{
-                                                                color: user.is_vip ? '#f59e0b' : '#94a3b8',
-                                                                borderColor: user.is_vip ? '#f59e0b' : '#cbd5e1',
-                                                                background: user.is_vip ? '#fffbeb' : 'white'
-                                                            }}
-                                                        >
-                                                            <i className="fas fa-crown"></i>
-                                                        </button>
-                                                    )}
-
-                                                    <button className="action-btn delete" onClick={() => handleDeleteUser(user.id)} title="Delete">
-                                                        <i className="fas fa-trash"></i>
-                                                    </button>
-                                                </div>
+                        <div className="table-responsive">
+                            <table className="listing-table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Status</th>
+                                        <th>Joined Date</th>
+                                        <th className="text-end">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {loading ? (
+                                        <tr><td colSpan="6" className="text-center py-5 text-muted">Loading user database...</td></tr>
+                                    ) : users.length === 0 ? (
+                                        <tr>
+                                            <td colSpan="6" className="text-center py-5">
+                                                <div className="text-muted mb-2"><Users size={40} className="opacity-20" /></div>
+                                                <p className="text-muted mb-0">No users found matching your filters</p>
                                             </td>
                                         </tr>
-                                    ))
-                                )}
-                            </tbody>
-                        </table>
+                                    ) : (
+                                        users.map(user => (
+                                            <tr key={user.id}>
+                                                <td>
+                                                    <div className="d-flex align-items-center gap-2">
+                                                        <div className="avatar-circle-sm" style={{ background: '#f8fafc', border: '1px solid #e2e8f0', color: '#64748b' }}>
+                                                            {user.name.charAt(0)}
+                                                        </div>
+                                                        <div className="fw-semibold text-dark">{user.name}</div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div className="d-flex align-items-center gap-1 text-muted">
+                                                        <Mail size={12} />
+                                                        <span>{user.email}</span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span className={`premium-badge ${user.role === 'admin' ? 'premium-badge-danger' : user.role === 'business_associate' ? 'premium-badge-warning' : 'premium-badge-success'}`}>
+                                                        {user.role === 'business_associate' ? 'Associate' : user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span className={`premium-badge ${(user.status === 'active' || user.status === 'approved') ? 'premium-badge-success' : user.status === 'pending' ? 'premium-badge-warning' : 'premium-badge-danger'}`}>
+                                                        {user.status.charAt(0).toUpperCase() + user.status.slice(1)}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <div className="text-muted small d-flex align-items-center gap-1">
+                                                        <Calendar size={12} />
+                                                        {new Date(user.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
+                                                    </div>
+                                                </td>
+                                                <td className="text-end">
+                                                    <div className="actions-cell justify-content-end">
+                                                        <button className="action-btn" onClick={() => navigate(`/admin/users/edit/${user.id}`)} title="Edit User">
+                                                            <Edit size={16} />
+                                                        </button>
 
-                        {/* Pagination */}
-                        {users.length > 0 && (
-                            <Pagination
-                                currentPage={pagination.page}
-                                totalPages={Math.ceil(pagination.total / pagination.limit)}
-                                onPageChange={(newPage) => {
-                                    setPagination(prev => ({ ...prev, page: newPage }));
-                                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                                }}
-                            />
+                                                        {user.role === 'business_associate' && user.status === 'pending' && (
+                                                            <button className="action-btn" onClick={() => handleStatusToggle(user, 'approved')} title="Approve Associate" style={{ color: '#10b981' }}>
+                                                                <Check size={16} />
+                                                            </button>
+                                                        )}
+
+                                                        {user.role === 'business_associate' && user.status === 'active' && (
+                                                            <button
+                                                                className={`action-btn ${user.is_vip ? 'active' : ''}`}
+                                                                style={{ color: user.is_vip ? '#f59e0b' : 'inherit' }}
+                                                                onClick={async () => {
+                                                                    try {
+                                                                        await userService.updateVipStatus(user.id, !user.is_vip);
+                                                                        toast.success(`User marked as ${!user.is_vip ? 'VIP' : 'Standard'}`);
+                                                                        fetchUsers();
+                                                                    } catch (err) { toast.error('Failed to update VIP status'); }
+                                                                }}
+                                                                title={user.is_vip ? "Remove VIP" : "Make VIP"}
+                                                            >
+                                                                <Crown size={16} />
+                                                            </button>
+                                                        )}
+
+                                                        <button className="action-btn delete" onClick={() => handleDeleteUser(user.id)} title="Delete User">
+                                                            <Trash size={16} />
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                        {pagination.total > pagination.limit && (
+                            <div className="mt-4 p-4 border-top d-flex justify-content-center">
+                                <Pagination
+                                    currentPage={pagination.page}
+                                    totalItems={pagination.total}
+                                    itemsPerPage={pagination.limit}
+                                    onPageChange={(page) => setPagination(prev => ({ ...prev, page }))}
+                                />
+                            </div>
                         )}
                     </div>
                 </div>
