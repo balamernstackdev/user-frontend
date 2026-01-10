@@ -14,7 +14,7 @@ const AdminCommissions = () => {
     const [searchParams] = useSearchParams();
     const [commissions, setCommissions] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [statusFilter, setStatusFilter] = useState(searchParams.get('status') || 'pending');
+    const [statusFilter, setStatusFilter] = useState(searchParams.get('status') || 'actionable');
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0 });
@@ -247,10 +247,11 @@ const AdminCommissions = () => {
                                 <div className="d-flex align-items-center gap-2">
                                     <Filter size={14} className="text-muted" />
                                     <select className="custom-select" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} style={{ width: '160px' }}>
-                                        <option value="all">All Payout Status</option>
-                                        <option value="pending">Pending Approval</option>
-                                        <option value="approved">Approved / Ready</option>
-                                        <option value="paid">Settled / Paid</option>
+                                        <option value="actionable">Actionable (All)</option>
+                                        <option value="all">All History</option>
+                                        <option value="pending">Pending Only</option>
+                                        <option value="approved">Approved Only</option>
+                                        <option value="paid">Paid History</option>
                                         <option value="processing">Processing</option>
                                     </select>
                                 </div>
@@ -325,19 +326,19 @@ const AdminCommissions = () => {
                                                             comm.status === 'pending' ? 'premium-badge-warning' :
                                                                 'premium-badge-danger'
                                                         }`}>
-                                                        {comm.status.toUpperCase()}
+                                                        {comm.status === 'approved' ? 'READY TO PAY' : comm.status.toUpperCase()}
                                                     </span>
                                                 </td>
                                                 <td className="text-end">
-                                                    <div className="actions-cell justify-content-end">
+                                                    <div className="actions-cell justify-content-end align-items-center">
                                                         {comm.status === 'pending' && (
                                                             <button className="action-btn" onClick={() => handleApprove(comm.id)} title="Approve Commission" style={{ color: '#10b981' }}>
                                                                 <Check size={16} />
                                                             </button>
                                                         )}
                                                         {comm.status === 'approved' && (
-                                                            <Link to={`/admin/commissions/${comm.id}/pay`} className="action-btn" title="Process Payout" style={{ color: '#6366f1' }}>
-                                                                <Banknote size={16} />
+                                                            <Link to={`/admin/commissions/${comm.id}/pay`} className="tj-btn tj-btn-sm tj-btn-primary py-1 px-2 d-flex align-items-center" style={{ fontSize: '12px', height: '30px' }} title="Process Payout">
+                                                                <Banknote size={14} className="me-1" /> Pay Now
                                                             </Link>
                                                         )}
                                                         <Link to={`/admin/commissions/${comm.id}`} className="action-btn" title="View Commission Details">

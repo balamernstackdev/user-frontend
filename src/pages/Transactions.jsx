@@ -3,16 +3,16 @@ import paymentService from '../services/payment.service';
 import CommissionService from '../services/commission.service';
 import { authService } from '../services/auth.service';
 import SEO from '../components/common/SEO';
-import './styles/Transactions.css';
-import './styles/Dashboard.css';
+import './styles/AdminListings.css'; // Use shared admin styles
 import { toast } from 'react-toastify';
-import { Coins, CreditCard } from 'lucide-react';
+import { Coins, CreditCard, Eye, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
 
 import DashboardLayout from '../components/layout/DashboardLayout';
 
 const Transactions = () => {
     const [transactions, setTransactions] = useState([]);
     const [loading, setLoading] = useState(true);
+    // Standard 'all' filter default
     const [filter, setFilter] = useState('all');
 
     const user = authService.getUser();
@@ -39,7 +39,7 @@ const Transactions = () => {
                     status: mapCommissionStatus(comm.status),
                     created_at: comm.created_at,
                     payment_date: comm.paid_at,
-                    razorpay_payment_id: null, // Commissions don't have this in the same way
+                    razorpay_payment_id: null,
                     error_message: null
                 }));
 
@@ -58,179 +58,161 @@ const Transactions = () => {
     };
 
     const mapCommissionStatus = (status) => {
-        // Map commission status to transaction status for consistency
         switch (status) {
             case 'paid': return 'success';
-            case 'approved': return 'pending'; // Approved but not paid is effectively pending payout
+            case 'approved': return 'pending';
             case 'pending': return 'pending';
             case 'rejected': return 'failed';
             default: return status;
         }
     };
 
-    const getStatusBadge = (status) => {
-        const badges = {
-            success: 'badge-success',
-            pending: 'badge-warning',
-            failed: 'badge-error'
-        };
-        return badges[status] || 'badge-default';
+    const getStatusLabel = (status) => {
+        if (!status) return 'UNKNOWN';
+        if (isBusinessAssociate) {
+            if (status === 'success') return 'PAID';
+            if (status === 'failed') return 'REJECTED';
+            return status.toUpperCase();
+        }
+        return status.toUpperCase();
     };
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
-        return date.toLocaleDateString('en-IN', {
-            year: 'numeric',
+        return date.toLocaleDateString('en-GB', {
+            day: '2-digit',
             month: 'short',
-            day: 'numeric',
+            year: 'numeric',
             hour: '2-digit',
             minute: '2-digit'
         });
     };
 
-    if (loading) {
-        return (
-            <DashboardLayout>
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
-                    <div className="spinner-border text-primary" role="status">
-                        <span className="visually-hidden">Loading...</span>
-                    </div>
-                </div>
-            </DashboardLayout>
-        );
-    }
-
     return (
         <DashboardLayout>
-            <SEO title="Transaction History" description="View your payment history and commission earnings." />
-            <section className="page-section">
-                <div className="container">
-                    <div className="welcome-header animate-fade-up mb-4">
-                        <div>
-                            <h2 className="section-title fw-bold mb-2">{isBusinessAssociate ? 'Earnings History' : 'Transaction History'}</h2>
-                            <p className="section-subtitle text-muted mb-0">
+            <SEO title={isBusinessAssociate ? "Earnings History" : "Transaction History"} description="View your financial history." />
+
+            <div className="admin-listing-page animate-fade-up">
+                <div className="admin-container">
+
+                    {/* Header */}
+                    <div className="admin-listing-header">
+                        <div className="header-title">
+                            <h1>{isBusinessAssociate ? 'Earnings History' : 'Transaction History'}</h1>
+                            <p className="text-muted mb-0">
                                 {isBusinessAssociate ? 'View all your commission earnings' : 'View all your payment transactions'}
                             </p>
                         </div>
                     </div>
 
-                    <div className="card border-0 shadow-sm animate-fade-up" style={{ animationDelay: '0.1s' }}>
-                        <div className="card-header bg-white border-0 py-3 px-4">
-                            <div className="d-flex overflow-auto">
+                    {/* Toolbar */}
+                    <div className="admin-listing-toolbar">
+                        <div className="d-flex flex-wrap align-items-center justify-content-between gap-3 w-100">
+                            {/* Tabs / Filter Pills */}
+                            <div className="d-flex align-items-center gap-2">
                                 <button
-                                    className={`btn btn-sm rounded-pill fw-medium me-2 px-3 ${filter === 'all' ? 'btn-primary' : 'btn-light text-muted'}`}
+                                    className={`status-toggle ${filter === 'all' ? 'active' : 'inactive bg-white border'}`}
                                     onClick={() => setFilter('all')}
                                 >
                                     All
                                 </button>
                                 <button
-                                    className={`btn btn-sm rounded-pill fw-medium me-2 px-3 ${filter === (isBusinessAssociate ? 'paid' : 'success') ? 'btn-primary' : 'btn-light text-muted'}`}
+                                    className={`status-toggle ${(filter === 'success' || filter === 'paid') ? 'active' : 'inactive bg-white border'}`}
                                     onClick={() => setFilter(isBusinessAssociate ? 'paid' : 'success')}
                                 >
                                     {isBusinessAssociate ? 'Paid' : 'Success'}
                                 </button>
                                 <button
-                                    className={`btn btn-sm rounded-pill fw-medium me-2 px-3 ${filter === 'pending' ? 'btn-primary' : 'btn-light text-muted'}`}
+                                    className={`status-toggle ${filter === 'pending' ? 'active' : 'inactive bg-white border'}`}
                                     onClick={() => setFilter('pending')}
                                 >
                                     Pending
                                 </button>
                                 <button
-                                    className={`btn btn-sm rounded-pill fw-medium me-2 px-3 ${filter === (isBusinessAssociate ? 'rejected' : 'failed') ? 'btn-primary' : 'btn-light text-muted'}`}
+                                    className={`status-toggle ${(filter === 'failed' || filter === 'rejected') ? 'active' : 'inactive bg-white border'}`}
                                     onClick={() => setFilter(isBusinessAssociate ? 'rejected' : 'failed')}
                                 >
                                     {isBusinessAssociate ? 'Rejected' : 'Failed'}
                                 </button>
                             </div>
                         </div>
+                    </div>
 
-                        <div className="card-body p-0">
-                            {transactions.length > 0 ? (
-                                <div className="table-responsive">
-                                    <table className="table table-hover align-middle mb-0">
-                                        <thead className="bg-light">
-                                            <tr>
-                                                <th className="px-4 py-3 text-muted fw-semibold small text-uppercase">Description</th>
-                                                <th className="px-4 py-3 text-muted fw-semibold small text-uppercase">Amount</th>
-                                                <th className="px-4 py-3 text-muted fw-semibold small text-uppercase">Date</th>
-                                                <th className="px-4 py-3 text-muted fw-semibold small text-uppercase">Status</th>
-                                                <th className="px-4 py-3 text-muted fw-semibold small text-uppercase text-end">Details</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {transactions.map((transaction) => (
-                                                <tr key={transaction.id}>
-                                                    <td className="px-4 py-3">
-                                                        <div>
-                                                            <div className="fw-semibold text-dark">{transaction.plan_name || 'Plan Purchase'}</div>
-                                                            <div className="text-muted small font-monospace">ID: {transaction.id.slice(0, 8)}...</div>
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-4 py-3">
-                                                        <span className="fw-bold text-dark">₹{transaction.amount.toLocaleString()}</span>
-                                                    </td>
-                                                    <td className="px-4 py-3 text-muted small">
-                                                        {formatDate(transaction.created_at)}
-                                                    </td>
-                                                    <td className="px-4 py-3">
-                                                        <span className={`badge rounded-pill fw-medium ${transaction.status === 'success' || transaction.status === 'paid' ? 'bg-success-subtle text-success' :
-                                                            transaction.status === 'pending' ? 'bg-warning-subtle text-warning-emphasis' :
-                                                                'bg-danger-subtle text-danger'
-                                                            }`}>
-                                                            {transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1)}
+                    {/* Table Section */}
+                    <div className="listing-table-container">
+                        <div className="table-responsive">
+                            <table className="listing-table">
+                                <thead>
+                                    <tr>
+                                        <th>Description</th>
+                                        <th>Amount</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                        <th className="text-end">Details</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {loading ? (
+                                        <tr><td colSpan="5" className="text-center py-5 text-muted">Loading history...</td></tr>
+                                    ) : transactions.length === 0 ? (
+                                        <tr>
+                                            <td colSpan="5" className="text-center py-5">
+                                                <div className="text-muted mb-2">
+                                                    {isBusinessAssociate ? <Coins size={40} className="opacity-20" /> : <CreditCard size={40} className="opacity-20" />}
+                                                </div>
+                                                <p className="text-muted mb-0">No records found</p>
+                                            </td>
+                                        </tr>
+                                    ) : (
+                                        transactions.map((tx) => (
+                                            <tr key={tx.id}>
+                                                <td>
+                                                    <div className="d-flex flex-column">
+                                                        <span className="fw-bold text-dark mb-1">{tx.plan_name || 'Transaction'}</span>
+                                                        <div className="text-muted small font-monospace">ID: {tx.id.substring(0, 8)}...</div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span className={`fw-bold d-flex align-items-center gap-1 ${isBusinessAssociate ? 'text-success' : 'text-dark'}`}>
+                                                        {isBusinessAssociate ? <ArrowDownLeft size={14} /> : <ArrowUpRight size={14} className="text-muted" />}
+                                                        ₹{Number(tx.amount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span className="text-muted small">
+                                                        {formatDate(tx.created_at)}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    {(() => {
+                                                        const status = tx.status || tx.payment_status || 'unknown';
+                                                        return (
+                                                            <span className={`premium-badge ${(status === 'success' || status === 'paid' || status === 'captured') ? 'premium-badge-success' :
+                                                                (status === 'pending' || status === 'created' || status === 'authorized') ? 'premium-badge-warning' :
+                                                                    'premium-badge-danger'
+                                                                }`}>
+                                                                {getStatusLabel(status)}
+                                                            </span>
+                                                        );
+                                                    })()}
+                                                </td>
+                                                <td className="text-end">
+                                                    {tx.razorpay_payment_id && (
+                                                        <span className="badge bg-light text-secondary border font-monospace small">
+                                                            Pays ID: {tx.razorpay_payment_id.substring(0, 10)}...
                                                         </span>
-                                                    </td>
-                                                    <td className="px-4 py-3 text-end">
-                                                        {transaction.razorpay_payment_id && (
-                                                            <div className="small text-muted">
-                                                                Pay ID: {transaction.razorpay_payment_id}
-                                                            </div>
-                                                        )}
-                                                        {transaction.payment_date && (
-                                                            <div className="small text-muted">
-                                                                Paid: {formatDate(transaction.payment_date)}
-                                                            </div>
-                                                        )}
-                                                        {transaction.error_message && (
-                                                            <div className="small text-danger" title={transaction.error_message}>
-                                                                Error details
-                                                            </div>
-                                                        )}
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            ) : (
-                                <div className="text-center py-5">
-                                    <div className="mb-3 bg-light rounded-circle d-inline-flex align-items-center justify-content-center" style={{ width: '64px', height: '64px' }}>
-                                        {isBusinessAssociate ? (
-                                            <Coins size={32} className="text-muted opacity-50" />
-                                        ) : (
-                                            <CreditCard size={32} className="text-muted opacity-50" />
-                                        )}
-                                    </div>
-                                    <h5 className="text-dark fw-bold mb-1">
-                                        {isBusinessAssociate ? 'No earnings found' : 'No transactions found'}
-                                    </h5>
-                                    <p className="text-muted mb-3">
-                                        {filter === 'all'
-                                            ? (isBusinessAssociate ? "You haven't earned any commissions yet." : "You haven't made any transactions yet.")
-                                            : `No ${filter} records found.`
-                                        }
-                                    </p>
-                                    {!isBusinessAssociate && filter === 'all' && (
-                                        <button className="btn btn-primary rounded-pill px-4" onClick={() => window.location.href = '/plans'}>
-                                            Browse Plans
-                                        </button>
+                                                    )}
+                                                </td>
+                                            </tr>
+                                        ))
                                     )}
-                                </div>
-                            )}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
+
                 </div>
-            </section>
+            </div>
         </DashboardLayout>
     );
 };

@@ -40,8 +40,8 @@ const AdminTicketDetail = () => {
     const user = authService.getUser();
     const messagesEndRef = useRef(null);
 
-    const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    const scrollToTop = () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     useEffect(() => {
@@ -55,7 +55,10 @@ const AdminTicketDetail = () => {
                     if (prev.some(m => m.id === message.id || m._id === message._id)) return prev;
                     return [...prev, message];
                 });
-                setTimeout(scrollToBottom, 100);
+                // Optional: Scroll to bottom ONLY on new message if user prefers, 
+                // but user asked for scroll top generally on load. 
+                // We'll leave auto-scroll out or keep it context-dependent.
+                // For now, restoring just the data/socket logic.
             });
 
             return () => {
@@ -66,9 +69,9 @@ const AdminTicketDetail = () => {
 
     useEffect(() => {
         if (!loading) {
-            scrollToBottom();
+            scrollToTop();
         }
-    }, [messages, loading]);
+    }, [loading]); // Scrolled to top once loaded, removed messages dependency to avoid jumping while reading
 
     const fetchTicketDetails = async () => {
         try {
@@ -237,11 +240,13 @@ const AdminTicketDetail = () => {
                                             {ticket.status.replace('_', ' ')}
                                         </span>
                                     </div>
-                                    <div className="ticket-description bg-light p-3 rounded-3 mb-4">
-                                        <p className="mb-0 text-dark" style={{ whiteSpace: 'pre-wrap' }}>
-                                            {ticket.message || ticket.description}
-                                        </p>
-                                    </div>
+                                    {(ticket.message || ticket.description) && (
+                                        <div className="ticket-description bg-light p-3 rounded-3 mb-4">
+                                            <p className="mb-0 text-dark" style={{ whiteSpace: 'pre-wrap' }}>
+                                                {ticket.message || ticket.description}
+                                            </p>
+                                        </div>
+                                    )}
 
                                     {ticket.attachments && ticket.attachments.length > 0 && (
                                         <div className="ticket-attachments mb-2">
@@ -383,8 +388,8 @@ const AdminTicketDetail = () => {
                                         <div className="detail-item">
                                             <div className="text-muted small mb-1">Priority</div>
                                             <span className={`premium-badge ${ticket.priority === 'high' ? 'premium-badge-danger' :
-                                                    ticket.priority === 'medium' ? 'premium-badge-warning' :
-                                                        'premium-badge-info'
+                                                ticket.priority === 'medium' ? 'premium-badge-warning' :
+                                                    'premium-badge-info'
                                                 }`}>
                                                 {ticket.priority || 'Medium'}
                                             </span>

@@ -74,12 +74,22 @@ const AdminFAQs = () => {
 
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this FAQ?')) {
+            const originalFaqs = [...faqs];
             try {
+                // Optimistic update: Remove immediately from UI
+                setFaqs(prev => prev.filter(f => f.id !== id));
+                setPagination(prev => ({ ...prev, total: Math.max(0, prev.total - 1) }));
+
                 await tutorialService.deleteTutorial(id);
-                fetchFAQs();
+                toast.success('FAQ deleted successfully');
+
+                // Removed fetchFAQs() preventing race condition where deleted item reappears
             } catch (error) {
                 console.error('Error deleting FAQ:', error);
                 toast.error('Failed to delete FAQ');
+                // Revert on failure
+                setFaqs(originalFaqs);
+                fetchFAQs(); // Re-sync on error
             }
         }
     };
@@ -93,6 +103,8 @@ const AdminFAQs = () => {
             toast.error('Failed to update status');
         }
     };
+
+
 
     return (
         <DashboardLayout>

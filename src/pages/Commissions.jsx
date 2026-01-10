@@ -1,33 +1,70 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import CommissionService from '../services/commission.service';
-import SEO from '../components/common/SEO';
-import './styles/Dashboard.css';
-import './styles/Commissions.css';
-import StatCard from '../components/dashboard/StatCard';
-import { DollarSign, Clock, CheckCircle, CreditCard, Coins } from 'lucide-react';
-import { toast } from 'react-toastify';
-
 import DashboardLayout from '../components/layout/DashboardLayout';
+import Pagination from '../components/common/Pagination';
+import SEO from '../components/common/SEO';
+import StatCard from '../components/dashboard/StatCard';
+import { List, IndianRupee, CheckCircle, Clock, Calendar, Filter, Eye, Banknote, User, Package, Download } from 'lucide-react';
+import { toast } from 'react-toastify';
+import './styles/AdminListings.css'; // Use shared admin styles for consistency
 
 const Commissions = () => {
-    // ... state and effects ...
+    const [searchParams] = useSearchParams();
     const [commissions, setCommissions] = useState([]);
-    const [summary, setSummary] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [filter, setFilter] = useState('all');
+    const [statusFilter, setStatusFilter] = useState(searchParams.get('status') || '');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0 });
+    const [summary, setSummary] = useState({
+        total_commissions: 0,
+        pending_commissions: 0,
+        approved_commissions: 0,
+        paid_commissions: 0
+    });
 
     useEffect(() => {
         fetchCommissions();
-    }, [filter]);
+    }, [pagination.page, statusFilter, startDate, endDate]);
 
     const fetchCommissions = async () => {
         try {
             setLoading(true);
-            const params = filter !== 'all' ? { status: filter } : {};
+            const params = {
+                status: statusFilter !== 'all' ? statusFilter : '',
+                startDate,
+                endDate,
+                limit: pagination.limit,
+                offset: (pagination.page - 1) * pagination.limit
+            };
+
             const response = await CommissionService.getMyCommissions(params);
-            setCommissions(response.data.commissions || []);
-            setSummary(response.data.summary);
+
+            // Handle response - adapt based on actual API structure
+            if (response.data && response.data.commissions) {
+                setCommissions(response.data.commissions);
+                if (response.data.pagination) {
+                    setPagination(prev => ({ ...prev, total: response.data.pagination.total }));
+                } else {
+                    // Fallback pagination if backend doesn't provide it
+                    setPagination(prev => ({ ...prev, total: response.data.commissions.length }));
+                }
+
+                if (response.data.summary) {
+                    setSummary(response.data.summary);
+                }
+            } else if (Array.isArray(response.data)) {
+                // Fallback for flat array response
+                // manually filter if backend doesn't support params yet
+                let data = response.data;
+                if (statusFilter && statusFilter !== 'all') {
+                    data = data.filter(c => c.status === statusFilter);
+                }
+                setCommissions(data);
+                setPagination(prev => ({ ...prev, total: data.length }));
+            }
+
         } catch (err) {
             toast.error('Failed to load commission data');
             console.error(err);
@@ -36,212 +73,246 @@ const Commissions = () => {
         }
     };
 
+    const handleExport = () => {
+        // Implement export functionality if available for BA
+        toast.info('Export functionality coming soon!');
+    };
+
     const formatDate = (dateString) => {
+        if (!dateString) return '-';
         const date = new Date(dateString);
-        return date.toLocaleDateString('en-IN', {
-            year: 'numeric',
+        return date.toLocaleDateString('en-GB', {
+            day: '2-digit',
             month: 'short',
-            day: 'numeric'
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
         });
     };
 
-    const getStatusBadge = (status) => {
-        const badges = {
-            pending: { class: 'badge-warning', label: 'Pending' },
-            approved: { class: 'badge-success', label: 'Approved' },
-            paid: { class: 'badge-info', label: 'Paid' },
-            rejected: { class: 'badge-error', label: 'Rejected' }
-        };
-        return badges[status] || badges.pending;
-    };
-
-    if (loading) {
-        return (
-            <DashboardLayout>
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
-                    <div className="spinner-border text-primary" role="status">
-                        <span className="visually-hidden">Loading...</span>
-                    </div>
-                </div>
-            </DashboardLayout>
-        );
-    }
-
     return (
         <DashboardLayout>
-            <SEO title="My Commissions" description="Track your affiliate earnings and payouts." />
-            <section className="page-section">
-                <div className="container">
-                    <div className="page-header mb-4">
-                        <h2 className="section-title fw-bold mb-2">My Commissions</h2>
-                        <p className="section-subtitle text-muted mb-0">Track your earnings from referrals</p>
+            <SEO title="Earnings History" description="Track your affiliate earnings and payouts." />
+
+            <div className="admin-listing-page animate-fade-up">
+                <div className="admin-container">
+
+                    {/* Header */}
+                    <div className="admin-listing-header">
+                        <div className="header-title">
+                            <h1>Earnings History</h1>
+                            <p className="text-muted mb-0">View all your commission earnings</p>
+                        </div>
+                        {/* 
+                        <div className="header-actions">
+                            <button className="tj-btn tj-btn-outline-primary" onClick={handleExport}>
+                                <Download size={18} className="me-2" /> Export
+                            </button>
+                        </div>
+                        */}
                     </div>
 
-                    {summary && (
-                        <div className="row g-4 mb-4 animate-fade-up">
-                            <div className="col-md-6 col-lg-3">
-                                <div className="card h-100 border-0 shadow-sm hover-lift transition-all">
-                                    <div className="card-body p-4">
-                                        <div className="d-flex align-items-center mb-3">
-                                            <div className="p-2 rounded-3 bg-warning-subtle text-warning-emphasis">
-                                                <DollarSign size={24} />
-                                            </div>
-                                        </div>
-                                        <h3 className="fw-bold text-dark mb-1 font-monospace">
-                                            ₹{summary.total_commissions ? summary.total_commissions.toLocaleString() : '0'}
-                                        </h3>
-                                        <p className="text-muted small mb-0">Total Earned</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-md-6 col-lg-3">
-                                <div className="card h-100 border-0 shadow-sm hover-lift transition-all">
-                                    <div className="card-body p-4">
-                                        <div className="d-flex align-items-center mb-3">
-                                            <div className="p-2 rounded-3 bg-warning-subtle text-warning-emphasis">
-                                                <Clock size={24} />
-                                            </div>
-                                        </div>
-                                        <h3 className="fw-bold text-dark mb-1 font-monospace">
-                                            ₹{summary.pending_commissions ? summary.pending_commissions.toLocaleString() : '0'}
-                                        </h3>
-                                        <p className="text-muted small mb-0">Pending Approval</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-md-6 col-lg-3">
-                                <div className="card h-100 border-0 shadow-sm hover-lift transition-all">
-                                    <div className="card-body p-4">
-                                        <div className="d-flex align-items-center mb-3">
-                                            <div className="p-2 rounded-3 bg-success-subtle text-success">
-                                                <CheckCircle size={24} />
-                                            </div>
-                                        </div>
-                                        <h3 className="fw-bold text-dark mb-1 font-monospace">
-                                            ₹{summary.approved_commissions ? summary.approved_commissions.toLocaleString() : '0'}
-                                        </h3>
-                                        <p className="text-muted small mb-0">Approved</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-md-6 col-lg-3">
-                                <div className="card h-100 border-0 shadow-sm hover-lift transition-all">
-                                    <div className="card-body p-4">
-                                        <div className="d-flex align-items-center mb-3">
-                                            <div className="p-2 rounded-3 bg-info-subtle text-info-emphasis">
-                                                <CreditCard size={24} />
-                                            </div>
-                                        </div>
-                                        <h3 className="fw-bold text-dark mb-1 font-monospace">
-                                            ₹{summary.paid_commissions ? summary.paid_commissions.toLocaleString() : '0'}
-                                        </h3>
-                                        <p className="text-muted small mb-0">Paid Out</p>
-                                    </div>
-                                </div>
-                            </div>
+                    {/* Summary Cards */}
+                    <div className="row g-4 mb-4">
+                        <div className="col-md-3">
+                            <StatCard
+                                label="Total Earned"
+                                value={`₹${(summary.total_commissions || 0).toLocaleString('en-IN')}`}
+                                icon={IndianRupee}
+                                iconColor="#13689e"
+                                iconBgColor="rgba(19, 104, 158, 0.1)"
+                                isLoading={loading}
+                                active={statusFilter === '' || statusFilter === 'all'}
+                                onClick={() => setStatusFilter('')}
+                            />
                         </div>
-                    )}
+                        <div className="col-md-3">
+                            <StatCard
+                                label="Paid Amount"
+                                value={`₹${(summary.paid_commissions || 0).toLocaleString('en-IN')}`}
+                                icon={CheckCircle}
+                                iconColor="#10b981"
+                                iconBgColor="rgba(16, 185, 129, 0.1)"
+                                isLoading={loading}
+                                active={statusFilter === 'paid'}
+                                onClick={() => setStatusFilter('paid')}
+                            />
+                        </div>
+                        <div className="col-md-3">
+                            <StatCard
+                                label="Pending Approval"
+                                value={`₹${(summary.pending_commissions || 0).toLocaleString('en-IN')}`}
+                                icon={Clock}
+                                iconColor="#f59e0b"
+                                iconBgColor="rgba(245, 158, 11, 0.1)"
+                                isLoading={loading}
+                                active={statusFilter === 'pending'}
+                                onClick={() => setStatusFilter('pending')}
+                            />
+                        </div>
+                        <div className="col-md-3">
+                            <StatCard
+                                label="Approved"
+                                value={`₹${(summary.approved_commissions || 0).toLocaleString('en-IN')}`}
+                                icon={Banknote}
+                                iconColor="#6366f1"
+                                iconBgColor="rgba(99, 102, 241, 0.1)"
+                                isLoading={loading}
+                                active={statusFilter === 'approved'}
+                                onClick={() => setStatusFilter('approved')}
+                            />
+                        </div>
+                    </div>
 
-                    <div className="card border-0 shadow-sm animate-fade-up" style={{ animationDelay: '0.1s' }}>
-                        <div className="card-header bg-white border-0 py-3 px-4">
-                            <div className="d-flex overflow-auto">
+                    {/* Toolbar */}
+                    <div className="admin-listing-toolbar">
+                        <div className="d-flex flex-wrap align-items-center justify-content-between gap-3 w-100">
+
+                            {/* Tabs / Filter Pills - Matching User Sreenshot 1 */}
+                            <div className="d-flex align-items-center gap-2">
                                 <button
-                                    className={`btn btn-sm rounded-pill fw-medium me-2 px-3 ${filter === 'all' ? 'btn-primary' : 'btn-light text-muted'}`}
-                                    onClick={() => setFilter('all')}
+                                    className={`status-toggle ${statusFilter === '' || statusFilter === 'all' ? 'active' : 'inactive bg-white border'}`}
+                                    onClick={() => setStatusFilter('')}
                                 >
                                     All
                                 </button>
                                 <button
-                                    className={`btn btn-sm rounded-pill fw-medium me-2 px-3 ${filter === 'pending' ? 'btn-primary' : 'btn-light text-muted'}`}
-                                    onClick={() => setFilter('pending')}
+                                    className={`status-toggle ${statusFilter === 'paid' ? 'active' : 'inactive bg-white border'}`}
+                                    onClick={() => setStatusFilter('paid')}
+                                >
+                                    Paid
+                                </button>
+                                <button
+                                    className={`status-toggle ${statusFilter === 'pending' ? 'active' : 'inactive bg-white border'}`}
+                                    onClick={() => setStatusFilter('pending')}
                                 >
                                     Pending
                                 </button>
                                 <button
-                                    className={`btn btn-sm rounded-pill fw-medium me-2 px-3 ${filter === 'approved' ? 'btn-primary' : 'btn-light text-muted'}`}
-                                    onClick={() => setFilter('approved')}
+                                    className={`status-toggle ${statusFilter === 'rejected' ? 'active' : 'inactive bg-white border'}`}
+                                    onClick={() => setStatusFilter('rejected')}
                                 >
-                                    Approved
-                                </button>
-                                <button
-                                    className={`btn btn-sm rounded-pill fw-medium me-2 px-3 ${filter === 'paid' ? 'btn-primary' : 'btn-light text-muted'}`}
-                                    onClick={() => setFilter('paid')}
-                                >
-                                    Paid
+                                    Rejected
                                 </button>
                             </div>
-                        </div>
 
-                        <div className="card-body p-0">
-                            {commissions.length > 0 ? (
-                                <div className="table-responsive">
-                                    <table className="table table-hover align-middle mb-0">
-                                        <thead className="bg-light">
-                                            <tr>
-                                                <th className="px-4 py-3 text-muted fw-semibold small text-uppercase">User</th>
-                                                <th className="px-4 py-3 text-muted fw-semibold small text-uppercase">Amount</th>
-                                                <th className="px-4 py-3 text-muted fw-semibold small text-uppercase">Date Earned</th>
-                                                <th className="px-4 py-3 text-muted fw-semibold small text-uppercase">Status</th>
-                                                <th className="px-4 py-3 text-muted fw-semibold small text-uppercase">Paid Date</th>
-                                                <th className="px-4 py-3 text-muted fw-semibold small text-uppercase text-end">Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {commissions.map((commission) => {
-                                                const statusBadge = getStatusBadge(commission.status);
-                                                return (
-                                                    <tr key={commission.id}>
-                                                        <td className="px-4 py-3">
-                                                            <div>
-                                                                <div className="fw-semibold text-dark">{commission.user_name}</div>
-                                                                <div className="text-muted small">{commission.user_email}</div>
-                                                            </div>
-                                                        </td>
-                                                        <td className="px-4 py-3">
-                                                            <span className="fw-bold text-dark">₹{commission.amount.toLocaleString()}</span>
-                                                        </td>
-                                                        <td className="px-4 py-3 text-muted small">{formatDate(commission.created_at)}</td>
-                                                        <td className="px-4 py-3">
-                                                            <span className={`badge rounded-pill fw-medium ${commission.status === 'approved' ? 'bg-success-subtle text-success' :
-                                                                commission.status === 'paid' ? 'bg-info-subtle text-info-emphasis' :
-                                                                    commission.status === 'rejected' ? 'bg-danger-subtle text-danger' :
-                                                                        'bg-warning-subtle text-warning-emphasis'
-                                                                }`}>
-                                                                {statusBadge.label}
-                                                            </span>
-                                                        </td>
-                                                        <td className="px-4 py-3 text-muted small">
-                                                            {commission.paid_at ? formatDate(commission.paid_at) : '-'}
-                                                        </td>
-                                                        <td className="px-4 py-3 text-end">
-                                                            <Link to={`/business-associate/commissions/${commission.id}`} className="btn btn-sm btn-outline-primary rounded-pill px-3">
-                                                                View
-                                                            </Link>
-                                                        </td>
-                                                    </tr>
-                                                );
-                                            })}
-                                        </tbody>
-                                    </table>
+                            <div className="d-flex align-items-center gap-3">
+                                {/* Date Filter */}
+                                <div className="d-flex align-items-center gap-2">
+                                    <input
+                                        type="date"
+                                        className="custom-select"
+                                        style={{ height: '38px' }}
+                                        value={startDate}
+                                        onChange={(e) => setStartDate(e.target.value)}
+                                    />
+                                    <span className="text-muted small">to</span>
+                                    <input
+                                        type="date"
+                                        className="custom-select"
+                                        style={{ height: '38px' }}
+                                        value={endDate}
+                                        onChange={(e) => setEndDate(e.target.value)}
+                                    />
+                                    {(startDate || endDate) && (
+                                        <button className="tj-btn tj-btn-sm tj-btn-outline-danger ms-2" onClick={() => { setStartDate(''); setEndDate(''); }}>
+                                            Reset
+                                        </button>
+                                    )}
                                 </div>
-                            ) : (
-                                <div className="text-center py-5">
-                                    <div className="mb-3 bg-light rounded-circle d-inline-flex align-items-center justify-content-center" style={{ width: '64px', height: '64px' }}>
-                                        <Coins size={32} className="text-muted opacity-50" />
-                                    </div>
-                                    <h5 className="text-dark fw-bold mb-1">No commissions found</h5>
-                                    <p className="text-muted mb-0">
-                                        {filter === 'all'
-                                            ? "Start referring users to earn commission!"
-                                            : `No ${filter} commissions found.`
-                                        }
-                                    </p>
-                                </div>
-                            )}
+                            </div>
                         </div>
                     </div>
+
+                    {/* Table */}
+                    <div className="listing-table-container">
+                        <div className="table-responsive">
+                            <table className="listing-table">
+                                <thead>
+                                    <tr>
+                                        <th>Description</th>
+                                        <th>Amount</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                        <th className="text-end">Details</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {loading ? (
+                                        <tr><td colSpan="5" className="text-center py-5 text-muted">Loading your earnings history...</td></tr>
+                                    ) : commissions.length === 0 ? (
+                                        <tr>
+                                            <td colSpan="5" className="text-center py-5">
+                                                <div className="text-muted mb-2"><Banknote size={40} className="opacity-20" /></div>
+                                                <p className="text-muted mb-0">No commission records found</p>
+                                            </td>
+                                        </tr>
+                                    ) : (
+                                        commissions.map(comm => (
+                                            <tr key={comm.id}>
+                                                <td>
+                                                    <div className="d-flex flex-column">
+                                                        <span className="fw-bold text-dark mb-1">Commission from {comm.user_name}</span>
+                                                        <div className="text-muted small d-flex align-items-center gap-2 font-monospace">
+                                                            ID: {comm.id.substring(0, 8)}...
+                                                            {comm.plan_name && (
+                                                                <span className="badge bg-light text-secondary border d-inline-flex align-items-center gap-1">
+                                                                    <Package size={10} /> {comm.plan_name}
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span className="fw-bold text-dark d-flex align-items-center gap-1">
+                                                        <IndianRupee size={12} className="text-muted" />
+                                                        {parseFloat(comm.amount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span className="text-muted small">
+                                                        {formatDate(comm.created_at)}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span className={`premium-badge ${comm.status === 'paid' ? 'premium-badge-success' :
+                                                        comm.status === 'approved' ? 'premium-badge-primary' :
+                                                            comm.status === 'pending' ? 'premium-badge-warning' :
+                                                                'premium-badge-danger'
+                                                        }`}>
+                                                        {comm.status.toUpperCase()}
+                                                    </span>
+                                                </td>
+                                                <td className="text-end">
+                                                    <Link
+                                                        to={`/business-associate/commissions/${comm.id}`}
+                                                        className="action-btn ms-auto"
+                                                        title="View Details"
+                                                    >
+                                                        <Eye size={16} />
+                                                    </Link>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {pagination.total > pagination.limit && (
+                            <div className="mt-4 p-4 border-top d-flex justify-content-center">
+                                <Pagination
+                                    currentPage={pagination.page}
+                                    totalItems={pagination.total}
+                                    itemsPerPage={pagination.limit}
+                                    onPageChange={(page) => setPagination(prev => ({ ...prev, page }))}
+                                />
+                            </div>
+                        )}
+                    </div>
+
                 </div>
-            </section>
+            </div>
         </DashboardLayout>
     );
 };

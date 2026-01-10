@@ -1,243 +1,212 @@
+
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import DashboardLayout from '../components/layout/DashboardLayout';
-import TutorialService from '../services/tutorial.service';
-import Pagination from '../components/common/Pagination';
-import './styles/Tutorials.css';
-import { toast } from 'react-toastify';
+import tutorialService from '../services/tutorial.service';
+import SEO from '../components/common/SEO';
+import { Video, HelpCircle, BookOpen, ChevronDown } from 'lucide-react';
+import './styles/AdminListings.css';
+// We will rely on inline styles or basic admin styles for now to ensure cleaner implementation, 
+// as importing multiple conflicting CSS files might cause issues.
+// But we will re-implement the specific card/accordion styles needed.
 
 const Tutorials = () => {
-    const { id } = useParams();
-    const [tutorials, setTutorials] = useState([]);
-    const [categories, setCategories] = useState([]);
-    const [selectedTutorial, setSelectedTutorial] = useState(null);
-    const [selectedCategory, setSelectedCategory] = useState('all');
-    const [page, setPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(0);
-    const LIMIT = 5;
+    const [searchParams, setSearchParams] = useSearchParams();
+    const initialTab = searchParams.get('tab') === 'faq' ? 'faq' : 'how_to_use';
+
+    // Convert 'how_to_use' -> 'HowToUse' for API, 'faq' -> 'FAQ'
+    const getCategoryFromTab = (tab) => tab === 'faq' ? 'FAQ' : 'HowToUse';
+
+    const [activeTab, setActiveTab] = useState(initialTab);
+    const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [activeAccordion, setActiveAccordion] = useState(null);
 
     useEffect(() => {
-        fetchCategories();
-        if (id) {
-            fetchSingleTutorial(id);
-        } else {
-            fetchTutorials();
-        }
-    }, [id, selectedCategory, page]);
+        // Update URL when tab changes without reloading
+        const newParams = new URLSearchParams(searchParams);
+        newParams.set('tab', activeTab);
+        setSearchParams(newParams);
 
-    const fetchCategories = async () => {
-        try {
-            const response = await TutorialService.getCategories();
-            // Filter out empty or invalid categories
-            const validCategories = response.data.filter(cat =>
-                cat.category &&
-                cat.category.trim() !== '' &&
-                cat.category !== '{}' &&
-                cat.category !== 'null'
-            );
-            setCategories(validCategories);
-        } catch (err) {
-            console.error('Failed to load categories', err);
-        }
-    };
+        fetchContent(activeTab);
+    }, [activeTab, searchParams, setSearchParams]); // Added searchParams and setSearchParams to dependencies
 
-    const fetchTutorials = async () => {
+    const fetchContent = async (tab) => {
         try {
             setLoading(true);
-            const offset = (page - 1) * LIMIT;
-            const params = {
-                limit: LIMIT,
-                offset,
-                ...(selectedCategory !== 'all' && { category: selectedCategory })
-            };
-            const response = await TutorialService.getTutorials(params);
-            if (response.pagination) {
-                setTutorials(response.data);
-                setTotalPages(response.pagination.pages);
-            } else if (Array.isArray(response.data)) {
-                // Fallback for stale backend
-                const allData = response.data;
-                const startIndex = (page - 1) * LIMIT;
-                const endIndex = startIndex + LIMIT;
-                const paginatedData = allData.slice(startIndex, endIndex);
-
-                setTutorials(paginatedData);
-                setTotalPages(Math.ceil(allData.length / LIMIT));
-            } else {
-                setTutorials(response.data);
-            }
-        } catch (err) {
-            toast.error('Failed to load tutorials');
-            console.error(err);
+            const category = getCategoryFromTab(tab);
+            const response = await tutorialService.getTutorialsByCategory(category);
+            const data = Array.isArray(response) ? response : (response.data || []);
+            setItems(data);
+        } catch (error) {
+            console.error('Failed to fetch tutorials:', error);
+            setItems([]);
         } finally {
             setLoading(false);
         }
     };
 
-    const fetchSingleTutorial = async (tutorialId) => {
-        try {
-            setLoading(true);
-            const response = await TutorialService.getTutorial(tutorialId);
-            setSelectedTutorial(response.data);
-        } catch (err) {
-            toast.error('Failed to load tutorial');
-            console.error(err);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleTutorialClick = (tutorial) => {
-        setSelectedTutorial(tutorial);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
-
-    const handleBackToList = () => {
-        setSelectedTutorial(null);
-        window.history.pushState({}, '', '/tutorials');
-    };
-
-    // Helper to strip HTML tags for preview text
-    const stripHtml = (html) => {
-        if (!html) return '';
-        const tmp = document.createElement('DIV');
-        tmp.innerHTML = html;
-        return tmp.textContent || tmp.innerText || '';
+    const toggleAccordion = (index) => {
+        setActiveAccordion(activeAccordion === index ? null : index);
     };
 
     return (
         <DashboardLayout>
-            <section className="page-section">
-                <div className="container">
-                    {loading ? (
-                        <div className="text-center p-5">
-                            <div className="spinner-border text-primary" role="status">
-                                <span className="visually-hidden">Loading...</span>
-                            </div>
+            <SEO title="Help Center" description="Tutorials and Frequently Asked Questions." />
+
+            <div className="admin-listing-page animate-fade-up">
+                <div className="admin-container">
+
+                    <div className="admin-listing-header">
+                        <div className="header-title">
+                            <h1>Help Center</h1>
+                            <p className="text-muted mb-0">Learn how to use the platform and find answers to common questions</p>
                         </div>
-                    ) : selectedTutorial ? (
-                        // Single Tutorial View
-                        <div className="tutorial-viewer animate-fade-up">
-                            <button className="back-btn" onClick={handleBackToList}>
-                                <i className="fas fa-arrow-left"></i> Back to Tutorials
+                    </div>
+
+                    {/* Tab Navigation */}
+                    <div className="admin-listing-toolbar mb-4">
+                        <div className="d-flex align-items-center gap-2">
+                            <button
+                                className={`tj-btn ${activeTab === 'how_to_use' ? 'tj-btn-primary' : 'tj-btn-secondary'}`}
+                                onClick={() => setActiveTab('how_to_use')}
+                            >
+                                <Video size={16} />
+                                How to Use
                             </button>
+                            <button
+                                className={`tj-btn ${activeTab === 'faq' ? 'tj-btn-primary' : 'tj-btn-secondary'}`}
+                                onClick={() => setActiveTab('faq')}
+                            >
+                                <HelpCircle size={16} />
+                                FAQ
+                            </button>
+                        </div>
+                    </div>
 
-                            <div className="tutorial-content">
-                                <div className="tutorial-header">
-                                    <span className="category-badge">{selectedTutorial.category}</span>
-                                    <h1>{selectedTutorial.title}</h1>
-                                    {/* Only show description if it exists to avoid empty gaps */}
-                                    {selectedTutorial.description && (
-                                        <p className="tutorial-description">{selectedTutorial.description}</p>
-                                    )}
+                    <div className="content-area">
+                        {loading ? (
+                            <div className="text-center py-5">
+                                <div className="spinner-border text-primary" role="status">
+                                    <span className="visually-hidden">Loading...</span>
                                 </div>
+                            </div>
+                        ) : items.length === 0 ? (
+                            <div className="text-center py-5">
+                                <div className="mb-3 bg-light rounded-circle d-inline-flex align-items-center justify-content-center" style={{ width: '64px', height: '64px' }}>
+                                    <BookOpen size={32} className="text-muted opacity-50" />
+                                </div>
+                                <h5 className="text-dark fw-bold mb-1">No content found</h5>
+                                <p className="text-muted">Check back later for updates in this section.</p>
+                            </div>
+                        ) : (
+                            <>
+                                {activeTab === 'how_to_use' && (
+                                    <div className="row justify-content-center">
+                                        <div className="col-lg-10">
+                                            {items.map((guide, index) => (
+                                                <div key={guide.id || index} className="card border-0 shadow-sm mb-4 position-relative overflow-hidden">
+                                                    <div className="card-body p-4 pt-5">
+                                                        {/* Step Number Badge */}
+                                                        <div className="position-absolute top-0 start-0 m-4 bg-primary text-white rounded-circle d-flex align-items-center justify-content-center shadow-sm z-index-1"
+                                                            style={{ width: '40px', height: '40px', fontWeight: 'bold', fontSize: '18px', zIndex: 1 }}>
+                                                            {guide.order_index || index + 1}
+                                                        </div>
 
-                                <div className="tutorial-body" dangerouslySetInnerHTML={{ __html: selectedTutorial.content }} />
+                                                        {/* Content Wrapper with padding to clear badge */}
+                                                        <div style={{ paddingLeft: '60px' }}>
+                                                            <h3 className="fw-bold text-dark mb-3">{guide.title}</h3>
 
-                                {selectedTutorial.video_url && (
-                                    <div className="tutorial-media">
-                                        <h3>Video Tutorial</h3>
-                                        <div className="video-container">
-                                            <iframe
-                                                src={selectedTutorial.video_url}
-                                                title={selectedTutorial.title}
-                                                frameBorder="0"
-                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                allowFullScreen
-                                            ></iframe>
+                                                            <div className="text-muted mb-4 tutorial-content"
+                                                                dangerouslySetInnerHTML={{ __html: guide.content }} />
+
+                                                            {guide.video_url && (
+                                                                <div className="ratio ratio-16x9 rounded overflow-hidden bg-dark shadow-sm">
+                                                                    {(guide.video_url.match(/\.(mp4|webm|ogg|mov|avi)$/i) || guide.video_url.includes('cloudinary')) ? (
+                                                                        <video controls poster={guide.thumbnail_url}>
+                                                                            <source src={guide.video_url.includes('cloudinary') ? guide.video_url.replace(/\.[^/.]+$/, ".mp4") : guide.video_url} />
+                                                                            Your browser does not support the video tag.
+                                                                        </video>
+                                                                    ) : (
+                                                                        <iframe
+                                                                            src={guide.video_url}
+                                                                            title={guide.title}
+                                                                            allowFullScreen
+                                                                        ></iframe>
+                                                                    )}
+                                                                </div>
+                                                            )}
+
+                                                            {!guide.video_url && guide.thumbnail_url && (
+                                                                <img
+                                                                    src={guide.thumbnail_url}
+                                                                    alt={guide.title}
+                                                                    className="img-fluid rounded shadow-sm mt-3"
+                                                                />
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+
+                                            {/* Styles for HTML Content */}
+                                            <style>{`
+                                                .tutorial-content ul {
+                                                    padding-left: 20px;
+                                                    margin-bottom: 1rem;
+                                                    list-style-type: disc;
+                                                }
+                                                .tutorial-content li {
+                                                    margin-bottom: 0.5rem;
+                                                }
+                                                .tutorial-content p {
+                                                    margin-bottom: 1rem;
+                                                }
+                                            `}</style>
                                         </div>
                                     </div>
                                 )}
-                            </div>
-                        </div>
-                    ) : (
-                        // Tutorials List View
-                        <div className="animate-fade-up">
-                            <div className="page-header">
-                                <h2>Tutorials & Guides</h2>
-                                <p style={{ color: '#6c757d' }}>Learn how to make the most of our platform</p>
-                            </div>
 
-                            <div className="category-filter">
-                                <button
-                                    className={`filter-btn ${selectedCategory === 'all' ? 'active' : ''}`}
-                                    onClick={() => {
-                                        setSelectedCategory('all');
-                                        setPage(1);
-                                    }}
-                                >
-                                    All
-                                </button>
-                                {categories.map((cat) => (
-                                    <button
-                                        key={cat.category}
-                                        className={`filter-btn ${selectedCategory === cat.category ? 'active' : ''}`}
-                                        onClick={() => {
-                                            setSelectedCategory(cat.category);
-                                            setPage(1);
-                                        }}
-                                    >
-                                        {cat.category.replace(/([A-Z])/g, ' $1').trim()} ({cat.count})
-                                    </button>
-                                ))}
-                            </div>
-
-                            <div className="tutorials-grid">
-                                {tutorials.length > 0 ? (
-                                    tutorials.map((tutorial) => {
-                                        // Fallback description logic
-                                        const displayDescription = tutorial.description
-                                            ? tutorial.description
-                                            : stripHtml(tutorial.content).substring(0, 100) + '...';
-
-                                        return (
-                                            <div
-                                                key={tutorial.id}
-                                                className="tutorial-card"
-                                                onClick={() => handleTutorialClick(tutorial)}
-                                            >
-                                                <div className={`tutorial-thumbnail ${!tutorial.thumbnail_url ? 'placeholder' : ''}`}>
-                                                    {tutorial.thumbnail_url ? (
-                                                        <img src={tutorial.thumbnail_url} alt={tutorial.title} />
-                                                    ) : (
-                                                        <i className={tutorial.category === 'FAQ' ? "fas fa-question-circle" : "fas fa-photo-video"}></i>
-                                                    )}
-                                                </div>
-                                                <div className="tutorial-card-content">
-                                                    <span className="category-tag">{tutorial.category}</span>
-                                                    <h3>{tutorial.title}</h3>
-                                                    <p>{displayDescription}</p>
-                                                    <button className="btn-link">Read More <i className="fas fa-arrow-right"></i></button>
+                                {activeTab === 'faq' && (
+                                    <div className="row justify-content-center">
+                                        <div className="col-12">
+                                            <div className="listing-table-container">
+                                                <div className="accordion" id="faqAccordion">
+                                                    {items.map((faq, index) => (
+                                                        <div key={faq.id || index} className={`border-bottom ${index === items.length - 1 ? 'border-0' : ''}`}>
+                                                            <div
+                                                                className={`p-4 d-flex align-items-center justify-content-between cursor-pointer ${activeAccordion === index ? 'text-primary bg-light' : 'text-dark hover-bg-light'}`}
+                                                                onClick={() => toggleAccordion(index)}
+                                                                style={{ cursor: 'pointer', transition: 'background-color 0.2s' }}
+                                                            >
+                                                                <h5 className="mb-0 fw-bold fs-6">{faq.title}</h5>
+                                                                <ChevronDown
+                                                                    size={20}
+                                                                    className={`transition-transform duration-300 ${activeAccordion === index ? 'rotate-180 text-primary' : 'text-muted'}`}
+                                                                    style={{ transform: activeAccordion === index ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s ease' }}
+                                                                />
+                                                            </div>
+                                                            <div className={`collapse ${activeAccordion === index ? 'show' : ''}`}>
+                                                                <div className="px-4 pb-4 pt-0 text-muted">
+                                                                    <div className="pt-2">
+                                                                        {faq.content}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    ))}
                                                 </div>
                                             </div>
-                                        );
-                                    })
-                                ) : (
-                                    <div className="no-tutorials">
-                                        <div className="icon"><i className="fas fa-book-open"></i></div>
-                                        <h3>No tutorials found</h3>
-                                        <p>Check back later for new content!</p>
+                                        </div>
                                     </div>
                                 )}
-                            </div>
+                            </>
+                        )}
+                    </div>
 
-                            {/* Pagination */}
-                            {!loading && tutorials.length > 0 && (
-                                <Pagination
-                                    currentPage={page}
-                                    totalPages={totalPages}
-                                    onPageChange={(newPage) => {
-                                        setPage(newPage);
-                                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                                    }}
-                                />
-                            )}
-                        </div>
-                    )}
                 </div>
-            </section>
-        </DashboardLayout >
+            </div>
+        </DashboardLayout>
     );
 };
 
