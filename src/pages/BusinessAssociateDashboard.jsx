@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 import { Users, DollarSign, MousePointer, Copy, ExternalLink, ArrowRight, TrendingUp, UserCheck, Clock } from 'lucide-react';
 import SkeletonLoader from '../components/dashboard/SkeletonLoader';
+import StatCard from '../components/dashboard/StatCard';
 import AnnouncementWidget from '../components/dashboard/AnnouncementWidget';
 import './styles/Dashboard.css';
 
@@ -124,34 +125,46 @@ const BusinessAssociateDashboard = () => {
                         </div>
                         {/* Stats Grid */}
                         <div className="row g-4 mb-4 animate-fade-up" style={{ animationDelay: '0.1s' }}>
-                            <StatCard
-                                title="Total Users Referred"
-                                value={stats?.total_referrals || 0}
-                                icon={Users}
-                                color="primary"
-                                trend={null}
-                            />
-                            <StatCard
-                                title="Active Subscribers"
-                                value={stats?.active_subscribers || 0}
-                                icon={UserCheck}
-                                color="success"
-                                subtitle={`${stats?.total_referrals > 0 ? ((stats.active_subscribers / stats.total_referrals) * 100).toFixed(1) : 0}% Conversion Rate`}
-                            />
-                            <StatCard
-                                title="Total Earnings"
-                                value={`₹${Number(stats?.total_commissions || 0).toLocaleString()}`}
-                                icon={DollarSign}
-                                color="warning"
-                                isMoney
-                            />
-                            <StatCard
-                                title="Pending Payouts"
-                                value={`₹${Number(stats?.pending_commissions || 0).toLocaleString()}`}
-                                icon={TrendingUp}
-                                color="info"
-                                isMoney
-                            />
+                            <div className="col-md-6 col-lg-3">
+                                <StatCard
+                                    label="Total Users Referred"
+                                    value={stats?.total_referrals || 0}
+                                    icon={Users}
+                                    iconColor="#6366f1"
+                                    iconBgColor="rgba(99, 102, 241, 0.1)"
+                                    link="/business-associate/referrals"
+                                />
+                            </div>
+                            <div className="col-md-6 col-lg-3">
+                                <StatCard
+                                    label="Active Subscribers"
+                                    value={stats?.active_subscribers || 0}
+                                    icon={UserCheck}
+                                    iconColor="#10b981"
+                                    iconBgColor="rgba(16, 185, 129, 0.1)"
+                                    link="/business-associate/referrals"
+                                />
+                            </div>
+                            <div className="col-md-6 col-lg-3">
+                                <StatCard
+                                    label="Total Earnings"
+                                    value={`₹${Number(stats?.total_commissions || 0).toLocaleString()}`}
+                                    icon={DollarSign}
+                                    iconColor="#f59e0b"
+                                    iconBgColor="rgba(245, 158, 11, 0.1)"
+                                    link="/business-associate/commissions"
+                                />
+                            </div>
+                            <div className="col-md-6 col-lg-3">
+                                <StatCard
+                                    label="Pending Payouts"
+                                    value={`₹${Number(stats?.pending_commissions || 0).toLocaleString()}`}
+                                    icon={TrendingUp}
+                                    iconColor="#3b82f6"
+                                    iconBgColor="rgba(59, 130, 246, 0.1)"
+                                    link="/business-associate/commissions?status=pending"
+                                />
+                            </div>
                         </div>
 
                         {/* Recent Activity & Announcements Section */}
@@ -233,27 +246,6 @@ const BusinessAssociateDashboard = () => {
 };
 
 // Helper Components
-const StatCard = ({ title, value, icon: Icon, color, subtitle, trend, isMoney }) => (
-    <div className="col-md-6 col-lg-3">
-        <div className="card h-100 border-0 shadow-sm hover-lift transition-all">
-            <div className="card-body p-4">
-                <div className="d-flex align-items-start justify-content-between mb-3">
-                    <div className={`icon-box p-2 rounded-3 bg-${color}-subtle text-${color}`}>
-                        <Icon size={24} />
-                    </div>
-                    {trend && (
-                        <span className={`badge bg-${trend > 0 ? 'success' : 'danger'}-subtle text-${trend > 0 ? 'success' : 'danger'} rounded-pill`}>
-                            {trend > 0 ? '+' : ''}{trend}%
-                        </span>
-                    )}
-                </div>
-                <h3 className={`fw-bold text-dark mb-1 ${isMoney ? 'font-monospace' : ''}`}>{value}</h3>
-                <p className="text-muted small mb-0">{subtitle || title}</p>
-            </div>
-        </div>
-    </div>
-);
-
 const StatusBadge = ({ status }) => {
     const styles = {
         active: 'bg-success-subtle text-success',

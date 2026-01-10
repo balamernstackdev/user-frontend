@@ -5,6 +5,13 @@
     /* Space for footer */
 }
 
+.admin-container {
+    padding: 0 1.5rem;
+    max-width: 1320px;
+    width: 100%;
+    margin: 0 auto;
+}
+
 /* Header mirroring .page-header */
 .admin-listing-header {
     display: flex;

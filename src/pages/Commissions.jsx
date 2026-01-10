@@ -189,6 +189,12 @@ const Commissions = () => {
                                     Pending
                                 </button>
                                 <button
+                                    className={`status-toggle ${statusFilter === 'approved' ? 'active' : 'inactive bg-white border'}`}
+                                    onClick={() => setStatusFilter('approved')}
+                                >
+                                    Approved
+                                </button>
+                                <button
                                     className={`status-toggle ${statusFilter === 'rejected' ? 'active' : 'inactive bg-white border'}`}
                                     onClick={() => setStatusFilter('rejected')}
                                 >

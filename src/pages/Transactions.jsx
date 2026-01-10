@@ -6,12 +6,14 @@ import SEO from '../components/common/SEO';
 import './styles/AdminListings.css'; // Use shared admin styles
 import { toast } from 'react-toastify';
 import { Coins, CreditCard, Eye, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
+import Pagination from '../components/common/Pagination';
 
 import DashboardLayout from '../components/layout/DashboardLayout';
 
 const Transactions = () => {
     const [transactions, setTransactions] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [pagination, setPagination] = useState({ page: 1, limit: 5, total: 0 });
     // Standard 'all' filter default
     const [filter, setFilter] = useState('all');
 
@@ -20,7 +22,7 @@ const Transactions = () => {
 
     useEffect(() => {
         fetchTransactions();
-    }, [filter]);
+    }, [filter, pagination.page]);
 
     const fetchTransactions = async () => {
         try {
@@ -29,8 +31,19 @@ const Transactions = () => {
 
             if (isBusinessAssociate) {
                 // For marketers, fetch commissions and map to transaction format
-                const response = await CommissionService.getMyCommissions(params);
-                const commissions = response.data.commissions || [];
+                // Add pagination params if API supports it, or slice locally
+                const commissionParams = { ...params, limit: pagination.limit, offset: (pagination.page - 1) * pagination.limit };
+                const response = await CommissionService.getMyCommissions(commissionParams);
+
+                let commissions = response.data.commissions || [];
+                let total = response.data.pagination?.total || commissions.length;
+
+                // Fallback for local slicing if API returns all
+                if (!response.data.pagination && commissions.length > pagination.limit) {
+                    total = commissions.length;
+                    const start = (pagination.page - 1) * pagination.limit;
+                    commissions = commissions.slice(start, start + pagination.limit);
+                }
 
                 const mappedTransactions = commissions.map(comm => ({
                     id: comm.id,
@@ -44,10 +57,24 @@ const Transactions = () => {
                 }));
 
                 setTransactions(mappedTransactions);
+                setPagination(prev => ({ ...prev, total: total }));
             } else {
                 // For regular users, fetch actual transactions
-                const response = await paymentService.getTransactions(params);
-                setTransactions(response.data.transactions || response.data || []);
+                const txParams = { ...params, limit: pagination.limit, offset: (pagination.page - 1) * pagination.limit };
+                const response = await paymentService.getTransactions(txParams);
+
+                let txs = response.data.transactions || response.data || [];
+                let total = response.data.pagination?.total || txs.length;
+
+                // Fallback local slice if needed
+                if (!response.data.pagination && txs.length > pagination.limit) {
+                    total = txs.length;
+                    const start = (pagination.page - 1) * pagination.limit;
+                    txs = txs.slice(start, start + pagination.limit);
+                }
+
+                setTransactions(txs);
+                setPagination(prev => ({ ...prev, total: total }));
             }
         } catch (err) {
             toast.error(isBusinessAssociate ? 'Failed to load commission history' : 'Failed to load transactions');
@@ -60,7 +87,7 @@ const Transactions = () => {
     const mapCommissionStatus = (status) => {
         switch (status) {
             case 'paid': return 'success';
-            case 'approved': return 'pending';
+            case 'approved': return 'approved';
             case 'pending': return 'pending';
             case 'rejected': return 'failed';
             default: return status;
@@ -122,6 +149,14 @@ const Transactions = () => {
                                 >
                                     {isBusinessAssociate ? 'Paid' : 'Success'}
                                 </button>
+                                {isBusinessAssociate && (
+                                    <button
+                                        className={`status-toggle ${filter === 'approved' ? 'active' : 'inactive bg-white border'}`}
+                                        onClick={() => setFilter('approved')}
+                                    >
+                                        Approved
+                                    </button>
+                                )}
                                 <button
                                     className={`status-toggle ${filter === 'pending' ? 'active' : 'inactive bg-white border'}`}
                                     onClick={() => setFilter('pending')}
@@ -188,8 +223,9 @@ const Transactions = () => {
                                                         const status = tx.status || tx.payment_status || 'unknown';
                                                         return (
                                                             <span className={`premium-badge ${(status === 'success' || status === 'paid' || status === 'captured') ? 'premium-badge-success' :
-                                                                (status === 'pending' || status === 'created' || status === 'authorized') ? 'premium-badge-warning' :
-                                                                    'premium-badge-danger'
+                                                                (status === 'approved') ? 'premium-badge-primary' :
+                                                                    (status === 'pending' || status === 'created' || status === 'authorized') ? 'premium-badge-warning' :
+                                                                        'premium-badge-danger'
                                                                 }`}>
                                                                 {getStatusLabel(status)}
                                                             </span>
@@ -209,6 +245,16 @@ const Transactions = () => {
                                 </tbody>
                             </table>
                         </div>
+                        {pagination.total > pagination.limit && (
+                            <div className="mt-4 p-4 border-top d-flex justify-content-center">
+                                <Pagination
+                                    currentPage={pagination.page}
+                                    totalItems={pagination.total}
+                                    itemsPerPage={pagination.limit}
+                                    onPageChange={(page) => setPagination(prev => ({ ...prev, page }))}
+                                />
+                            </div>
+                        )}
                     </div>
 
                 </div>

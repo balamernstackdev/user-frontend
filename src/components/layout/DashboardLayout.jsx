@@ -15,9 +15,19 @@ const DashboardLayout = ({ children }) => {
     const location = useLocation();
 
     useEffect(() => {
+        // Listen for custom event to refresh count
+        const handleCountUpdate = () => {
+            fetchNotificationCount();
+        };
+        window.addEventListener('notification_count_update', handleCountUpdate);
+
         if (user && user.id) {
             fetchNotificationCount();
         }
+
+        return () => {
+            window.removeEventListener('notification_count_update', handleCountUpdate);
+        };
     }, [user?.id, location.pathname]);
 
     useEffect(() => {

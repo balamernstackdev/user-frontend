@@ -6,8 +6,10 @@ const announcementService = {
         return response.data;
     },
 
-    getAll: async (params) => {
-        const response = await api.get('/announcements', { params });
+    getAll: async (params = {}) => {
+        // Add timestamp to prevent caching
+        const queryParams = { ...params, _t: Date.now() };
+        const response = await api.get('/announcements', { params: queryParams });
         return response.data;
     },
 

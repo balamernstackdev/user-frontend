@@ -22,6 +22,7 @@ const NotificationDetails = () => {
                     // Auto mark as read when viewing details
                     if (!response.data.is_read) {
                         await notificationService.markAsRead(id);
+                        window.dispatchEvent(new Event('notification_count_update'));
                     }
                 }
             } catch (error) {
@@ -42,6 +43,7 @@ const NotificationDetails = () => {
         try {
             await notificationService.markAsRead(id);
             setNotification(prev => ({ ...prev, is_read: true }));
+            window.dispatchEvent(new Event('notification_count_update'));
             toast.success('Notification marked as read');
         } catch (error) {
             console.error('Error marking as read:', error);
