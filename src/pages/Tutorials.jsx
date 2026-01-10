@@ -98,6 +98,14 @@ const Tutorials = () => {
         window.history.pushState({}, '', '/tutorials');
     };
 
+    // Helper to strip HTML tags for preview text
+    const stripHtml = (html) => {
+        if (!html) return '';
+        const tmp = document.createElement('DIV');
+        tmp.innerHTML = html;
+        return tmp.textContent || tmp.innerText || '';
+    };
+
     return (
         <DashboardLayout>
             <section className="page-section">
@@ -119,7 +127,10 @@ const Tutorials = () => {
                                 <div className="tutorial-header">
                                     <span className="category-badge">{selectedTutorial.category}</span>
                                     <h1>{selectedTutorial.title}</h1>
-                                    <p className="tutorial-description">{selectedTutorial.description}</p>
+                                    {/* Only show description if it exists to avoid empty gaps */}
+                                    {selectedTutorial.description && (
+                                        <p className="tutorial-description">{selectedTutorial.description}</p>
+                                    )}
                                 </div>
 
                                 <div className="tutorial-body" dangerouslySetInnerHTML={{ __html: selectedTutorial.content }} />
@@ -174,27 +185,34 @@ const Tutorials = () => {
 
                             <div className="tutorials-grid">
                                 {tutorials.length > 0 ? (
-                                    tutorials.map((tutorial) => (
-                                        <div
-                                            key={tutorial.id}
-                                            className="tutorial-card"
-                                            onClick={() => handleTutorialClick(tutorial)}
-                                        >
-                                            <div className={`tutorial-thumbnail ${!tutorial.thumbnail_url ? 'placeholder' : ''}`}>
-                                                {tutorial.thumbnail_url ? (
-                                                    <img src={tutorial.thumbnail_url} alt={tutorial.title} />
-                                                ) : (
-                                                    <i className={tutorial.category === 'FAQ' ? "fas fa-question-circle" : "fas fa-photo-video"}></i>
-                                                )}
+                                    tutorials.map((tutorial) => {
+                                        // Fallback description logic
+                                        const displayDescription = tutorial.description
+                                            ? tutorial.description
+                                            : stripHtml(tutorial.content).substring(0, 100) + '...';
+
+                                        return (
+                                            <div
+                                                key={tutorial.id}
+                                                className="tutorial-card"
+                                                onClick={() => handleTutorialClick(tutorial)}
+                                            >
+                                                <div className={`tutorial-thumbnail ${!tutorial.thumbnail_url ? 'placeholder' : ''}`}>
+                                                    {tutorial.thumbnail_url ? (
+                                                        <img src={tutorial.thumbnail_url} alt={tutorial.title} />
+                                                    ) : (
+                                                        <i className={tutorial.category === 'FAQ' ? "fas fa-question-circle" : "fas fa-photo-video"}></i>
+                                                    )}
+                                                </div>
+                                                <div className="tutorial-card-content">
+                                                    <span className="category-tag">{tutorial.category}</span>
+                                                    <h3>{tutorial.title}</h3>
+                                                    <p>{displayDescription}</p>
+                                                    <button className="btn-link">Read More <i className="fas fa-arrow-right"></i></button>
+                                                </div>
                                             </div>
-                                            <div className="tutorial-card-content">
-                                                <span className="category-tag">{tutorial.category}</span>
-                                                <h3>{tutorial.title}</h3>
-                                                <p>{tutorial.description}</p>
-                                                <button className="btn-link">Read More <i className="fas fa-arrow-right"></i></button>
-                                            </div>
-                                        </div>
-                                    ))
+                                        );
+                                    })
                                 ) : (
                                     <div className="no-tutorials">
                                         <div className="icon"><i className="fas fa-book-open"></i></div>

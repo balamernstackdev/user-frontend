@@ -198,8 +198,7 @@ const AdminHowToUse = () => {
                             <div className="mt-4 p-4 border-top d-flex justify-content-center">
                                 <Pagination
                                     currentPage={pagination.page}
-                                    totalItems={pagination.total}
-                                    itemsPerPage={pagination.limit}
+                                    totalPages={Math.ceil(pagination.total / pagination.limit)}
                                     onPageChange={(newPage) => setPagination(prev => ({ ...prev, page: newPage }))}
                                 />
                             </div>
